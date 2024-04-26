@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -20,6 +21,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -32,6 +34,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -50,6 +54,13 @@ import com.vlab2024.virtuallab.ui.theme.LightBlue
 
 @Composable
 fun RegisterScreen(navController: NavHostController) {
+    Scaffold {
+        ScreenContent(modifier = Modifier.padding(it), navController = navController)
+    }
+}
+
+@Composable
+private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
     var password by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var fullname by remember { mutableStateOf("") }
@@ -138,7 +149,9 @@ fun RegisterScreen(navController: NavHostController) {
         Spacer(modifier = Modifier.padding(8.dp))
         Row {
             Text(text = stringResource(id = R.string.account_exist), fontWeight = FontWeight.Normal)
-            Text(text = stringResource(id = R.string.signup), color = BlueLink)
+            ClickableText(text = AnnotatedString(stringResource(id = R.string.signup)), style = TextStyle(color = BlueLink)) {
+                navController.navigate(Screen.Register.route)
+            }
         }
     }
 }

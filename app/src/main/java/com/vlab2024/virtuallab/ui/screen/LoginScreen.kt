@@ -19,6 +19,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -48,12 +49,21 @@ import com.vlab2024.virtuallab.ui.theme.LightBlue
 
 @Composable
 fun LoginScreen(navController: NavHostController) {
+
+    Scaffold {
+    ScreenContent(modifier = Modifier.padding(it), navController)
+    }
+}
+
+@Composable
+private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
     var password by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
 
     var passwordVisibility by remember { mutableStateOf(false) }
+
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 48.dp),
         verticalArrangement = Arrangement.Center,

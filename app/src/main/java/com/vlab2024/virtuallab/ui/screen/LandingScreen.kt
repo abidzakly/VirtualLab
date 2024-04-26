@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,6 +39,13 @@ import com.vlab2024.virtuallab.ui.theme.LightBlue
 
 @Composable
 fun LandingScreen(navController: NavHostController) {
+    Scaffold {
+        ScreenContent(modifier = Modifier.padding(it), navController = navController)
+    }
+}
+
+@Composable
+private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
     var text by remember { mutableStateOf("") }
     Column(
         modifier = Modifier
@@ -97,7 +105,10 @@ fun LandingScreen(navController: NavHostController) {
                     contentColor = Color.White
                 )
             ) {
-                Text(text = stringResource(id = R.string.create_acc), fontWeight = FontWeight.SemiBold)
+                Text(
+                    text = stringResource(id = R.string.create_acc),
+                    fontWeight = FontWeight.SemiBold
+                )
             }
         }
     }
