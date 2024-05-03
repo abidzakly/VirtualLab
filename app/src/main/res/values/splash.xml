@@ -2,7 +2,7 @@
 <resources>
     <style name="Theme.VirtualLab.SplashScreen" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">#FFD3EBF6</item>
-        <item name="windowSplashScreenAnimatedIcon">@mipmap/virtuallab</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/vlab</item>
         <item name="postSplashScreenTheme">@style/Theme.SplashScreen</item>
     </style>
 </resources>

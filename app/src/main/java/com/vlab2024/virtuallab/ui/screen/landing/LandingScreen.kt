@@ -1,4 +1,4 @@
-package com.vlab2024.virtuallab.ui.screen
+package com.vlab2024.virtuallab.ui.screen.landing
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -35,11 +35,13 @@ import androidx.navigation.compose.rememberNavController
 import com.vlab2024.virtuallab.R
 import com.vlab2024.virtuallab.navigation.Screen
 import com.vlab2024.virtuallab.ui.theme.DarkBlue
+import com.vlab2024.virtuallab.ui.theme.DarkBlueText
 import com.vlab2024.virtuallab.ui.theme.LightBlue
+import com.vlab2024.virtuallab.ui.theme.Poppins
 
 @Composable
 fun LandingScreen(navController: NavHostController) {
-    Scaffold {
+    Scaffold(containerColor = Color.White) {
         ScreenContent(modifier = Modifier.padding(it), navController = navController)
     }
 }
@@ -48,14 +50,15 @@ fun LandingScreen(navController: NavHostController) {
 private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
     var text by remember { mutableStateOf("") }
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
         Text(
             text = stringResource(R.string.welcome_text),
             fontSize = 32.sp,
-            color = DarkBlue,
+            fontFamily = Poppins,
+            color = DarkBlueText,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .fillMaxWidth()
@@ -82,7 +85,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                 fontWeight = FontWeight.Medium,
                 fontSize = 16.sp,
                 modifier = Modifier.padding(top = 32.dp, bottom = 50.dp),
-                color = DarkBlue
+                color = DarkBlueText
             )
             Button(
                 onClick = { navController.navigate(Screen.Login.route) },
@@ -93,11 +96,11 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                     contentColor = Color.Black
                 )
             ) {
-                Text(text = stringResource(id = R.string.signin), fontWeight = FontWeight.SemiBold)
+                Text(text = stringResource(id = R.string.signin), fontWeight = FontWeight.SemiBold, fontFamily = Poppins, fontSize = 16.sp)
             }
             Spacer(modifier = Modifier.padding(15.dp))
             Button(
-                onClick = { navController.navigate(Screen.Register.route) },
+                onClick = { navController.navigate(Screen.Role.route) },
                 modifier = Modifier.size(width = 300.dp, height = 47.dp),
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(
@@ -107,7 +110,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
             ) {
                 Text(
                     text = stringResource(id = R.string.create_acc),
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold, fontFamily = Poppins, fontSize = 16.sp
                 )
             }
         }

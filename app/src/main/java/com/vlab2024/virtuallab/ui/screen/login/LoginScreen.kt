@@ -1,4 +1,4 @@
-package com.vlab2024.virtuallab.ui.screen
+package com.vlab2024.virtuallab.ui.screen.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -11,19 +11,26 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults.buttonColors
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults.colors
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,12 +57,41 @@ import androidx.navigation.compose.rememberNavController
 import com.vlab2024.virtuallab.R
 import com.vlab2024.virtuallab.navigation.Screen
 import com.vlab2024.virtuallab.ui.theme.BlueLink
+import com.vlab2024.virtuallab.ui.theme.GrayText
 import com.vlab2024.virtuallab.ui.theme.LightBlue
+import com.vlab2024.virtuallab.ui.theme.Poppins
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterScreen(navController: NavHostController) {
-    Scaffold {
-        ScreenContent(modifier = Modifier.padding(it), navController = navController)
+fun LoginScreen(navController: NavHostController) {
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(
+                                id = R.string.back_button
+                            ),
+                            tint = Color.Black,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                },
+                title = {
+                    Text(text = stringResource(id = R.string.signin), fontSize = 22.sp, fontFamily = Poppins)
+                },
+                colors = TopAppBarDefaults.mediumTopAppBarColors(
+                    containerColor = Color.Transparent,
+                    titleContentColor = Color.Black
+                )
+            )
+        },
+        containerColor = Color.White
+    ) {
+        ScreenContent(modifier = Modifier.padding(it), navController)
     }
 }
 
@@ -63,21 +99,17 @@ fun RegisterScreen(navController: NavHostController) {
 private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
     var password by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
-    var fullname by remember { mutableStateOf("") }
 
     var passwordVisibility by remember { mutableStateOf(false) }
+
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 48.dp),
+            .padding(horizontal = 48.dp).
+        verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = stringResource(R.string.register_title),
-            fontSize = 22.sp,
-            modifier = Modifier.padding(32.dp)
-        )
         Image(
             painter = painterResource(id = R.drawable.vlab_logo),
             contentDescription = "Logo Virtual Lab",
@@ -94,19 +126,13 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                 capitalization = KeyboardCapitalization.Words,
                 imeAction = ImeAction.Next
             ),
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.padding(8.dp))
-        TextField(
-            value = fullname,
-            onValueChange = { fullname = it },
-            label = { Text(text = stringResource(R.string.fullname)) },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Words,
-                imeAction = ImeAction.Next
-            ),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = colors(
+                unfocusedContainerColor = Color.Transparent,
+                focusedContainerColor = Color.Transparent,
+                focusedLabelColor = GrayText,
+                unfocusedLabelColor = GrayText
+            )
         )
         Spacer(modifier = Modifier.padding(8.dp))
         TextField(
@@ -130,34 +156,53 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                     )
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = colors(
+                unfocusedContainerColor = Color.Transparent,
+                focusedContainerColor = Color.Transparent,
+                focusedLabelColor = GrayText,
+                unfocusedLabelColor = GrayText
+            )
         )
         Spacer(modifier = Modifier.padding(24.dp))
         Button(
-            onClick = { navController.navigate(Screen.Register.route) },
+            onClick = { navController.navigate(Screen.Dashboard.route) },
             modifier = Modifier
                 .height(47.dp)
                 .width(150.dp),
             shape = RoundedCornerShape(10.dp),
-            colors = buttonColors(
+            colors = ButtonDefaults.buttonColors(
                 containerColor = LightBlue,
                 contentColor = Color.Black
             )
         ) {
-            Text(text = stringResource(id = R.string.signin), fontWeight = FontWeight.SemiBold)
+            Text(
+                text = stringResource(id = R.string.signin),
+                fontWeight = FontWeight.SemiBold,
+                fontFamily = Poppins,
+                fontSize = 16.sp
+            )
         }
         Spacer(modifier = Modifier.padding(8.dp))
+
         Row {
-            Text(text = stringResource(id = R.string.account_exist), fontWeight = FontWeight.Normal)
-            ClickableText(text = AnnotatedString(stringResource(id = R.string.signup)), style = TextStyle(color = BlueLink)) {
-                navController.navigate(Screen.Register.route)
+            Text(text = stringResource(id = R.string.no_account), fontWeight = FontWeight.Normal, fontSize = 16.sp, fontFamily = Poppins)
+            Spacer(modifier = Modifier.padding(2.dp))
+            ClickableText(
+                text = AnnotatedString(stringResource(id = R.string.signup)),
+                style = TextStyle(color = BlueLink, fontSize = 16.sp, fontFamily = Poppins)
+            ) {
+                navController.navigate(Screen.Role.route) {
+                    popUpTo(Screen.Landing.route)
+                }
             }
         }
     }
 }
 
+
 @Preview
 @Composable
 private fun LoginScreenPreview() {
-    RegisterScreen(rememberNavController())
+    LoginScreen(rememberNavController())
 }
