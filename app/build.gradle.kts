@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.vlab2024.virtuallab"
+    namespace = "org.d3ifcool.virtualab"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.vlab2024.virtuallab"
+        applicationId = "org.d3ifcool.virtualab"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
