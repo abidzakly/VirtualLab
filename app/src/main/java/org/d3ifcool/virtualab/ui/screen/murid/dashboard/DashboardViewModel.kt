@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.ui.screen.dashboard
+package org.d3ifcool.virtualab.ui.screen.murid.dashboard
 
 import androidx.lifecycle.ViewModel
 import org.d3ifcool.virtualab.R

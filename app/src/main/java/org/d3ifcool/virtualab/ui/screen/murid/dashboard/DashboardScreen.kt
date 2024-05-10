@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.ui.screen.dashboard
+package org.d3ifcool.virtualab.ui.screen.murid.dashboard
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -36,6 +36,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,6 +59,7 @@ import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.model.Categories
 import org.d3ifcool.virtualab.navigation.Screen
+import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.ui.theme.GrayIco
 import org.d3ifcool.virtualab.ui.theme.LightBlue
@@ -62,7 +67,9 @@ import org.d3ifcool.virtualab.ui.theme.Poppins
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DashboardScreen(navController: NavHostController) {
+fun DashboardScreen(navController: NavHostController, route: String? = "") {
+    val currentRoute by remember { mutableStateOf(route!!) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -88,103 +95,7 @@ fun DashboardScreen(navController: NavHostController) {
             )
         },
         bottomBar = {
-            BottomAppBar(
-                modifier = Modifier
-                    .shadow(elevation = 5.dp, shape = RectangleShape)
-                    .height(83.dp),
-                containerColor = Color.White
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Button(
-                        onClick = { /*TODO*/ },
-                        modifier = Modifier
-                            .width(116.dp)
-                            .fillMaxHeight(),
-                        shape = RectangleShape,
-                        colors = buttonColors(
-                            containerColor = Color.Transparent,
-                            contentColor = GrayIco
-                        )
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.baseline_home_filled_28),
-                                contentDescription = "Beranda",
-                                tint = DarkBlueDarker
-                            )
-                            Text(
-                                text = stringResource(R.string.bottom_app_beranda),
-                                modifier = Modifier.fillMaxWidth(),
-                                textAlign = TextAlign.Center,
-                                fontSize = 16.sp,
-                                color = DarkBlueDarker
-                            )
-                        }
-                    }
-                    Button(
-                        onClick = { /*TODO*/ },
-                        modifier = Modifier
-                            .width(108.dp)
-                            .fillMaxHeight(),
-                        shape = RectangleShape,
-                        colors = buttonColors(
-                            containerColor = Color.Transparent,
-                            contentColor = GrayIco
-                        )
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.list_nilai_filled_25),
-                                contentDescription = "Nilai",
-                                tint = GrayIco
-                            )
-                            Text(
-                                text = stringResource(R.string.bottom_app_nilai),
-                                modifier = Modifier.fillMaxWidth(),
-                                textAlign = TextAlign.Center,
-                                fontSize = 16.sp
-                            )
-                        }
-                    }
-                    Button(
-                        onClick = { /*TODO*/ },
-                        modifier = Modifier
-                            .width(108.dp)
-                            .fillMaxHeight(),
-                        shape = RectangleShape,
-                        colors = buttonColors(
-                            containerColor = Color.Transparent,
-                            contentColor = GrayIco
-                        )
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.baseline_account_circle),
-                                contentDescription = "Profile",
-                                tint = GrayIco
-                            )
-                            Text(
-                                text = stringResource(R.string.bottom_app_profile),
-                                modifier = Modifier.fillMaxWidth(),
-                                textAlign = TextAlign.Center,
-                                fontSize = 16.sp
-                            )
-                        }
-                    }
-                }
-            }
+            BottomNav(currentRoute, navController)
         },
         containerColor = Color.White
     ) {

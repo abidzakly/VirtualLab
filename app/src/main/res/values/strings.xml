@@ -34,4 +34,5 @@
     <string name="bottom_app_beranda">Beranda</string>
     <string name="bottom_app_nilai">Nilai</string>
     <string name="bottom_app_profile">Profil</string>
+    <string name="profile_header">Kelola Profil</string>
 </resources>
