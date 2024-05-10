@@ -2,7 +2,7 @@ package org.d3ifcool.virtualab.ui.theme
 
 
 import androidx.compose.ui.text.googlefonts.GoogleFont
-import com.vlab2024.virtuallab.R
+import org.d3ifcool.virtualab.R
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.googlefonts.Font
 

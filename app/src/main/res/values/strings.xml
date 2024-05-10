@@ -25,4 +25,13 @@
     <string name="role_student_desc">Telusuri materi kimia dengan materi belajar yang interaktif</string>
     <string name="role_instruction">Silakan pilih peran Anda untuk memulai:</string>
     <string name="dashboard_headline">Video perkenalan reaksi kimia</string>
+    <string name="kategori_title">Kategori</string>
+    <string name="dashboard_h2">Melihat Keterkaitan Antara Reaksi Kimia</string>
+    <string name="cateogry_pengenalan">Pengenalan</string>
+    <string name="cateogry_materi_belajar">Materi Belajar</string>
+    <string name="cateogry_latihan">Latihan</string>
+    <string name="cateogry_contoh_reaksi">Contoh Reaksi</string>
+    <string name="bottom_app_beranda">Beranda</string>
+    <string name="bottom_app_nilai">Nilai</string>
+    <string name="bottom_app_profile">Profil</string>
 </resources>

@@ -8,9 +8,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import org.d3ifcool.virtualab.ui.screen.dashboard.DashboardScreen
+import org.d3ifcool.virtualab.ui.screen.introduction.IntroductionScreen
 import org.d3ifcool.virtualab.ui.screen.landing.LandingScreen
+import org.d3ifcool.virtualab.ui.screen.latihan.LatihanScreen
 import org.d3ifcool.virtualab.ui.screen.register.RegisterScreen
 import org.d3ifcool.virtualab.ui.screen.login.LoginScreen
+import org.d3ifcool.virtualab.ui.screen.materi.MateriScreen
+import org.d3ifcool.virtualab.ui.screen.reaksi.ReaksiScreen
 import org.d3ifcool.virtualab.ui.screen.role.RoleScreen
 
 @Composable
@@ -36,6 +40,18 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
         }
         composable(route = Screen.Role.route) {
             RoleScreen(navController)
+        }
+        composable(route = Screen.Introduction.route) {
+            IntroductionScreen(navController)
+        }
+        composable(route = Screen.Materi.route) {
+            MateriScreen(navController)
+        }
+        composable(route = Screen.Latihan.route) {
+            LatihanScreen(navController)
+        }
+        composable(route = Screen.Reaksi.route) {
+            ReaksiScreen(navController)
         }
     }
 }
