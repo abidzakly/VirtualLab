@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.vlab2024.virtuallab"
+    namespace = "org.d3ifcool.virtualab"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.vlab2024.virtuallab"
+        applicationId = "org.d3ifcool.virtualab"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -62,6 +62,9 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.generativeai)
     implementation(libs.androidx.navigation.compose)
+    implementation (libs.androidx.material.icons.extended)
+    implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.ui.text.google.fonts)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.VirtualLab.SplashScreen" parent="Theme.SplashScreen.Common">
+        <item name="windowSplashScreenBackground">#FFD3EBF6</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/vlab</item>
+        <item name="postSplashScreenTheme">@style/Theme.VirtuaLab</item>
+    </style>
+</resources>
