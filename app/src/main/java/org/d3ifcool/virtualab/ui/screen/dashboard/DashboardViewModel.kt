@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.ui.screen.murid.dashboard
+package org.d3ifcool.virtualab.ui.screen.dashboard
 
 import androidx.lifecycle.ViewModel
 import org.d3ifcool.virtualab.R
@@ -7,7 +7,7 @@ import org.d3ifcool.virtualab.navigation.Screen
 
 class DashboardViewModel : ViewModel() {
 
-    val data = getList()
+    val dashboardCategories = getList()
 
     private fun getList(): List<Categories> {
         val data = mutableListOf<Categories>()

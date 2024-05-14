@@ -10,8 +10,11 @@
     <string name="username">Username</string>
     <string name="nisn">NISN</string>
     <string name="nip">NIP</string>
-    <string name="school">Asal Sekolah</string>
-    <string name="signup">Daftar</string>
+    <string name="school_label">Asal Sekolah</string>
+    <string name="signup_button">Daftar</string>
+    <string name="logout_button">Keluar</string>
+    <string name="edit_button">Ubah</string>
+    <string name="save_button">Simpan</string>
     <string name="fullname">Nama Lengkap</string>
     <string name="password">Password</string>
     <string name="account_exist">Sudah pernah mendaftar?</string>
@@ -26,13 +29,15 @@
     <string name="role_instruction">Silakan pilih peran Anda untuk memulai:</string>
     <string name="dashboard_headline">Video perkenalan reaksi kimia</string>
     <string name="kategori_title">Kategori</string>
-    <string name="dashboard_h2">Melihat Keterkaitan Antara Reaksi Kimia</string>
+    <string name="dashboard_h2">Melihat Keterkaitan Antara Reaksi Kimia dengan Keseharian Kita</string>
     <string name="cateogry_pengenalan">Pengenalan</string>
     <string name="cateogry_materi_belajar">Materi Belajar</string>
     <string name="cateogry_latihan">Latihan</string>
     <string name="cateogry_contoh_reaksi">Contoh Reaksi</string>
     <string name="bottom_app_beranda">Beranda</string>
     <string name="bottom_app_nilai">Nilai</string>
+    <string name="bottom_app_riwayat">Riwayat</string>
+    <string name="bottom_app_tambah">Tambah</string>
     <string name="bottom_app_profile">Profil</string>
     <string name="profile_header">Kelola Profil</string>
 </resources>

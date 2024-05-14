@@ -7,15 +7,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import org.d3ifcool.virtualab.ui.screen.murid.dashboard.DashboardScreen
+import org.d3ifcool.virtualab.ui.screen.dashboard.DashboardScreen
 import org.d3ifcool.virtualab.ui.screen.murid.introduction.IntroductionScreen
 import org.d3ifcool.virtualab.ui.screen.landing.LandingScreen
 import org.d3ifcool.virtualab.ui.screen.murid.latihan.LatihanScreen
-import org.d3ifcool.virtualab.ui.screen.register.RegisterScreen
-import org.d3ifcool.virtualab.ui.screen.login.LoginScreen
+import org.d3ifcool.virtualab.ui.screen.auth.RegisterScreen
+import org.d3ifcool.virtualab.ui.screen.auth.LoginScreen
 import org.d3ifcool.virtualab.ui.screen.murid.materi.MateriScreen
 import org.d3ifcool.virtualab.ui.screen.murid.nilai.NilaiScreen
-import org.d3ifcool.virtualab.ui.screen.murid.profile.ProfileScreen
+import org.d3ifcool.virtualab.ui.screen.profile.ProfileScreen
 import org.d3ifcool.virtualab.ui.screen.murid.reaksi.ReaksiScreen
 import org.d3ifcool.virtualab.ui.screen.role.RoleScreen
 
@@ -38,8 +38,7 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
             LoginScreen(navController)
         }
         composable(route = Screen.Dashboard.route) {
-            val currentRoute = navController.currentBackStackEntry?.destination?.route
-            DashboardScreen(navController, currentRoute)
+            DashboardScreen(navController)
         }
         composable(route = Screen.Role.route) {
             RoleScreen(navController)
@@ -57,12 +56,10 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
             ReaksiScreen(navController)
         }
         composable(route = Screen.Profile.route) {
-            val currentRoute = navController.currentBackStackEntry?.destination?.route
-            ProfileScreen(navController, currentRoute)
+            ProfileScreen(navController)
         }
         composable(route = Screen.Nilai.route) {
-            val currentRoute = navController.currentBackStackEntry?.destination?.route
-            NilaiScreen(navController, currentRoute)
+            NilaiScreen(navController)
         }
     }
 }

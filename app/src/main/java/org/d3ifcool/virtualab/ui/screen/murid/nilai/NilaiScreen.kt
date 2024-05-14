@@ -11,13 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 
 @Composable
-fun NilaiScreen(navController: NavHostController, route: String? = "") {
-    val currentRoute by remember { mutableStateOf(route!!) }
+fun NilaiScreen(navController: NavHostController) {
     Scaffold(bottomBar = {
-        BottomNav(currentRoute = currentRoute, navController)
+        BottomNav(currentRoute = Screen.Nilai.route, navController)
     }) {
         ScreenContent(modifier = Modifier.padding(it))
     }

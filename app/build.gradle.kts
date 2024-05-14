@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    id("com.google.devtools.ksp")
+
 }
 
 android {
@@ -9,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "org.d3ifcool.virtualab"
-        minSdk = 24
+        minSdk = 23
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -65,6 +67,10 @@ dependencies {
     implementation (libs.androidx.material.icons.extended)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.ui.text.google.fonts)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.datastore.preferences.android)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -33,30 +33,44 @@ import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.ui.theme.GrayIco
 
 @Composable
-fun BottomNav(currentRoute: String, navController: NavHostController) {
-    BottomAppBar(
-        modifier = Modifier
-            .shadow(elevation = 5.dp, shape = RectangleShape)
-            .height(83.dp),
-        containerColor = Color.White
-    ) {
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            horizontalArrangement = Arrangement.SpaceBetween
+fun BottomNav(currentRoute: String, navController: NavHostController, id: Long? = 0L) {
+    if (id == 0L) {
+        BottomAppBar(
+            modifier = Modifier
+                .height(83.dp)
+                .shadow(elevation = 5.dp, shape = RectangleShape),
+            containerColor = Color.White
         ) {
-            BottomNavButton(icon = R.drawable.baseline_home_filled_28, title = R.string.bottom_app_beranda, isSelected = currentRoute == Screen.Dashboard.route) {
-                navController.navigate(Screen.Dashboard.route) {
-                    popUpTo(Screen.Login.route)
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                BottomNavButton(
+                    icon = R.drawable.baseline_home_filled_28,
+                    title = R.string.bottom_app_beranda,
+                    isSelected = currentRoute == Screen.Dashboard.route
+                ) {
+                    navController.navigate(Screen.Dashboard.route) {
+                        popUpTo(Screen.Login.route)
+                    }
                 }
-            }
-            BottomNavButton(icon = R.drawable.list_nilai_filled_25, title = R.string.bottom_app_nilai, isSelected = currentRoute == Screen.Nilai.route) {
-                navController.navigate(Screen.Nilai.route){
-                    popUpTo(Screen.Dashboard.route)
+                BottomNavButton(
+                    icon = R.drawable.list_nilai_filled_25,
+                    title = R.string.bottom_app_nilai,
+                    isSelected = currentRoute == Screen.Nilai.route
+                ) {
+                    navController.navigate(Screen.Nilai.route) {
+                        popUpTo(Screen.Dashboard.route)
+                    }
                 }
-            }
-            BottomNavButton(icon = R.drawable.baseline_account_circle, title = R.string.bottom_app_profile, isSelected = currentRoute == Screen.Profile.route) {
-                navController.navigate(Screen.Profile.route){
-                    popUpTo(Screen.Dashboard.route)
+                BottomNavButton(
+                    icon = R.drawable.baseline_account_circle,
+                    title = R.string.bottom_app_profile,
+                    isSelected = currentRoute == Screen.Profile.route
+                ) {
+                    navController.navigate(Screen.Profile.route) {
+                        popUpTo(Screen.Dashboard.route)
+                    }
                 }
             }
         }
@@ -102,5 +116,5 @@ fun BottomNavButton(icon: Int, title: Int, isSelected: Boolean, onClick: () -> U
 @Preview
 @Composable
 private fun BottomNavPrev() {
-    BottomNav(currentRoute = Screen.Dashboard.route, navController = rememberNavController())
+    BottomNav(currentRoute = Screen.Dashboard.route, navController = rememberNavController(), 0L)
 }

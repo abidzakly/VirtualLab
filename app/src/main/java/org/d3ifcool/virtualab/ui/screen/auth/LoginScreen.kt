@@ -1,5 +1,6 @@
-package org.d3ifcool.virtualab.ui.screen.login
+package org.d3ifcool.virtualab.ui.screen.auth
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -91,12 +92,12 @@ fun LoginScreen(navController: NavHostController) {
         },
         containerColor = Color.White
     ) {
-        ScreenContent(modifier = Modifier.padding(it), navController)
+        LoginScreenContent(modifier = Modifier.padding(it), navController)
     }
 }
 
 @Composable
-private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
+private fun LoginScreenContent(modifier: Modifier, navController: NavHostController) {
     var password by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
 
@@ -130,7 +131,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
             colors = colors(
                 unfocusedContainerColor = Color.Transparent,
                 focusedContainerColor = Color.Transparent,
-                focusedLabelColor = GrayText,
+                focusedLabelColor = Color.Black,
                 unfocusedLabelColor = GrayText
             )
         )
@@ -142,8 +143,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
-                capitalization = KeyboardCapitalization.Words,
-                imeAction = ImeAction.Next,
+                imeAction = ImeAction.Done,
             ),
             visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
@@ -160,7 +160,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
             colors = colors(
                 unfocusedContainerColor = Color.Transparent,
                 focusedContainerColor = Color.Transparent,
-                focusedLabelColor = GrayText,
+                focusedLabelColor = Color.Black,
                 unfocusedLabelColor = GrayText
             )
         )
@@ -189,7 +189,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
             Text(text = stringResource(id = R.string.no_account), fontWeight = FontWeight.Normal, fontSize = 16.sp, fontFamily = Poppins)
             Spacer(modifier = Modifier.padding(2.dp))
             ClickableText(
-                text = AnnotatedString(stringResource(id = R.string.signup)),
+                text = AnnotatedString(stringResource(id = R.string.signup_button)),
                 style = TextStyle(color = BlueLink, fontSize = 16.sp, fontFamily = Poppins)
             ) {
                 navController.navigate(Screen.Role.route) {
@@ -201,7 +201,8 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
 }
 
 
-@Preview
+@Preview(showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun LoginScreenPreview() {
     LoginScreen(rememberNavController())

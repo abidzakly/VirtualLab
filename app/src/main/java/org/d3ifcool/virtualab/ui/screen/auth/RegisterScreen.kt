@@ -1,5 +1,6 @@
-package org.d3ifcool.virtualab.ui.screen.register
+package org.d3ifcool.virtualab.ui.screen.auth
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -90,12 +91,12 @@ fun RegisterScreen(navController: NavHostController, id: Long? = null) {
         },
         containerColor = Color.White
     ) {
-        ScreenContent(modifier = Modifier.padding(it), navController = navController, id)
+        RegisterScreenContent(modifier = Modifier.padding(it), navController = navController, id)
     }
 }
 
 @Composable
-private fun ScreenContent(modifier: Modifier, navController: NavHostController, id: Long? = null) {
+private fun RegisterScreenContent(modifier: Modifier, navController: NavHostController, id: Long? = null) {
     var fullname by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var uniqueId by remember { mutableStateOf("") }
@@ -154,6 +155,8 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
                 unfocusedLabelColor = GrayText
             )
         )
+        Spacer(modifier = Modifier.padding(8.dp))
+
         if (identifier == 0L) {
             TextField(
                 value = uniqueId,
@@ -191,10 +194,11 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
                 )
             )
         }
+        Spacer(modifier = Modifier.padding(8.dp))
         TextField(
             value = school,
             onValueChange = { school = it },
-            label = { Text(text = stringResource(R.string.school)) },
+            label = { Text(text = stringResource(R.string.school_label)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Words,
@@ -216,8 +220,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
-                capitalization = KeyboardCapitalization.Words,
-                imeAction = ImeAction.Next,
+                imeAction = ImeAction.Done,
             ),
             visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
@@ -251,7 +254,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
             )
         ) {
             Text(
-                text = stringResource(id = R.string.signup),
+                text = stringResource(id = R.string.signup_button),
                 fontWeight = FontWeight.SemiBold,
                 fontFamily = Poppins,
                 fontSize = 16.sp
@@ -273,8 +276,9 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
     }
 }
 
-@Preview
+@Preview(showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
-private fun LoginScreenPreview() {
+private fun RegisterScreenPreview() {
     RegisterScreen(rememberNavController(), 0)
 }
