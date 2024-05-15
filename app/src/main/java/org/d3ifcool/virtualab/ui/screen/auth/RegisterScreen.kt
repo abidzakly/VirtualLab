@@ -123,7 +123,7 @@ private fun RegisterScreenContent(modifier: Modifier, navController: NavHostCont
         TextField(
             value = fullname,
             onValueChange = { fullname = it },
-            label = { Text(text = stringResource(R.string.fullname)) },
+            label = { Text(text = stringResource(R.string.fullname_label)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Words,
@@ -141,7 +141,7 @@ private fun RegisterScreenContent(modifier: Modifier, navController: NavHostCont
         TextField(
             value = username,
             onValueChange = { username = it },
-            label = { Text(text = stringResource(R.string.username)) },
+            label = { Text(text = stringResource(R.string.username_label)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Words,
@@ -161,7 +161,7 @@ private fun RegisterScreenContent(modifier: Modifier, navController: NavHostCont
             TextField(
                 value = uniqueId,
                 onValueChange = { uniqueId = it },
-                label = { Text(text = stringResource(R.string.nip)) },
+                label = { Text(text = stringResource(R.string.nip_label)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number,
@@ -179,7 +179,7 @@ private fun RegisterScreenContent(modifier: Modifier, navController: NavHostCont
             TextField(
                 value = uniqueId,
                 onValueChange = { uniqueId = it },
-                label = { Text(text = stringResource(R.string.nisn)) },
+                label = { Text(text = stringResource(R.string.nisn_label)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number,
@@ -216,7 +216,7 @@ private fun RegisterScreenContent(modifier: Modifier, navController: NavHostCont
         TextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text(text = stringResource(R.string.password)) },
+            label = { Text(text = stringResource(R.string.password_label)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
@@ -243,7 +243,7 @@ private fun RegisterScreenContent(modifier: Modifier, navController: NavHostCont
         )
         Spacer(modifier = Modifier.padding(16.dp))
         Button(
-            onClick = { navController.navigate(Screen.Register.route) },
+            onClick = { navController.navigate(Screen.Login.route) },
             modifier = Modifier
                 .height(47.dp)
                 .width(150.dp),
@@ -262,7 +262,7 @@ private fun RegisterScreenContent(modifier: Modifier, navController: NavHostCont
         }
         Spacer(modifier = Modifier.padding(8.dp))
         Row {
-            Text(text = stringResource(id = R.string.account_exist), fontWeight = FontWeight.Normal, fontSize = 16.sp, fontFamily = Poppins)
+            Text(text = stringResource(id = R.string.account_exist), fontWeight = FontWeight.Normal, fontSize = 16.sp, fontFamily = Poppins, color = Color.Black)
             Spacer(modifier = Modifier.padding(2.dp))
             ClickableText(
                 text = AnnotatedString(stringResource(id = R.string.signin)),

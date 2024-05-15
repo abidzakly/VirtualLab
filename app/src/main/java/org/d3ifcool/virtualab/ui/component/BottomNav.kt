@@ -1,5 +1,6 @@
 package org.d3ifcool.virtualab.ui.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,13 +38,15 @@ fun BottomNav(currentRoute: String, navController: NavHostController, id: Long? 
     if (id == 0L) {
         BottomAppBar(
             modifier = Modifier
-                .height(83.dp)
-                .shadow(elevation = 5.dp, shape = RectangleShape),
+                .fillMaxWidth()
+                .shadow(elevation = 15.dp, shape = RectangleShape)
+                .background(Color.White)
+                .height(83.dp),
             containerColor = Color.White
         ) {
             Row(
                 modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 BottomNavButton(
                     icon = R.drawable.baseline_home_filled_28,
@@ -55,7 +58,7 @@ fun BottomNav(currentRoute: String, navController: NavHostController, id: Long? 
                     }
                 }
                 BottomNavButton(
-                    icon = R.drawable.list_nilai_filled_25,
+                    icon = R.drawable.baseline_nilai_28,
                     title = R.string.bottom_app_nilai,
                     isSelected = currentRoute == Screen.Nilai.route
                 ) {

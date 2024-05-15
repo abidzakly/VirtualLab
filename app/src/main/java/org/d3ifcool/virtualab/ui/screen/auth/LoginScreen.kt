@@ -82,7 +82,11 @@ fun LoginScreen(navController: NavHostController) {
                     }
                 },
                 title = {
-                    Text(text = stringResource(id = R.string.signin), fontSize = 22.sp, fontFamily = Poppins)
+                    Text(
+                        text = stringResource(id = R.string.signin),
+                        fontSize = 22.sp,
+                        fontFamily = Poppins
+                    )
                 },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
                     containerColor = Color.Transparent,
@@ -106,8 +110,8 @@ private fun LoginScreenContent(modifier: Modifier, navController: NavHostControl
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 48.dp).
-        verticalScroll(rememberScrollState()),
+            .padding(horizontal = 48.dp)
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -121,7 +125,7 @@ private fun LoginScreenContent(modifier: Modifier, navController: NavHostControl
         TextField(
             value = username,
             onValueChange = { username = it },
-            label = { Text(text = stringResource(R.string.username)) },
+            label = { Text(text = stringResource(R.string.username_label)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Words,
@@ -139,7 +143,7 @@ private fun LoginScreenContent(modifier: Modifier, navController: NavHostControl
         TextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text(text = stringResource(R.string.password)) },
+            label = { Text(text = stringResource(R.string.password_label)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
@@ -186,7 +190,13 @@ private fun LoginScreenContent(modifier: Modifier, navController: NavHostControl
         Spacer(modifier = Modifier.padding(8.dp))
 
         Row {
-            Text(text = stringResource(id = R.string.no_account), fontWeight = FontWeight.Normal, fontSize = 16.sp, fontFamily = Poppins)
+            Text(
+                text = stringResource(id = R.string.no_account),
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp,
+                fontFamily = Poppins,
+                color = Color.Black
+            )
             Spacer(modifier = Modifier.padding(2.dp))
             ClickableText(
                 text = AnnotatedString(stringResource(id = R.string.signup_button)),
