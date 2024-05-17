@@ -1,5 +1,6 @@
-package org.d3ifcool.virtualab.ui.screen.register
+package org.d3ifcool.virtualab.ui.screen.auth
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,19 +22,18 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults.buttonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TextFieldDefaults.colors
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -64,7 +64,8 @@ import org.d3ifcool.virtualab.ui.theme.Poppins
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterScreen(navController: NavHostController, id: Long? = null) {
+fun LoginScreen(navController: NavHostController) {
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -75,12 +76,17 @@ fun RegisterScreen(navController: NavHostController, id: Long? = null) {
                             contentDescription = stringResource(
                                 id = R.string.back_button
                             ),
-                            tint = Color.Black
+                            tint = Color.Black,
+                            modifier = Modifier.size(24.dp)
                         )
                     }
                 },
                 title = {
-                    Text(text = stringResource(id = R.string.register_title))
+                    Text(
+                        text = stringResource(id = R.string.signin),
+                        fontSize = 22.sp,
+                        fontFamily = Poppins
+                    )
                 },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
                     containerColor = Color.Transparent,
@@ -90,25 +96,22 @@ fun RegisterScreen(navController: NavHostController, id: Long? = null) {
         },
         containerColor = Color.White
     ) {
-        ScreenContent(modifier = Modifier.padding(it), navController = navController, id)
+        LoginScreenContent(modifier = Modifier.padding(it), navController)
     }
 }
 
 @Composable
-private fun ScreenContent(modifier: Modifier, navController: NavHostController, id: Long? = null) {
-    var fullname by remember { mutableStateOf("") }
-    var username by remember { mutableStateOf("") }
-    var uniqueId by remember { mutableStateOf("") }
-    var school by remember { mutableStateOf("") }
+private fun LoginScreenContent(modifier: Modifier, navController: NavHostController) {
     var password by remember { mutableStateOf("") }
-    val identifier by remember { mutableLongStateOf(id!!) }
+    var username by remember { mutableStateOf("") }
 
     var passwordVisibility by remember { mutableStateOf(false) }
+
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 48.dp).
-        verticalScroll(rememberScrollState()),
+            .padding(horizontal = 48.dp)
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -116,95 +119,23 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
             painter = painterResource(id = R.drawable.vlab_logo),
             contentDescription = "Logo Virtual Lab",
             modifier = Modifier
-                .padding(bottom = 40.dp)
+                .padding(bottom = 80.dp)
                 .size(181.dp)
         )
         TextField(
-            value = fullname,
-            onValueChange = { fullname = it },
-            label = { Text(text = stringResource(R.string.fullname)) },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Words,
-                imeAction = ImeAction.Next
-            ),
-            modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = Color.Transparent,
-                focusedContainerColor = Color.Transparent,
-                focusedLabelColor = GrayText,
-                unfocusedLabelColor = GrayText
-            )
-        )
-        Spacer(modifier = Modifier.padding(8.dp))
-        TextField(
             value = username,
             onValueChange = { username = it },
-            label = { Text(text = stringResource(R.string.username)) },
+            label = { Text(text = stringResource(R.string.username_label)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Words,
                 imeAction = ImeAction.Next
             ),
             modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.colors(
+            colors = colors(
                 unfocusedContainerColor = Color.Transparent,
                 focusedContainerColor = Color.Transparent,
-                focusedLabelColor = GrayText,
-                unfocusedLabelColor = GrayText
-            )
-        )
-        if (identifier == 0L) {
-            TextField(
-                value = uniqueId,
-                onValueChange = { uniqueId = it },
-                label = { Text(text = stringResource(R.string.nip)) },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Next
-                ),
-                modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedContainerColor = Color.Transparent,
-                    focusedLabelColor = GrayText,
-                    unfocusedLabelColor = GrayText
-                )
-            )
-        } else {
-            TextField(
-                value = uniqueId,
-                onValueChange = { uniqueId = it },
-                label = { Text(text = stringResource(R.string.nisn)) },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Next
-                ),
-                modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedContainerColor = Color.Transparent,
-                    focusedLabelColor = GrayText,
-                    unfocusedLabelColor = GrayText
-                )
-            )
-        }
-        TextField(
-            value = school,
-            onValueChange = { school = it },
-            label = { Text(text = stringResource(R.string.school)) },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Words,
-                imeAction = ImeAction.Next
-            ),
-            modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = Color.Transparent,
-                focusedContainerColor = Color.Transparent,
-                focusedLabelColor = GrayText,
+                focusedLabelColor = Color.Black,
                 unfocusedLabelColor = GrayText
             )
         )
@@ -212,60 +143,66 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
         TextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text(text = stringResource(R.string.password)) },
+            label = { Text(text = stringResource(R.string.password_label)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
-                capitalization = KeyboardCapitalization.Words,
-                imeAction = ImeAction.Next,
+                imeAction = ImeAction.Done,
             ),
             visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
                 IconButton(onClick = {
                     passwordVisibility = !passwordVisibility
-                }) {
-                    Icon(
+                }) { // Toggle visibility icon
+                    Icon( // Use your preferred icon component
                         imageVector = if (passwordVisibility) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
                         contentDescription = if (passwordVisibility) "Hide password" else "Show password"
                     )
                 }
             },
             modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.colors(
+            colors = colors(
                 unfocusedContainerColor = Color.Transparent,
                 focusedContainerColor = Color.Transparent,
-                focusedLabelColor = GrayText,
+                focusedLabelColor = Color.Black,
                 unfocusedLabelColor = GrayText
             )
         )
-        Spacer(modifier = Modifier.padding(16.dp))
+        Spacer(modifier = Modifier.padding(24.dp))
         Button(
-            onClick = { navController.navigate(Screen.Register.route) },
+            onClick = { navController.navigate(Screen.Dashboard.route) },
             modifier = Modifier
                 .height(47.dp)
                 .width(150.dp),
             shape = RoundedCornerShape(10.dp),
-            colors = buttonColors(
+            colors = ButtonDefaults.buttonColors(
                 containerColor = LightBlue,
                 contentColor = Color.Black
             )
         ) {
             Text(
-                text = stringResource(id = R.string.signup),
+                text = stringResource(id = R.string.signin),
                 fontWeight = FontWeight.SemiBold,
                 fontFamily = Poppins,
                 fontSize = 16.sp
             )
         }
         Spacer(modifier = Modifier.padding(8.dp))
+
         Row {
-            Text(text = stringResource(id = R.string.account_exist), fontWeight = FontWeight.Normal, fontSize = 16.sp, fontFamily = Poppins)
+            Text(
+                text = stringResource(id = R.string.no_account),
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp,
+                fontFamily = Poppins,
+                color = Color.Black
+            )
             Spacer(modifier = Modifier.padding(2.dp))
             ClickableText(
-                text = AnnotatedString(stringResource(id = R.string.signin)),
+                text = AnnotatedString(stringResource(id = R.string.signup_button)),
                 style = TextStyle(color = BlueLink, fontSize = 16.sp, fontFamily = Poppins)
             ) {
-                navController.navigate(Screen.Login.route) {
+                navController.navigate(Screen.Role.route) {
                     popUpTo(Screen.Landing.route)
                 }
             }
@@ -273,8 +210,10 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
     }
 }
 
-@Preview
+
+@Preview(showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun LoginScreenPreview() {
-    RegisterScreen(rememberNavController(), 0)
+    LoginScreen(rememberNavController())
 }

@@ -1,5 +1,6 @@
 package org.d3ifcool.virtualab.ui.screen.role
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -45,6 +46,7 @@ import org.d3ifcool.virtualab.ui.theme.DarkBlueText
 import org.d3ifcool.virtualab.ui.theme.GrayText
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.Poppins
+import org.d3ifcool.virtualab.ui.theme.VirtualLabTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,8 +81,9 @@ fun ScreenContent(modifier: Modifier, navController: NavHostController) {
     val murid by remember { mutableLongStateOf(1L) }
 
     Column(
-        modifier = modifier.fillMaxSize().
-        verticalScroll(rememberScrollState()),
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -175,8 +178,12 @@ fun ScreenContent(modifier: Modifier, navController: NavHostController) {
     }
 }
 
-@Preview
+
+@Preview(showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun RoleScreenPrev() {
+    VirtualLabTheme {
     RoleScreen(rememberNavController())
+    }
 }

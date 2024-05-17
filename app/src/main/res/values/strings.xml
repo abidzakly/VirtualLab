@@ -7,13 +7,21 @@
     <string name="signin">Masuk</string>
     <string name="create_acc">Buat Akun</string>
     <string name="register_title">Daftar Akun</string>
-    <string name="username">Username</string>
-    <string name="nisn">NISN</string>
-    <string name="nip">NIP</string>
-    <string name="school">Asal Sekolah</string>
-    <string name="signup">Daftar</string>
-    <string name="fullname">Nama Lengkap</string>
-    <string name="password">Password</string>
+    <string name="profile_title">Profil</string>
+    <string name="nilai_title">Nilai</string>
+    <string name="introduction_title">Pengenalan Reaksi Kimia</string>
+    <string name="username_label">Username</string>
+    <string name="nisn_label">NISN</string>
+    <string name="nip_label">NIP</string>
+    <string name="school_label">Asal Sekolah</string>
+    <string name="fullname_label">Nama Lengkap</string>
+    <string name="password_label">Password</string>
+    <string name="edit_password_label">Ubah Password</string>
+    <string name="signup_button">Daftar</string>
+    <string name="logout_button">Keluar</string>
+    <string name="edit_button">Ubah</string>
+    <string name="save_button">Simpan</string>
+    <string name="about_button">Tentang Aplikasi</string>
     <string name="account_exist">Sudah pernah mendaftar?</string>
     <string name="no_account">Belum punya akun?</string>
     <string name="back_button">Kembali</string>
@@ -26,13 +34,28 @@
     <string name="role_instruction">Silakan pilih peran Anda untuk memulai:</string>
     <string name="dashboard_headline">Video perkenalan reaksi kimia</string>
     <string name="kategori_title">Kategori</string>
-    <string name="dashboard_h2">Melihat Keterkaitan Antara Reaksi Kimia</string>
+    <string name="dashboard_h2">Melihat Keterkaitan Antara Reaksi Kimia dengan Keseharian Kita</string>
     <string name="cateogry_pengenalan">Pengenalan</string>
     <string name="cateogry_materi_belajar">Materi Belajar</string>
     <string name="cateogry_latihan">Latihan</string>
     <string name="cateogry_contoh_reaksi">Contoh Reaksi</string>
     <string name="bottom_app_beranda">Beranda</string>
     <string name="bottom_app_nilai">Nilai</string>
+    <string name="bottom_app_riwayat">Riwayat</string>
+    <string name="bottom_app_tambah">Tambah</string>
     <string name="bottom_app_profile">Profil</string>
     <string name="profile_header">Kelola Profil</string>
+    <string name="nilai">Nilai                       : 80/100</string>
+    <string name="tingkat_kesulitan">Tingkat kesulitan: Mudah</string>
+    <string name="latihan_title">Latihan 1</string>
+    <string name="about_app">Virtual Lab adalah sebuah platform pembelajaran yang menyediakan materi dan visualisasi interaktif tentang pengenalan reaksi kimia, contoh reaksi kimia, materi reaksi, dan latihan penyetaraan reaksi kimia. Platform ini merupakan platform kolaborasi antara mahasiswa Universitas Telkom dan Guru MGMP Kimia Kota Bandung.\n</string>
+    <string name="universitas_telkom_title">Universitas\nTelkom</string>
+    <string name="mgmp_title">MGMP Kimia\nKota Bandung</string>
+    <string name="introduction_header">Melihat Keterkaitan Antara Reaksi Kimia dengan Keseharian kita</string>
+    <string name="introduction_desc">Reaksi kimia adalah proses transformasi menakjubkan di mana zat-zat awal (reaktan) mengalami perubahan susunan partikelnya, menghasilkan zat baru yang berbeda sifat dan karakteristiknya (produk). Proses ini menjadi fondasi berbagai fenomena alam dan teknologi yang kita saksikan setiap hari seperti pembakaran, perkaratan, dan fotosintesis pada tumbuhan.\n</string>
+    <string name="introduction_desc2">Perubahan kimia berbeda dengan perubahan fisik. Pada perubahan fisik, bentuk, wujud, atau sifat fisik zat dapat berubah tanpa mengubah identitas kimianya. Contohnya, es mencair menjadi air atau besi dibentuk menjadi berbagai bentuk. Di sisi lain, reaksi kimia melibatkan perubahan susunan partikel penyusun zat, menghasilkan zat baru dengan sifat kimia yang berbeda.
+
+Molekul dalam Reaksi
+Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-molekul reaktan berinteraksi dan bertukar atom, membentuk ikatan kimia baru dan menghasilkan molekul produk yang berbeda.</string>
+    <string name="introduction_desc2_title">Memahami Perubahan Kimia</string>
 </resources>
