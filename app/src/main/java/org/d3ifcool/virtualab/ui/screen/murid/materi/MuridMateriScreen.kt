@@ -74,6 +74,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
             )
         ) {
             CardList {
+                navController.navigate(Screen.MuridDetailMateri.route)
             }
             CardList {
             }

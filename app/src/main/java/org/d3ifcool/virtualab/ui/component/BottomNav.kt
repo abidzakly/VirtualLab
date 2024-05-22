@@ -45,7 +45,7 @@ import org.d3ifcool.virtualab.ui.theme.GrayIco
 fun BottomNav(
     currentRoute: String,
     navController: NavHostController,
-    id: Long? = 1L,
+    id: Long? = 0L,
     isClicked: Boolean = false,
     onClick: () -> Unit = {}
 ) {

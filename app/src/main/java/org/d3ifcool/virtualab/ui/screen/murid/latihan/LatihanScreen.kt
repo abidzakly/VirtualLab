@@ -57,18 +57,18 @@ private fun ScreenContent(modifier: Modifier) {
             textAlign = TextAlign.Justify
         )
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            CardList()
-            CardList()
-            CardList()
-            CardList()
-            CardList()
-            CardList()
+            CardList("Latihan 1", "Mudah")
+            CardList("Latihan 2", "Sedang")
+            CardList("Latihan 3", "Sulit")
+            CardList("Latihan 4", "Mudah")
+            CardList("Latihan 5", "Sedang")
+            CardList("Latihan 6", "Sulit")
         }
     }
 }
 
 @Composable
-private fun CardList() {
+private fun CardList(title: String, difficulty: String) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -79,10 +79,10 @@ private fun CardList() {
         horizontalArrangement = Arrangement.SpaceBetween
 
     ) {
-        Text(text = "Latihan 1", fontSize = 16.sp)
+        Text(text = title, fontSize = 16.sp)
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(text = "Tingkat Kesulitan", fontSize = 14.sp)
-            Text(text = "Mudah", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+            Text(text = difficulty, fontWeight = FontWeight.Bold, fontSize = 14.sp)
         }
     }
     Spacer(modifier = Modifier.height(8.dp))
