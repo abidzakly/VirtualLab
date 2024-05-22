@@ -79,8 +79,12 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
     <string name="dashboard_guru_sub_header">"Baru ditambahkan: "</string>
     <string name="fab_slide_up_title">Apa yang ingin kamu tambahkan?</string>
     <string name="lihat_slide_up_title">Apa yang ingin kamu lihat?</string>
-    <string name="lihat_latihan_title">Lihat Soal</string>
+    <string name="lihat_latihan_title">Lihat Latihan</string>
     <string name="lihat_materi_title">Lihat Materi</string>
-    <string name="buat_latihan_button">Buat Soal</string>
+    <string name="buat_latihan_button">Buat Latihan</string>
     <string name="buat_materi_button">Buat Materi</string>
+    <string name="materi_title_data">Persamaan Reaksi Kimia</string>
+    <string name="latihan_title_data">Penyetaraan Reaksi Kimia</string>
+    <string name="list_latihan_kosong">Belum ada data latihan</string>
+
 </resources>
