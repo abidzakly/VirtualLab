@@ -78,6 +78,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
     var username by remember { mutableStateOf("") }
     var uniqueId by remember { mutableStateOf("") }
     var school by remember { mutableStateOf("") }
+    var oldPassword by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var readOnly by remember { mutableStateOf(true) }
 
@@ -131,17 +132,15 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
                 readOnly = readOnly
             )
             if (!readOnly) {
+                Text(
+                    text = stringResource(R.string.password_label),
+                    fontSize = 15.sp,
+                    fontFamily = Poppins,
+                    color = GrayText
+                )
                 TextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = {
-                        Text(
-                            text = stringResource(R.string.edit_password_label),
-                            fontSize = 15.sp,
-                            fontFamily = Poppins,
-                            color = GrayText
-                        )
-                    },
+                    value = oldPassword,
+                    onValueChange = { oldPassword = it },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Password,
@@ -161,21 +160,47 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = if (readOnly) {
-                        TextFieldDefaults.colors(
-                            unfocusedIndicatorColor = Color.Transparent,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedContainerColor = GrayTextField,
-                            focusedContainerColor = GrayTextField
-                        )
-                    } else {
-                        TextFieldDefaults.colors(
-                            unfocusedContainerColor = Color.Transparent,
-                            focusedContainerColor = Color.Transparent,
-                            focusedLabelColor = GrayText,
-                            unfocusedLabelColor = GrayText
-                        )
-                    }
+                    colors =
+                    TextFieldDefaults.colors(
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedContainerColor = Color.Transparent,
+                    )
+
+                )
+                Text(
+                    text = stringResource(R.string.edit_password_label),
+                    fontSize = 15.sp,
+                    fontFamily = Poppins,
+                    color = GrayText
+                )
+                TextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password,
+                        capitalization = KeyboardCapitalization.Words,
+                        imeAction = ImeAction.Next,
+                    ),
+                    visualTransformation =
+                    if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+                    trailingIcon = {
+                        IconButton(onClick = {
+                            passwordVisibility = !passwordVisibility
+                        }) {
+                            Icon(
+                                imageVector = if (passwordVisibility) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                                contentDescription = if (passwordVisibility) "Hide password" else "Show password"
+                            )
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors =
+                    TextFieldDefaults.colors(
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedContainerColor = Color.Transparent,
+                    )
+
                 )
             }
             Spacer(modifier = Modifier.padding(16.dp))
@@ -234,7 +259,6 @@ fun UserTextFields(
     readOnly: Boolean,
 ) {
     Column {
-
         Text(
             text = stringResource(text),
             fontSize = 15.sp,
@@ -244,16 +268,6 @@ fun UserTextFields(
         TextField(
             readOnly = readOnly,
             value = value,
-            placeholder = {
-                if (!readOnly) {
-                    Text(
-                        text = stringResource(text),
-                        fontSize = 15.sp,
-                        fontFamily = Poppins,
-                        color = GrayText
-                    )
-                }
-            },
             onValueChange = { onValueChange(it) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
@@ -271,9 +285,7 @@ fun UserTextFields(
             } else {
                 TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.Transparent,
-                    focusedContainerColor = Color.Transparent,
-                    focusedLabelColor = GrayText,
-                    unfocusedLabelColor = GrayText
+                    focusedContainerColor = Color.Transparent
                 )
             }
         )

@@ -1,5 +1,6 @@
 package org.d3ifcool.virtualab.ui.screen.murid.introduction
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -8,8 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Scaffold
@@ -23,7 +25,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,9 +43,9 @@ fun IntroductionScreen(navController: NavHostController) {
         TopNav(title = R.string.introduction_title, navController = navController)
     },
         bottomBar = {
-            BottomNav(currentRoute = Screen.Dashboard.route, navController = navController)
+            BottomNav(currentRoute = Screen.MuridDashboard.route, navController = navController)
         }) {
-        ScreenContent(modifier = Modifier.padding(it), navController = navController)
+        ScreenContent(modifier = Modifier.padding(bottom = it.calculateBottomPadding()), navController = navController)
     }
 }
 
@@ -81,7 +82,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                 .background(
                     Color.White,
                     shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp)
-                ),
+                ).verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
@@ -110,14 +111,17 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                     text = stringResource(R.string.introduction_desc2),
                     textAlign = TextAlign.Justify,
                     fontSize = 14.sp,
-                    color = Color.Black
+                    color = Color.Black,
+                    modifier = modifier.padding(bottom = 24.dp)
                 )
             }
         }
     }
 }
 
-@Preview
+
+@Preview(showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun IntroScreenPrev() {
     IntroductionScreen(navController = rememberNavController())

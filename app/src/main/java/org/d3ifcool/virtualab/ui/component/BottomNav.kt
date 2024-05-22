@@ -1,6 +1,5 @@
 package org.d3ifcool.virtualab.ui.component
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,9 +11,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -22,28 +26,38 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
+import org.d3ifcool.virtualab.ui.theme.DarkBlueText
 import org.d3ifcool.virtualab.ui.theme.GrayIco
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BottomNav(currentRoute: String, navController: NavHostController, id: Long? = 0L) {
-    if (id == 0L) {
-        BottomAppBar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .shadow(elevation = 15.dp, shape = RectangleShape)
-                .background(Color.White)
-                .height(83.dp),
-            containerColor = Color.White
-        ) {
+fun BottomNav(
+    currentRoute: String,
+    navController: NavHostController,
+    id: Long? = 1L,
+    isClicked: Boolean = false,
+    onClick: () -> Unit = {}
+) {
+    BottomAppBar(
+        modifier = Modifier
+            .shadow(elevation = 20.dp, shape = RectangleShape)
+            .fillMaxWidth()
+            .height(68.dp)
+            .zIndex(99f),
+        containerColor = Color.White
+    ) {
+        if (id == 0L) {
             Row(
                 modifier = Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.SpaceEvenly
@@ -51,9 +65,9 @@ fun BottomNav(currentRoute: String, navController: NavHostController, id: Long? 
                 BottomNavButton(
                     icon = R.drawable.baseline_home_filled_28,
                     title = R.string.bottom_app_beranda,
-                    isSelected = currentRoute == Screen.Dashboard.route
+                    isSelected = currentRoute == Screen.MuridDashboard.route
                 ) {
-                    navController.navigate(Screen.Dashboard.route) {
+                    navController.navigate(Screen.MuridDashboard.route) {
                         popUpTo(Screen.Login.route)
                     }
                 }
@@ -63,7 +77,7 @@ fun BottomNav(currentRoute: String, navController: NavHostController, id: Long? 
                     isSelected = currentRoute == Screen.Nilai.route
                 ) {
                     navController.navigate(Screen.Nilai.route) {
-                        popUpTo(Screen.Dashboard.route)
+                        popUpTo(Screen.MuridDashboard.route)
                     }
                 }
                 BottomNavButton(
@@ -72,7 +86,50 @@ fun BottomNav(currentRoute: String, navController: NavHostController, id: Long? 
                     isSelected = currentRoute == Screen.Profile.route
                 ) {
                     navController.navigate(Screen.Profile.route) {
-                        popUpTo(Screen.Dashboard.route)
+                        popUpTo(Screen.MuridDashboard.route)
+                    }
+                }
+            }
+        } else {
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                BottomNavButton(
+                    icon = R.drawable.baseline_home_filled_28,
+                    title = R.string.bottom_app_beranda,
+                    isSelected = if (!isClicked) currentRoute == Screen.GuruDashboard.route else false
+                ) {
+                    navController.navigate(Screen.GuruDashboard.route) {
+                        popUpTo(Screen.Login.route)
+                    }
+                }
+                if (currentRoute == Screen.GuruLatihan.route || currentRoute == Screen.GuruMateri.route) {
+                    BottomNavButton(
+                        icon = R.drawable.baseline_history_24,
+                        title = R.string.bottom_app_riwayat,
+                        isSelected = true
+                    ) {
+                        navController.navigate(currentRoute) {
+                            popUpTo(Screen.GuruDashboard.route)
+                        }
+                    }
+                } else {
+                    BottomNavButton(
+                        icon = R.drawable.baseline_history_24,
+                        title = R.string.bottom_app_riwayat,
+                        isSelected = isClicked
+                    ) {
+                        onClick()
+                    }
+                }
+                BottomNavButton(
+                    icon = R.drawable.baseline_account_circle,
+                    title = R.string.bottom_app_profile,
+                    isSelected = currentRoute == Screen.Profile.route
+                ) {
+                    navController.navigate(Screen.Profile.route) {
+                        popUpTo(Screen.GuruDashboard.route)
                     }
                 }
             }
@@ -81,7 +138,7 @@ fun BottomNav(currentRoute: String, navController: NavHostController, id: Long? 
 }
 
 @Composable
-fun BottomNavButton(icon: Int, title: Int, isSelected: Boolean, onClick: () -> Unit) {
+private fun BottomNavButton(icon: Int, title: Int, isSelected: Boolean, onClick: () -> Unit) {
     Button(
         onClick = { onClick() },
         modifier = Modifier
@@ -91,7 +148,6 @@ fun BottomNavButton(icon: Int, title: Int, isSelected: Boolean, onClick: () -> U
         shape = RectangleShape,
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
-            contentColor = GrayIco,
             disabledContainerColor = Color.Transparent,
             disabledContentColor = GrayIco
         ),
@@ -104,13 +160,16 @@ fun BottomNavButton(icon: Int, title: Int, isSelected: Boolean, onClick: () -> U
             Icon(
                 painter = painterResource(icon),
                 contentDescription = "Nilai",
-                tint = if (isSelected) DarkBlueDarker else GrayIco
+                tint = if (isSelected) DarkBlueDarker else GrayIco,
+                modifier = Modifier.width(30.dp)
             )
             Text(
                 text = stringResource(title),
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
-                fontSize = 14.sp
+                fontSize = 12.sp,
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                color = if (isSelected) DarkBlueText else GrayIco
             )
         }
     }
@@ -119,5 +178,9 @@ fun BottomNavButton(icon: Int, title: Int, isSelected: Boolean, onClick: () -> U
 @Preview
 @Composable
 private fun BottomNavPrev() {
-    BottomNav(currentRoute = Screen.Dashboard.route, navController = rememberNavController(), 0L)
+    BottomNav(
+        currentRoute = Screen.MuridDashboard.route,
+        navController = rememberNavController(),
+        1L
+    )
 }
