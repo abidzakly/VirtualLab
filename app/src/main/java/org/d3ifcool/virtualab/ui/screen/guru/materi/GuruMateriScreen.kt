@@ -26,10 +26,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
-import org.d3ifcool.virtualab.model.Materi
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.TopNav
@@ -48,28 +48,44 @@ fun GuruMateriScreen(navController: NavHostController) {
 
 @Composable
 private fun ScreenContent(modifier: Modifier) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(4.dp)
-    ) {
-        Text(
-            text = "Materi yang pernah ditambahkan :",
-            Modifier.padding(start = 16.dp),
-            fontSize = 16.sp
-        )
+    val viewModel: GuruMateriViewModel = viewModel()
+    val data = viewModel.data
+
+    if (data.isEmpty()) {
         Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .verticalScroll(
-                    rememberScrollState()
-                )
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ListMateri(Modifier.padding(8.dp))
-            ListMateri(Modifier.padding(8.dp))
+            Text(text = stringResource(id = R.string.list_latihan_kosong))
+        }
+    } else {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .padding(4.dp)
+        ) {
+            Text(
+                text = "Materi yang pernah ditambahkan :",
+                Modifier.padding(start = 16.dp),
+                fontSize = 16.sp
+            )
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .verticalScroll(
+                        rememberScrollState()
+                    )
+            ) {
+                ListMateri(Modifier.padding(8.dp))
+                ListMateri(Modifier.padding(8.dp))
+            }
         }
     }
+
 }
 
 @Composable
