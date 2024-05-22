@@ -8,14 +8,18 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import org.d3ifcool.virtualab.ui.screen.about.AboutScreen
-import org.d3ifcool.virtualab.ui.screen.dashboard.DashboardScreen
+import org.d3ifcool.virtualab.ui.screen.murid.dashboard.MuridDashboardScreen
 import org.d3ifcool.virtualab.ui.screen.murid.introduction.IntroductionScreen
 import org.d3ifcool.virtualab.ui.screen.landing.LandingScreen
 import org.d3ifcool.virtualab.ui.screen.murid.latihan.LatihanScreen
 import org.d3ifcool.virtualab.ui.screen.auth.RegisterScreen
 import org.d3ifcool.virtualab.ui.screen.auth.LoginScreen
-import org.d3ifcool.virtualab.ui.screen.guru.GuruMateriScreen
-import org.d3ifcool.virtualab.ui.screen.murid.materi.MateriScreen
+import org.d3ifcool.virtualab.ui.screen.guru.dashboard.GuruDashboardScreen
+import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddLatihanScreen
+import org.d3ifcool.virtualab.ui.screen.guru.latihan.GuruLatihanScreen
+import org.d3ifcool.virtualab.ui.screen.guru.materi.AddMateriScreen
+import org.d3ifcool.virtualab.ui.screen.guru.materi.GuruMateriScreen
+import org.d3ifcool.virtualab.ui.screen.murid.materi.MuridMateriScreen
 import org.d3ifcool.virtualab.ui.screen.murid.nilai.NilaiScreen
 import org.d3ifcool.virtualab.ui.screen.profile.ProfileScreen
 import org.d3ifcool.virtualab.ui.screen.murid.reaksi.ReaksiScreen
@@ -26,6 +30,17 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
     NavHost(navController = navController, startDestination = Screen.Landing.route) {
         composable(route = Screen.Landing.route) {
             LandingScreen(navController)
+        }
+        composable(route = Screen.About.route) {
+            AboutScreen(navController)
+        }
+        composable(route = Screen.Profile.route) {
+            ProfileScreen(navController)
+        }
+
+        //  Auth
+        composable(route = Screen.Role.route) {
+            RoleScreen(navController)
         }
         composable(route = Screen.Register.route,
             arguments = listOf(
@@ -39,20 +54,16 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
         composable(route = Screen.Login.route) {
             LoginScreen(navController)
         }
-        composable(route = Screen.Dashboard.route) {
-            DashboardScreen(navController)
-        }
-        composable(route = Screen.Role.route) {
-            RoleScreen(navController)
+
+        //  Murid
+        composable(route = Screen.MuridDashboard.route) {
+            MuridDashboardScreen(navController)
         }
         composable(route = Screen.Introduction.route) {
             IntroductionScreen(navController)
         }
-        composable(route = Screen.About.route) {
-            AboutScreen(navController)
-        }
-        composable(route = Screen.Materi.route) {
-            MateriScreen(navController)
+        composable(route = Screen.MuridMateri.route) {
+            MuridMateriScreen(navController)
         }
         composable(route = Screen.Latihan.route) {
             LatihanScreen(navController)
@@ -60,14 +71,25 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
         composable(route = Screen.Reaksi.route) {
             ReaksiScreen(navController)
         }
-        composable(route = Screen.Profile.route) {
-            ProfileScreen(navController)
-        }
         composable(route = Screen.Nilai.route) {
             NilaiScreen(navController)
         }
-        composable(route = Screen.LihatMateri.route) {
+
+        //  Guru
+        composable(route = Screen.GuruDashboard.route) {
+            GuruDashboardScreen(navController)
+        }
+        composable(route = Screen.AddMateri.route) {
+            AddMateriScreen(navController)
+        }
+        composable(route = Screen.AddLatihan.route) {
+            AddLatihanScreen(navController)
+        }
+        composable(route = Screen.GuruMateri.route) {
             GuruMateriScreen(navController)
+        }
+        composable(route = Screen.GuruLatihan.route) {
+            GuruLatihanScreen(navController)
         }
     }
 }

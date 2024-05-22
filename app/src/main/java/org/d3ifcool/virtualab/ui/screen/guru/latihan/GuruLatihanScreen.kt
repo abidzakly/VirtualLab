@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.ui.screen.guru
+package org.d3ifcool.virtualab.ui.screen.guru.latihan
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -33,16 +35,15 @@ import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.LightBlueGradient
 
 @Composable
-fun GuruMateriScreen(navController: NavHostController) {
+fun GuruLatihanScreen(navController: NavHostController) {
     Scaffold(topBar = {
-        TopNav(title = R.string.lihat_materi_title, navController = navController)
+        TopNav(title = R.string.lihat_latihan_title, navController = navController)
     }, bottomBar = {
-        BottomNav(currentRoute = Screen.Nilai.route, navController)
+        BottomNav(currentRoute = Screen.GuruLatihan.route, navController = navController)
     }) {
         ScreenContent(modifier = Modifier.padding(it))
     }
 }
-
 
 @Composable
 private fun ScreenContent(modifier: Modifier) {
@@ -53,19 +54,25 @@ private fun ScreenContent(modifier: Modifier) {
             .padding(4.dp)
     ) {
         Text(
-            text = "Materi yang pernah ditambahkan :",
+            text = "Latihan yang pernah ditambahkan :",
             Modifier.padding(start = 16.dp),
             fontSize = 16.sp
         )
-        Column(modifier = Modifier.padding(16.dp)) {
-            CardList(Modifier.padding(8.dp))
-            CardList(Modifier.padding(8.dp))
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .verticalScroll(
+                    rememberScrollState()
+                )
+        ) {
+            ListLatihan(Modifier.padding(8.dp))
+            ListLatihan(Modifier.padding(8.dp))
         }
     }
 }
 
 @Composable
-fun CardList(modifier: Modifier) {
+fun ListLatihan(modifier: Modifier) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -77,13 +84,13 @@ fun CardList(modifier: Modifier) {
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(
-                text = stringResource(R.string.materi_title),
+                text = stringResource(R.string.latihan),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium,
                 maxLines = 1
             )
             Text(
-                text = stringResource(R.string.materi_title_data),
+                text = stringResource(R.string.latihan_title_data),
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Normal
             )
@@ -92,9 +99,8 @@ fun CardList(modifier: Modifier) {
     }
     Spacer(modifier = Modifier.height(8.dp))
 }
-
-@Preview(showSystemUi = true, showBackground = true)
+@Preview
 @Composable
-private fun LihatMateriPrev() {
-    GuruMateriScreen(rememberNavController())
+private fun Prev() {
+    GuruLatihanScreen(navController = rememberNavController())
 }

@@ -1,15 +1,20 @@
 <resources>
     <string name="app_name">Virtual Lab</string>
+<!--  Landing  -->
     <string name="welcome_text">Selamat\nDatang\ndi Virtual Lab</string>
     <string name="start_text">Mulai</string>
     <string name="about">Eksplorasi dunia reaksi kimia dengan\nlebih mendalam menggunakan\nVirtual Lab!</string>
     <string name="slogan">Jelajahi reaksi kimia dan\ntemukan reaksimu!</string>
     <string name="signin">Masuk</string>
     <string name="create_acc">Buat Akun</string>
+<!--  Titles  -->
     <string name="register_title">Daftar Akun</string>
+    <string name="materi_title">Materi</string>
     <string name="profile_title">Profil</string>
     <string name="nilai_title">Nilai</string>
+    <string name="latihan">Latihan</string>
     <string name="introduction_title">Pengenalan Reaksi Kimia</string>
+<!--  Form Labels  -->
     <string name="username_label">Username</string>
     <string name="nisn_label">NISN</string>
     <string name="nip_label">NIP</string>
@@ -17,14 +22,17 @@
     <string name="fullname_label">Nama Lengkap</string>
     <string name="password_label">Password</string>
     <string name="edit_password_label">Ubah Password</string>
+<!--  Auth Buttons -->
     <string name="signup_button">Daftar</string>
     <string name="logout_button">Keluar</string>
     <string name="edit_button">Ubah</string>
     <string name="save_button">Simpan</string>
+    <string name="menu_buat_button">Buat</string>
     <string name="about_button">Tentang Aplikasi</string>
     <string name="account_exist">Sudah pernah mendaftar?</string>
     <string name="no_account">Belum punya akun?</string>
     <string name="back_button">Kembali</string>
+<!--   Role   -->
     <string name="role_pick">Pilih Peran</string>
     <string name="role_image">Gambar Peran</string>
     <string name="role_teacher">Guru</string>
@@ -32,25 +40,32 @@
     <string name="role_student">Murid</string>
     <string name="role_student_desc">Telusuri materi kimia dengan materi belajar yang interaktif</string>
     <string name="role_instruction">Silakan pilih peran Anda untuk memulai:</string>
+<!--   Dashboard   -->
     <string name="dashboard_headline">Video perkenalan reaksi kimia</string>
-    <string name="kategori_title">Kategori</string>
     <string name="dashboard_h2">Melihat Keterkaitan Antara Reaksi Kimia dengan Keseharian Kita</string>
+    <string name="dashboard_category_title">Kategori</string>
+
     <string name="cateogry_pengenalan">Pengenalan</string>
     <string name="cateogry_materi_belajar">Materi Belajar</string>
     <string name="cateogry_latihan">Latihan</string>
     <string name="cateogry_contoh_reaksi">Contoh Reaksi</string>
+<!--    Bottom Nav    -->
     <string name="bottom_app_beranda">Beranda</string>
     <string name="bottom_app_nilai">Nilai</string>
-    <string name="bottom_app_riwayat">Riwayat</string>
+    <string name="bottom_app_riwayat">Lihat</string>
     <string name="bottom_app_tambah">Tambah</string>
     <string name="bottom_app_profile">Profil</string>
+<!--    Profile   -->
     <string name="profile_header">Kelola Profil</string>
+<!--    Nilai   -->
     <string name="nilai">Nilai                       : 80/100</string>
     <string name="tingkat_kesulitan">Tingkat kesulitan: Mudah</string>
     <string name="latihan_title">Latihan 1</string>
+<!--   About   -->
     <string name="about_app">Virtual Lab adalah sebuah platform pembelajaran yang menyediakan materi dan visualisasi interaktif tentang pengenalan reaksi kimia, contoh reaksi kimia, materi reaksi, dan latihan penyetaraan reaksi kimia. Platform ini merupakan platform kolaborasi antara mahasiswa Universitas Telkom dan Guru MGMP Kimia Kota Bandung.\n</string>
     <string name="universitas_telkom_title">Universitas\nTelkom</string>
     <string name="mgmp_title">MGMP Kimia\nKota Bandung</string>
+<!--   Introduction   -->
     <string name="introduction_header">Melihat Keterkaitan Antara Reaksi Kimia dengan Keseharian kita</string>
     <string name="introduction_desc">Reaksi kimia adalah proses transformasi menakjubkan di mana zat-zat awal (reaktan) mengalami perubahan susunan partikelnya, menghasilkan zat baru yang berbeda sifat dan karakteristiknya (produk). Proses ini menjadi fondasi berbagai fenomena alam dan teknologi yang kita saksikan setiap hari seperti pembakaran, perkaratan, dan fotosintesis pada tumbuhan.\n</string>
     <string name="introduction_desc2">Perubahan kimia berbeda dengan perubahan fisik. Pada perubahan fisik, bentuk, wujud, atau sifat fisik zat dapat berubah tanpa mengubah identitas kimianya. Contohnya, es mencair menjadi air atau besi dibentuk menjadi berbagai bentuk. Di sisi lain, reaksi kimia melibatkan perubahan susunan partikel penyusun zat, menghasilkan zat baru dengan sifat kimia yang berbeda.
@@ -58,9 +73,17 @@
 Molekul dalam Reaksi
 Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-molekul reaktan berinteraksi dan bertukar atom, membentuk ikatan kimia baru dan menghasilkan molekul produk yang berbeda.</string>
     <string name="introduction_desc2_title">Memahami Perubahan Kimia</string>
+<!--   Latihan   -->
+    <string name="latihan_header">Latihan ini dilakukan untuk menguji seberapa jauh kamu memahami konsep dari reaksi kimia dan penyataraannya.</string>
+<!--   Dashboard Guru   -->
+    <string name="dashboard_guru_sub_header">"Baru ditambahkan: "</string>
+    <string name="fab_slide_up_title">Apa yang ingin kamu tambahkan?</string>
+    <string name="lihat_slide_up_title">Apa yang ingin kamu lihat?</string>
+    <string name="lihat_latihan_title">Lihat Latihan</string>
     <string name="lihat_materi_title">Lihat Materi</string>
-    <string name="materi_title">Materi</string>
+    <string name="buat_latihan_button">Buat Latihan</string>
+    <string name="buat_materi_button">Buat Materi</string>
     <string name="materi_title_data">Persamaan Reaksi Kimia</string>
-    <string name="lihat_soal_title">Lihat Soal</string>
+    <string name="latihan_title_data">Penyetaraan Reaksi Kimia</string>
 
 </resources>
