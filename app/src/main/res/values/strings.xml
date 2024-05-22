@@ -58,4 +58,9 @@
 Molekul dalam Reaksi
 Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-molekul reaktan berinteraksi dan bertukar atom, membentuk ikatan kimia baru dan menghasilkan molekul produk yang berbeda.</string>
     <string name="introduction_desc2_title">Memahami Perubahan Kimia</string>
+    <string name="lihat_materi_title">Lihat Materi</string>
+    <string name="materi_title">Materi</string>
+    <string name="materi_title_data">Persamaan Reaksi Kimia</string>
+    <string name="lihat_soal_title">Lihat Soal</string>
+
 </resources>
