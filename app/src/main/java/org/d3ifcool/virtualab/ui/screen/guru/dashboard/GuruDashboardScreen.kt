@@ -185,15 +185,15 @@ fun GuruDashboardScreen(navController: NavHostController) {
         BottomSheet(
             scaffoldSheetState = sheetStateLihat,
             title = R.string.lihat_slide_up_title,
-            action1 = R.string.lihat_latihan_title,
+            action1 = R.string.lihat_materi_title,
             onClickAct1 = {
-                navController.navigate(Screen.GuruLatihan.route) {
+                navController.navigate(Screen.GuruMateri.route) {
                     popUpTo(Screen.GuruDashboard.route)
                 }
             },
-            action2 = R.string.buat_materi_button,
+            action2 = R.string.lihat_latihan_title,
             onClickAct2 = {
-                navController.navigate(Screen.GuruMateri.route) {
+                navController.navigate(Screen.GuruLatihan.route) {
                     popUpTo(Screen.GuruDashboard.route)
                 }
             }
