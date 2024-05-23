@@ -39,6 +39,7 @@ import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.ui.theme.DarkBlueText
 import org.d3ifcool.virtualab.ui.theme.GrayIco
+import org.d3ifcool.virtualab.ui.theme.Poppins
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -169,6 +170,7 @@ private fun BottomNavButton(icon: Int, title: Int, isSelected: Boolean, onClick:
                 textAlign = TextAlign.Center,
                 fontSize = 12.sp,
                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                fontFamily = Poppins,
                 color = if (isSelected) DarkBlueText else GrayIco
             )
         }

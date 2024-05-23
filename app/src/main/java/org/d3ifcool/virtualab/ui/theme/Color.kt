@@ -19,7 +19,7 @@ val GrayTitle= Color(0xFFADADAD)
 val GrayTextField = Color(0xFFFAFAFA)
 val GrayIco = Color(0xFF6D6E6F)
 val RedButton = Color(0xFFD83A51)
-val WhiteText = Color(0xFFFFFCFC)
+val WhiteCard = Color(0xFFF4FBFF)
 
 val BlueGradient = Color(0xFF40B9F0)
 val LightBlueGradient = Color(0xFFD3EBF6)

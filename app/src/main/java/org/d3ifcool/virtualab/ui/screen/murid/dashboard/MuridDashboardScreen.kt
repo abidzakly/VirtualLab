@@ -48,6 +48,7 @@ import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.Poppins
+import org.d3ifcool.virtualab.ui.theme.WhiteCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -195,7 +196,7 @@ fun GridItem(categories: Categories? = null, title: Int, image: Int, onClick: ()
             .size(153.dp)
             .shadow(elevation = 5.dp, shape = RoundedCornerShape(12.dp))
             .clip(shape = RoundedCornerShape(12.dp))
-            .background(LightBlue)
+            .background(WhiteCard)
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
@@ -215,7 +216,8 @@ fun GridItem(categories: Categories? = null, title: Int, image: Int, onClick: ()
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(horizontal = 8.dp),
-                color = Color.Black
+                color = Color.Black,
+                fontWeight = FontWeight.SemiBold
             )
         }
         Spacer(modifier = Modifier.padding(bottom = 16.dp))

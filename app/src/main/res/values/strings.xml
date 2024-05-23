@@ -15,7 +15,8 @@
     <string name="latihan">Latihan</string>
     <string name="introduction_title">Pengenalan Reaksi Kimia</string>
     <string name="detail_materi_title">Materi X</string>
-<!--  Form Labels  -->
+    <string name="contoh_reaksi_title">Contoh Reaksi</string>
+    <!--  Form Labels  -->
     <string name="username_label">Username</string>
     <string name="nisn_label">NISN</string>
     <string name="nip_label">NIP</string>
@@ -77,9 +78,12 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
 <!--  Detail Materi  -->
     <string name="detail_materi_header">Judul Materi X</string>
     <string name="detail_materi_sub_header">Molekul yang terlibat: </string>
-    <string name="detail_materi_content">Molekul X</string>
+    <string name="detail_materi_content">Molekul X.
+    </string>
 <!--   Latihan   -->
     <string name="latihan_header">Latihan ini dilakukan untuk menguji seberapa jauh kamu memahami konsep dari reaksi kimia dan penyataraannya.</string>
+<!--   Contoh Reaksi   -->
+
 <!--   Dashboard Guru   -->
     <string name="dashboard_guru_sub_header">"Baru ditambahkan: "</string>
     <string name="fab_slide_up_title">Apa yang ingin kamu tambahkan?</string>
@@ -88,4 +92,5 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
     <string name="lihat_materi_title">Lihat Materi</string>
     <string name="buat_latihan_button">Buat Soal</string>
     <string name="buat_materi_button">Buat Materi</string>
+    <string name="reaksi_content_header">Berikut adalah contoh reaksi kimia yang terjadi di kehidupan sehari-hari:</string>
 </resources>

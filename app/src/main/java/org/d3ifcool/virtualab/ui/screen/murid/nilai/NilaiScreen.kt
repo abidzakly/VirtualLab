@@ -43,7 +43,7 @@ fun NilaiScreen(navController: NavHostController) {
     }, bottomBar = {
         BottomNav(currentRoute = Screen.Nilai.route, navController)
     }) {
-        ScreenContent(modifier = Modifier.padding(it.calculateStartPadding(LayoutDirection.Ltr)))
+        ScreenContent(modifier = Modifier.padding(bottom = it.calculateBottomPadding()))
     }
 }
 

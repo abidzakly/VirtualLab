@@ -43,7 +43,7 @@ fun LatihanScreen(navController: NavHostController) {
         },
         containerColor = Color.White
     ) {
-        ScreenContent(modifier = Modifier.padding(it))
+        ScreenContent(modifier = Modifier.padding(bottom = it.calculateBottomPadding()))
     }
 }
 

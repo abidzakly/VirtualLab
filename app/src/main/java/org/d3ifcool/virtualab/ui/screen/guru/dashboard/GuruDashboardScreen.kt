@@ -191,7 +191,7 @@ fun GuruDashboardScreen(navController: NavHostController) {
                     popUpTo(Screen.GuruDashboard.route)
                 }
             },
-            action2 = R.string.buat_materi_button,
+            action2 = R.string.lihat_materi_title,
             onClickAct2 = {
                 navController.navigate(Screen.GuruMateri.route) {
                     popUpTo(Screen.GuruDashboard.route)
