@@ -26,12 +26,13 @@ import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
+import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
 
 @Composable
 fun DetailMateriScreen(navController: NavHostController) {
     Scaffold(topBar = {
-        TopNav(title = R.string.detail_materi_title, navController = navController)
+        TopNav(title = R.string.guru_detail_materi_title, navController = navController)
     }, bottomBar = {
         BottomNav(currentRoute = Screen.GuruMateri.route, navController)
     }) {
@@ -44,23 +45,12 @@ private fun ScreenContent(modifier: Modifier) {
         modifier = modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(24.dp)
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text(
-            text = stringResource(R.string.judul_materi_guru),
-            fontSize = 16.sp,
-            fontWeight = FontWeight.SemiBold
-        )
-        Text(
-            text = stringResource(R.string.judul_materi_data),
-            fontSize = 15.sp,
-            fontWeight = FontWeight.Normal
-        )
-        Text(
-            text = stringResource(R.string.media_pembelajaran),
-            fontSize = 16.sp,
-            fontWeight = FontWeight.SemiBold
-        )
+        RegularText(text = stringResource(R.string.judul_materi_guru), fontWeight = FontWeight.SemiBold)
+        RegularText(text = stringResource(R.string.judul_materi_data), fontWeight = FontWeight.Normal )
+        RegularText(text = stringResource(R.string.media_pembelajaran), fontWeight = FontWeight.SemiBold )
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -71,19 +61,10 @@ private fun ScreenContent(modifier: Modifier) {
                 contentDescription = "File Media Pembelajaran"
             )
             Spacer(modifier = Modifier.padding(vertical = 6.dp))
-            Text(
-                text = stringResource(R.string.file_media_belajar),
-                fontSize = 14.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 8.dp),
-                color = Color.Black
-            )
+            RegularText(text = stringResource(R.string.file_media_belajar), fontWeight = FontWeight.Normal)
         }
-        Text(
-            text = stringResource(R.string.deskripsi_text),
-            fontSize = 16.sp,
-            fontWeight = FontWeight.SemiBold
-        )
+        RegularText(text = stringResource(R.string.deskripsi_text), fontWeight = FontWeight.SemiBold)
+        RegularText(text = stringResource(R.string.guru_deskripsi_materi_data), fontWeight = FontWeight.Normal, align = TextAlign.Justify )
     }
 }
 

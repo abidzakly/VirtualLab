@@ -11,7 +11,7 @@ import org.d3ifcool.virtualab.ui.screen.about.AboutScreen
 import org.d3ifcool.virtualab.ui.screen.murid.dashboard.MuridDashboardScreen
 import org.d3ifcool.virtualab.ui.screen.murid.introduction.IntroductionScreen
 import org.d3ifcool.virtualab.ui.screen.landing.LandingScreen
-import org.d3ifcool.virtualab.ui.screen.murid.latihan.LatihanScreen
+import org.d3ifcool.virtualab.ui.screen.murid.latihan.MuridLatihanScreen
 import org.d3ifcool.virtualab.ui.screen.auth.RegisterScreen
 import org.d3ifcool.virtualab.ui.screen.auth.LoginScreen
 import org.d3ifcool.virtualab.ui.screen.guru.dashboard.GuruDashboardScreen
@@ -20,6 +20,8 @@ import org.d3ifcool.virtualab.ui.screen.guru.latihan.GuruLatihanScreen
 import org.d3ifcool.virtualab.ui.screen.guru.materi.AddMateriScreen
 import org.d3ifcool.virtualab.ui.screen.guru.materi.DetailMateriScreen
 import org.d3ifcool.virtualab.ui.screen.guru.materi.GuruMateriScreen
+import org.d3ifcool.virtualab.ui.screen.murid.latihan.MuridDetailLatihanScreen
+import org.d3ifcool.virtualab.ui.screen.murid.materi.MuridDetailMateriScreen
 import org.d3ifcool.virtualab.ui.screen.murid.materi.MuridMateriScreen
 import org.d3ifcool.virtualab.ui.screen.murid.nilai.NilaiScreen
 import org.d3ifcool.virtualab.ui.screen.profile.ProfileScreen
@@ -66,8 +68,14 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
         composable(route = Screen.MuridMateri.route) {
             MuridMateriScreen(navController)
         }
-        composable(route = Screen.Latihan.route) {
-            LatihanScreen(navController)
+        composable(route = Screen.MuridDetailMateri.route) {
+            MuridDetailMateriScreen(navController)
+        }
+        composable(route = Screen.MuridLatihan.route) {
+            MuridLatihanScreen(navController)
+        }
+        composable(route = Screen.MuridDetailLatihan.route) {
+            MuridDetailLatihanScreen(navController)
         }
         composable(route = Screen.Reaksi.route) {
             ReaksiScreen(navController)

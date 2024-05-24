@@ -16,8 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.ui.theme.BlueGradient
 import org.d3ifcool.virtualab.ui.theme.LightBlueGradient
@@ -32,12 +30,12 @@ fun GradientPage(modifier: Modifier, image: Int, isCenter: Boolean? = true, cont
                     colors = listOf(BlueGradient, LightBlueGradient)
                 )
             ),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(
             painter = painterResource(image),
             contentDescription = "",
-            modifier = Modifier.padding(top = 65.dp, start = 60.dp, end = 65.dp)
+            modifier = Modifier.padding(top = 65.dp, start = 60.dp, end = 60.dp)
         )
         Spacer(modifier = Modifier.height(4.dp))
         Column(

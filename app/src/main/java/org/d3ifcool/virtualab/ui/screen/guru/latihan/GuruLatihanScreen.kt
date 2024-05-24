@@ -95,7 +95,7 @@ fun ListLatihan(modifier: Modifier) {
                 fontWeight = FontWeight.Normal
             )
         }
-        Icon(painter = painterResource(R.drawable.baseline_arrow_circle_outline_28), contentDescription = "Lihat Materi")
+        Icon(painter = painterResource(R.drawable.arrow_circle), contentDescription = "Lihat Materi")
     }
     Spacer(modifier = Modifier.height(8.dp))
 }
