@@ -29,11 +29,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import androidx.navigation.NavHostController
 import org.d3ifcool.virtualab.R
-import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.ui.theme.LightBlue
+import org.d3ifcool.virtualab.ui.theme.Poppins
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -89,7 +88,7 @@ private fun ModalContent(
             text = stringResource(title),
             fontSize = 15.sp,
             color = Color.Black,
-            modifier = Modifier.padding(bottom = 34.dp)
+            modifier = Modifier.padding(bottom = 34.dp),
         )
         Button(
             onClick = { onClickAct1() },
@@ -101,7 +100,9 @@ private fun ModalContent(
                 text = stringResource(action1),
                 color = Color.White,
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 15.sp
+                fontSize = 15.sp,
+                fontFamily = Poppins,
+
             )
         }
         Spacer(modifier = Modifier.height(22.dp))
@@ -115,7 +116,9 @@ private fun ModalContent(
                 text = stringResource(action2),
                 color = Color.Black,
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 15.sp
+                fontSize = 15.sp,
+                fontFamily = Poppins,
+
             )
         }
         Spacer(modifier = Modifier.height(60.dp))

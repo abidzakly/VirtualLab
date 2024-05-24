@@ -7,14 +7,16 @@
     <string name="slogan">Jelajahi reaksi kimia dan\ntemukan reaksimu!</string>
     <string name="signin">Masuk</string>
     <string name="create_acc">Buat Akun</string>
-<!--  Titles  -->
+<!--  Titles for TopNav  -->
     <string name="register_title">Daftar Akun</string>
     <string name="materi_title">Materi</string>
     <string name="profile_title">Profil</string>
     <string name="nilai_title">Nilai</string>
     <string name="latihan">Latihan</string>
     <string name="introduction_title">Pengenalan Reaksi Kimia</string>
-<!--  Form Labels  -->
+    <string name="detail_materi_title">Materi X</string>
+    <string name="contoh_reaksi_title">Contoh Reaksi</string>
+    <!--  Form Labels  -->
     <string name="username_label">Username</string>
     <string name="nisn_label">NISN</string>
     <string name="nip_label">NIP</string>
@@ -73,18 +75,24 @@
 Molekul dalam Reaksi
 Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-molekul reaktan berinteraksi dan bertukar atom, membentuk ikatan kimia baru dan menghasilkan molekul produk yang berbeda.</string>
     <string name="introduction_desc2_title">Memahami Perubahan Kimia</string>
+<!--  Detail Materi  -->
+    <string name="detail_materi_header">Judul Materi X</string>
+    <string name="detail_materi_sub_header">Molekul yang terlibat: </string>
+    <string name="detail_materi_content">Molekul X.
+    </string>
 <!--   Latihan   -->
     <string name="latihan_header">Latihan ini dilakukan untuk menguji seberapa jauh kamu memahami konsep dari reaksi kimia dan penyataraannya.</string>
+<!--   Contoh Reaksi   -->
+
 <!--   Dashboard Guru   -->
     <string name="dashboard_guru_sub_header">"Baru ditambahkan: "</string>
     <string name="fab_slide_up_title">Apa yang ingin kamu tambahkan?</string>
     <string name="lihat_slide_up_title">Apa yang ingin kamu lihat?</string>
-    <string name="lihat_latihan_title">Lihat Latihan</string>
+    <string name="lihat_latihan_title">Lihat Soal</string>
     <string name="lihat_materi_title">Lihat Materi</string>
-    <string name="buat_latihan_button">Buat Latihan</string>
+    <string name="buat_latihan_button">Buat Soal</string>
     <string name="buat_materi_button">Buat Materi</string>
-    <string name="materi_title_data">Persamaan Reaksi Kimia</string>
-    <string name="latihan_title_data">Penyetaraan Reaksi Kimia</string>
-    <string name="list_latihan_kosong">Belum ada data latihan</string>
-
+    <string name="reaksi_content_header">Berikut adalah contoh reaksi kimia yang terjadi di kehidupan sehari-hari:</string>
+    <string name="latihan_x">Latihan X</string>
+    <string name="kerjakan_latihan_header">Setarakan persamaan reaksi berikut</string>
 </resources>

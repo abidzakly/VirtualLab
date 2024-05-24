@@ -43,7 +43,7 @@ fun NilaiScreen(navController: NavHostController) {
     }, bottomBar = {
         BottomNav(currentRoute = Screen.Nilai.route, navController)
     }) {
-        ScreenContent(modifier = Modifier.padding(it.calculateStartPadding(LayoutDirection.Ltr)))
+        ScreenContent(modifier = Modifier.padding(bottom = it.calculateBottomPadding()))
     }
 }
 
@@ -57,6 +57,8 @@ private fun ScreenContent(modifier: Modifier) {
             fontSize = 16.sp
         )
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+            CardList()
+            CardList()
             CardList()
             CardList()
         }

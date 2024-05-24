@@ -82,7 +82,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                 .background(
                     Color.White,
                     shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp)
-                ).verticalScroll(rememberScrollState()),
+                ),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
@@ -93,7 +93,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                 modifier = Modifier.padding(horizontal = 30.dp, vertical = 24.dp),
                 color = DarkBlueText
             )
-            Column(modifier = Modifier.padding(horizontal = 50.dp)) {
+            Column(modifier = Modifier.padding(horizontal = 50.dp).verticalScroll(rememberScrollState())) {
                 Text(
                     text = stringResource(R.string.introduction_desc),
                     textAlign = TextAlign.Justify,

@@ -48,7 +48,7 @@ fun MuridMateriScreen(navController: NavHostController) {
         containerColor = Color.White
     ) {
         ScreenContent(
-            modifier = Modifier.padding(it.calculateBottomPadding()),
+            modifier = Modifier.padding(bottom = it.calculateBottomPadding()),
             navController = navController
         )
     }
@@ -57,7 +57,7 @@ fun MuridMateriScreen(navController: NavHostController) {
 @Composable
 private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
     GradientPage(
-        modifier = Modifier.padding(top = 65.dp),
+        modifier = modifier,
         isCenter = false,
         image = R.drawable.materi_header
     ) {
@@ -74,6 +74,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
             )
         ) {
             CardList {
+                navController.navigate(Screen.MuridDetailMateri.route)
             }
             CardList {
             }
