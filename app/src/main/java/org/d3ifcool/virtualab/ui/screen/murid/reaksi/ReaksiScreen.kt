@@ -48,12 +48,15 @@ fun ReaksiScreen(navController: NavHostController) {
 
 @Composable
 private fun ScreenContent(modifier: Modifier) {
-    GradientPage(modifier = modifier, image = R.drawable.reaksi_illustration) {
-        Spacer(modifier = Modifier.height(46.dp))
-        Text(text = stringResource(R.string.reaksi_content_header), fontSize = 16.sp)
-        Spacer(modifier = Modifier.height(25.dp))
-        ItemList()
-        ItemList()
+    GradientPage(
+        modifier = modifier,
+        image = R.drawable.reaksi_illustration
+    ) {
+            Spacer(modifier = Modifier.height(46.dp))
+            Text(text = stringResource(R.string.reaksi_content_header), fontSize = 16.sp)
+            Spacer(modifier = Modifier.height(25.dp))
+            ItemList()
+            ItemList()
     }
 }
 

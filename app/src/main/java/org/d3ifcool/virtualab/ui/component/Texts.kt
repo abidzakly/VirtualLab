@@ -11,9 +11,9 @@ import org.d3ifcool.virtualab.ui.theme.Poppins
 
 @Composable
 fun ExtraLargeText(
-    text: String,
-    fontWeight: FontWeight,
     modifier: Modifier = Modifier,
+    text: String,
+    fontWeight: FontWeight = FontWeight.Normal,
     color: Color = Color.Black,
     align: TextAlign = TextAlign.Start
 ) {
@@ -30,9 +30,9 @@ fun ExtraLargeText(
 
 @Composable
 fun LargeText(
-    text: String,
-    fontWeight: FontWeight,
     modifier: Modifier = Modifier,
+    text: String,
+    fontWeight: FontWeight = FontWeight.Normal,
     color: Color = Color.Black,
     align: TextAlign = TextAlign.Start
 ) {
@@ -49,9 +49,9 @@ fun LargeText(
 
 @Composable
 fun SemiLargeText(
-    text: String,
-    fontWeight: FontWeight,
     modifier: Modifier = Modifier,
+    text: String,
+    fontWeight: FontWeight = FontWeight.Normal,
     color: Color = Color.Black,
     align: TextAlign = TextAlign.Start
 ) {
@@ -68,9 +68,9 @@ fun SemiLargeText(
 
 @Composable
 fun MediumLargeText(
-    text: String,
-    fontWeight: FontWeight,
     modifier: Modifier = Modifier,
+    text: String,
+    fontWeight: FontWeight = FontWeight.Normal,
     color: Color = Color.Black,
     align: TextAlign = TextAlign.Start
 ) {
@@ -87,9 +87,9 @@ fun MediumLargeText(
 
 @Composable
 fun MediumText(
-    text: String,
-    fontWeight: FontWeight,
     modifier: Modifier = Modifier,
+    text: String,
+    fontWeight: FontWeight = FontWeight.Normal,
     color: Color = Color.Black,
     align: TextAlign = TextAlign.Start
 ) {
@@ -106,18 +106,18 @@ fun MediumText(
 
 @Composable
 fun RegularText(
-    text: String,
-    fontWeight: FontWeight,
     modifier: Modifier = Modifier,
+    text: String,
+    fontWeight: FontWeight = FontWeight.Normal,
     color: Color = Color.Black,
     align: TextAlign = TextAlign.Start
 ) {
     Text(
+        modifier = modifier,
         text = text,
         fontSize = 16.sp,
         fontFamily = Poppins,
         fontWeight = fontWeight,
-        modifier = modifier,
         color = color,
         textAlign = align
     )
@@ -125,18 +125,18 @@ fun RegularText(
 
 @Composable
 fun SmallText(
-    text: String,
-    fontWeight: FontWeight,
     modifier: Modifier = Modifier,
+    text: String,
+    fontWeight: FontWeight = FontWeight.Normal,
     color: Color = Color.Black,
     align: TextAlign = TextAlign.Start
 ) {
     Text(
+        modifier = modifier,
+        fontWeight = fontWeight,
         text = text,
         fontSize = 14.sp,
         fontFamily = Poppins,
-        fontWeight = fontWeight,
-        modifier = modifier,
         color = color,
         textAlign = align
     )
@@ -144,18 +144,18 @@ fun SmallText(
 
 @Composable
 fun ExtraSmallText(
-    text: String,
-    fontWeight: FontWeight,
     modifier: Modifier = Modifier,
+    text: String,
+    fontWeight: FontWeight = FontWeight.Normal,
     color: Color = Color.Black,
     align: TextAlign = TextAlign.Start
 ) {
     Text(
+        modifier = modifier,
         text = text,
         fontSize = 12.sp,
         fontFamily = Poppins,
         fontWeight = fontWeight,
-        modifier = modifier,
         color = color,
         textAlign = align
     )

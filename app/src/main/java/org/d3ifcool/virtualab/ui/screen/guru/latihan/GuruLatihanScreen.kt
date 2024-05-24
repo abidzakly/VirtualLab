@@ -33,6 +33,7 @@ import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.LightBlueGradient
+import org.d3ifcool.virtualab.ui.theme.Poppins
 
 @Composable
 fun GuruLatihanScreen(navController: NavHostController) {
@@ -92,7 +93,8 @@ fun ListLatihan(modifier: Modifier) {
             Text(
                 text = stringResource(R.string.latihan_title_data),
                 fontSize = 16.sp,
-                fontWeight = FontWeight.Normal
+                fontWeight = FontWeight.Normal,
+                fontFamily = Poppins
             )
         }
         Icon(painter = painterResource(R.drawable.baseline_arrow_circle_outline_28), contentDescription = "Lihat Materi")

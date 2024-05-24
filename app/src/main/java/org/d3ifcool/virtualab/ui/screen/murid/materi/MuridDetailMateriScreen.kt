@@ -31,13 +31,12 @@ import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.TopNav
-import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.LightBlue2
 
 @Composable
 fun MuridDetailMateriScreen(navController: NavHostController) {
     Scaffold(topBar = {
-        TopNav(title = R.string.detail_materi_title, navController = navController)
+        TopNav(title = R.string.murid_detail_materi_title, navController = navController)
     },
         bottomBar = {
             BottomNav(currentRoute = Screen.MuridDashboard.route, navController = navController)

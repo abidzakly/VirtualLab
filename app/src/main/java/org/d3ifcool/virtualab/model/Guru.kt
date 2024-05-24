@@ -8,7 +8,7 @@ data class Guru(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
     val username: String,
-    val NISN: String,
+    val NIP: String,
     val asalSekolah: String,
     val email: String,
     val password: String,
