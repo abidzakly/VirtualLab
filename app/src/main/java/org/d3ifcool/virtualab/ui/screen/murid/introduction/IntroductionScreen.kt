@@ -45,7 +45,10 @@ fun IntroductionScreen(navController: NavHostController) {
         bottomBar = {
             BottomNav(currentRoute = Screen.MuridDashboard.route, navController = navController)
         }) {
-        ScreenContent(modifier = Modifier.padding(bottom = it.calculateBottomPadding()), navController = navController)
+        ScreenContent(
+            modifier = Modifier.padding(bottom = it.calculateBottomPadding()),
+            navController = navController
+        )
     }
 }
 
@@ -85,35 +88,38 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                 ),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(
-                text = stringResource(R.string.introduction_header),
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 30.dp, vertical = 24.dp),
-                color = DarkBlueText
-            )
-            Column(modifier = Modifier.padding(horizontal = 50.dp).verticalScroll(rememberScrollState())) {
+            Spacer(modifier = Modifier.height(24.dp))
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 Text(
-                    text = stringResource(R.string.introduction_desc),
-                    textAlign = TextAlign.Justify,
-                    fontSize = 14.sp,
-                    color = Color.Black
+                    text = stringResource(R.string.introduction_header),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(start = 30.dp, top = 0.dp, end = 30.dp, bottom = 24.dp),
+                    color = DarkBlueText
                 )
-                Spacer(modifier = Modifier.height(12.dp))
-                Text(
-                    text = stringResource(R.string.introduction_desc2_title),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp,
-                    color = Color.Black
-                )
-                Text(
-                    text = stringResource(R.string.introduction_desc2),
-                    textAlign = TextAlign.Justify,
-                    fontSize = 14.sp,
-                    color = Color.Black,
-                    modifier = modifier.padding(bottom = 24.dp)
-                )
+                Column(modifier = Modifier.padding(horizontal = 50.dp)) {
+                    Text(
+                        text = stringResource(R.string.introduction_desc),
+                        textAlign = TextAlign.Justify,
+                        fontSize = 14.sp,
+                        color = Color.Black
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = stringResource(R.string.introduction_desc2_title),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp,
+                        color = Color.Black
+                    )
+                    Text(
+                        text = stringResource(R.string.introduction_desc2),
+                        textAlign = TextAlign.Justify,
+                        fontSize = 14.sp,
+                        color = Color.Black,
+                        modifier = modifier.padding(bottom = 24.dp)
+                    )
+                }
             }
         }
     }

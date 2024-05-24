@@ -51,13 +51,17 @@ fun MuridLatihanScreen(navController: NavHostController) {
 @Composable
 private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
     GradientPage(modifier, image = R.drawable.latihan_header) {
+        Spacer(modifier = Modifier.height(24.dp))
+        Column(modifier = Modifier.verticalScroll(
+            rememberScrollState()
+        )) {
+        Spacer(modifier = Modifier.height(6.dp))
         Text(
             text = stringResource(R.string.latihan_header),
             fontSize = 16.sp,
-            modifier = Modifier.padding(vertical = 30.dp),
+            modifier = Modifier.padding(bottom = 30.dp),
             textAlign = TextAlign.Justify
         )
-        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
             CardList("Latihan 1", "Mudah") {
                 navController.navigate(Screen.MuridDetailLatihan.route)
             }

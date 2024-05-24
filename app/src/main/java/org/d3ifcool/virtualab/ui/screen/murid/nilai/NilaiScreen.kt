@@ -51,16 +51,19 @@ fun NilaiScreen(navController: NavHostController) {
 @Composable
 private fun ScreenContent(modifier: Modifier) {
     GradientPage(modifier, image = R.drawable.nilai_illustration) {
-        Text(
-            text = "Nilai dari latihan yang telah kamu kerjakan:",
-            modifier = Modifier.padding(top = 24.dp, bottom = 16.dp),
-            fontSize = 16.sp
-        )
-        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            CardList()
-            CardList()
-            CardList()
-            CardList()
+        Spacer(modifier = Modifier.height(24.dp))
+        Column(modifier = Modifier.verticalScroll(
+                rememberScrollState()
+            )) {
+            Text(
+                text = "Nilai dari latihan yang telah kamu kerjakan:",
+                modifier = Modifier.padding(bottom = 16.dp),
+                fontSize = 16.sp
+            )
+                CardList()
+                CardList()
+                CardList()
+                CardList()
         }
 //            LazyColumn {
 //                items() {

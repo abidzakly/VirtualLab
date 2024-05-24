@@ -61,30 +61,32 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
         isCenter = false,
         image = R.drawable.materi_header
     ) {
-        Text(
-            text = "Materi Ajar",
-            modifier = Modifier.padding(top = 24.dp, bottom = 16.dp),
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Medium
-        )
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.verticalScroll(
+        Spacer(modifier = Modifier.height(24.dp))
+        Column(modifier = Modifier.verticalScroll(
                 rememberScrollState()
+            )) {
+            Text(
+                text = "Materi Ajar",
+                modifier = Modifier.padding(bottom = 16.dp),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Medium
             )
-        ) {
-            CardList {
-                navController.navigate(Screen.MuridDetailMateri.route)
-            }
-            CardList {
-            }
-            CardList {
-            }
-            CardList {
-            }
-            CardList {
-            }
-            CardList {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CardList {
+                    navController.navigate(Screen.MuridDetailMateri.route)
+                }
+                CardList {
+                }
+                CardList {
+                }
+                CardList {
+                }
+                CardList {
+                }
+                CardList {
+                }
             }
         }
     }
@@ -94,13 +96,14 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
 private fun CardList(onClick: () -> Unit) {
     Row(
         Modifier
+            .clickable {
+                onClick()
+            }
             .fillMaxWidth()
             .clip(shape = RoundedCornerShape(20.dp))
             .background(LightBlue)
             .padding(vertical = 16.dp, horizontal = 20.dp)
-            .clickable {
-                onClick()
-            },
+        ,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {

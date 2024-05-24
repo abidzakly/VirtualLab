@@ -52,11 +52,14 @@ private fun ScreenContent(modifier: Modifier) {
         modifier = modifier,
         image = R.drawable.reaksi_illustration
     ) {
-            Spacer(modifier = Modifier.height(46.dp))
+            Spacer(modifier = Modifier.height(24.dp))
+        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+            Spacer(modifier = Modifier.height(22.dp))
             Text(text = stringResource(R.string.reaksi_content_header), fontSize = 16.sp)
             Spacer(modifier = Modifier.height(25.dp))
             ItemList()
             ItemList()
+        }
     }
 }
 
@@ -65,8 +68,7 @@ private fun ItemList() {
     Column(
         modifier = Modifier
             .clip(shape = RoundedCornerShape(10.dp))
-            .background(LightBlue2)
-            .verticalScroll(rememberScrollState()),
+            .background(LightBlue2),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ItemContent()
