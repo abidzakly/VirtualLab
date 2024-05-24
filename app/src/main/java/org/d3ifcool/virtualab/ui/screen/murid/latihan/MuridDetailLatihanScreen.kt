@@ -44,7 +44,7 @@ import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.LightBlueDarker
 
 @Composable
-fun KerjakanLatihanScreen(navController: NavHostController) {
+fun MuridDetailLatihanScreen(navController: NavHostController) {
     Scaffold(
         topBar = {
             TopNav(title = R.string.latihan_x, navController = navController)
@@ -172,5 +172,5 @@ fun AnswerBox(text: String) {
 @Preview
 @Composable
 private fun Prev() {
-    KerjakanLatihanScreen(rememberNavController())
+    MuridDetailLatihanScreen(rememberNavController())
 }

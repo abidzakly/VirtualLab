@@ -59,22 +59,22 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
         )
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
             CardList("Latihan 1", "Mudah") {
-                navController.navigate(Screen.KerjakanLatihan.route)
+                navController.navigate(Screen.MuridDetailLatihan.route)
             }
             CardList("Latihan 2", "Sedang") {
-                navController.navigate(Screen.KerjakanLatihan.route)
+                navController.navigate(Screen.MuridDetailLatihan.route)
             }
             CardList("Latihan 3", "Sulit") {
-                navController.navigate(Screen.KerjakanLatihan.route)
+                navController.navigate(Screen.MuridDetailLatihan.route)
             }
             CardList("Latihan 4", "Mudah") {
-                navController.navigate(Screen.KerjakanLatihan.route)
+                navController.navigate(Screen.MuridDetailLatihan.route)
             }
             CardList("Latihan 5", "Sedang") {
-                navController.navigate(Screen.KerjakanLatihan.route)
+                navController.navigate(Screen.MuridDetailLatihan.route)
             }
             CardList("Latihan 6", "Sulit") {
-                navController.navigate(Screen.KerjakanLatihan.route)
+                navController.navigate(Screen.MuridDetailLatihan.route)
             }
         }
     }
