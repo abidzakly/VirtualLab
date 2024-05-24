@@ -25,7 +25,8 @@
     <string name="password_label">Password</string>
     <string name="edit_password_label">Ubah Password</string>
 <!--  Auth Buttons -->
-    <string name="signup_button">Daftar</string>
+    <string name="signup_button">Daftar dan Verifikasi</string>
+    <string name="signup_clickable">Daftar</string>
     <string name="logout_button">Keluar</string>
     <string name="edit_button">Ubah</string>
     <string name="save_button">Simpan</string>
@@ -99,5 +100,7 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
     <string name="latihan_title_data">Penyetaraan Reaksi Kimia</string>
     <string name="materi_title_data">Persamaan Reaksi Kimia</string>
     <string name="list_latihan_kosong">Belum ada data latihan</string>
+
+    <string name="empty_title" />
 
 </resources>
