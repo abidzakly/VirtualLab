@@ -59,6 +59,8 @@ private fun ScreenContent(modifier: Modifier) {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
             CardList()
             CardList()
+            CardList()
+            CardList()
         }
 //            LazyColumn {
 //                items() {

@@ -19,13 +19,9 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,10 +39,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.Color.Companion.White
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,6 +52,7 @@ import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.BottomSheet
+import org.d3ifcool.virtualab.ui.component.TopNavDashboard
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 
@@ -71,44 +66,6 @@ fun GuruDashboardScreen(navController: NavHostController) {
     var isPressed by remember { mutableStateOf(false) }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                modifier = Modifier.padding(
-                    start = 21.dp,
-                    end = 21.dp,
-                    top = 8.dp,
-                    bottom = 8.dp
-                ),
-                navigationIcon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.vlab_logo_mini),
-                        contentDescription = "virtual lab logo"
-                    )
-                },
-                title = {
-                    Text(
-                        text = "Halo,\nAmru Abid Zakly",
-                        fontSize = 16.sp,
-                        lineHeight = 18.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp, start = 12.dp),
-                        color = Black
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Transparent),
-                actions = {
-                    IconButton(onClick = { navController.navigate(Screen.About.route) }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.baseline_about_24),
-                            contentDescription = stringResource(R.string.about_button),
-                            tint = Black
-                        )
-                    }
-                }
-            )
-        },
         bottomBar = {
             BottomNav(
                 Screen.GuruDashboard.route,
@@ -142,7 +99,8 @@ fun GuruDashboardScreen(navController: NavHostController) {
         ScreenContent(
             modifier = Modifier
                 .padding(padding)
-                .zIndex(-2f)
+                .zIndex(-2f),
+            navController
         )
         LaunchedEffect(sheetStateBuat.bottomSheetState) {
             snapshotFlow { sheetStateBuat.bottomSheetState.currentValue }
@@ -202,29 +160,31 @@ fun GuruDashboardScreen(navController: NavHostController) {
 }
 
 @Composable
-private fun ScreenContent(modifier: Modifier) {
-    Column(
-        modifier = modifier
-            .padding(horizontal = 40.dp)
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.guru_landing),
-            contentDescription = "Dashboard Guru Image"
-        )
-        Text(
-            text = stringResource(R.string.dashboard_guru_sub_header),
-            fontSize = 15.sp,
+private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
+    Column(modifier = modifier.verticalScroll(rememberScrollState())) {
+        TopNavDashboard(name = "Guru", navController = navController)
+        Column(
             modifier = Modifier
-                .padding(vertical = 24.dp)
-                .fillMaxWidth(),
-            color = Black
-        )
-        ItemsList()
-        ItemsList()
-        ItemsList()
-        ItemsList()
+                .padding(horizontal = 40.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.guru_landing),
+                contentDescription = "Dashboard Guru Image"
+            )
+            Text(
+                text = stringResource(R.string.dashboard_guru_sub_header),
+                fontSize = 15.sp,
+                modifier = Modifier
+                    .padding(vertical = 24.dp)
+                    .fillMaxWidth(),
+                color = Black
+            )
+            ItemsList()
+            ItemsList()
+            ItemsList()
+            ItemsList()
+        }
     }
 }
 

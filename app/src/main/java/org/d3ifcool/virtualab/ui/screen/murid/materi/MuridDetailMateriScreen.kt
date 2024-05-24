@@ -32,6 +32,7 @@ import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.LightBlue
+import org.d3ifcool.virtualab.ui.theme.LightBlue2
 
 @Composable
 fun MuridDetailMateriScreen(navController: NavHostController) {
@@ -51,7 +52,7 @@ private fun ScreenContent(modifier: Modifier) {
         modifier = modifier
             .padding(horizontal = 21.dp)
             .clip(shape = RoundedCornerShape(10.dp))
-            .background(LightBlue)
+            .background(LightBlue2)
             .fillMaxSize()
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally

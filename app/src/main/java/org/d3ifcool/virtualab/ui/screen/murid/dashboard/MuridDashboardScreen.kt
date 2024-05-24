@@ -19,13 +19,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults.cardColors
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,47 +41,13 @@ import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.model.Categories
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
-import org.d3ifcool.virtualab.ui.theme.LightBlue
+import org.d3ifcool.virtualab.ui.component.TopNavDashboard
 import org.d3ifcool.virtualab.ui.theme.Poppins
-import org.d3ifcool.virtualab.ui.theme.WhiteCard
+import org.d3ifcool.virtualab.ui.theme.WhiteLightBlue
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MuridDashboardScreen(navController: NavHostController) {
     Scaffold(
-        topBar = {
-            TopAppBar(
-                modifier = Modifier.padding(start = 21.dp, end = 21.dp, top = 8.dp, bottom = 8.dp),
-                navigationIcon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.vlab_logo_mini),
-                        contentDescription = "virtual lab logo"
-                    )
-                },
-                title = {
-                    Text(
-                        text = "Halo,\nAmru Abid Zakly",
-                        fontSize = 16.sp,
-                        lineHeight = 18.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp, start = 12.dp),
-                        color = Color.Black
-                    )
-                },
-                colors = topAppBarColors(containerColor = Color.Transparent),
-                actions = {
-                    IconButton(onClick = { navController.navigate(Screen.About.route) }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.baseline_about_24),
-                            contentDescription = stringResource(R.string.about_button),
-                            tint = Color.Black
-                        )
-                    }
-                }
-            )
-        },
         bottomBar = {
             BottomNav(Screen.MuridDashboard.route, navController)
         },
@@ -100,88 +61,104 @@ fun MuridDashboardScreen(navController: NavHostController) {
 private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
 //    val viewModel: DashboardMuridViewModel = viewModel()
 //    val data = viewModel.dashboardCategories
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 33.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
-        Column {
-            Text(
-                text = stringResource(id = R.string.dashboard_headline),
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 16.sp,
-                fontFamily = Poppins,
-                modifier = Modifier.padding(bottom = 12.dp),
-                color = Color.Black
-            )
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Card(onClick = { /*TODO*/ }, colors = cardColors(containerColor = LightBlue)) {
-                    Image(
-                        modifier = Modifier.padding(15.dp),
-                        painter = painterResource(id = R.drawable.video_thumbnail),
-                        contentDescription = "Video Thumbnail"
-                    )
-                    Text(
-                        text = stringResource(R.string.dashboard_h2),
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 15.dp),
-                        color = Color.Black,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1
-                    )
-                    Spacer(modifier = Modifier.height(15.dp))
-                }
-            }
-        }
-        Spacer(modifier = Modifier.padding(top = 28.dp))
+    Column(modifier = modifier.verticalScroll(rememberScrollState())) {
+        TopNavDashboard(name = "Amru Abid", navController = navController)
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(horizontal = 33.dp)
         ) {
-            Text(
-                text = stringResource(R.string.dashboard_category_title),
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 16.sp,
-                fontFamily = Poppins,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-                Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    GridItem(
-                        title = R.string.cateogry_pengenalan,
-                        image = R.drawable.pengenalan_illustration,
+            Column {
+                Text(
+                    text = stringResource(id = R.string.dashboard_headline),
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp,
+                    fontFamily = Poppins,
+                    modifier = Modifier.padding(bottom = 12.dp),
+                    color = Color.Black
+                )
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Card(
+                        onClick = { /*TODO*/ },
+                        colors = cardColors(containerColor = Color(0xFFE8F8FF))
                     ) {
-                        navController.navigate(Screen.Introduction.route)
-                    }
-                    GridItem(
-                        title = R.string.cateogry_materi_belajar,
-                        image = R.drawable.materi_illustration
-                    ) {
-                        navController.navigate(Screen.MuridMateri.route)
+                        Image(
+                            modifier = Modifier.padding(15.dp),
+                            painter = painterResource(id = R.drawable.video_thumbnail),
+                            contentDescription = "Video Thumbnail"
+                        )
+                        Text(
+                            text = stringResource(R.string.dashboard_h2),
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 15.dp),
+                            color = Color.Black,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
+                        )
+                        Spacer(modifier = Modifier.height(15.dp))
                     }
                 }
-                Spacer(modifier = Modifier.height(27.dp))
-                Row(modifier = Modifier.fillMaxSize().padding(bottom = 32.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-                    GridItem(
-                        title = R.string.cateogry_latihan,
-                        image = R.drawable.latihan_illustration
+            }
+            Spacer(modifier = Modifier.padding(top = 28.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                Text(
+                    text = stringResource(R.string.dashboard_category_title),
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp,
+                    fontFamily = Poppins,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        navController.navigate(Screen.Latihan.route)
+                        GridItem(
+                            title = R.string.cateogry_pengenalan,
+                            image = R.drawable.pengenalan_illustration,
+                        ) {
+                            navController.navigate(Screen.Introduction.route)
+                        }
+                        GridItem(
+                            title = R.string.cateogry_materi_belajar,
+                            image = R.drawable.materi_illustration
+                        ) {
+                            navController.navigate(Screen.MuridMateri.route)
+                        }
                     }
-                    GridItem(
-                        title = R.string.cateogry_contoh_reaksi,
-                        image = R.drawable.contoh_reaksi_illustration
+                    Spacer(modifier = Modifier.height(27.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(bottom = 32.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        navController.navigate(Screen.Reaksi.route)
+                        GridItem(
+                            title = R.string.cateogry_latihan,
+                            image = R.drawable.latihan_illustration
+                        ) {
+                            navController.navigate(Screen.MuridLatihan.route)
+                        }
+                        GridItem(
+                            title = R.string.cateogry_contoh_reaksi,
+                            image = R.drawable.contoh_reaksi_illustration
+                        ) {
+                            navController.navigate(Screen.Reaksi.route)
+                        }
                     }
                 }
             }
@@ -196,7 +173,7 @@ fun GridItem(categories: Categories? = null, title: Int, image: Int, onClick: ()
             .size(153.dp)
             .shadow(elevation = 5.dp, shape = RoundedCornerShape(12.dp))
             .clip(shape = RoundedCornerShape(12.dp))
-            .background(WhiteCard)
+            .background(WhiteLightBlue)
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {

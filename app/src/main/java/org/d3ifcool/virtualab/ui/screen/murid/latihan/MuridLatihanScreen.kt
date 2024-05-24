@@ -1,6 +1,5 @@
 package org.d3ifcool.virtualab.ui.screen.murid.latihan
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,12 +10,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults.cardColors
+import androidx.compose.material3.CardDefaults.cardElevation
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -33,7 +34,7 @@ import org.d3ifcool.virtualab.ui.component.GradientPage
 import org.d3ifcool.virtualab.ui.component.TopNav
 
 @Composable
-fun LatihanScreen(navController: NavHostController) {
+fun MuridLatihanScreen(navController: NavHostController) {
     Scaffold(
         topBar = {
             TopNav(title = R.string.latihan, navController = navController)
@@ -43,12 +44,12 @@ fun LatihanScreen(navController: NavHostController) {
         },
         containerColor = Color.White
     ) {
-        ScreenContent(modifier = Modifier.padding(bottom = it.calculateBottomPadding()))
+        ScreenContent(modifier = Modifier.padding(bottom = it.calculateBottomPadding()), navController)
     }
 }
 
 @Composable
-private fun ScreenContent(modifier: Modifier) {
+private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
     GradientPage(modifier, image = R.drawable.latihan_header) {
         Text(
             text = stringResource(R.string.latihan_header),
@@ -57,32 +58,48 @@ private fun ScreenContent(modifier: Modifier) {
             textAlign = TextAlign.Justify
         )
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            CardList("Latihan 1", "Mudah")
-            CardList("Latihan 2", "Sedang")
-            CardList("Latihan 3", "Sulit")
-            CardList("Latihan 4", "Mudah")
-            CardList("Latihan 5", "Sedang")
-            CardList("Latihan 6", "Sulit")
+            CardList("Latihan 1", "Mudah") {
+                navController.navigate(Screen.KerjakanLatihan.route)
+            }
+            CardList("Latihan 2", "Sedang") {
+                navController.navigate(Screen.KerjakanLatihan.route)
+            }
+            CardList("Latihan 3", "Sulit") {
+                navController.navigate(Screen.KerjakanLatihan.route)
+            }
+            CardList("Latihan 4", "Mudah") {
+                navController.navigate(Screen.KerjakanLatihan.route)
+            }
+            CardList("Latihan 5", "Sedang") {
+                navController.navigate(Screen.KerjakanLatihan.route)
+            }
+            CardList("Latihan 6", "Sulit") {
+                navController.navigate(Screen.KerjakanLatihan.route)
+            }
         }
     }
 }
 
 @Composable
-private fun CardList(title: String, difficulty: String) {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .shadow(elevation = 6.dp, shape = RoundedCornerShape(12.dp))
-            .background(Color.White)
-            .padding(vertical = 24.dp, horizontal = 35.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-
+private fun CardList(title: String, difficulty: String, onClick: () -> Unit) {
+    Card(
+        onClick = { onClick() },
+        elevation = cardElevation(6.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = cardColors(containerColor = Color.White)
     ) {
-        Text(text = title, fontSize = 16.sp)
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "Tingkat Kesulitan", fontSize = 14.sp)
-            Text(text = difficulty, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 24.dp, horizontal = 35.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(text = title, fontSize = 16.sp)
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(text = "Tingkat Kesulitan", fontSize = 14.sp)
+                Text(text = difficulty, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+            }
         }
     }
     Spacer(modifier = Modifier.height(8.dp))
@@ -91,5 +108,5 @@ private fun CardList(title: String, difficulty: String) {
 @Preview
 @Composable
 private fun Prev() {
-    LatihanScreen(navController = rememberNavController())
+    MuridLatihanScreen(navController = rememberNavController())
 }

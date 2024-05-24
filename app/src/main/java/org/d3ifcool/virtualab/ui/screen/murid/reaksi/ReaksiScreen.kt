@@ -1,17 +1,21 @@
 package org.d3ifcool.virtualab.ui.screen.murid.reaksi
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -26,7 +30,9 @@ import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.GradientPage
 import org.d3ifcool.virtualab.ui.component.TopNav
+import org.d3ifcool.virtualab.ui.theme.LightBlue2
 import org.d3ifcool.virtualab.ui.theme.Poppins
+import org.d3ifcool.virtualab.ui.theme.WhiteLightBlue
 
 @Composable
 fun ReaksiScreen(navController: NavHostController) {
@@ -45,35 +51,53 @@ private fun ScreenContent(modifier: Modifier) {
     GradientPage(modifier = modifier, image = R.drawable.reaksi_illustration) {
         Spacer(modifier = Modifier.height(46.dp))
         Text(text = stringResource(R.string.reaksi_content_header), fontSize = 16.sp)
-        Column(
-            modifier = Modifier
-                .padding(top = 36.dp)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(text = "Reaksi Fotosintesis", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
-            Spacer(modifier = Modifier.height(10.dp))
-            Image(
-                painter = painterResource(id = R.drawable.fotosintesis_illustration),
-                contentDescription = "Gambar Reaksi"
-            )
-            Text(
-                text = "Reaksi kimia fotosintesis merupakan salah satu reaksi " +
-                        "kimia sehari-hari yang paling umum karena inilah cara tumbuhan " +
-                        "menghasilkan makanan untuk mereka sendiri serta mengubah karbon " +
-                        "dioksida dan air menjadi oksigen dan glukosa.",
-                fontSize = 14.sp,
-                textAlign = TextAlign.Justify,
-                fontFamily = Poppins
-            )
-            Spacer(modifier = Modifier.height(46.dp))
-            Text(
-                text = "Reaksi Sabun dan Deterjen",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
+        Spacer(modifier = Modifier.height(25.dp))
+        ItemList()
+        ItemList()
+    }
+}
 
+@Composable
+private fun ItemList() {
+    Column(
+        modifier = Modifier
+            .clip(shape = RoundedCornerShape(10.dp))
+            .background(LightBlue2)
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        ItemContent()
+    }
+    Spacer(modifier = Modifier.height(33.dp))
+}
+
+@Composable
+private fun ItemContent() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 21.dp, vertical = 24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Reaksi Fotosintesis",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.SemiBold
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        Image(
+            painter = painterResource(id = R.drawable.fotosintesis_illustration),
+            contentDescription = "Gambar Reaksi"
+        )
+        Text(
+            text = "Reaksi kimia fotosintesis merupakan salah satu reaksi " +
+                    "kimia sehari-hari yang paling umum karena inilah cara tumbuhan " +
+                    "menghasilkan makanan untuk mereka sendiri serta mengubah karbon " +
+                    "dioksida dan air menjadi oksigen dan glukosa.",
+            fontSize = 14.sp,
+            textAlign = TextAlign.Justify,
+            fontFamily = Poppins
+        )
     }
 }
 

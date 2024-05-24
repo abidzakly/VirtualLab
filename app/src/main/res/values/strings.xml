@@ -93,4 +93,6 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
     <string name="buat_latihan_button">Buat Soal</string>
     <string name="buat_materi_button">Buat Materi</string>
     <string name="reaksi_content_header">Berikut adalah contoh reaksi kimia yang terjadi di kehidupan sehari-hari:</string>
+    <string name="latihan_x">Latihan X</string>
+    <string name="kerjakan_latihan_header">Setarakan persamaan reaksi berikut</string>
 </resources>
