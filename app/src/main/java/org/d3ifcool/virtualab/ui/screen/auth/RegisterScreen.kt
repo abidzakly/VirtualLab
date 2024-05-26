@@ -8,10 +8,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
@@ -262,18 +260,14 @@ private fun RegisterScreenContent(
                     text = stringResource(id = R.string.signup_button),
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.fillMaxWidth(),
-                    align = TextAlign.Center
+                    textAlign = TextAlign.Center
                 )
             }
         }
         Spacer(modifier = Modifier.padding(8.dp))
         Row {
-            Text(
+            RegularText(
                 text = stringResource(id = R.string.account_exist),
-                fontWeight = FontWeight.Normal,
-                fontSize = 16.sp,
-                fontFamily = Poppins,
-                color = Color.Black
             )
             Spacer(modifier = Modifier.padding(2.dp))
             ClickableText(

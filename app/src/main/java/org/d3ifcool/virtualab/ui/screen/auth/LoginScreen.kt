@@ -57,6 +57,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
+import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.theme.BlueLink
 import org.d3ifcool.virtualab.ui.theme.GrayText
 import org.d3ifcool.virtualab.ui.theme.LightBlue
@@ -180,22 +181,16 @@ private fun LoginScreenContent(modifier: Modifier, navController: NavHostControl
                 contentColor = Color.Black
             )
         ) {
-            Text(
+            RegularText(
                 text = stringResource(id = R.string.signin),
                 fontWeight = FontWeight.SemiBold,
-                fontFamily = Poppins,
-                fontSize = 16.sp
             )
         }
         Spacer(modifier = Modifier.padding(8.dp))
 
         Row {
-            Text(
+            RegularText(
                 text = stringResource(id = R.string.no_account),
-                fontWeight = FontWeight.Normal,
-                fontSize = 16.sp,
-                fontFamily = Poppins,
-                color = Color.Black
             )
             Spacer(modifier = Modifier.padding(2.dp))
             ClickableText(

@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,8 +14,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -25,15 +27,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.GradientPage
+import org.d3ifcool.virtualab.ui.component.MuridEmptyState
+import org.d3ifcool.virtualab.ui.component.RegularText
+import org.d3ifcool.virtualab.ui.component.SmallText
 import org.d3ifcool.virtualab.ui.component.TopNav
 
 @Composable
@@ -50,20 +53,25 @@ fun NilaiScreen(navController: NavHostController) {
 
 @Composable
 private fun ScreenContent(modifier: Modifier) {
+    var isEmpty by remember { mutableStateOf(true) }
+
     GradientPage(modifier, image = R.drawable.nilai_illustration) {
-        Spacer(modifier = Modifier.height(24.dp))
-        Column(modifier = Modifier.verticalScroll(
-                rememberScrollState()
-            )) {
-            Text(
-                text = "Nilai dari latihan yang telah kamu kerjakan:",
-                modifier = Modifier.padding(bottom = 16.dp),
-                fontSize = 16.sp
-            )
+        if (!isEmpty) {
+            Spacer(modifier = Modifier.height(24.dp))
+            Column(
+                modifier = Modifier.verticalScroll(
+                    rememberScrollState()
+                )
+            ) {
+                RegularText(text = "Nilai dari latihan yang telah kamu kerjakan:")
+                Spacer(modifier = Modifier.height(16.dp))
                 CardList()
                 CardList()
                 CardList()
                 CardList()
+            }
+        } else {
+            MuridEmptyState(text = stringResource(id = R.string.empty_nilai))
         }
 //            LazyColumn {
 //                items() {
@@ -85,15 +93,14 @@ private fun CardList() {
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         Column(verticalArrangement = Arrangement.SpaceEvenly) {
-            Text(
-                text = stringResource(R.string.latihan_title),
-                fontSize = 16.sp,
+            RegularText(
+                text = stringResource(id = R.string.latihan_title),
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = stringResource(R.string.tingkat_kesulitan), fontSize = 14.sp)
+            SmallText(text = stringResource(id = R.string.tingkat_kesulitan))
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = stringResource(R.string.nilai), fontSize = 14.sp)
+            SmallText(text = stringResource(id = R.string.nilai))
             Spacer(modifier = Modifier.height(8.dp))
 
         }

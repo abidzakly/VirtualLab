@@ -102,5 +102,9 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
     <string name="list_latihan_kosong">Belum ada data latihan</string>
 
     <string name="empty_title" />
+    <string name="empty_nilai">Belum ada latihan yang telah dikerjakan.</string>
+    <string name="empty_latihan">Latihan masih kosong.</string>
+    <string name="empty_materi">Materi ajar masih kosong.</string>
+    <string name="empty_reaksi">Contoh reaksi masih kosong.</string>
 
 </resources>

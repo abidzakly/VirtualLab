@@ -52,6 +52,7 @@ import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.BottomSheet
+import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNavDashboard
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.ui.theme.LightBlue
@@ -172,13 +173,11 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                 painter = painterResource(id = R.drawable.guru_landing),
                 contentDescription = "Dashboard Guru Image"
             )
-            Text(
-                text = stringResource(R.string.dashboard_guru_sub_header),
-                fontSize = 15.sp,
+            RegularText(
+                text = stringResource(id = R.string.dashboard_guru_sub_header),
                 modifier = Modifier
                     .padding(vertical = 24.dp)
-                    .fillMaxWidth(),
-                color = Black
+                    .fillMaxWidth()
             )
             ItemsList()
             ItemsList()
