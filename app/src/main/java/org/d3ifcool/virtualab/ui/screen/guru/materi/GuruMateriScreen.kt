@@ -26,6 +26,7 @@ import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,6 +38,7 @@ import org.d3ifcool.virtualab.model.Categories
 import org.d3ifcool.virtualab.model.Materi
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
+import org.d3ifcool.virtualab.ui.component.MediumText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.LightBlueGradient
 
@@ -86,8 +88,8 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                     )
             ) {
                 ListMateri(
-                    title = R.string.materi_title,
-                    titledata = R.string.materi_title_data
+                    title = R.string.judul_materi_guru,
+                    titledata = R.string.judul_materi_data
                 ) {
                     navController.navigate(Screen.GuruDetailMateri.route)
                 }
@@ -120,12 +122,15 @@ fun ListMateri(materi: Materi? = null, title: Int, titledata: Int, onClick: () -
                 text = stringResource(title),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium,
-                maxLines = 1
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = stringResource(titledata),
                 fontSize = 16.sp,
-                fontWeight = FontWeight.Normal
+                fontWeight = FontWeight.Normal,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
         Icon(painter = painterResource(R.drawable.arrow_circle), contentDescription = "Lihat Materi", modifier = Modifier.size(28.dp))

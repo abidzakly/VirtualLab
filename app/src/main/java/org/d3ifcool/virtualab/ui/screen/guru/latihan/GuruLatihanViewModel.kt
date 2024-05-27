@@ -1,15 +1,15 @@
-package org.d3ifcool.virtualab.ui.screen.guru.materi
+package org.d3ifcool.virtualab.ui.screen.guru.latihan
 
 import androidx.lifecycle.ViewModel
-import org.d3ifcool.virtualab.model.Materi
+import org.d3ifcool.virtualab.model.Latihan
 
-class GuruMateriViewModel: ViewModel() {
+class GuruLatihanViewModel: ViewModel() {
     val data = getDataDummy()
-    private fun getDataDummy(): List<Materi> {
-        val data = mutableListOf<Materi>()
+    private fun getDataDummy(): List<Latihan> {
+        val data = mutableListOf<Latihan>()
         for (i in 30 downTo 1) {
             data.add(
-                Materi(
+                Latihan(
                     1,
                     1,
                     1,

@@ -95,6 +95,8 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
     <string name="reaksi_content_header">Berikut adalah contoh reaksi kimia yang terjadi di kehidupan sehari-hari:</string>
     <string name="latihan_x">Latihan X</string>
     <string name="kerjakan_latihan_header">Setarakan persamaan reaksi berikut</string>
+    <!--   Materi Guru   -->
+    <string name="list_materi_kosong">Belum ada data materi</string>
     <string name="materi_title_data">Persamaan Reaksi Kimia</string>
     <!--   Detail Materi Guru   -->
     <string name="guru_detail_materi_title">Detail Materi</string>
@@ -107,5 +109,16 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
     <!--   Latihan Guru   -->
     <string name="latihan_title_data">Penyetaraan Reaksi Kimia</string>
     <string name="list_latihan_kosong">Belum ada data latihan</string>
+    <string name="guru_detail_latihan_title">Detail Latihan</string>
+    <string name="judul_latihan_guru">Judul Latihan 5</string>
+    <string name="judul_latihan_data">Penyetaraan Reaksi kimia melalui pendekatan reaksi pembakaran</string>
+    <string name="tingkat_kesulitan_title">Tingkat Kesulitan</string>
+    <string name="tingkat_kesulitan_data">Mudah</string>
+    <string name="perintah_soal">Setarakan persamaan reaksi kimia berikut!</string>
+    <string name="soal_title">Soal 1</string>
+    <string name="pertanyaan">C4H10 + O2 = ...CO2 + ...H20 </string>
+    <string name="kunci_jawaban">Kunci Jawaban</string>
+    <string name="jawaban_pertama">Jawaban 1</string>
+    <string name="jawaban_kedua">Jawaban 2</string>
 
 </resources>
