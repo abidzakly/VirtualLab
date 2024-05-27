@@ -16,10 +16,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,7 +35,11 @@ import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
+import org.d3ifcool.virtualab.ui.component.ExtraLargeText
 import org.d3ifcool.virtualab.ui.component.GradientPage
+import org.d3ifcool.virtualab.ui.component.MediumLargeText
+import org.d3ifcool.virtualab.ui.component.MuridEmptyState
+import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.GrayTitle
 import org.d3ifcool.virtualab.ui.theme.LightBlue
@@ -56,36 +65,45 @@ fun MuridMateriScreen(navController: NavHostController) {
 
 @Composable
 private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
+    var isEmpty by remember { mutableStateOf(true) }
+
     GradientPage(
         modifier = modifier,
         isCenter = false,
         image = R.drawable.materi_header
     ) {
-        Text(
-            text = "Materi Ajar",
-            modifier = Modifier.padding(top = 24.dp, bottom = 16.dp),
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Medium
-        )
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.verticalScroll(
-                rememberScrollState()
-            )
-        ) {
-            CardList {
-                navController.navigate(Screen.MuridDetailMateri.route)
+        if (!isEmpty) {
+            Spacer(modifier = Modifier.height(24.dp))
+            Column(
+                modifier = Modifier.verticalScroll(
+                    rememberScrollState()
+                )
+            ) {
+                MediumLargeText(
+                    text = "Materi Ajar",
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    fontWeight = FontWeight.Medium
+                )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    CardList {
+                        navController.navigate(Screen.MuridDetailMateri.route)
+                    }
+                    CardList {
+                    }
+                    CardList {
+                    }
+                    CardList {
+                    }
+                    CardList {
+                    }
+                    CardList {
+                    }
+                }
             }
-            CardList {
-            }
-            CardList {
-            }
-            CardList {
-            }
-            CardList {
-            }
-            CardList {
-            }
+        } else {
+            MuridEmptyState(text = stringResource(id = R.string.empty_materi))
         }
     }
 }
@@ -94,25 +112,24 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
 private fun CardList(onClick: () -> Unit) {
     Row(
         Modifier
+            .clickable {
+                onClick()
+            }
             .fillMaxWidth()
             .clip(shape = RoundedCornerShape(20.dp))
             .background(LightBlue)
-            .padding(vertical = 16.dp, horizontal = 20.dp)
-            .clickable {
-                onClick()
-            },
+            .padding(vertical = 16.dp, horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        Text(text = "01", fontSize = 32.sp, color = GrayTitle)
+        ExtraLargeText(text = "01", color = GrayTitle)
         Spacer(modifier = Modifier.width(20.dp))
         Column {
-            Text(text = "Materi 1", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
-            Text(
+            MediumLargeText(text = "Materi 1", fontWeight = FontWeight.SemiBold)
+            RegularText(
                 text = "Materi ini berisi pembelajaran tentang Materi ini berisi pembelajaran tentang ",
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
-                fontSize = 16.sp,
                 modifier = Modifier.width(280.dp)
             )
         }

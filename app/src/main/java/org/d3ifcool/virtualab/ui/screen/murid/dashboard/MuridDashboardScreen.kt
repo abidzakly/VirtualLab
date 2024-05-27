@@ -41,6 +41,8 @@ import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.model.Categories
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
+import org.d3ifcool.virtualab.ui.component.RegularText
+import org.d3ifcool.virtualab.ui.component.SmallText
 import org.d3ifcool.virtualab.ui.component.TopNavDashboard
 import org.d3ifcool.virtualab.ui.theme.Poppins
 import org.d3ifcool.virtualab.ui.theme.WhiteLightBlue
@@ -69,13 +71,10 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                 .padding(horizontal = 33.dp)
         ) {
             Column {
-                Text(
+                RegularText(
                     text = stringResource(id = R.string.dashboard_headline),
                     fontWeight = FontWeight.SemiBold,
-                    fontSize = 16.sp,
-                    fontFamily = Poppins,
-                    modifier = Modifier.padding(bottom = 12.dp),
-                    color = Color.Black
+                    modifier = Modifier.padding(bottom = 12.dp)
                 )
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -90,15 +89,13 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                             painter = painterResource(id = R.drawable.video_thumbnail),
                             contentDescription = "Video Thumbnail"
                         )
-                        Text(
-                            text = stringResource(R.string.dashboard_h2),
-                            fontSize = 16.sp,
+                        RegularText(
+                            text = stringResource(id = R.string.dashboard_h2),
                             fontWeight = FontWeight.Medium,
                             textAlign = TextAlign.Center,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 15.dp),
-                            color = Color.Black,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1
                         )
@@ -111,11 +108,9 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-                Text(
+                RegularText(
                     text = stringResource(R.string.dashboard_category_title),
                     fontWeight = FontWeight.SemiBold,
-                    fontSize = 16.sp,
-                    fontFamily = Poppins,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -188,12 +183,10 @@ fun GridItem(categories: Categories? = null, title: Int, image: Int, onClick: ()
                 contentDescription = "Gambar Molekul"
             )
             Spacer(modifier = Modifier.padding(vertical = 6.dp))
-            Text(
+            SmallText(
                 text = stringResource(title),
-                fontSize = 14.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(horizontal = 8.dp),
-                color = Color.Black,
                 fontWeight = FontWeight.SemiBold
             )
         }

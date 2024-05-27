@@ -30,14 +30,15 @@ import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
+import org.d3ifcool.virtualab.ui.component.LargeText
+import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
-import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.LightBlue2
 
 @Composable
 fun MuridDetailMateriScreen(navController: NavHostController) {
     Scaffold(topBar = {
-        TopNav(title = R.string.detail_materi_title, navController = navController)
+        TopNav(title = R.string.empty_title, navController = navController)
     },
         bottomBar = {
             BottomNav(currentRoute = Screen.MuridDashboard.route, navController = navController)
@@ -57,9 +58,8 @@ private fun ScreenContent(modifier: Modifier) {
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = stringResource(id = R.string.detail_materi_header),
-            fontSize = 24.sp,
+        LargeText(
+            text = "Materi 01",
             fontWeight = FontWeight.Medium,
             modifier = Modifier.padding(top = 23.dp)
         )
@@ -73,13 +73,11 @@ private fun ScreenContent(modifier: Modifier) {
         DetailContent(content = "Molekul CH4", image = R.drawable.gambar_molekul)
         DetailContent(content = "Molekul O2", image = R.drawable.gambar_molekul)
         DetailContent(content = "Molekul CO2", image = R.drawable.gambar_molekul)
-        DetailContent(content = "Molekul H20", image = R.drawable.gambar_molekul)
 
-        Text(
+        RegularText(
             text = "Reaksi pada materi 01 ini terjadi ketika zat " +
                     "x bertemu dengan zat y yang akan menghasilkan zat " +
                     "AB yang biasanya digunakan untuk membantu perbaikan tubuh.",
-            fontSize = 16.sp,
             fontWeight = FontWeight.Medium,
             textAlign = TextAlign.Justify,
             modifier = Modifier.padding(horizontal = 22.dp, vertical = 23.dp)
@@ -90,18 +88,16 @@ private fun ScreenContent(modifier: Modifier) {
 
 @Composable
 private fun DetailContent(content: String, image: Int) {
-    Text(
+    RegularText(
         text = stringResource(id = R.string.detail_materi_sub_header),
-        fontSize = 16.sp,
         fontWeight = FontWeight.Medium,
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 22.dp)
     )
     Spacer(modifier = Modifier.height(18.dp))
-    Text(
+    RegularText(
         text = content,
-        fontSize = 16.sp,
         fontWeight = FontWeight.Medium,
         modifier = Modifier
             .fillMaxWidth()

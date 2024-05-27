@@ -16,6 +16,10 @@ import androidx.compose.material3.CardDefaults.cardElevation
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +35,9 @@ import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.GradientPage
+import org.d3ifcool.virtualab.ui.component.MuridEmptyState
+import org.d3ifcool.virtualab.ui.component.RegularText
+import org.d3ifcool.virtualab.ui.component.SmallText
 import org.d3ifcool.virtualab.ui.component.TopNav
 
 @Composable
@@ -44,38 +51,52 @@ fun MuridLatihanScreen(navController: NavHostController) {
         },
         containerColor = Color.White
     ) {
-        ScreenContent(modifier = Modifier.padding(bottom = it.calculateBottomPadding()), navController)
+        ScreenContent(
+            modifier = Modifier.padding(bottom = it.calculateBottomPadding()),
+            navController
+        )
     }
 }
 
 @Composable
 private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
+    var isEmpty by remember { mutableStateOf(true) }
+
     GradientPage(modifier, image = R.drawable.latihan_header) {
-        Text(
-            text = stringResource(R.string.latihan_header),
-            fontSize = 16.sp,
-            modifier = Modifier.padding(vertical = 30.dp),
-            textAlign = TextAlign.Justify
-        )
-        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            CardList("Latihan 1", "Mudah") {
-                navController.navigate(Screen.MuridDetailLatihan.route)
+        if (!isEmpty) {
+            Spacer(modifier = Modifier.height(24.dp))
+            Column(
+                modifier = Modifier.verticalScroll(
+                    rememberScrollState()
+                )
+            ) {
+                Spacer(modifier = Modifier.height(6.dp))
+                RegularText(
+                    text = stringResource(R.string.latihan_header),
+                    textAlign = TextAlign.Justify
+                )
+                Spacer(modifier = Modifier.height(30.dp))
+                CardList("Latihan 1", "Mudah") {
+                    navController.navigate(Screen.MuridDetailLatihan.route)
+                }
+                CardList("Latihan 2", "Sedang") {
+                    navController.navigate(Screen.MuridDetailLatihan.route)
+                }
+                CardList("Latihan 3", "Sulit") {
+                    navController.navigate(Screen.MuridDetailLatihan.route)
+                }
+                CardList("Latihan 4", "Mudah") {
+                    navController.navigate(Screen.MuridDetailLatihan.route)
+                }
+                CardList("Latihan 5", "Sedang") {
+                    navController.navigate(Screen.MuridDetailLatihan.route)
+                }
+                CardList("Latihan 6", "Sulit") {
+                    navController.navigate(Screen.MuridDetailLatihan.route)
+                }
             }
-            CardList("Latihan 2", "Sedang") {
-                navController.navigate(Screen.MuridDetailLatihan.route)
-            }
-            CardList("Latihan 3", "Sulit") {
-                navController.navigate(Screen.MuridDetailLatihan.route)
-            }
-            CardList("Latihan 4", "Mudah") {
-                navController.navigate(Screen.MuridDetailLatihan.route)
-            }
-            CardList("Latihan 5", "Sedang") {
-                navController.navigate(Screen.MuridDetailLatihan.route)
-            }
-            CardList("Latihan 6", "Sulit") {
-                navController.navigate(Screen.MuridDetailLatihan.route)
-            }
+        } else {
+            MuridEmptyState(text = stringResource(id = R.string.empty_latihan))
         }
     }
 }
@@ -95,10 +116,10 @@ private fun CardList(title: String, difficulty: String, onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = title, fontSize = 16.sp)
+            RegularText(text = title)
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = "Tingkat Kesulitan", fontSize = 14.sp)
-                Text(text = difficulty, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                SmallText(text = "Tingkat Kesulitan")
+                SmallText(text = difficulty, fontWeight = FontWeight.Bold)
             }
         }
     }

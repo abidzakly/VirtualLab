@@ -13,6 +13,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,10 +33,13 @@ import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.GradientPage
+import org.d3ifcool.virtualab.ui.component.MediumLargeText
+import org.d3ifcool.virtualab.ui.component.MuridEmptyState
+import org.d3ifcool.virtualab.ui.component.RegularText
+import org.d3ifcool.virtualab.ui.component.SmallText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.LightBlue2
 import org.d3ifcool.virtualab.ui.theme.Poppins
-import org.d3ifcool.virtualab.ui.theme.WhiteLightBlue
 
 @Composable
 fun ReaksiScreen(navController: NavHostController) {
@@ -48,12 +55,25 @@ fun ReaksiScreen(navController: NavHostController) {
 
 @Composable
 private fun ScreenContent(modifier: Modifier) {
-    GradientPage(modifier = modifier, image = R.drawable.reaksi_illustration) {
-        Spacer(modifier = Modifier.height(46.dp))
-        Text(text = stringResource(R.string.reaksi_content_header), fontSize = 16.sp)
-        Spacer(modifier = Modifier.height(25.dp))
-        ItemList()
-        ItemList()
+    var isEmpty by remember { mutableStateOf(true) }
+
+    GradientPage(
+        modifier = modifier,
+        image = R.drawable.reaksi_illustration,
+        isDiffSize = true,
+    ) {
+        if (!isEmpty) {
+            Spacer(modifier = Modifier.height(24.dp))
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                Spacer(modifier = Modifier.height(22.dp))
+                RegularText(text = stringResource(R.string.reaksi_content_header))
+                Spacer(modifier = Modifier.height(25.dp))
+                ItemList()
+                ItemList()
+            }
+        } else {
+            MuridEmptyState(text = stringResource(id = R.string.empty_reaksi))
+        }
     }
 }
 
@@ -62,8 +82,7 @@ private fun ItemList() {
     Column(
         modifier = Modifier
             .clip(shape = RoundedCornerShape(10.dp))
-            .background(LightBlue2)
-            .verticalScroll(rememberScrollState()),
+            .background(LightBlue2),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ItemContent()
@@ -79,24 +98,18 @@ private fun ItemContent() {
             .padding(horizontal = 21.dp, vertical = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "Reaksi Fotosintesis",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.SemiBold
-        )
+        MediumLargeText(text = "Reaksi Fotosintesis", fontWeight = FontWeight.SemiBold)
         Spacer(modifier = Modifier.height(10.dp))
         Image(
             painter = painterResource(id = R.drawable.fotosintesis_illustration),
             contentDescription = "Gambar Reaksi"
         )
-        Text(
+        SmallText(
             text = "Reaksi kimia fotosintesis merupakan salah satu reaksi " +
                     "kimia sehari-hari yang paling umum karena inilah cara tumbuhan " +
                     "menghasilkan makanan untuk mereka sendiri serta mengubah karbon " +
                     "dioksida dan air menjadi oksigen dan glukosa.",
-            fontSize = 14.sp,
             textAlign = TextAlign.Justify,
-            fontFamily = Poppins
         )
     }
 }

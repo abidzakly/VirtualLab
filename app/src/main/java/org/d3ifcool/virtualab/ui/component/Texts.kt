@@ -6,16 +6,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import org.d3ifcool.virtualab.ui.theme.Poppins
 
 @Composable
 fun ExtraLargeText(
-    text: String,
-    fontWeight: FontWeight,
     modifier: Modifier = Modifier,
+    text: String,
+    fontWeight: FontWeight = FontWeight.Normal,
     color: Color = Color.Black,
-    align: TextAlign = TextAlign.Start
+    textAlign: TextAlign = TextAlign.Start,
+    maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Clip
+
 ) {
     Text(
         text = text,
@@ -24,17 +28,22 @@ fun ExtraLargeText(
         fontWeight = fontWeight,
         modifier = modifier,
         color = color,
-        textAlign = align
+        textAlign = textAlign,
+        maxLines = maxLines,
+        overflow = overflow
     )
 }
 
 @Composable
 fun LargeText(
-    text: String,
-    fontWeight: FontWeight,
     modifier: Modifier = Modifier,
+    text: String,
+    fontWeight: FontWeight = FontWeight.Normal,
     color: Color = Color.Black,
-    align: TextAlign = TextAlign.Start
+    textAlign: TextAlign = TextAlign.Start,
+    maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Clip
+
 ) {
     Text(
         text = text,
@@ -43,17 +52,22 @@ fun LargeText(
         fontWeight = fontWeight,
         modifier = modifier,
         color = color,
-        textAlign = align
+        textAlign = textAlign,
+        maxLines = maxLines,
+        overflow = overflow
     )
 }
 
 @Composable
 fun SemiLargeText(
-    text: String,
-    fontWeight: FontWeight,
     modifier: Modifier = Modifier,
+    text: String,
+    fontWeight: FontWeight = FontWeight.Normal,
     color: Color = Color.Black,
-    align: TextAlign = TextAlign.Start
+    textAlign: TextAlign = TextAlign.Start,
+    maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Clip
+
 ) {
     Text(
         text = text,
@@ -62,17 +76,22 @@ fun SemiLargeText(
         fontWeight = fontWeight,
         modifier = modifier,
         color = color,
-        textAlign = align
+        textAlign = textAlign,
+        maxLines = maxLines,
+        overflow = overflow
     )
 }
 
 @Composable
 fun MediumLargeText(
-    text: String,
-    fontWeight: FontWeight,
     modifier: Modifier = Modifier,
+    text: String,
+    fontWeight: FontWeight = FontWeight.Normal,
     color: Color = Color.Black,
-    align: TextAlign = TextAlign.Start
+    textAlign: TextAlign = TextAlign.Start,
+    maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Clip
+
 ) {
     Text(
         text = text,
@@ -81,17 +100,22 @@ fun MediumLargeText(
         fontWeight = fontWeight,
         modifier = modifier,
         color = color,
-        textAlign = align
+        textAlign = textAlign,
+        maxLines = maxLines,
+        overflow = overflow
     )
 }
 
 @Composable
 fun MediumText(
-    text: String,
-    fontWeight: FontWeight,
     modifier: Modifier = Modifier,
+    text: String,
+    fontWeight: FontWeight = FontWeight.Normal,
     color: Color = Color.Black,
-    align: TextAlign = TextAlign.Start
+    textAlign: TextAlign = TextAlign.Start,
+    maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Clip
+
 ) {
     Text(
         text = text,
@@ -100,17 +124,22 @@ fun MediumText(
         fontWeight = fontWeight,
         modifier = modifier,
         color = color,
-        textAlign = align
+        textAlign = textAlign,
+        maxLines = maxLines,
+        overflow = overflow
     )
 }
 
 @Composable
 fun RegularText(
-    text: String,
-    fontWeight: FontWeight,
     modifier: Modifier = Modifier,
+    text: String,
+    fontWeight: FontWeight = FontWeight.Normal,
     color: Color = Color.Black,
-    align: TextAlign = TextAlign.Start
+    textAlign: TextAlign = TextAlign.Start,
+    maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Clip
+
 ) {
     Text(
         text = text,
@@ -119,17 +148,22 @@ fun RegularText(
         fontWeight = fontWeight,
         modifier = modifier,
         color = color,
-        textAlign = align
+        textAlign = textAlign,
+        maxLines = maxLines,
+        overflow = overflow
     )
 }
 
 @Composable
 fun SmallText(
-    text: String,
-    fontWeight: FontWeight,
     modifier: Modifier = Modifier,
+    text: String,
+    fontWeight: FontWeight = FontWeight.Normal,
     color: Color = Color.Black,
-    align: TextAlign = TextAlign.Start
+    textAlign: TextAlign = TextAlign.Start,
+    maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Clip
+
 ) {
     Text(
         text = text,
@@ -138,17 +172,22 @@ fun SmallText(
         fontWeight = fontWeight,
         modifier = modifier,
         color = color,
-        textAlign = align
+        textAlign = textAlign,
+        maxLines = maxLines,
+        overflow = overflow
     )
 }
 
 @Composable
 fun ExtraSmallText(
-    text: String,
-    fontWeight: FontWeight,
     modifier: Modifier = Modifier,
+    text: String,
+    fontWeight: FontWeight = FontWeight.Normal,
     color: Color = Color.Black,
-    align: TextAlign = TextAlign.Start
+    textAlign: TextAlign = TextAlign.Start,
+    maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Clip
+
 ) {
     Text(
         text = text,
@@ -157,6 +196,8 @@ fun ExtraSmallText(
         fontWeight = fontWeight,
         modifier = modifier,
         color = color,
-        textAlign = align
+        textAlign = textAlign,
+        maxLines = maxLines,
+        overflow = overflow
     )
 }

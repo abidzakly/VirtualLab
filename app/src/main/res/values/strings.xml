@@ -14,18 +14,20 @@
     <string name="nilai_title">Nilai</string>
     <string name="latihan">Latihan</string>
     <string name="introduction_title">Pengenalan Reaksi Kimia</string>
-    <string name="detail_materi_title">Materi X</string>
+    <string name="murid_detail_materi_title">Materi X</string>
     <string name="contoh_reaksi_title">Contoh Reaksi</string>
     <!--  Form Labels  -->
-    <string name="username_label">Username</string>
-    <string name="nisn_label">NISN</string>
-    <string name="nip_label">NIP</string>
-    <string name="school_label">Asal Sekolah</string>
     <string name="fullname_label">Nama Lengkap</string>
+    <string name="username_label">Nama Pengguna</string>
+    <string name="email_label">Alamat Surel</string>
+    <string name="nisn_label">Nomor Induk Siswa Nasional (NISN)</string>
+    <string name="nip_label">Nomor Induk Pegawai (NIP)</string>
+    <string name="school_label">Asal Sekolah</string>
     <string name="password_label">Password</string>
     <string name="edit_password_label">Ubah Password</string>
 <!--  Auth Buttons -->
-    <string name="signup_button">Daftar</string>
+    <string name="signup_button">Daftar dan Verifikasi</string>
+    <string name="signup_clickable">Daftar</string>
     <string name="logout_button">Keluar</string>
     <string name="edit_button">Ubah</string>
     <string name="save_button">Simpan</string>
@@ -95,4 +97,17 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
     <string name="reaksi_content_header">Berikut adalah contoh reaksi kimia yang terjadi di kehidupan sehari-hari:</string>
     <string name="latihan_x">Latihan X</string>
     <string name="kerjakan_latihan_header">Setarakan persamaan reaksi berikut</string>
+
+    <string name="latihan_title_data">Penyetaraan Reaksi Kimia</string>
+    <string name="materi_title_data">Persamaan Reaksi Kimia</string>
+    <string name="list_latihan_kosong">Belum ada data latihan</string>
+
+    <string name="empty_title" />
+    <string name="empty_nilai">Belum ada latihan yang telah dikerjakan.</string>
+    <string name="empty_latihan">Latihan masih kosong.</string>
+    <string name="empty_materi">Materi ajar masih kosong.</string>
+    <string name="empty_reaksi">Contoh reaksi masih kosong.</string>
+    <string name="syarat_dan_ketentuan_label">Syarat dan Ketentuan</string>
+    <string name="register_extra_note">Verifikasi akun hanya dilakukan pada hari Senin-Jumat pukul 07.00 - 17.00 WIB</string>
+
 </resources>

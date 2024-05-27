@@ -31,8 +31,11 @@ import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
+import org.d3ifcool.virtualab.ui.component.MediumText
+import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.LightBlueGradient
+import org.d3ifcool.virtualab.ui.theme.Poppins
 
 @Composable
 fun GuruLatihanScreen(navController: NavHostController) {
@@ -53,10 +56,9 @@ private fun ScreenContent(modifier: Modifier) {
             .background(Color.White)
             .padding(4.dp)
     ) {
-        Text(
-            text = "Latihan yang pernah ditambahkan :",
-            Modifier.padding(start = 16.dp),
-            fontSize = 16.sp
+        RegularText(
+            text = "Latihan yang pernah ditambahkan: ",
+            modifier = Modifier.padding(start = 16.dp)
         )
         Column(
             modifier = Modifier
@@ -83,22 +85,23 @@ fun ListLatihan(modifier: Modifier) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(
+            MediumText(
                 text = stringResource(R.string.latihan),
-                fontSize = 18.sp,
                 fontWeight = FontWeight.Medium,
                 maxLines = 1
             )
-            Text(
+            RegularText(
                 text = stringResource(R.string.latihan_title_data),
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Normal
             )
         }
-        Icon(painter = painterResource(R.drawable.baseline_arrow_circle_outline_28), contentDescription = "Lihat Materi")
+        Icon(
+            painter = painterResource(R.drawable.baseline_arrow_circle_outline_28),
+            contentDescription = "Lihat Materi"
+        )
     }
     Spacer(modifier = Modifier.height(8.dp))
 }
+
 @Preview
 @Composable
 private fun Prev() {

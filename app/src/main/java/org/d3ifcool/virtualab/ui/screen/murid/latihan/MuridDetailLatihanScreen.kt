@@ -137,7 +137,7 @@ private fun ItemList(noSoal: String) {
                     text = "Pilihan Jawaban: ",
                     fontWeight = FontWeight.Normal,
                     modifier = Modifier.fillMaxWidth(),
-                    align = TextAlign.Center
+                    textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(15.dp))
                 Row(
