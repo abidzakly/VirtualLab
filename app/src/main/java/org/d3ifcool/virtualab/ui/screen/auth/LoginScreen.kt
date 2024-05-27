@@ -194,7 +194,7 @@ private fun LoginScreenContent(modifier: Modifier, navController: NavHostControl
             )
             Spacer(modifier = Modifier.padding(2.dp))
             ClickableText(
-                text = AnnotatedString(stringResource(id = R.string.signup_button)),
+                text = AnnotatedString(stringResource(id = R.string.signup_clickable)),
                 style = TextStyle(color = BlueLink, fontSize = 16.sp, fontFamily = Poppins)
             ) {
                 navController.navigate(Screen.Role.route) {

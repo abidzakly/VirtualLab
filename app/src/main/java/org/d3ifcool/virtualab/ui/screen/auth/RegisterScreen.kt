@@ -3,13 +3,17 @@ package org.d3ifcool.virtualab.ui.screen.auth
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
@@ -17,6 +21,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Assignment
+import androidx.compose.material.icons.automirrored.outlined.FactCheck
+import androidx.compose.material.icons.automirrored.outlined.Label
+import androidx.compose.material.icons.automirrored.outlined.PlaylistAddCheck
+import androidx.compose.material.icons.automirrored.outlined.ScheduleSend
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
@@ -43,6 +52,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -57,6 +67,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
+import org.d3ifcool.virtualab.ui.component.ExtraSmallText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.theme.BlueLink
 import org.d3ifcool.virtualab.ui.theme.GrayText
@@ -103,16 +114,18 @@ private fun RegisterScreenContent(
 ) {
     var fullname by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     var uniqueId by remember { mutableStateOf("") }
     var school by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val identifier by remember { mutableLongStateOf(id!!) }
 
-    var passwordVisibility by remember { mutableStateOf(false) }
+    var isChecked by remember { mutableStateOf(false) }
+
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 34.dp)
+            .padding(34.dp)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -124,145 +137,73 @@ private fun RegisterScreenContent(
                 .padding(bottom = 40.dp)
                 .size(181.dp)
         )
-        Column(modifier = Modifier.padding(horizontal = 32.dp)) {
-            TextField(
-                value = fullname,
-                onValueChange = { fullname = it },
-                label = { Text(text = stringResource(R.string.fullname_label)) },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    capitalization = KeyboardCapitalization.Words,
-                    imeAction = ImeAction.Next
-                ),
-                modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedContainerColor = Color.Transparent,
-                    focusedLabelColor = GrayText,
-                    unfocusedLabelColor = GrayText
+        RegisterForm(
+            fullname = fullname,
+            onFullnameChange = { fullname = it },
+            username = username,
+            onUsernameChange = { username = it },
+            email = email,
+            onEmailChange = { email = it },
+            uniqueId = uniqueId,
+            onUniqueIdChange = { uniqueId = it },
+            school = school,
+            onSchoolChange = { school = it },
+            password = password,
+            onPasswordChange = { password = it },
+            id = identifier
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Column(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.fillMaxWidth().padding(start = 10.dp)) {
+                ExtraSmallText(
+                    text = stringResource(R.string.syarat_dan_ketentuan_label),
+                    color = Color(0xFF0066FF),
+                    fontWeight = FontWeight.Bold
                 )
-            )
-            Spacer(modifier = Modifier.padding(8.dp))
-            TextField(
-                value = username,
-                onValueChange = { username = it },
-                label = { Text(text = stringResource(R.string.username_label)) },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    capitalization = KeyboardCapitalization.Words,
-                    imeAction = ImeAction.Next
-                ),
-                modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedContainerColor = Color.Transparent,
-                    focusedLabelColor = GrayText,
-                    unfocusedLabelColor = GrayText
-                )
-            )
-            Spacer(modifier = Modifier.padding(8.dp))
-
-            if (identifier == 0L) {
-                TextField(
-                    value = uniqueId,
-                    onValueChange = { uniqueId = it },
-                    label = { Text(text = stringResource(R.string.nip_label)) },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next
-                    ),
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedContainerColor = Color.Transparent,
-                        focusedLabelColor = GrayText,
-                        unfocusedLabelColor = GrayText
-                    )
-                )
-            } else {
-                TextField(
-                    value = uniqueId,
-                    onValueChange = { uniqueId = it },
-                    label = { Text(text = stringResource(R.string.nisn_label)) },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next
-                    ),
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedContainerColor = Color.Transparent,
-                        focusedLabelColor = GrayText,
-                        unfocusedLabelColor = GrayText
-                    )
+                Spacer(modifier = Modifier.height(8.dp))
+                ExtraSmallText(
+                    text = stringResource(R.string.register_extra_note),
+                    fontWeight = FontWeight.Light,
+                    color = Color(0xFF4A4A4A)
                 )
             }
-            Spacer(modifier = Modifier.padding(8.dp))
-            TextField(
-                value = school,
-                onValueChange = { school = it },
-                label = { Text(text = stringResource(R.string.school_label)) },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    capitalization = KeyboardCapitalization.Words,
-                    imeAction = ImeAction.Next
-                ),
-                modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedContainerColor = Color.Transparent,
-                    focusedLabelColor = GrayText,
-                    unfocusedLabelColor = GrayText
-                )
-            )
-            Spacer(modifier = Modifier.padding(8.dp))
-            TextField(
-                value = password,
-                onValueChange = { password = it },
-                label = { Text(text = stringResource(R.string.password_label)) },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done,
-                ),
-                visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-                trailingIcon = {
-                    IconButton(onClick = {
-                        passwordVisibility = !passwordVisibility
-                    }) {
-                        Icon(
-                            imageVector = if (passwordVisibility) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                            contentDescription = if (passwordVisibility) "Hide password" else "Show password"
-                        )
-                    }
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedContainerColor = Color.Transparent,
-                    focusedLabelColor = GrayText,
-                    unfocusedLabelColor = GrayText
-                )
-            )
-            Spacer(modifier = Modifier.padding(16.dp))
-            Button(
-                modifier = Modifier.padding(horizontal = 31.dp),
-                onClick = { navController.navigate(Screen.Login.route) },
-                shape = RoundedCornerShape(10.dp),
-                colors = buttonColors(
-                    containerColor = LightBlue,
-                    contentColor = Color.Black
-                )
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
             ) {
-                RegularText(
-                    text = stringResource(id = R.string.signup_button),
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center
+                IconButton(
+                    onClick = { isChecked = !isChecked }) {
+                    Icon(
+                        painterResource(if (!isChecked) R.drawable.check_box_outline_blank else R.drawable.check_box_filled),
+                        contentDescription = null,
+                        tint = Color(0xFF4D444C),
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+                Spacer(modifier = Modifier.width(4.dp))
+                ExtraSmallText(
+                    text = "Saya Setuju",
+                    fontWeight = FontWeight.Bold,
                 )
             }
+        }
+        Spacer(modifier = Modifier.height(32.dp))
+        Button(
+            modifier = Modifier.padding(horizontal = 31.dp),
+            onClick = { navController.navigate(Screen.Login.route) },
+            shape = RoundedCornerShape(10.dp),
+            colors = buttonColors(
+                containerColor = LightBlue,
+                contentColor = Color.Black
+            )
+        ) {
+            RegularText(
+                text = stringResource(id = R.string.signup_button),
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
         }
         Spacer(modifier = Modifier.padding(8.dp))
         Row {
@@ -279,7 +220,133 @@ private fun RegisterScreenContent(
                 }
             }
         }
+        Spacer(modifier = Modifier.height(32.dp))
     }
+}
+
+@Composable
+fun RegisterForm(
+    fullname: String,
+    onFullnameChange: (String) -> Unit,
+    username: String,
+    onUsernameChange: (String) -> Unit,
+    email: String,
+    onEmailChange: (String) -> Unit,
+    uniqueId: String,
+    onUniqueIdChange: (String) -> Unit,
+    school: String,
+    onSchoolChange: (String) -> Unit,
+    password: String,
+    onPasswordChange: (String) -> Unit,
+    id: Long? = null
+) {
+
+    RegistTextField(
+        value = fullname,
+        onValueChange = { onFullnameChange(it) },
+        label = R.string.fullname_label
+    )
+    RegistTextField(
+        value = username,
+        onValueChange = { onUsernameChange(it) },
+        label = R.string.username_label,
+        supportingLabel = " (Username)",
+        isUsername = true
+    )
+    RegistTextField(
+        value = email,
+        onValueChange = { onEmailChange(it) },
+        label = R.string.email_label,
+        supportingLabel = " (Email)",
+        isEmail = true
+    )
+    if (id == 0L) {
+        RegistTextField(
+            value = uniqueId,
+            onValueChange = { onUniqueIdChange(it) },
+            label = R.string.nip_label,
+            isNumber = true
+        )
+    } else {
+        RegistTextField(
+            value = uniqueId,
+            onValueChange = { onUniqueIdChange(it) },
+            label = R.string.nisn_label,
+            isNumber = true
+        )
+    }
+    RegistTextField(
+        value = school,
+        onValueChange = { onSchoolChange(it) },
+        label = R.string.school_label
+    )
+    RegistTextField(
+        value = password,
+        onValueChange = { onPasswordChange(it) },
+        label = R.string.password_label,
+        isPassword = true
+    )
+}
+
+@Composable
+private fun RegistTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: Int,
+    supportingLabel: String = "",
+    isUsername: Boolean = false,
+    isNumber: Boolean = false,
+    isEmail: Boolean = false,
+    isPassword: Boolean = false
+) {
+    var passwordVisibility by remember { mutableStateOf(!isPassword) }
+
+    TextField(
+        value = value,
+        onValueChange = { onValueChange(it) },
+        label = {
+            Row {
+                Text(text = stringResource(label))
+                Text(text = supportingLabel, fontStyle = FontStyle.Italic)
+            }
+        },
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = when {
+                isNumber -> KeyboardType.Number
+                isEmail -> KeyboardType.Email
+                isPassword -> KeyboardType.Password
+                else -> KeyboardType.Text
+            },
+            capitalization = when {
+                !isUsername || !isEmail -> KeyboardCapitalization.Words
+                else -> KeyboardCapitalization.None
+            },
+            imeAction = if (!isPassword) ImeAction.Next else ImeAction.Done
+        ),
+        modifier = Modifier.fillMaxWidth(),
+        colors = TextFieldDefaults.colors(
+            unfocusedContainerColor = Color.Transparent,
+            focusedContainerColor = Color.Transparent,
+            focusedLabelColor = GrayText,
+            unfocusedLabelColor = GrayText
+        ),
+        trailingIcon = if (!isPassword) null else {
+            {
+                IconButton(onClick = {
+                    passwordVisibility = !passwordVisibility
+                }) {
+                    Icon(
+                        imageVector = if (passwordVisibility) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                        contentDescription = if (passwordVisibility) "Hide password" else "Show password"
+                    )
+                }
+            }
+        },
+        visualTransformation =
+        if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation()
+    )
+    Spacer(modifier = Modifier.height(8.dp))
 }
 
 @Preview(showBackground = true)

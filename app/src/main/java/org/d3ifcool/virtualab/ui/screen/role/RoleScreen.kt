@@ -106,7 +106,7 @@ fun ScreenContent(modifier: Modifier, navController: NavHostController) {
         Button(
             onClick = { navController.navigate(Screen.Register.withId(guru)) }, modifier = Modifier
                 .fillMaxWidth()
-                .height(90.dp)
+                .height(100.dp)
                 .padding(horizontal = 45.dp),
             colors = buttonColors(LightBlue, Color.Black),
             shape = RoundedCornerShape(10.dp)
@@ -143,7 +143,7 @@ fun ScreenContent(modifier: Modifier, navController: NavHostController) {
             onClick = { navController.navigate(Screen.Register.withId(murid)) },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(90.dp)
+                .height(100.dp)
                 .padding(horizontal = 45.dp),
             colors = buttonColors(LightBlue, Color.Black),
             shape = RoundedCornerShape(10.dp)

@@ -17,11 +17,12 @@
     <string name="murid_detail_materi_title">Materi X</string>
     <string name="contoh_reaksi_title">Contoh Reaksi</string>
     <!--  Form Labels  -->
-    <string name="username_label">Username</string>
-    <string name="nisn_label">NISN</string>
-    <string name="nip_label">NIP</string>
-    <string name="school_label">Asal Sekolah</string>
     <string name="fullname_label">Nama Lengkap</string>
+    <string name="username_label">Nama Pengguna</string>
+    <string name="email_label">Alamat Surel</string>
+    <string name="nisn_label">Nomor Induk Siswa Nasional (NISN)</string>
+    <string name="nip_label">Nomor Induk Pegawai (NIP)</string>
+    <string name="school_label">Asal Sekolah</string>
     <string name="password_label">Password</string>
     <string name="edit_password_label">Ubah Password</string>
 <!--  Auth Buttons -->
@@ -106,5 +107,7 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
     <string name="empty_latihan">Latihan masih kosong.</string>
     <string name="empty_materi">Materi ajar masih kosong.</string>
     <string name="empty_reaksi">Contoh reaksi masih kosong.</string>
+    <string name="syarat_dan_ketentuan_label">Syarat dan Ketentuan</string>
+    <string name="register_extra_note">Verifikasi akun hanya dilakukan pada hari Senin-Jumat pukul 07.00 - 17.00 WIB</string>
 
 </resources>
