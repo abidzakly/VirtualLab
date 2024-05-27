@@ -1,5 +1,6 @@
 package org.d3ifcool.virtualab.ui.screen.guru.latihan
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,6 +37,7 @@ import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.model.Materi
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
+import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.screen.guru.materi.GuruMateriViewModel
 import org.d3ifcool.virtualab.ui.theme.LightBlueGradient
@@ -60,11 +63,15 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(40.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = stringResource(id = R.string.list_latihan_kosong))
+            Image(
+                painter = painterResource(R.drawable.empty_state_guru),
+                contentDescription = stringResource(R.string.gambar_empty_state_guru)
+            )
+            RegularText(text = stringResource(R.string.list_latihan_kosong), align = TextAlign.Center)
         }
     } else {
         Column(

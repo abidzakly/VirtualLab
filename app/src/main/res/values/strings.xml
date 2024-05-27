@@ -86,6 +86,8 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
 
 <!--   Dashboard Guru   -->
     <string name="dashboard_guru_sub_header">"Baru ditambahkan: "</string>
+    <string name="guru_empty_state">Belum ada data yang ditambahkan</string>
+    <string name="gambar_empty_state_guru">Gambar belum ada data ditambahkan</string>
     <string name="fab_slide_up_title">Apa yang ingin kamu tambahkan?</string>
     <string name="lihat_slide_up_title">Apa yang ingin kamu lihat?</string>
     <string name="lihat_latihan_title">Lihat Latihan</string>
@@ -96,7 +98,7 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
     <string name="latihan_x">Latihan X</string>
     <string name="kerjakan_latihan_header">Setarakan persamaan reaksi berikut</string>
     <!--   Materi Guru   -->
-    <string name="list_materi_kosong">Belum ada data materi</string>
+    <string name="list_materi_kosong">Belum ada materi yang ditambahkan</string>
     <string name="materi_title_data">Persamaan Reaksi Kimia</string>
     <!--   Detail Materi Guru   -->
     <string name="guru_detail_materi_title">Detail Materi</string>
@@ -108,7 +110,7 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
     <string name="guru_deskripsi_materi_data">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ultricies lectus nec ultricies accumsan. Praesent consectetur rhoncus metus, in vestibulum nulla. Quisque vehicula lectus auctor, cursus nunc mollis, aliquet mi. In sollicitudin, augue quis posuere venenatis, ex nulla scelerisque massa, non semper augue velit a odio. </string>
     <!--   Latihan Guru   -->
     <string name="latihan_title_data">Penyetaraan Reaksi Kimia</string>
-    <string name="list_latihan_kosong">Belum ada data latihan</string>
+    <string name="list_latihan_kosong">Belum ada latihan yang ditambahkan</string>
     <string name="guru_detail_latihan_title">Detail Latihan</string>
     <string name="judul_latihan_guru">Judul Latihan 5</string>
     <string name="judul_latihan_data">Penyetaraan Reaksi kimia melalui pendekatan reaksi pembakaran</string>
