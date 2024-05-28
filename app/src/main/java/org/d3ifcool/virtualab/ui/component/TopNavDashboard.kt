@@ -26,7 +26,7 @@ import org.d3ifcool.virtualab.navigation.Screen
 fun TopNavDashboard(name: String, navController: NavHostController) {
     Row(
         modifier = Modifier
-            .fillMaxWidth().padding(start = 25.dp, end = 25.dp, top = 8.dp, bottom = 40.dp),
+            .fillMaxWidth().padding(start = 25.dp, end = 25.dp, top = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

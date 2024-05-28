@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,17 +24,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
+import org.d3ifcool.virtualab.ui.component.ContentList
 import org.d3ifcool.virtualab.ui.component.MediumText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
-import org.d3ifcool.virtualab.ui.theme.LightBlueGradient
-import org.d3ifcool.virtualab.ui.theme.Poppins
+import org.d3ifcool.virtualab.ui.theme.LightBlue
 
 @Composable
 fun GuruLatihanScreen(navController: NavHostController) {
@@ -54,7 +52,7 @@ private fun ScreenContent(modifier: Modifier) {
         modifier = modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(4.dp)
+            .padding(12.dp)
     ) {
         RegularText(
             text = "Latihan yang pernah ditambahkan: ",
@@ -67,39 +65,17 @@ private fun ScreenContent(modifier: Modifier) {
                     rememberScrollState()
                 )
         ) {
-            ListLatihan(Modifier.padding(8.dp))
-            ListLatihan(Modifier.padding(8.dp))
-        }
-    }
-}
+            ContentList(title = "Latihan 1", desc = "lorem ipsum dolor sit ametasdasd") {
 
-@Composable
-fun ListLatihan(modifier: Modifier) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .shadow(elevation = 6.dp, shape = RoundedCornerShape(12.dp))
-            .background(LightBlueGradient)
-            .padding(24.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            MediumText(
-                text = stringResource(R.string.latihan),
-                fontWeight = FontWeight.Medium,
-                maxLines = 1
-            )
-            RegularText(
-                text = stringResource(R.string.latihan_title_data),
-            )
+            }
+            ContentList(title = "Latihan 2", desc = "lorem ipsum dolor sit ametasdasd") {
+
+            }
+            ContentList(title = "Latihan 3", desc = "lorem ipsum dolor sit ametasdasd") {
+
+            }
         }
-        Icon(
-            painter = painterResource(R.drawable.baseline_arrow_circle_outline_28),
-            contentDescription = "Lihat Materi"
-        )
     }
-    Spacer(modifier = Modifier.height(8.dp))
 }
 
 @Preview

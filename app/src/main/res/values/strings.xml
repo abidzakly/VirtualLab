@@ -87,10 +87,10 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
 <!--   Contoh Reaksi   -->
 
 <!--   Dashboard Guru   -->
-    <string name="dashboard_guru_sub_header">"Baru ditambahkan: "</string>
+    <string name="dashboard_guru_sub_header">Konten yang baru ditambahkan: </string>
     <string name="fab_slide_up_title">Apa yang ingin kamu tambahkan?</string>
     <string name="lihat_slide_up_title">Apa yang ingin kamu lihat?</string>
-    <string name="lihat_latihan_title">Lihat Soal</string>
+    <string name="lihat_latihan_title">Lihat Latihan</string>
     <string name="lihat_materi_title">Lihat Materi</string>
     <string name="buat_latihan_button">Buat Soal</string>
     <string name="buat_materi_button">Buat Materi</string>

@@ -70,7 +70,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                 .fillMaxSize()
                 .padding(horizontal = 33.dp)
         ) {
-            Column {
+            Column(modifier = Modifier.padding(top = 40.dp)) {
                 RegularText(
                     text = stringResource(id = R.string.dashboard_headline),
                     fontWeight = FontWeight.SemiBold,

@@ -4,6 +4,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -18,10 +19,11 @@ fun ExtraLargeText(
     color: Color = Color.Black,
     textAlign: TextAlign = TextAlign.Start,
     maxLines: Int = Int.MAX_VALUE,
-    overflow: TextOverflow = TextOverflow.Clip
-
+    overflow: TextOverflow = TextOverflow.Clip,
+    fontStyle: FontStyle? = null
 ) {
     Text(
+        fontStyle = fontStyle,
         text = text,
         fontSize = 32.sp,
         fontFamily = Poppins,
@@ -42,10 +44,11 @@ fun LargeText(
     color: Color = Color.Black,
     textAlign: TextAlign = TextAlign.Start,
     maxLines: Int = Int.MAX_VALUE,
-    overflow: TextOverflow = TextOverflow.Clip
-
+    overflow: TextOverflow = TextOverflow.Clip,
+    fontStyle: FontStyle? = null
 ) {
     Text(
+        fontStyle = fontStyle,
         text = text,
         fontSize = 24.sp,
         fontFamily = Poppins,
@@ -66,10 +69,11 @@ fun SemiLargeText(
     color: Color = Color.Black,
     textAlign: TextAlign = TextAlign.Start,
     maxLines: Int = Int.MAX_VALUE,
-    overflow: TextOverflow = TextOverflow.Clip
-
+    overflow: TextOverflow = TextOverflow.Clip,
+    fontStyle: FontStyle? = null
 ) {
     Text(
+        fontStyle = fontStyle,
         text = text,
         fontSize = 22.sp,
         fontFamily = Poppins,
@@ -90,10 +94,11 @@ fun MediumLargeText(
     color: Color = Color.Black,
     textAlign: TextAlign = TextAlign.Start,
     maxLines: Int = Int.MAX_VALUE,
-    overflow: TextOverflow = TextOverflow.Clip
-
+    overflow: TextOverflow = TextOverflow.Clip,
+    fontStyle: FontStyle? = null
 ) {
     Text(
+        fontStyle = fontStyle,
         text = text,
         fontSize = 20.sp,
         fontFamily = Poppins,
@@ -114,10 +119,11 @@ fun MediumText(
     color: Color = Color.Black,
     textAlign: TextAlign = TextAlign.Start,
     maxLines: Int = Int.MAX_VALUE,
-    overflow: TextOverflow = TextOverflow.Clip
-
+    overflow: TextOverflow = TextOverflow.Clip,
+    fontStyle: FontStyle? = null
 ) {
     Text(
+        fontStyle = fontStyle,
         text = text,
         fontSize = 18.sp,
         fontFamily = Poppins,
@@ -138,10 +144,11 @@ fun RegularText(
     color: Color = Color.Black,
     textAlign: TextAlign = TextAlign.Start,
     maxLines: Int = Int.MAX_VALUE,
-    overflow: TextOverflow = TextOverflow.Clip
-
+    overflow: TextOverflow = TextOverflow.Clip,
+    fontStyle: FontStyle? = null
 ) {
     Text(
+        fontStyle = fontStyle,
         text = text,
         fontSize = 16.sp,
         fontFamily = Poppins,
@@ -162,10 +169,11 @@ fun SmallText(
     color: Color = Color.Black,
     textAlign: TextAlign = TextAlign.Start,
     maxLines: Int = Int.MAX_VALUE,
-    overflow: TextOverflow = TextOverflow.Clip
-
+    overflow: TextOverflow = TextOverflow.Clip,
+    fontStyle: FontStyle? = null
 ) {
     Text(
+        fontStyle = fontStyle,
         text = text,
         fontSize = 14.sp,
         fontFamily = Poppins,
