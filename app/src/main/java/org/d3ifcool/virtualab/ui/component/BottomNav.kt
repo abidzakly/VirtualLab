@@ -46,7 +46,7 @@ import org.d3ifcool.virtualab.ui.theme.Poppins
 fun BottomNav(
     currentRoute: String,
     navController: NavHostController,
-    id: Long? = 0L,
+    id: Long? = 1L,
     isClicked: Boolean = false,
     onClick: () -> Unit = {}
 ) {

@@ -2,15 +2,17 @@ package org.d3ifcool.virtualab.ui.screen.guru.dashboard
 
 import android.content.res.Configuration
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -19,9 +21,9 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,9 +43,10 @@ import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -52,6 +55,8 @@ import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.BottomSheet
+import org.d3ifcool.virtualab.ui.component.ContentList
+import org.d3ifcool.virtualab.ui.component.MediumText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNavDashboard
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
@@ -73,9 +78,7 @@ fun GuruDashboardScreen(navController: NavHostController) {
                 navController,
                 isClicked = isPressed
             ) {
-                scope.launch {
-                    sheetStateLihat.bottomSheetState.expand()
-                }
+
             }
             Log.d("isPressed", "$isPressed")
         },
@@ -134,25 +137,25 @@ fun GuruDashboardScreen(navController: NavHostController) {
         BottomSheet(
             scaffoldSheetState = sheetStateBuat,
             title = R.string.fab_slide_up_title,
-            action1 = R.string.buat_latihan_button,
-            onClickAct1 = { navController.navigate(Screen.AddLatihan.route) },
-            action2 = R.string.buat_materi_button,
+            action1 = R.string.buat_materi_button,
+            onClickAct1 = { navController.navigate(Screen.AddMateri.route) },
+            action2 = R.string.buat_latihan_button,
             onClickAct2 = {
-                navController.navigate(Screen.AddMateri.route)
+                navController.navigate(Screen.AddLatihan.route)
             }
         )
         BottomSheet(
             scaffoldSheetState = sheetStateLihat,
             title = R.string.lihat_slide_up_title,
-            action1 = R.string.lihat_latihan_title,
+            action1 = R.string.lihat_materi_title,
             onClickAct1 = {
-                navController.navigate(Screen.GuruLatihan.route) {
+                navController.navigate(Screen.GuruMateri.route) {
                     popUpTo(Screen.GuruDashboard.route)
                 }
             },
             action2 = R.string.lihat_materi_title,
             onClickAct2 = {
-                navController.navigate(Screen.GuruMateri.route) {
+                navController.navigate(Screen.GuruLatihan.route) {
                     popUpTo(Screen.GuruDashboard.route)
                 }
             }
@@ -169,40 +172,25 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                 .padding(horizontal = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.guru_landing),
-                contentDescription = "Dashboard Guru Image"
-            )
             RegularText(
                 text = stringResource(id = R.string.dashboard_guru_sub_header),
                 modifier = Modifier
                     .padding(vertical = 24.dp)
                     .fillMaxWidth()
             )
-            ItemsList()
-            ItemsList()
-            ItemsList()
-            ItemsList()
+            ContentList(title = "Pengenalan Reaksi Kimiaadasdasd", desc = "Lorem ipsum dolor sit amet, cacasdasd") {
+//                navController.navigate()
+            }
+            ContentList(title = "Materi 5", desc = "Lorem ipsum dolor sit amet, cacasdasd") {
+//                navController.navigate()
+            }
+            ContentList(title = "Materi 5 asdasdasdasdasdasdasd", desc = "Test") {
+//                navController.navigate()
+            }
         }
     }
 }
 
-@Composable
-fun ItemsList(content: @Composable (() -> Unit?)? = null) {
-    Box(
-        modifier = Modifier
-            .shadow(elevation = 5.dp, shape = RoundedCornerShape(10.dp))
-            .background(LightBlue)
-            .fillMaxWidth()
-            .height(120.dp)
-            .clip(shape = RoundedCornerShape(10.dp))
-    ) {
-        if (content != null) {
-            content()
-        }
-    }
-    Spacer(modifier = Modifier.height(24.dp))
-}
 
 @Preview(showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)

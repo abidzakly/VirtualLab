@@ -2,7 +2,6 @@ package org.d3ifcool.virtualab.ui.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.ui.theme.BlueGradient
-import org.d3ifcool.virtualab.ui.theme.LightBlueGradient
+import org.d3ifcool.virtualab.ui.theme.LightBlue
 
 @Composable
 fun GradientPage(modifier: Modifier, emptyText: String = "", image: Int, isCenter: Boolean? = true, isDiffSize: Boolean = false, content: @Composable () -> Unit) {
@@ -27,7 +26,7 @@ fun GradientPage(modifier: Modifier, emptyText: String = "", image: Int, isCente
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(BlueGradient, LightBlueGradient)
+                    colors = listOf(BlueGradient, LightBlue)
                 )
             ),
     ) {

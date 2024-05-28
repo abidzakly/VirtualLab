@@ -32,8 +32,9 @@ import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
+import org.d3ifcool.virtualab.ui.component.ContentList
 import org.d3ifcool.virtualab.ui.component.TopNav
-import org.d3ifcool.virtualab.ui.theme.LightBlueGradient
+import org.d3ifcool.virtualab.ui.theme.LightBlue
 
 @Composable
 fun GuruMateriScreen(navController: NavHostController) {
@@ -66,7 +67,7 @@ private fun ScreenContent(modifier: Modifier) {
             modifier = modifier
                 .fillMaxSize()
                 .background(Color.White)
-                .padding(4.dp)
+                .padding(12.dp)
         ) {
             Text(
                 text = "Materi yang pernah ditambahkan :",
@@ -80,43 +81,23 @@ private fun ScreenContent(modifier: Modifier) {
                         rememberScrollState()
                     )
             ) {
-                ListMateri(Modifier.padding(8.dp))
-                ListMateri(Modifier.padding(8.dp))
+                ContentList(title = "Materi 1", desc = "lorem ipsum dolor sit amet") {
+
+                }
+                ContentList(title = "Materi 2", desc = "lorem ipsum dolor sit amet") {
+
+                }
+                ContentList(title = "Materi 3", desc = "lorem ipsum dolor sit amet") {
+
+                }
+                ContentList(title = "Materi 4", desc = "lorem ipsum dolor sit amet") {
+
+                }
             }
         }
     }
 
 }
-
-@Composable
-fun ListMateri(modifier: Modifier) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .shadow(elevation = 6.dp, shape = RoundedCornerShape(12.dp))
-            .background(LightBlueGradient)
-            .padding(24.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(
-                text = stringResource(R.string.materi_title),
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Medium,
-                maxLines = 1
-            )
-            Text(
-                text = stringResource(R.string.materi_title_data),
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Normal
-            )
-        }
-        Icon(painter = painterResource(R.drawable.baseline_arrow_circle_outline_28), contentDescription = "Lihat Materi")
-    }
-    Spacer(modifier = Modifier.height(8.dp))
-}
-
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 private fun LihatMateriPrev() {

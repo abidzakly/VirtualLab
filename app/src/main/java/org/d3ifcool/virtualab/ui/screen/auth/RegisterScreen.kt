@@ -69,6 +69,7 @@ import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.ExtraSmallText
 import org.d3ifcool.virtualab.ui.component.RegularText
+import org.d3ifcool.virtualab.ui.component.SmallText
 import org.d3ifcool.virtualab.ui.theme.BlueLink
 import org.d3ifcool.virtualab.ui.theme.GrayText
 import org.d3ifcool.virtualab.ui.theme.LightBlue
@@ -125,7 +126,7 @@ private fun RegisterScreenContent(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(34.dp)
+            .padding(horizontal = 48.dp, vertical = 24.dp)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -155,13 +156,16 @@ private fun RegisterScreenContent(
         Spacer(modifier = Modifier.height(16.dp))
         Column(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxWidth().padding(start = 10.dp)) {
-                ExtraSmallText(
-                    text = stringResource(R.string.syarat_dan_ketentuan_label),
-                    color = Color(0xFF0066FF),
-                    fontWeight = FontWeight.Bold
-                )
+                ClickableText(
+                    text = AnnotatedString(stringResource(id = R.string.syarat_dan_ketentuan_label)),
+                    style = TextStyle(color = Color(0xFF0066FF), fontSize = 14.sp, fontFamily = Poppins, fontWeight = FontWeight.Bold)
+                ) {
+                    navController.navigate(Screen.TermsCondition.route) {
+                        popUpTo(Screen.Landing.route)
+                    }
+                }
                 Spacer(modifier = Modifier.height(8.dp))
-                ExtraSmallText(
+                SmallText(
                     text = stringResource(R.string.register_extra_note),
                     fontWeight = FontWeight.Light,
                     color = Color(0xFF4A4A4A)
@@ -182,9 +186,9 @@ private fun RegisterScreenContent(
                     )
                 }
                 Spacer(modifier = Modifier.width(4.dp))
-                ExtraSmallText(
+                SmallText(
                     text = "Saya Setuju",
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                 )
             }
         }
@@ -207,13 +211,13 @@ private fun RegisterScreenContent(
         }
         Spacer(modifier = Modifier.padding(8.dp))
         Row {
-            RegularText(
+            SmallText(
                 text = stringResource(id = R.string.account_exist),
             )
             Spacer(modifier = Modifier.padding(2.dp))
             ClickableText(
                 text = AnnotatedString(stringResource(id = R.string.signin)),
-                style = TextStyle(color = BlueLink, fontSize = 16.sp, fontFamily = Poppins)
+                style = TextStyle(color = BlueLink, fontSize = 14.sp, fontFamily = Poppins)
             ) {
                 navController.navigate(Screen.Login.route) {
                     popUpTo(Screen.Landing.route)
@@ -302,12 +306,13 @@ private fun RegistTextField(
     var passwordVisibility by remember { mutableStateOf(!isPassword) }
 
     TextField(
+        textStyle = TextStyle(fontSize = 14.sp),
         value = value,
         onValueChange = { onValueChange(it) },
         label = {
             Row {
-                Text(text = stringResource(label))
-                Text(text = supportingLabel, fontStyle = FontStyle.Italic)
+                Text(text = stringResource(label), fontSize = 14.sp)
+                Text(text = supportingLabel, fontStyle = FontStyle.Italic, fontSize = 14.sp)
             }
         },
         singleLine = true,
@@ -329,7 +334,9 @@ private fun RegistTextField(
             unfocusedContainerColor = Color.Transparent,
             focusedContainerColor = Color.Transparent,
             focusedLabelColor = GrayText,
-            unfocusedLabelColor = GrayText
+            unfocusedLabelColor = GrayText,
+            focusedTextColor = Color.Black,
+            unfocusedTextColor = Color.Black
         ),
         trailingIcon = if (!isPassword) null else {
             {

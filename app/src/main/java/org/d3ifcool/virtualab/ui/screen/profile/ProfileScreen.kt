@@ -4,13 +4,13 @@ import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -50,9 +51,10 @@ import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
+import org.d3ifcool.virtualab.ui.component.MediumText
+import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.GrayText
-import org.d3ifcool.virtualab.ui.theme.GrayTextField
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.Poppins
 import org.d3ifcool.virtualab.ui.theme.RedButton
@@ -82,7 +84,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
     var password by remember { mutableStateOf("") }
     var readOnly by remember { mutableStateOf(true) }
 
-    var passwordVisibility by remember { mutableStateOf(false) }
+    var passwordVisibility by remember { mutableStateOf(true) }
     Column(
         modifier
             .fillMaxSize()
@@ -90,14 +92,14 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = stringResource(R.string.profile_header), fontSize = 20.sp)
+        MediumText(text = stringResource(id = R.string.profile_header))
         Spacer(modifier = Modifier.height(18.dp))
         Image(
             painter = painterResource(id = R.drawable.profile_big),
             contentDescription = "Profile Picture"
         )
         Spacer(modifier = Modifier.height(24.dp))
-        Column(modifier = Modifier.padding(horizontal = 32.dp)) {
+        Column(modifier = Modifier.padding(horizontal = 48.dp)) {
             UserTextFields(
                 value = fullname,
                 onValueChange = { fullname = it },
@@ -131,12 +133,10 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
                 text = R.string.school_label,
                 readOnly = readOnly
             )
-            if (!readOnly) {
-                Text(
-                    text = stringResource(R.string.password_label),
-                    fontSize = 15.sp,
-                    fontFamily = Poppins,
-                    color = GrayText
+//            if (!readOnly) {
+                RegularText(
+                    text = stringResource(id = R.string.password_label),
+                    fontWeight = FontWeight.Medium
                 )
                 TextField(
                     value = oldPassword,
@@ -202,22 +202,19 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
                     )
 
                 )
-            }
-            Spacer(modifier = Modifier.padding(16.dp))
+//            }
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 Button(
                     onClick = { readOnly = !readOnly },
-                    modifier = Modifier
-                        .height(47.dp)
-                        .width(150.dp),
                     shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = LightBlue,
                         contentColor = Color.Black
-                    )
+                    ),
+                    contentPadding = PaddingValues(horizontal = 42.dp, vertical = 12.dp)
                 ) {
                     Text(
                         text = stringResource(if (readOnly) R.string.edit_button else R.string.save_button),
@@ -226,17 +223,14 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
                         fontSize = 16.sp,
                     )
                 }
-                Spacer(modifier = Modifier.height(20.dp))
                 Button(
                     onClick = { navController.navigate(Screen.Login.route) },
-                    modifier = Modifier
-                        .height(47.dp)
-                        .width(150.dp),
                     shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = RedButton,
                         contentColor = Color.Black
-                    )
+                    ),
+                    contentPadding = PaddingValues(horizontal = 42.dp, vertical = 12.dp)
                 ) {
                     Text(
                         text = stringResource(id = R.string.logout_button),
@@ -259,28 +253,29 @@ fun UserTextFields(
     readOnly: Boolean,
 ) {
     Column {
-        Text(
-            text = stringResource(text),
-            fontSize = 15.sp,
-            fontFamily = Poppins,
-            color = GrayText
+        RegularText(
+            text = stringResource(id = text),
+            fontWeight = FontWeight.Medium
         )
         TextField(
+            textStyle = TextStyle(fontSize = 14.sp, color = Color(0xFF6D6E6F)),
+            shape = RoundedCornerShape(5.dp),
             readOnly = readOnly,
-            value = value,
+            value = "test",
             onValueChange = { onValueChange(it) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Words,
                 imeAction = ImeAction.Next
             ),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth(),
             colors = if (readOnly) {
                 TextFieldDefaults.colors(
                     unfocusedIndicatorColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
-                    unfocusedContainerColor = GrayTextField,
-                    focusedContainerColor = GrayTextField
+                    unfocusedContainerColor = Color(0xFFFAFAFA),
+                    focusedContainerColor = Color(0xFFFAFAFA)
                 )
             } else {
                 TextFieldDefaults.colors(
