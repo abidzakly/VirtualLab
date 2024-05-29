@@ -166,7 +166,7 @@ fun GuruDashboardScreen(navController: NavHostController) {
 @Composable
 private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
-        TopNavDashboard(name = "Guru", navController = navController)
+        TopNavDashboard(name = "Guru!", navController = navController)
         Column(
             modifier = Modifier
                 .padding(horizontal = 40.dp),
@@ -184,7 +184,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
             ContentList(title = "Materi 5", desc = "Lorem ipsum dolor sit amet, cacasdasd") {
 //                navController.navigate()
             }
-            ContentList(title = "Materi 5 asdasdasdasdasdasdasd", desc = "Test") {
+            ContentList(title = "Materi 5 asdasdasdasdasdasdasd", desc = "Testq") {
 //                navController.navigate()
             }
         }

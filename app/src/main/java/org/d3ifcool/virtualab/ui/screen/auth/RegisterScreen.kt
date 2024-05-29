@@ -1,13 +1,13 @@
 package org.d3ifcool.virtualab.ui.screen.auth
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,11 +21,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.Assignment
-import androidx.compose.material.icons.automirrored.outlined.FactCheck
-import androidx.compose.material.icons.automirrored.outlined.Label
-import androidx.compose.material.icons.automirrored.outlined.PlaylistAddCheck
-import androidx.compose.material.icons.automirrored.outlined.ScheduleSend
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
@@ -33,6 +28,7 @@ import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -47,6 +43,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusProperties
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -67,7 +65,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
-import org.d3ifcool.virtualab.ui.component.ExtraSmallText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.SmallText
 import org.d3ifcool.virtualab.ui.theme.BlueLink
@@ -80,28 +77,23 @@ import org.d3ifcool.virtualab.ui.theme.Poppins
 fun RegisterScreen(navController: NavHostController, id: Long? = null) {
     Scaffold(
         topBar = {
-            TopAppBar(
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(
-                                id = R.string.back_button
-                            ),
-                            tint = Color.Black
-                        )
-                    }
-                },
-                title = {
-                    Text(text = stringResource(id = R.string.register_title))
-                },
-                colors = TopAppBarDefaults.mediumTopAppBarColors(
-                    containerColor = Color.Transparent,
-                    titleContentColor = Color.Black
-                )
+            TopAppBar(navigationIcon = {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(
+                            id = R.string.back_button
+                        ),
+                        tint = Color.Black
+                    )
+                }
+            }, title = {
+                Text(text = stringResource(id = R.string.register_title))
+            }, colors = TopAppBarDefaults.mediumTopAppBarColors(
+                containerColor = Color.Transparent, titleContentColor = Color.Black
             )
-        },
-        containerColor = Color.White
+            )
+        }, containerColor = Color.White
     ) {
         RegisterScreenContent(modifier = Modifier.padding(it), navController = navController, id)
     }
@@ -109,17 +101,14 @@ fun RegisterScreen(navController: NavHostController, id: Long? = null) {
 
 @Composable
 private fun RegisterScreenContent(
-    modifier: Modifier,
-    navController: NavHostController,
-    id: Long? = null
+    modifier: Modifier, navController: NavHostController, id: Long? = null
 ) {
     var fullname by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var uniqueId by remember { mutableStateOf("") }
     var school by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    val identifier by remember { mutableLongStateOf(id!!) }
+
 
     var isChecked by remember { mutableStateOf(false) }
 
@@ -141,24 +130,36 @@ private fun RegisterScreenContent(
         RegisterForm(
             fullname = fullname,
             onFullnameChange = { fullname = it },
+            fullnameResponse = fullnameCheck(fullname),
             username = username,
             onUsernameChange = { username = it },
+            usernameResponse = usernameCheck(username),
             email = email,
             onEmailChange = { email = it },
+            emailResponse = emailCheck(email),
             uniqueId = uniqueId,
             onUniqueIdChange = { uniqueId = it },
+            uniqueIdResponse = uniqueIdCheck(id, uniqueId),
             school = school,
             onSchoolChange = { school = it },
-            password = password,
-            onPasswordChange = { password = it },
-            id = identifier
+            schoolResponse = if (school == "") 1 else 0,
+            id = id
         )
         Spacer(modifier = Modifier.height(16.dp))
         Column(modifier = Modifier.fillMaxSize()) {
-            Column(modifier = Modifier.fillMaxWidth().padding(start = 10.dp)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp)
+            ) {
                 ClickableText(
                     text = AnnotatedString(stringResource(id = R.string.syarat_dan_ketentuan_label)),
-                    style = TextStyle(color = Color(0xFF0066FF), fontSize = 14.sp, fontFamily = Poppins, fontWeight = FontWeight.Bold)
+                    style = TextStyle(
+                        color = Color(0xFF0066FF),
+                        fontSize = 14.sp,
+                        fontFamily = Poppins,
+                        fontWeight = FontWeight.Bold
+                    )
                 ) {
                     navController.navigate(Screen.TermsCondition.route) {
                         popUpTo(Screen.Landing.route)
@@ -176,13 +177,12 @@ private fun RegisterScreenContent(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
-                IconButton(
-                    onClick = { isChecked = !isChecked }) {
+                IconButton(onClick = { isChecked = !isChecked }) {
                     Icon(
                         painterResource(if (!isChecked) R.drawable.check_box_outline_blank else R.drawable.check_box_filled),
                         contentDescription = null,
                         tint = Color(0xFF4D444C),
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize().padding(8.dp)
                     )
                 }
                 Spacer(modifier = Modifier.width(4.dp))
@@ -198,8 +198,7 @@ private fun RegisterScreenContent(
             onClick = { navController.navigate(Screen.Login.route) },
             shape = RoundedCornerShape(10.dp),
             colors = buttonColors(
-                containerColor = LightBlue,
-                contentColor = Color.Black
+                containerColor = LightBlue, contentColor = Color.Black
             )
         ) {
             RegularText(
@@ -228,68 +227,157 @@ private fun RegisterScreenContent(
     }
 }
 
+private fun fullnameCheck(fullname: String): Int {
+    return when {
+        fullname == "" -> 1
+        fullname.length > 60 -> 2
+        else -> 0
+    }
+}
+
+private fun usernameCheck(username: String): Int {
+    return when {
+        username == "" -> 1
+        username.length !in 20 downTo 8 -> 2
+        username.contains(
+            Regex("[^A-Za-z0-9_]")
+        ) -> 3
+
+        else -> 0
+    }
+}
+
+private fun emailCheck(email: String): Int {
+    return when {
+        email == "" -> 1
+        !email.contains(
+            Regex("^.+@.+\\..+$")
+        ) -> 2
+
+        else -> 0
+    }
+}
+
+private fun uniqueIdCheck(id: Long? = null, uniqueId: String): Int {
+    Log.d("ID_TEST", "ID: $id")
+    if (id != null) {
+        return if (id == 0L) {
+            when {
+                uniqueId == " " -> 1
+                uniqueId.length != 9 && uniqueId.length != 18 -> 2
+                else -> 0
+            }
+        } else {
+            when {
+                uniqueId == "" -> 1
+                uniqueId.length != 10 -> 3
+                else -> 0
+            }
+        }
+    }
+    return 0
+}
+
 @Composable
-fun RegisterForm(
+private fun RegisterForm(
     fullname: String,
     onFullnameChange: (String) -> Unit,
+    fullnameResponse: Int = 0,
     username: String,
     onUsernameChange: (String) -> Unit,
+    usernameResponse: Int = 0,
     email: String,
     onEmailChange: (String) -> Unit,
+    emailResponse: Int = 0,
     uniqueId: String,
     onUniqueIdChange: (String) -> Unit,
+    uniqueIdResponse: Int = 0,
     school: String,
     onSchoolChange: (String) -> Unit,
-    password: String,
-    onPasswordChange: (String) -> Unit,
-    id: Long? = null
+    schoolResponse: Int = 0,
+    password: String = "",
+    onPasswordChange: (String) -> Unit = {},
+    passwordIdResponse: Int = 0,
+    id: Long? = null,
 ) {
-
     RegistTextField(
         value = fullname,
         onValueChange = { onFullnameChange(it) },
-        label = R.string.fullname_label
+        label = R.string.fullname_label,
+        isError = fullnameResponse != 0,
+        errorText = when (fullnameResponse) {
+            1 -> "Nama lengkap tidak boleh kosong!"
+            2 -> "Nama lengkap melebihi batas 60 karakter!"
+            else -> ""
+        }
     )
     RegistTextField(
         value = username,
         onValueChange = { onUsernameChange(it) },
         label = R.string.username_label,
         supportingLabel = " (Username)",
-        isUsername = true
+        isUsername = true,
+        isError = usernameResponse != 0,
+        errorText = when (usernameResponse) {
+            1 -> "Nama pengguna tidak boleh kosong!"
+            2 -> "Nama pengguna harus memiliki minimal 8 hingga maksimal 20 karakter!"
+            3 -> "Nama pengguna hanya boleh mengandung huruf dan angka!"
+            else -> ""
+        }
     )
     RegistTextField(
         value = email,
         onValueChange = { onEmailChange(it) },
         label = R.string.email_label,
         supportingLabel = " (Email)",
-        isEmail = true
+        isEmail = true,
+        isError = emailResponse != 0,
+        errorText = when (emailResponse) {
+            1 -> "Email tidak boleh kosong!"
+            2 -> "Format email tidak valid!"
+            else -> ""
+        }
     )
     if (id == 0L) {
         RegistTextField(
             value = uniqueId,
             onValueChange = { onUniqueIdChange(it) },
             label = R.string.nip_label,
-            isNumber = true
+            isNumber = true,
+            isError = uniqueIdResponse != 0,
+            errorText = when (uniqueIdResponse) {
+                1 -> "NIP tidak boleh kosong!"
+                2 -> "Pastikan NIP berjumlah 9 atau 18 digit!"
+                else -> ""
+            }
         )
     } else {
         RegistTextField(
             value = uniqueId,
             onValueChange = { onUniqueIdChange(it) },
             label = R.string.nisn_label,
-            isNumber = true
+            isNumber = true,
+            isError = uniqueIdResponse != 0,
+            errorText = when (uniqueIdResponse) {
+                1 -> "NISN tidak boleh kosong!"
+                3 -> "Pastikan NISN berjumlah 10 digit!"
+                else -> ""
+            }
         )
     }
     RegistTextField(
         value = school,
         onValueChange = { onSchoolChange(it) },
-        label = R.string.school_label
+        label = R.string.school_label,
+        isError = schoolResponse != 0,
+        errorText = if (schoolResponse != 0) "Nama sekolah tidak boleh kosong!" else ""
     )
-    RegistTextField(
-        value = password,
-        onValueChange = { onPasswordChange(it) },
-        label = R.string.password_label,
-        isPassword = true
-    )
+//    RegistTextField(
+//        value = password,
+//        onValueChange = { onPasswordChange(it) },
+//        label = R.string.password_label,
+//        isPassword = true
+//    )
 }
 
 @Composable
@@ -301,11 +389,18 @@ private fun RegistTextField(
     isUsername: Boolean = false,
     isNumber: Boolean = false,
     isEmail: Boolean = false,
-    isPassword: Boolean = false
+    isPassword: Boolean = false,
+    isError: Boolean = false,
+    errorText: String = ""
 ) {
     var passwordVisibility by remember { mutableStateOf(!isPassword) }
+    var isFocused by remember { mutableStateOf(true) }
 
     TextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .focusable()
+            .onFocusChanged { isFocused = !isFocused },
         textStyle = TextStyle(fontSize = 14.sp),
         value = value,
         onValueChange = { onValueChange(it) },
@@ -322,14 +417,11 @@ private fun RegistTextField(
                 isEmail -> KeyboardType.Email
                 isPassword -> KeyboardType.Password
                 else -> KeyboardType.Text
-            },
-            capitalization = when {
-                !isUsername || !isEmail -> KeyboardCapitalization.Words
+            }, capitalization = when {
+                !isUsername && !isEmail -> KeyboardCapitalization.Words
                 else -> KeyboardCapitalization.None
-            },
-            imeAction = if (!isPassword) ImeAction.Next else ImeAction.Done
+            }, imeAction = if (!isPassword) ImeAction.Next else ImeAction.Done
         ),
-        modifier = Modifier.fillMaxWidth(),
         colors = TextFieldDefaults.colors(
             unfocusedContainerColor = Color.Transparent,
             focusedContainerColor = Color.Transparent,
@@ -350,10 +442,17 @@ private fun RegistTextField(
                 }
             }
         },
-        visualTransformation =
-        if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation()
-    )
+        visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation())
     Spacer(modifier = Modifier.height(8.dp))
+    if (isFocused) {
+        if (isError) {
+            SmallText(
+                text = errorText,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
 }
 
 @Preview(showBackground = true)

@@ -8,10 +8,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import org.d3ifcool.virtualab.R
+import org.d3ifcool.virtualab.ui.component.TopNav
 
 @Composable
 fun AddMateriScreen(navController: NavHostController) {
-    Scaffold {
+    Scaffold(
+    ) {
         ScreenContent(modifier = Modifier.padding(it))
     }
 }
