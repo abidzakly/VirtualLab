@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "org.d3ifcool.virtualab"
+    namespace = "org.d3ifmgmp.virtualab"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "org.d3ifcool.virtualab"
+        applicationId = "org.d3ifmgmp.virtualab"
         minSdk = 23
         targetSdk = 34
         versionCode = 1
