@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -86,11 +88,11 @@ fun PickVideo(){
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) {
         result.value = it
     }
-    Column {
+    Row {
         Button(
             onClick = {
                 launcher.launch(
-                    PickVisualMediaRequest(mediaType = ActivityResultContracts.PickVisualMedia.VideoOnly)
+                    PickVisualMediaRequest(mediaType = ActivityResultContracts.PickVisualMedia.ImageAndVideo)
                 )
             },
             shape = RoundedCornerShape(16.dp),
@@ -99,10 +101,17 @@ fun PickVideo(){
                 contentColor = DarkBlue
             )
         ) {
-            Icon(painter = painterResource(), contentDescription = "Tombol upload media")
+            Icon(painter = painterResource(R.drawable.icon_upload), contentDescription = "Tombol upload media")
         }
         result.value?.let { image ->
-            RegularText(text = "Video Path: "+image.path.toString())
+            Column(
+                modifier = Modifier
+                    .clip(shape = RoundedCornerShape(10.dp))
+                    .background(GrayTextField)
+                    .padding(4.dp)
+            ) {
+                RegularText(text = "Video Path: "+image.path.toString())
+            }
         }
     }
 }
