@@ -16,6 +16,7 @@
     <string name="introduction_title">Pengenalan Reaksi Kimia</string>
     <string name="murid_detail_materi_title">Materi X</string>
     <string name="contoh_reaksi_title">Contoh Reaksi</string>
+    <string name="add_materi_title">Buat Latihan</string>
     <!--  Form Labels  -->
     <string name="fullname_label">Nama Lengkap</string>
     <string name="username_label">Nama Pengguna</string>
@@ -110,4 +111,11 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
     <string name="syarat_dan_ketentuan_label">Syarat dan Ketentuan</string>
     <string name="register_extra_note">Verifikasi akun hanya dilakukan pada hari Senin-Jumat pukul 07.00 - 17.00 WIB</string>
 
+    <!--   Buat Latihan Guru   -->
+    <string name="title_latihan">Judul Latihan</string>
+    <string name="difficulty_latihan">Tingkat Kesulitan</string>
+    <string name="dropdown_list">Pilih Kesulitan</string>
+    <string name="number_latihan">Jumlah Soal</string>
+    <string name="limit_latihan">Maksimal jumlah soal di buat adalah 10*</string>
+    <string name="button_tambahSoal">Tambah Soal</string>
 </resources>
