@@ -53,7 +53,6 @@ fun GuruLatihanScreen(navController: NavHostController) {
         ScreenContent(modifier = Modifier.padding(it), navController)
     }
 }
-
 @Composable
 private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
     val viewModel: GuruLatihanViewModel = viewModel()
