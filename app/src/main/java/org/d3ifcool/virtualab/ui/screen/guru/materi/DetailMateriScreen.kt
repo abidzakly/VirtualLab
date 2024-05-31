@@ -62,7 +62,7 @@ private fun ScreenContent(modifier: Modifier) {
             RegularText(text = stringResource(R.string.file_media_belajar), fontWeight = FontWeight.Normal)
         }
         RegularText(text = stringResource(R.string.deskripsi_text), fontWeight = FontWeight.SemiBold)
-        RegularText(text = stringResource(R.string.guru_deskripsi_materi_data), fontWeight = FontWeight.Normal, align = TextAlign.Justify )
+        RegularText(text = stringResource(R.string.guru_deskripsi_materi_data), fontWeight = FontWeight.Normal, textAlign = TextAlign.Justify )
     }
 }
 

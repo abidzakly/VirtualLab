@@ -28,6 +28,7 @@ import org.d3ifcool.virtualab.ui.screen.murid.nilai.NilaiScreen
 import org.d3ifcool.virtualab.ui.screen.profile.ProfileScreen
 import org.d3ifcool.virtualab.ui.screen.murid.reaksi.ReaksiScreen
 import org.d3ifcool.virtualab.ui.screen.role.RoleScreen
+import org.d3ifcool.virtualab.ui.screen.terms.TermsConditionScreen
 
 @Composable
 fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
@@ -40,6 +41,9 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
         }
         composable(route = Screen.Profile.route) {
             ProfileScreen(navController)
+        }
+        composable(route = Screen.TermsCondition.route) {
+            TermsConditionScreen(navController)
         }
 
         //  Auth

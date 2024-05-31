@@ -1,6 +1,9 @@
 package org.d3ifcool.virtualab.ui.screen.guru.materi
 
+import android.content.Context
 import android.net.Uri
+import android.provider.OpenableColumns
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -9,28 +12,42 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
+import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.CustomTextField
@@ -39,6 +56,8 @@ import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.DarkBlue
 import org.d3ifcool.virtualab.ui.theme.GrayTextField
 import org.d3ifcool.virtualab.ui.theme.LightBlue
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 @Composable
 fun AddMateriScreen(navController: NavHostController) {
@@ -77,43 +96,97 @@ private fun ScreenContent(modifier: Modifier) {
         RegularText(text = stringResource(R.string.desc_materi))
         CustomTextField(
             value = descMateri,
-            onValueChange = { newDescMateri -> descMateri = newDescMateri },
-            placeholder = R.string.desc_materi_placeholder
+            onValueChange = { newDesMateri -> descMateri = newDesMateri },
+            placeholder = R.string.desc_materi_placeholder,
+            modifier = Modifier.fillMaxWidth()
         )
-    }
-}
-@Composable
-fun PickVideo(){
-    val result = remember { mutableStateOf<Uri?>(null) }
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) {
-        result.value = it
-    }
-    Row {
-        Button(
-            onClick = {
-                launcher.launch(
-                    PickVisualMediaRequest(mediaType = ActivityResultContracts.PickVisualMedia.ImageAndVideo)
-                )
-            },
-            shape = RoundedCornerShape(16.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.LightGray,
-                contentColor = DarkBlue
-            )
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(painter = painterResource(R.drawable.icon_upload), contentDescription = "Tombol upload media")
-        }
-        result.value?.let { image ->
-            Column(
+            Button(
                 modifier = Modifier
-                    .clip(shape = RoundedCornerShape(10.dp))
-                    .background(GrayTextField)
-                    .padding(4.dp)
+                    .padding(horizontal = 31.dp),
+                onClick = { },
+                shape = RoundedCornerShape(10.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = LightBlue, contentColor = Color.Black
+                )
             ) {
-                RegularText(text = "Video Path: "+image.path.toString())
+                RegularText(
+                    text = stringResource(id = R.string.buat_materi),
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center
+                )
             }
         }
     }
+
+}
+
+@Composable
+fun PickVideo() {
+    val context = LocalContext.current
+    val result = remember { mutableStateOf<Uri?>(null) }
+    var fileName by remember { mutableStateOf("") }
+
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) {
+        result.value = it
+        it?.let {
+            fileName = getFileName(context, it)
+        }
+    }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(16.dp)
+    ) {
+        Button(
+            onClick = {
+                launcher.launch(
+                    PickVisualMediaRequest(
+                        mediaType = ActivityResultContracts.PickVisualMedia.ImageAndVideo
+                    )
+                )
+            },
+            shape = RoundedCornerShape(10.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.LightGray,
+                contentColor = Color.DarkGray
+            )
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.icon_upload),
+                contentDescription = "Tombol upload media",
+                tint = DarkBlue
+            )
+        }
+        result.value?.let {
+            Column(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(Color.Gray)
+                    .padding(8.dp)
+            ) {
+                RegularText(
+                    text = fileName,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
+    }
+}
+
+fun getFileName(context: Context, uri: Uri): String {
+    var fileName = ""
+    context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+        val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+
+        if (cursor.moveToFirst()) {
+            fileName = cursor.getString(nameIndex)
+        }
+    }
+    return fileName
 }
 
 @Preview

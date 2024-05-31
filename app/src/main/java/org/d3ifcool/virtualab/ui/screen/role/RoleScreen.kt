@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -42,6 +43,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
+import org.d3ifcool.virtualab.ui.component.ExtraSmallText
+import org.d3ifcool.virtualab.ui.component.MediumLargeText
 import org.d3ifcool.virtualab.ui.theme.DarkBlueText
 import org.d3ifcool.virtualab.ui.theme.GrayText
 import org.d3ifcool.virtualab.ui.theme.LightBlue
@@ -106,8 +109,7 @@ fun ScreenContent(modifier: Modifier, navController: NavHostController) {
         Button(
             onClick = { navController.navigate(Screen.Register.withId(guru)) }, modifier = Modifier
                 .fillMaxWidth()
-                .height(90.dp)
-                .padding(horizontal = 45.dp),
+                .padding(horizontal = 42.dp),
             colors = buttonColors(LightBlue, Color.Black),
             shape = RoundedCornerShape(10.dp)
 
@@ -122,17 +124,13 @@ fun ScreenContent(modifier: Modifier, navController: NavHostController) {
                 )
                 Spacer(modifier = Modifier.padding(horizontal = 8.dp))
                 Column {
-                    Text(
+                    MediumLargeText(
                         text = stringResource(id = R.string.role_teacher),
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 20.sp,
-                        fontFamily = Poppins
+                        fontWeight = FontWeight.SemiBold
                     )
-                    Text(
+                    ExtraSmallText(
                         text = stringResource(id = R.string.role_teacher_desc),
-                        color = GrayText,
-                        fontSize = 12.sp,
-                        fontFamily = Poppins
+                        color = GrayText
                     )
                 }
             }
@@ -143,7 +141,6 @@ fun ScreenContent(modifier: Modifier, navController: NavHostController) {
             onClick = { navController.navigate(Screen.Register.withId(murid)) },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(90.dp)
                 .padding(horizontal = 45.dp),
             colors = buttonColors(LightBlue, Color.Black),
             shape = RoundedCornerShape(10.dp)

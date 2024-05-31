@@ -48,7 +48,6 @@ fun LandingScreen(navController: NavHostController) {
 
 @Composable
 private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
-    var text by remember { mutableStateOf("") }
     Column(
         modifier = modifier
             .fillMaxSize()

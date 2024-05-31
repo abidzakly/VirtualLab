@@ -31,7 +31,7 @@ import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
-import org.d3ifcool.virtualab.ui.theme.LightBlueGradient
+import org.d3ifcool.virtualab.ui.theme.LightBlue
 
 @Composable
 fun DetailLatihanScreen(navController: NavHostController) {
@@ -88,14 +88,14 @@ fun ListSoal(soal: Soal? = null, title: Int, question: Int, firstAnswer: Int, se
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         RegularText(text = stringResource(title), fontWeight = FontWeight.SemiBold)
-        RegularText(text = stringResource(question), fontWeight = FontWeight.Normal, align = TextAlign.Justify)
+        RegularText(text = stringResource(question), fontWeight = FontWeight.Normal, textAlign = TextAlign.Justify)
         Spacer(modifier = Modifier.height(16.dp))
         RegularText(text = stringResource(R.string.kunci_jawaban), fontWeight = FontWeight.SemiBold)
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .shadow(elevation = 1.dp, shape = RoundedCornerShape(10.dp))
-                .background(LightBlueGradient)
+                .background(LightBlue)
                 .padding(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -105,7 +105,7 @@ fun ListSoal(soal: Soal? = null, title: Int, question: Int, firstAnswer: Int, se
             modifier = Modifier
                 .fillMaxWidth()
                 .shadow(elevation = 1.dp, shape = RoundedCornerShape(10.dp))
-                .background(LightBlueGradient)
+                .background(LightBlue)
                 .padding(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
