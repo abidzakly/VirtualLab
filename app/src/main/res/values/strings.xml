@@ -141,4 +141,12 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
     <string name="syarat_dan_ketentuan_label">Syarat dan Ketentuan</string>
     <string name="register_extra_note">Verifikasi akun hanya dilakukan pada hari Senin-Jumat pukul 07.00 - 17.00 WIB</string>
 
+    <!--    Dashboard Admin   -->
+    <string name="cek_role_categories">Cek Peran Akun</string>
+    <string name="cek_file_categories">Cek Berkas</string>
+    <string name="icon_logout">Gambar ikon logout</string>
+    <string name="category_check_role">Cek Peran Akun</string>
+    <string name="category_check_file">Cek Berkas</string>
+    <string name="category_kelola_materi">Kelola Materi</string>
+
 </resources>

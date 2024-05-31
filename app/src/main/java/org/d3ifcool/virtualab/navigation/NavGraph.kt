@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import org.d3ifcool.virtualab.ui.screen.about.AboutScreen
+import org.d3ifcool.virtualab.ui.screen.admin.AdminDashboardScreen
 import org.d3ifcool.virtualab.ui.screen.murid.dashboard.MuridDashboardScreen
 import org.d3ifcool.virtualab.ui.screen.murid.introduction.IntroductionScreen
 import org.d3ifcool.virtualab.ui.screen.landing.LandingScreen
@@ -110,6 +111,11 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
         }
         composable(route = Screen.GuruDetailLatihan.route) {
             DetailLatihanScreen(navController)
+        }
+
+        // Admin
+        composable(route = Screen.AdminDashboard.route) {
+            AdminDashboardScreen(navController)
         }
     }
 }
