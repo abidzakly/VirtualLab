@@ -25,6 +25,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -66,7 +67,12 @@ import org.d3ifcool.virtualab.ui.theme.LightBlue
 @Composable
 fun GuruDashboardScreen(navController: NavHostController) {
     val sheetStateBuat = rememberBottomSheetScaffoldState()
-    val sheetStateLihat = rememberBottomSheetScaffoldState()
+    val sheetStateLihat = rememberBottomSheetScaffoldState(
+        bottomSheetState = rememberStandardBottomSheetState(
+            initialValue = SheetValue.Hidden,
+            skipHiddenState = false
+        )
+    )
     val scope = rememberCoroutineScope()
     var backgroundColor by remember { mutableStateOf(Transparent) }
     var isPressed by remember { mutableStateOf(false) }
@@ -78,7 +84,15 @@ fun GuruDashboardScreen(navController: NavHostController) {
                 navController,
                 isClicked = isPressed
             ) {
-
+                if (isPressed) {
+                    scope.launch {
+                        sheetStateLihat.bottomSheetState.hide()
+                    }
+                } else {
+                    scope.launch {
+                        sheetStateLihat.bottomSheetState.expand()
+                    }
+                }
             }
             Log.d("isPressed", "$isPressed")
         },
@@ -153,7 +167,7 @@ fun GuruDashboardScreen(navController: NavHostController) {
                     popUpTo(Screen.GuruDashboard.route)
                 }
             },
-            action2 = R.string.lihat_materi_title,
+            action2 = R.string.lihat_latihan_title,
             onClickAct2 = {
                 navController.navigate(Screen.GuruLatihan.route) {
                     popUpTo(Screen.GuruDashboard.route)

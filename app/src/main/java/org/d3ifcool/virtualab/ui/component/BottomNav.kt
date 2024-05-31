@@ -46,7 +46,7 @@ import org.d3ifcool.virtualab.ui.theme.Poppins
 fun BottomNav(
     currentRoute: String,
     navController: NavHostController,
-    id: Long? = 0L,
+    id: Long? = 1L,
     isClicked: Boolean = false,
     onClick: () -> Unit = {}
 ) {
@@ -109,7 +109,8 @@ fun BottomNav(
                     BottomNavButton(
                         icon = R.drawable.baseline_history_24,
                         title = R.string.bottom_app_riwayat,
-                        isSelected = true
+                        isSelected = true,
+                        isSheet = true
                     ) {
                         navController.navigate(currentRoute) {
                             popUpTo(Screen.GuruDashboard.route)
@@ -119,7 +120,8 @@ fun BottomNav(
                     BottomNavButton(
                         icon = R.drawable.baseline_history_24,
                         title = R.string.bottom_app_riwayat,
-                        isSelected = isClicked
+                        isSelected = isClicked,
+                        isSheet = isClicked
                     ) {
                         onClick()
                     }
@@ -139,7 +141,7 @@ fun BottomNav(
 }
 
 @Composable
-private fun BottomNavButton(icon: Int, title: Int, isSelected: Boolean, onClick: () -> Unit) {
+private fun BottomNavButton(icon: Int, title: Int, isSelected: Boolean, isSheet: Boolean = false, onClick: () -> Unit) {
     Button(
         onClick = { onClick() },
         modifier = Modifier
@@ -152,7 +154,7 @@ private fun BottomNavButton(icon: Int, title: Int, isSelected: Boolean, onClick:
             disabledContainerColor = Color.Transparent,
             disabledContentColor = GrayIco
         ),
-        enabled = !isSelected
+        enabled = if (!isSheet) !isSelected else isSelected
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

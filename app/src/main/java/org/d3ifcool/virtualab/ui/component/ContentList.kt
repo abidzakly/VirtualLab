@@ -55,7 +55,7 @@ fun ContentList(title: String, desc: String, onClick: () -> Unit) {
         Spacer(modifier = Modifier.width(4.dp))
         IconButton(onClick = { onClick() }) {
             Icon(
-                painter = painterResource(id = R.drawable.baseline_arrow_circle_outline_28),
+                painter = painterResource(id = R.drawable.arrow_circle),
                 contentDescription = "Detail Button",
                 tint = Color.Black
             )
