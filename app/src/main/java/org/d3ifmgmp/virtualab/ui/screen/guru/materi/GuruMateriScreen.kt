@@ -24,6 +24,7 @@ import org.d3ifmgmp.virtualab.R
 import org.d3ifmgmp.virtualab.navigation.Screen
 import org.d3ifmgmp.virtualab.ui.component.BottomNav
 import org.d3ifmgmp.virtualab.ui.component.ContentList
+import org.d3ifmgmp.virtualab.ui.component.GuruEmptyState
 import org.d3ifmgmp.virtualab.ui.component.TopNav
 
 @Composable
@@ -41,24 +42,16 @@ fun GuruMateriScreen(navController: NavHostController) {
 private fun ScreenContent(modifier: Modifier) {
     val viewModel: GuruMateriViewModel = viewModel()
     val data = viewModel.data
-
-    if (data.isEmpty()) {
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(text = stringResource(id = R.string.list_latihan_kosong))
-        }
-    } else {
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .background(Color.White)
-                .padding(12.dp)
-        ) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(Color.White)
+            .padding(12.dp),
+        verticalArrangement = if (data.isNotEmpty()) Arrangement.Top else Arrangement.Center,
+    ) {
+        if (data.isEmpty()) {
+            GuruEmptyState(text = "Belum ada materi yang ditambahkan")
+        } else {
             Text(
                 text = "Materi yang pernah ditambahkan :",
                 Modifier.padding(start = 16.dp),
@@ -88,6 +81,7 @@ private fun ScreenContent(modifier: Modifier) {
     }
 
 }
+
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 private fun LihatMateriPrev() {
