@@ -16,6 +16,7 @@ import org.d3ifcool.virtualab.ui.screen.auth.RegisterScreen
 import org.d3ifcool.virtualab.ui.screen.auth.LoginScreen
 import org.d3ifcool.virtualab.ui.screen.guru.dashboard.GuruDashboardScreen
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddLatihanScreen
+import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddSoalScreen
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.GuruLatihanScreen
 import org.d3ifcool.virtualab.ui.screen.guru.materi.AddMateriScreen
 import org.d3ifcool.virtualab.ui.screen.guru.materi.GuruMateriScreen
@@ -102,6 +103,9 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
         }
         composable(route = Screen.GuruLatihan.route) {
             GuruLatihanScreen(navController)
+        }
+        composable(route = Screen.AddSoal.route) {
+            AddSoalScreen(navController)
         }
     }
 }

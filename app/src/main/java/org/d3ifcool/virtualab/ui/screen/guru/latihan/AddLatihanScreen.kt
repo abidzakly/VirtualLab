@@ -1,6 +1,5 @@
 package org.d3ifcool.virtualab.ui.screen.guru.latihan
 
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,7 +30,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -45,9 +43,10 @@ import androidx.compose.ui.unit.toSize
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
+import org.d3ifcool.virtualab.navigation.Screen
+import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.ExtraSmallText
 import org.d3ifcool.virtualab.ui.component.RegularText
-import org.d3ifcool.virtualab.ui.component.SmallText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.GrayIco
 import org.d3ifcool.virtualab.ui.theme.GrayText
@@ -64,6 +63,9 @@ fun AddLatihanScreen(navController: NavHostController) {
     Scaffold (
         topBar = {
             TopNav(title = R.string.add_materi_title, navController = navController)
+        },
+        bottomBar = {
+            BottomNav(currentRoute = Screen.GuruDashboard.route, navController = navController)
         }
     ){
         ScreenContent(
@@ -71,7 +73,8 @@ fun AddLatihanScreen(navController: NavHostController) {
             judulLatihan = judulLatihan,
             onTitleChange = { judulLatihan = it },
             jumlahSoal = jumlahSoal,
-            onSoalChange = { jumlahSoal = it }
+            onSoalChange = { jumlahSoal = it },
+            navController = navController
         )
     }
 }
@@ -82,7 +85,8 @@ private fun ScreenContent(
     judulLatihan: String,
     onTitleChange: (String) -> Unit,
     jumlahSoal: String,
-    onSoalChange: (String) -> Unit
+    onSoalChange: (String) -> Unit,
+    navController: NavHostController
 ) {
 
     Column(
@@ -122,7 +126,7 @@ private fun ScreenContent(
         ) {
             Button(
                 modifier = modifier.padding(12.dp),
-                onClick = {  },
+                onClick = { navController.navigate(Screen.AddSoal.route) },
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = LightBlue,

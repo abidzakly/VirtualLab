@@ -17,6 +17,7 @@
     <string name="murid_detail_materi_title">Materi X</string>
     <string name="contoh_reaksi_title">Contoh Reaksi</string>
     <string name="add_materi_title">Buat Latihan</string>
+    <string name="add_soal_title">Tambah Soal</string>
     <!--  Form Labels  -->
     <string name="fullname_label">Nama Lengkap</string>
     <string name="username_label">Nama Pengguna</string>
@@ -118,4 +119,17 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
     <string name="number_latihan">Jumlah Soal</string>
     <string name="limit_latihan">Maksimal jumlah soal di buat adalah 10*</string>
     <string name="button_tambahSoal">Tambah Soal</string>
+
+    <!--   Buat Soal Guru   -->
+    <string name="title_soal">Judul Latihan : Penyetaraan Reaksi Kimia</string>
+    <string name="difficulty_soal">Tingkat Kesulitan : Mudah</string>
+    <string name="number_soal_1">Soal 1</string>
+    <string name="soal">Tulis Soal</string>
+    <string name="pilihan_jawaban">Pilihan Jawaban</string>
+    <string name="pilihan_1">Jawaban 1</string>
+    <string name="pilihan_2">Jawaban 2</string>
+    <string name="pilihan_3">Jawaban 3</string>
+    <string name="pilihan_4">Jawaban 4</string>
+    <string name="number_soal_2">Soal 2</string>
+    <string name="button_unggah">Unggah Soal</string>
 </resources>
