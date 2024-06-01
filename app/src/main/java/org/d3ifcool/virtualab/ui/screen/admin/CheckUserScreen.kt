@@ -105,7 +105,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                     )
             ) {
             AccountList(username = "yanto123", number = "1992022620") {
-                navController.navigate(Screen.FileInfo.route)
+                navController.navigate(Screen.UsersInfo.route)
             }
             }
         }
