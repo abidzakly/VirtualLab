@@ -67,7 +67,6 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
             Column(modifier = Modifier.padding(top = 40.dp)) {
                 Image(painter = painterResource(id = R.drawable.vektor_dashboard_admin), contentDescription = "Gambar Dashboard Admin" )
             }
-            Spacer(modifier = Modifier.padding(top = 28.dp))
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -75,9 +74,8 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                 RegularText(
                     text = stringResource(R.string.dashboard_category_title),
                     fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp)
                 )
-                Spacer(modifier = Modifier.height(8.dp))
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -90,7 +88,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                             title = R.string.category_check_role,
                             image = R.drawable.check_role_illustration,
                         ) {
-                            navController.navigate(Screen.Introduction.route)
+                            navController.navigate(Screen.CheckUser.route)
                         }
                         GridItem(
                             title = R.string.category_check_file,
