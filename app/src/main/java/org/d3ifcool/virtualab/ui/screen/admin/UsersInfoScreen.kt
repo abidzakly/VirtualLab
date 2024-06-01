@@ -1,7 +1,10 @@
 package org.d3ifcool.virtualab.ui.screen.admin
 
+import android.content.Context
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,7 +14,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
@@ -20,8 +26,11 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -35,7 +44,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,6 +60,7 @@ import org.d3ifcool.virtualab.ui.component.LargeText
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.SemiLargeText
+import org.d3ifcool.virtualab.ui.screen.profile.UserTextFields
 import org.d3ifcool.virtualab.ui.theme.DarkBlue
 import org.d3ifcool.virtualab.ui.theme.GreenButton
 import org.d3ifcool.virtualab.ui.theme.LightBlue
@@ -86,24 +99,58 @@ fun UsersInfoScreen(navController: NavHostController) {
 @Composable
 private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
     val context = LocalContext.current
+    var password by remember { mutableStateOf("") }
+    var fullname by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("amruabid8212@gmail.com") }
+    var uniqueId by remember { mutableStateOf("") }
+    var school by remember { mutableStateOf("") }
+    var readOnly by remember { mutableStateOf(true) }
+
     var showDialog by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(24.dp),
+            .padding(24.dp)
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        UserInfoColumn(text = R.string.fullname_label, userData = "Suyanto")
-        UserInfoColumn(text = R.string.username_label, userData = "yanto123")
-        UserInfoColumn(text = R.string.nisn_label, userData = "199202262017051001")
-        UserInfoColumn(text = R.string.school_label, userData = "SMA Negeri 1 Bandung")
-        Spacer(modifier = Modifier.height(40.dp))
+        UserInfoColumn(
+            value = "Suyanto",
+            onValueChange = { fullname = it },
+            text = R.string.fullname_label,
+            readOnly = readOnly
+        )
+        UserInfoColumn(
+            value = "yanto123",
+            onValueChange = { username = it },
+            text = R.string.username_label,
+            readOnly = readOnly
+        )
+        UserInfoColumn(
+            value = email,
+            onValueChange = { email = it },
+            text = R.string.email_label,
+            readOnly = readOnly
+        )
+        UserInfoColumn(
+            value = "199202262017051001",
+            onValueChange = { uniqueId = it },
+            text = R.string.nip_label,
+            readOnly = readOnly
+        )
+        UserInfoColumn(
+            value = "SMAN 1 Bandung",
+            onValueChange = { school = it },
+            text = R.string.school_label,
+            readOnly = readOnly
+        )
+        Spacer(modifier = Modifier.height(8.dp))
         Button(
-            onClick = {
-                Toast.makeText(context, R.string.accept_toast, Toast.LENGTH_LONG).show() },
+            onClick = { password = generatePassword(); sendEmail(context, email, password) },
             shape = RoundedCornerShape(5.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = GreenButton,
@@ -130,25 +177,40 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
 
 @Composable
 fun UserInfoColumn(
+    modifier: Modifier? = null,
+    value: String,
+    onValueChange: (String) -> Unit,
     text: Int,
-    userData: String
+    readOnly: Boolean,
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         RegularText(
             text = stringResource(id = text),
             fontWeight = FontWeight.SemiBold
         )
-        Column(
-            modifier = Modifier
-                .background(Color(0xFFDAE8EB), shape = RoundedCornerShape(5.dp))
-                .padding(8.dp)
-                .fillMaxWidth()
-        ) {
-            RegularText(text = userData)
-        }
+        TextField(
+            textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
+            shape = RoundedCornerShape(5.dp),
+            readOnly = readOnly,
+            value = value,
+            onValueChange = { onValueChange(it) },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.Words,
+                imeAction = ImeAction.Next
+            ),
+            modifier = modifier?.fillMaxWidth()
+                ?: Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.colors(
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedContainerColor = Color(0xFFDAE8EB),
+                focusedContainerColor = Color(0xFFDAE8EB)
+            )
+        )
     }
 }
 
@@ -190,6 +252,39 @@ fun RejectPopup(onDismiss: () -> Unit) {
             }
         }
     )
+}
+
+fun sendEmail(context: Context, email: String, password: String) {
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
+        putExtra(Intent.EXTRA_SUBJECT, "Password Akun Anda")
+        putExtra(Intent.EXTRA_TEXT, "Password untuk akun Virtual Lab Anda adalah:\n\n $password")
+    }
+
+    context.startActivity(Intent.createChooser(intent, "Send Email"))
+}
+
+fun generatePassword(): String {
+    val upperCaseLetters = ('A'..'Z')
+    val lowerCaseLetters = ('a'..'z')
+    val specialCharacters = "!@#$%^&*()-_=+[]{}|;:'\",.<>?/"
+    val digits = ('0'..'9')
+
+    val allCharacters =
+        upperCaseLetters + lowerCaseLetters + specialCharacters.toCharArray() + digits
+
+    val password = StringBuilder()
+    password.append(upperCaseLetters.random())
+    password.append(lowerCaseLetters.random())
+    password.append(specialCharacters.random())
+    password.append(digits.random())
+
+    for (i in 4 until 8) {
+        password.append(allCharacters.random())
+    }
+
+    return password.toString().toList().shuffled().joinToString("")
 }
 
 @Preview
