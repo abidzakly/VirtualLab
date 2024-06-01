@@ -268,7 +268,7 @@ fun sendEmail(context: Context, email: String, password: String) {
 fun generatePassword(): String {
     val upperCaseLetters = ('A'..'Z')
     val lowerCaseLetters = ('a'..'z')
-    val specialCharacters = "!@#$%^&*()-_=+[]{}|;:'\",.<>?/"
+    val specialCharacters = "!@_."
     val digits = ('0'..'9')
 
     val allCharacters =
