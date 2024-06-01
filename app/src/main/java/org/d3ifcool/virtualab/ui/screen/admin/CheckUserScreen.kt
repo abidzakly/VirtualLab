@@ -104,8 +104,8 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                         rememberScrollState()
                     )
             ) {
-            AccountList(username = "yanto123", number = "199202262017051001") {
-                navController.navigate(Screen.UsersInfo.route)
+            AccountList(username = "yanto123", number = "1992022620") {
+                navController.navigate(Screen.FileInfo.route)
             }
             }
         }
@@ -125,22 +125,26 @@ fun AccountList(username: String, number: String, onClick: () -> Unit) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.baseline_account_circle),
-            contentDescription = "Foto Profil User",
-            modifier = Modifier.padding(end = 10.dp)
-        )
-        Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            RegularText(
-                text = username,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.baseline_account_circle),
+                contentDescription = "Foto Profil User"
             )
-            RegularText(
-                text = number,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                RegularText(
+                    text = username,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                RegularText(
+                    text = number,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
         Icon(
             painter = painterResource(id = R.drawable.arrow_circle),

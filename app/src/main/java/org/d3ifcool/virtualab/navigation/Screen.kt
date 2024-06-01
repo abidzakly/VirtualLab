@@ -37,6 +37,7 @@ sealed class Screen(val route: String) {
     // Admin
     data object AdminDashboard : Screen("muridDashboardScreen")
     data object CheckUser : Screen("checkUserScreen")
+    data object CheckFile : Screen("checkFileScreen")
     data object UsersInfo : Screen("usersInfoScreen")
     data object FileInfo : Screen("fileInfoScreen")
 }

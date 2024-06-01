@@ -94,7 +94,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                             title = R.string.category_check_file,
                             image = R.drawable.berkas_illustration
                         ) {
-                            navController.navigate(Screen.MuridMateri.route)
+                            navController.navigate(Screen.CheckFile.route)
                         }
                     }
                     Spacer(modifier = Modifier.height(27.dp))
