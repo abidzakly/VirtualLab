@@ -108,7 +108,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                             title = R.string.category_kelola_materi,
                             image = R.drawable.pengenalan_illustration
                         ) {
-                            navController.navigate(Screen.MuridLatihan.route)
+                            navController.navigate(Screen.ManageIntroContent.route)
                         }
                     }
                 }

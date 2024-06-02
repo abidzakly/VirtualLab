@@ -40,4 +40,7 @@ sealed class Screen(val route: String) {
     data object CheckFile : Screen("checkFileScreen")
     data object UsersInfo : Screen("usersInfoScreen")
     data object FileInfo : Screen("fileInfoScreen")
+    data object ManageIntroContent : Screen("manageContentScreen")
+    data object UpdateIntroContent : Screen("updateIntroContentScreen")
+
 }
