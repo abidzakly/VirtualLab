@@ -107,7 +107,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
 }
 
 @Composable
-fun FileList(username: String, filetype: Int, onClick: () -> Unit) {
+private fun FileList(username: String, filetype: Int, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

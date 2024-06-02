@@ -113,7 +113,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
 }
 
 @Composable
-fun AccountList(username: String, number: String, onClick: () -> Unit) {
+private fun AccountList(username: String, number: String, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

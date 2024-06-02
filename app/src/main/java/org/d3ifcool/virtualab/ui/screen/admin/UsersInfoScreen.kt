@@ -2,13 +2,9 @@ package org.d3ifcool.virtualab.ui.screen.admin
 
 import android.content.Context
 import android.content.Intent
-import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,9 +22,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
@@ -60,11 +54,9 @@ import org.d3ifcool.virtualab.ui.component.LargeText
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.SemiLargeText
-import org.d3ifcool.virtualab.ui.screen.profile.UserTextFields
 import org.d3ifcool.virtualab.ui.theme.DarkBlue
 import org.d3ifcool.virtualab.ui.theme.GreenButton
 import org.d3ifcool.virtualab.ui.theme.LightBlue
-import org.d3ifcool.virtualab.ui.theme.Poppins
 import org.d3ifcool.virtualab.ui.theme.RedButton
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -170,7 +162,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
             RegularText(text = stringResource(id = R.string.button_tolak), color = Color.White)
         }
         if (showDialog) {
-            RejectPopup(onDismiss = { showDialog = false })
+            RejectAccountPopup(onDismiss = { showDialog = false })
         }
     }
 }
@@ -215,7 +207,7 @@ fun UserInfoColumn(
 }
 
 @Composable
-fun RejectPopup(onDismiss: () -> Unit) {
+private fun RejectAccountPopup(onDismiss: () -> Unit) {
     AlertDialog(
         containerColor = Color.White,
         onDismissRequest = { onDismiss() },
