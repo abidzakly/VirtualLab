@@ -1,6 +1,7 @@
 [versions]
 accompanistSystemuicontrollerVersion = "0.27.0"
 agp = "8.3.2"
+converterMoshiVersion = "2.10.0"
 coreSplashscreen = "1.0.1"
 datastorePreferencesAndroidVersion = "1.1.1"
 generativeai = "0.4.0"
@@ -13,8 +14,10 @@ lifecycleRuntimeKtx = "2.7.0"
 activityCompose = "1.9.0"
 composeBom = "2024.04.01"
 materialIconsExtended = "1.6.6"
+moshiKotlinVersion = "1.9.3"
 navigationCompose = "2.7.7"
 constraintlayoutCompose = "1.0.1"
+retrofitVersion = "2.10.0"
 roomKtxVersion = "2.6.1"
 roomRuntimeVersion = "2.6.1"
 uiTextGoogleFonts = "1.6.6"
@@ -30,6 +33,7 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtxVersion" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntimeVersion" }
 androidx-ui-text-google-fonts = { module = "androidx.compose.ui:ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
+converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "converterMoshiVersion" }
 generativeai = { module = "com.google.ai.client.generativeai:generativeai", version.ref = "generativeai" }
 google-accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontrollerVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -46,6 +50,8 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayoutCompose" }
+moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshiKotlinVersion" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofitVersion" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

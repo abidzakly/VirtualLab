@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -46,6 +47,7 @@ import org.d3ifcool.virtualab.ui.component.SmallText
 import org.d3ifcool.virtualab.ui.component.TopNavDashboard
 import org.d3ifcool.virtualab.ui.screen.auth.AuthViewModel
 import org.d3ifcool.virtualab.ui.theme.WhiteLightBlue
+import org.d3ifcool.virtualab.utils.SettingsDataStore
 
 @Composable
 fun MuridDashboardScreen(navController: NavHostController) {
@@ -61,10 +63,10 @@ fun MuridDashboardScreen(navController: NavHostController) {
 
 @Composable
 private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
-    val viewModel: AuthViewModel = viewModel()
-    val currentUser by viewModel.currentUser.collectAsState()
+    val dataStore = SettingsDataStore(LocalContext.current)
+    val userFullname by dataStore.userFullNameFlow.collectAsState(true)
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
-        TopNavDashboard(name = "${currentUser!!.fullName}!", navController = navController)
+        TopNavDashboard(name = "$userFullname", navController = navController)
         Column(
             modifier = Modifier
                 .fillMaxSize()
