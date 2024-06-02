@@ -121,7 +121,6 @@ private fun ScreenContent(modifier: Modifier) {
             }
         }
     }
-
 }
 
 @Composable

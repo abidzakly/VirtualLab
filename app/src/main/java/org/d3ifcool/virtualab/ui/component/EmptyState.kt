@@ -57,6 +57,25 @@ fun GuruEmptyState(text: String) {
         )
     }
 }
+@Composable
+fun AdminEmptyState(text: String) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.empty_state_admin),
+            contentDescription = "Gambar Empty State"
+        )
+        Spacer(modifier = Modifier.height(28.dp))
+        RegularText(
+            text = text,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+    }
+}
 
 @Preview
 @Composable

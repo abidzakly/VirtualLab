@@ -171,7 +171,7 @@ private fun LoginScreenContent(modifier: Modifier, navController: NavHostControl
         )
         Spacer(modifier = Modifier.padding(24.dp))
         Button(
-            onClick = { navController.navigate(Screen.GuruDashboard.route) },
+            onClick = { navController.navigate(Screen.AdminDashboard.route) },
             modifier = Modifier
                 .height(47.dp)
                 .width(150.dp),
