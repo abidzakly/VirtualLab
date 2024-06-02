@@ -1,13 +1,14 @@
 package org.d3ifcool.virtualab.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
-@Entity(tableName = "latihan")
 data class Latihan(
-    @PrimaryKey(autoGenerate = true)
-    val id: Long,
-    val title: Int,
-    val titleData: Int,
-    val route: String
+    val exerciseId: Int,
+    val title: String,
+    val difficulty: TingkatKesulitan,
+    val questionCount: Int,
+    val authorId: Int,
+    val approvalStatus: ApprovalStatus = ApprovalStatus.PENDING
 )
+
+enum class TingkatKesulitan {
+    EASY, MEDIUM, HARD
+}

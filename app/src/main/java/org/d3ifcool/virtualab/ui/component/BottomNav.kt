@@ -110,7 +110,7 @@ fun BottomNav(
                         icon = R.drawable.baseline_history_24,
                         title = R.string.bottom_app_riwayat,
                         isSelected = true,
-                        isSheet = true
+                        isSheet = isClicked
                     ) {
                         navController.navigate(currentRoute) {
                             popUpTo(Screen.GuruDashboard.route)

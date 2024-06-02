@@ -1,12 +1,5 @@
 package org.d3ifcool.virtualab.database
 
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import android.content.Context
-import org.d3ifcool.virtualab.model.Guru
-import org.d3ifcool.virtualab.model.Siswa
-
 //@Database(entities = [Guru::class, Siswa::class], version = 1, exportSchema = false)
 //abstract class VLabDb : RoomDatabase() {
 //

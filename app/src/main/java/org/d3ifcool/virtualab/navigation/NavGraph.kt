@@ -36,7 +36,18 @@ import org.d3ifcool.virtualab.ui.screen.terms.TermsConditionScreen
 
 @Composable
 fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
-    NavHost(navController = navController, startDestination = Screen.Landing.route) {
+    NavHost(
+        navController = navController, startDestination = Screen.Landing.route
+//        if (!isLoggedIn) {
+//            Screen.Landing.route
+//        } else {
+//            when (userType) {
+//                1 -> Screen.MuridDashboard.route
+//                2 -> Screen.GuruDashboard.route
+//                else -> Screen.Landing.route
+//            }
+//        }
+    ) {
         composable(route = Screen.Landing.route) {
             LandingScreen(navController)
         }

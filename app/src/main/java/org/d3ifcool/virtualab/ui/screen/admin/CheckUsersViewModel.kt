@@ -7,14 +7,14 @@ class CheckUsersViewModel: ViewModel() {
     private fun getDataDummy(): List<Latihan> {
         val data = mutableListOf<Latihan>()
         for (i in 30 downTo 1) {
-            data.add(
-                Latihan(
-                    1,
-                    1,
-                    1,
-                    route = ""
-                )
-            )
+//            data.add(
+//                Latihan(
+//                    1,
+//                    1,
+//                    1,
+//                    route = ""
+//                )
+//            )
         }
         return data
     }

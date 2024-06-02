@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
-import org.d3ifcool.virtualab.model.Categories
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.RegularText
@@ -118,7 +117,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
 }
 
 @Composable
-fun GridItem(categories: Categories? = null, title: Int, image: Int, onClick: () -> Unit) {
+fun GridItem(title: Int, image: Int, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .size(153.dp)
