@@ -73,12 +73,10 @@ fun GuruDashboardScreen(navController: NavHostController) {
             ) {
                 if (isPressed) {
                     scope.launch {
-                        isPressed = false
                         sheetStateLihat.bottomSheetState.hide()
                     }
                 } else {
                     scope.launch {
-                        isPressed = true
                         sheetStateLihat.bottomSheetState.expand()
                     }
                 }
@@ -122,17 +120,21 @@ fun GuruDashboardScreen(navController: NavHostController) {
         LaunchedEffect(sheetStateLihat.bottomSheetState) {
             snapshotFlow { sheetStateLihat.bottomSheetState.currentValue }
                 .collect { bottomSheetValue ->
-                    isPressed = bottomSheetValue == SheetValue.Expanded
+                    if (bottomSheetValue == SheetValue.Expanded) {
+                        backgroundColor = Black
+                        isPressed = true
+                    } else {
+                        backgroundColor = Transparent
+                        isPressed = false
+                    }
                 }
         }
-        if (isPressed) {
-            Box(
-                modifier = Modifier
-                    .alpha(0.22f)
-                    .fillMaxSize()
-                    .background(Black)
-            )
-        }
+        Box(
+            modifier = Modifier
+                .alpha(0.22f)
+                .fillMaxSize()
+                .background(backgroundColor)
+        )
         BottomSheet(
             scaffoldSheetState = sheetStateBuat,
             title = R.string.fab_slide_up_title,
@@ -152,15 +154,13 @@ fun GuruDashboardScreen(navController: NavHostController) {
                     popUpTo(Screen.GuruDashboard.route)
                 }
             },
-            action2 = R.string.lihat_materi_title,
+            action2 = R.string.lihat_latihan_title,
             onClickAct2 = {
                 navController.navigate(Screen.GuruLatihan.route) {
                     popUpTo(Screen.GuruDashboard.route)
                 }
-
             }
         )
-
     }
 }
 
@@ -170,7 +170,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
         TopNavDashboard(name = "Guru!", navController = navController)
         Column(
             modifier = Modifier
-                .padding(horizontal = 12.dp),
+                .padding(horizontal = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             RegularText(
@@ -179,22 +179,14 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                     .padding(vertical = 24.dp)
                     .fillMaxWidth()
             )
-            Column(
-                modifier = Modifier
-                    .padding(16.dp)
-            ) {
-                ContentList(
-                    title = "Pengenalan Reaksi Kimiaadasdasd",
-                    desc = "Lorem ipsum dolor sit amet, cacasdasd"
-                ) {
+            ContentList(title = "Pengenalan Reaksi Kimiaadasdasd", desc = "Lorem ipsum dolor sit amet, cacasdasd") {
 //                navController.navigate()
-                }
-                ContentList(title = "Materi 5", desc = "Lorem ipsum dolor sit amet, cacasdasd") {
+            }
+            ContentList(title = "Materi 5", desc = "Lorem ipsum dolor sit amet, cacasdasd") {
 //                navController.navigate()
-                }
-                ContentList(title = "Materi 5 asdasdasdasdasdasdasd", desc = "Testq") {
+            }
+            ContentList(title = "Materi 5 asdasdasdasdasdasdasd", desc = "Testq") {
 //                navController.navigate()
-                }
             }
         }
     }

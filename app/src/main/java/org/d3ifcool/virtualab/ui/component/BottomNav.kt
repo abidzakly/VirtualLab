@@ -15,6 +15,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -42,7 +46,7 @@ import org.d3ifcool.virtualab.ui.theme.Poppins
 fun BottomNav(
     currentRoute: String,
     navController: NavHostController,
-    id: Long? = 1L,
+    id: Long? = 2L,
     isClicked: Boolean = false,
     onClick: () -> Unit = {}
 ) {
@@ -87,7 +91,7 @@ fun BottomNav(
                     }
                 }
             }
-        } else {
+        } else if (id == 1L) {
             Row(
                 modifier = Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.SpaceEvenly
@@ -130,6 +134,28 @@ fun BottomNav(
                     navController.navigate(Screen.Profile.route) {
                         popUpTo(Screen.GuruDashboard.route)
                     }
+                }
+            }
+        } else {
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                BottomNavButton(
+                    icon = R.drawable.baseline_home_filled_28,
+                    title = R.string.bottom_app_beranda,
+                    isSelected = if (!isClicked) currentRoute == Screen.AdminDashboard.route else false
+                ) {
+                    navController.navigate(Screen.AdminDashboard.route) {
+                        popUpTo(Screen.Login.route)
+                    }
+                }
+                BottomNavButton(
+                    icon = R.drawable.icon_logout,
+                    title = R.string.logout_button,
+                    isSelected = currentRoute == Screen.Login.route
+                ) {
+
                 }
             }
         }

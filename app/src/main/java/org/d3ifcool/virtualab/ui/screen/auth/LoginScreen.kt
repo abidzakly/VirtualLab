@@ -104,12 +104,9 @@ fun LoginScreen(navController: NavHostController) {
 @Composable
 private fun LoginScreenContent(modifier: Modifier, navController: NavHostController) {
     var password by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-
+    var username by remember { mutableStateOf("") }
 
     var passwordVisibility by remember { mutableStateOf(false) }
-
-
 
     Column(
         modifier = modifier
@@ -127,13 +124,12 @@ private fun LoginScreenContent(modifier: Modifier, navController: NavHostControl
                 .size(181.dp)
         )
         TextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text(text = stringResource(R.string.email_label)) },
+            value = username,
+            onValueChange = { username = it },
+            label = { Text(text = stringResource(R.string.username_label)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Email,
-                capitalization = KeyboardCapitalization.None,
+                capitalization = KeyboardCapitalization.Words,
                 imeAction = ImeAction.Next
             ),
             modifier = Modifier.fillMaxWidth(),
@@ -176,9 +172,10 @@ private fun LoginScreenContent(modifier: Modifier, navController: NavHostControl
         Spacer(modifier = Modifier.padding(24.dp))
         Button(
             onClick = {
-                if (email.isEmpty() || password.isEmpty() || email == "" || password == "") {
+                if (username.isEmpty() || password.isEmpty() || username == "" || password == "") {
                     return@Button
                 } else {
+                    navController.navigate(Screen.AdminDashboard.route)
                 }
             },
             modifier = Modifier

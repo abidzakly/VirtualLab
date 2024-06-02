@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,12 +33,12 @@ fun GuruMateriScreen(navController: NavHostController) {
     }, bottomBar = {
         BottomNav(currentRoute = Screen.GuruMateri.route, navController)
     }) {
-        ScreenContent(modifier = Modifier.padding(it))
+        ScreenContent(modifier = Modifier.padding(it), navController)
     }
 }
 
 @Composable
-private fun ScreenContent(modifier: Modifier) {
+private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
     val viewModel: GuruMateriViewModel = viewModel()
     val data = viewModel.data
     Column(
@@ -48,7 +49,7 @@ private fun ScreenContent(modifier: Modifier) {
         verticalArrangement = if (data.isNotEmpty()) Arrangement.Top else Arrangement.Center,
     ) {
         if (data.isEmpty()) {
-            GuruEmptyState(text = "Belum ada materi yang ditambahkan")
+            GuruEmptyState(text = stringResource(id = R.string.list_latihan_kosong))
         } else {
             Text(
                 text = "Materi yang pernah ditambahkan :",
@@ -63,16 +64,16 @@ private fun ScreenContent(modifier: Modifier) {
                     )
             ) {
                 ContentList(title = "Materi 1", desc = "lorem ipsum dolor sit amet") {
-
+                    navController.navigate(Screen.GuruDetailMateri.route)
                 }
                 ContentList(title = "Materi 2", desc = "lorem ipsum dolor sit amet") {
-
+                    navController.navigate(Screen.GuruDetailMateri.route)
                 }
                 ContentList(title = "Materi 3", desc = "lorem ipsum dolor sit amet") {
-
+                    navController.navigate(Screen.GuruDetailMateri.route)
                 }
                 ContentList(title = "Materi 4", desc = "lorem ipsum dolor sit amet") {
-
+                    navController.navigate(Screen.GuruDetailMateri.route)
                 }
             }
         }

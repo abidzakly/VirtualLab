@@ -22,6 +22,7 @@ val GrayTitle= Color(0xFFADADAD)
 val GrayTextField = Color(0xFFFAFAFA)
 val GrayIco = Color(0xFF6D6E6F)
 val RedButton = Color(0xFFD83A51)
+val GreenButton = Color(0xFF8ED333)
 
 val BlueGradient = Color(0xFF40B9F0)
 

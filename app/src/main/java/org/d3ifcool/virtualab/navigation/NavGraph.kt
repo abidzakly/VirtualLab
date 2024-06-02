@@ -8,6 +8,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import org.d3ifcool.virtualab.ui.screen.about.AboutScreen
+import org.d3ifcool.virtualab.ui.screen.admin.AdminDashboardScreen
+import org.d3ifcool.virtualab.ui.screen.admin.CheckFileScreen
+import org.d3ifcool.virtualab.ui.screen.admin.CheckUserScreen
+import org.d3ifcool.virtualab.ui.screen.admin.UsersInfoScreen
 import org.d3ifcool.virtualab.ui.screen.murid.dashboard.MuridDashboardScreen
 import org.d3ifcool.virtualab.ui.screen.murid.introduction.IntroductionScreen
 import org.d3ifcool.virtualab.ui.screen.landing.LandingScreen
@@ -16,8 +20,10 @@ import org.d3ifcool.virtualab.ui.screen.auth.RegisterScreen
 import org.d3ifcool.virtualab.ui.screen.auth.LoginScreen
 import org.d3ifcool.virtualab.ui.screen.guru.dashboard.GuruDashboardScreen
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddLatihanScreen
+import org.d3ifcool.virtualab.ui.screen.guru.latihan.DetailLatihanScreen
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.GuruLatihanScreen
 import org.d3ifcool.virtualab.ui.screen.guru.materi.AddMateriScreen
+import org.d3ifcool.virtualab.ui.screen.guru.materi.DetailMateriScreen
 import org.d3ifcool.virtualab.ui.screen.guru.materi.GuruMateriScreen
 import org.d3ifcool.virtualab.ui.screen.murid.latihan.MuridDetailLatihanScreen
 import org.d3ifcool.virtualab.ui.screen.murid.materi.MuridDetailMateriScreen
@@ -113,6 +119,26 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
         }
         composable(route = Screen.GuruLatihan.route) {
             GuruLatihanScreen(navController)
+        }
+        composable(route = Screen.GuruDetailMateri.route) {
+            DetailMateriScreen(navController)
+        }
+        composable(route = Screen.GuruDetailLatihan.route) {
+            DetailLatihanScreen(navController)
+        }
+
+        // Admin
+        composable(route = Screen.AdminDashboard.route) {
+            AdminDashboardScreen(navController)
+        }
+        composable(route = Screen.CheckUser.route) {
+            CheckUserScreen(navController)
+        }
+        composable(route = Screen.CheckFile.route) {
+            CheckFileScreen(navController)
+        }
+        composable(route = Screen.UsersInfo.route) {
+            UsersInfoScreen(navController)
         }
     }
 }
