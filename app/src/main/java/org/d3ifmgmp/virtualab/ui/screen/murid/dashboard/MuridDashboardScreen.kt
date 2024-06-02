@@ -21,6 +21,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults.cardColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,15 +35,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifmgmp.virtualab.R
-import org.d3ifmgmp.virtualab.model.Categories
 import org.d3ifmgmp.virtualab.navigation.Screen
 import org.d3ifmgmp.virtualab.ui.component.BottomNav
 import org.d3ifmgmp.virtualab.ui.component.RegularText
 import org.d3ifmgmp.virtualab.ui.component.SmallText
 import org.d3ifmgmp.virtualab.ui.component.TopNavDashboard
+import org.d3ifmgmp.virtualab.ui.screen.auth.AuthViewModel
 import org.d3ifmgmp.virtualab.ui.theme.WhiteLightBlue
 
 @Composable
@@ -58,10 +61,10 @@ fun MuridDashboardScreen(navController: NavHostController) {
 
 @Composable
 private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
-//    val viewModel: DashboardMuridViewModel = viewModel()
-//    val data = viewModel.dashboardCategories
+    val viewModel: AuthViewModel = viewModel()
+    val currentUser by viewModel.currentUser.collectAsState()
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
-        TopNavDashboard(name = "Amru Abid", navController = navController)
+        TopNavDashboard(name = "${currentUser!!.fullName}!", navController = navController)
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -159,7 +162,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
 }
 
 @Composable
-fun GridItem(categories: Categories? = null, title: Int, image: Int, onClick: () -> Unit) {
+fun GridItem(title: Int, image: Int, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .size(153.dp)

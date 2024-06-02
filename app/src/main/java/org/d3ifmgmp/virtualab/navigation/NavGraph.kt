@@ -1,6 +1,9 @@
 package org.d3ifmgmp.virtualab.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -27,10 +30,22 @@ import org.d3ifmgmp.virtualab.ui.screen.profile.ProfileScreen
 import org.d3ifmgmp.virtualab.ui.screen.murid.reaksi.ReaksiScreen
 import org.d3ifmgmp.virtualab.ui.screen.role.RoleScreen
 import org.d3ifmgmp.virtualab.ui.screen.terms.TermsConditionScreen
+import org.d3ifmgmp.virtualab.utils.SettingsDataStore
 
 @Composable
 fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
-    NavHost(navController = navController, startDestination = Screen.Landing.route) {
+    NavHost(
+        navController = navController, startDestination = Screen.Landing.route
+//        if (!isLoggedIn) {
+//            Screen.Landing.route
+//        } else {
+//            when (userType) {
+//                1 -> Screen.MuridDashboard.route
+//                2 -> Screen.GuruDashboard.route
+//                else -> Screen.Landing.route
+//            }
+//        }
+    ) {
         composable(route = Screen.Landing.route) {
             LandingScreen(navController)
         }

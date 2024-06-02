@@ -1,6 +1,8 @@
 package org.d3ifmgmp.virtualab.ui.screen.auth
 
 import android.content.res.Configuration
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,6 +35,8 @@ import androidx.compose.material3.TextFieldDefaults.colors
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,6 +44,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -53,6 +58,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifmgmp.virtualab.R
@@ -62,6 +68,7 @@ import org.d3ifmgmp.virtualab.ui.theme.BlueLink
 import org.d3ifmgmp.virtualab.ui.theme.GrayText
 import org.d3ifmgmp.virtualab.ui.theme.LightBlue
 import org.d3ifmgmp.virtualab.ui.theme.Poppins
+import org.d3ifmgmp.virtualab.utils.SettingsDataStore
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -104,9 +111,12 @@ fun LoginScreen(navController: NavHostController) {
 @Composable
 private fun LoginScreenContent(modifier: Modifier, navController: NavHostController) {
     var password by remember { mutableStateOf("") }
-    var username by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+
 
     var passwordVisibility by remember { mutableStateOf(false) }
+
+
 
     Column(
         modifier = modifier
@@ -124,12 +134,13 @@ private fun LoginScreenContent(modifier: Modifier, navController: NavHostControl
                 .size(181.dp)
         )
         TextField(
-            value = username,
-            onValueChange = { username = it },
-            label = { Text(text = stringResource(R.string.username_label)) },
+            value = email,
+            onValueChange = { email = it },
+            label = { Text(text = stringResource(R.string.email_label)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Words,
+                keyboardType = KeyboardType.Email,
+                capitalization = KeyboardCapitalization.None,
                 imeAction = ImeAction.Next
             ),
             modifier = Modifier.fillMaxWidth(),
@@ -171,7 +182,12 @@ private fun LoginScreenContent(modifier: Modifier, navController: NavHostControl
         )
         Spacer(modifier = Modifier.padding(24.dp))
         Button(
-            onClick = { navController.navigate(Screen.GuruDashboard.route) },
+            onClick = {
+                if (email.isEmpty() || password.isEmpty() || email == "" || password == "") {
+                    return@Button
+                } else {
+                }
+            },
             modifier = Modifier
                 .height(47.dp)
                 .width(150.dp),
