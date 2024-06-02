@@ -2,16 +2,15 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     id("com.google.devtools.ksp")
-    id("com.google.gms.google-services")
 
 }
 
 android {
-    namespace = "org.d3ifmgmp.virtualab"
+    namespace = "org.d3ifcool.virtualab"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "org.d3ifmgmp.virtualab"
+        applicationId = "org.d3ifcool.virtualab"
         minSdk = 23
         targetSdk = 34
         versionCode = 1
