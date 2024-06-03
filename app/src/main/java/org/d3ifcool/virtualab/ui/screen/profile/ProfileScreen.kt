@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,6 +19,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -91,6 +93,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
     var readOnly by remember { mutableStateOf(true) }
 
     var showDialog by remember { mutableStateOf(false) }
+    var showLogoutDialog by remember { mutableStateOf(false) }
 
     var passwordVisibility by remember { mutableStateOf(false) }
     var passwordVisibility2 by remember { mutableStateOf(false) }
@@ -171,7 +174,6 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
                 text = R.string.school_label,
                 readOnly = true
             )
-//            if (!readOnly) {
             RegularText(
                 text = stringResource(id = R.string.password_label),
                 fontWeight = FontWeight.SemiBold
@@ -277,7 +279,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
                         )
                     }
                     Button(
-                        onClick = { navController.navigate(Screen.Login.route) },
+                        onClick = { showLogoutDialog = true },
                         shape = RoundedCornerShape(10.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = RedButton,
@@ -291,6 +293,12 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
                             fontFamily = Poppins,
                             fontSize = 16.sp,
                             color = Color.White
+                        )
+                    }
+                    if (showLogoutDialog) {
+                        ConfirmLogoutPopup(
+                            onDismiss = { showLogoutDialog = false },
+                            navController
                         )
                     }
                 } else {
@@ -419,7 +427,46 @@ private fun SaveUpdatePopup(onDismiss: () -> Unit) {
         }
     }
 }
-
+@Composable
+private fun ConfirmLogoutPopup(onDismiss: () -> Unit, navController: NavHostController) {
+    AlertDialog(
+        containerColor = Color.White,
+        onDismissRequest = { onDismiss() },
+        icon = {
+            Icon(
+                painter = painterResource(id = R.drawable.icon_logout),
+                contentDescription = "Ikon konfirmasi logout",
+                tint = DarkBlue,
+                modifier = Modifier.size(50.dp)
+            )
+        },
+        title = { SemiLargeText(text = "Anda yakin ingin keluar?", fontWeight = FontWeight.SemiBold) },
+        confirmButton = {
+            Button(
+                onClick = { navController.navigate(Screen.Login.route) },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = RedButton,
+                    contentColor = Color.White
+                ),
+                shape = RoundedCornerShape(10.dp)
+            ) {
+                MediumLargeText(text = "Ya", fontWeight = FontWeight.SemiBold, color = Color.White)
+            }
+        },
+        dismissButton = {
+            Button(
+                onClick = { onDismiss() },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = LightBlue,
+                    contentColor = Color.Black
+                ),
+                shape = RoundedCornerShape(10.dp)
+            ) {
+                MediumLargeText(text = "Tidak", fontWeight = FontWeight.SemiBold)
+            }
+        }
+    )
+}
 @Preview(showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
