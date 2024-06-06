@@ -36,7 +36,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
@@ -45,9 +44,8 @@ import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.SmallText
 import org.d3ifcool.virtualab.ui.component.TopNavDashboard
-import org.d3ifcool.virtualab.ui.screen.auth.AuthViewModel
 import org.d3ifcool.virtualab.ui.theme.WhiteLightBlue
-import org.d3ifcool.virtualab.utils.SettingsDataStore
+import org.d3ifcool.virtualab.utils.UserDataStore
 
 @Composable
 fun MuridDashboardScreen(navController: NavHostController) {
@@ -63,7 +61,7 @@ fun MuridDashboardScreen(navController: NavHostController) {
 
 @Composable
 private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
-    val dataStore = SettingsDataStore(LocalContext.current)
+    val dataStore = UserDataStore(LocalContext.current)
     val userFullname by dataStore.userFullNameFlow.collectAsState(true)
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
         TopNavDashboard(name = "$userFullname", navController = navController)

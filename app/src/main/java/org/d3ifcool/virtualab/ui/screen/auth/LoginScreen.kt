@@ -38,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -68,7 +69,7 @@ import org.d3ifcool.virtualab.ui.theme.BlueLink
 import org.d3ifcool.virtualab.ui.theme.GrayText
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.Poppins
-import org.d3ifcool.virtualab.utils.SettingsDataStore
+import org.d3ifcool.virtualab.utils.UserDataStore
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -112,12 +113,14 @@ fun LoginScreen(navController: NavHostController) {
 private fun LoginScreenContent(modifier: Modifier, navController: NavHostController) {
     val context = LocalContext.current
     val viewModel: AuthViewModel = viewModel()
-    val user by viewModel.user.collectAsState()
-    val dataStore = SettingsDataStore(context)
+    val user by viewModel.currentUser.collectAsState()
+    val dataStore = UserDataStore(context)
     val loginSuccess by viewModel.loginSuccess.collectAsState()
+    val errorMsg by viewModel.errorMsg.collectAsState()
 
     var password by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
+    var loginAttempt by remember { mutableIntStateOf(0) }
 
     var passwordVisibility by remember { mutableStateOf(false) }
     LaunchedEffect(loginSuccess) {
@@ -127,6 +130,8 @@ private fun LoginScreenContent(modifier: Modifier, navController: NavHostControl
                 dataStore.setUserId(user!!.user_id)
                 dataStore.setUserFullName(user!!.full_name)
                 dataStore.setUserType(user!!.user_type)
+                dataStore.setUserEmail(user!!.email)
+                dataStore.setLoginStatus(true)
                 Toast.makeText(context, "Login Berhasil!", Toast.LENGTH_SHORT).show()
                 when (user!!.user_type) {
                     0 -> navController.navigate(Screen.MuridDashboard.route)
@@ -135,6 +140,17 @@ private fun LoginScreenContent(modifier: Modifier, navController: NavHostControl
                     else -> Toast.makeText(context, "ID tidak valid", Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+    }
+    Log.d("LOGIN_ERROR", "Login Error: $errorMsg")
+    LaunchedEffect(errorMsg) {
+        if (errorMsg != "") {
+            Toast.makeText(
+                context,
+                errorMsg,
+                Toast.LENGTH_SHORT
+            ).show()
+            viewModel.clearErrorMsg()
         }
     }
 
@@ -159,7 +175,7 @@ private fun LoginScreenContent(modifier: Modifier, navController: NavHostControl
             label = { Text(text = stringResource(R.string.username_label)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Words,
+                capitalization = KeyboardCapitalization.None,
                 imeAction = ImeAction.Next
             ),
             modifier = Modifier.fillMaxWidth(),
@@ -205,6 +221,7 @@ private fun LoginScreenContent(modifier: Modifier, navController: NavHostControl
                 if (username.isEmpty() || password.isEmpty()) {
                     return@Button
                 } else {
+                    loginAttempt++
                     viewModel.login(username, password)
                 }
             },

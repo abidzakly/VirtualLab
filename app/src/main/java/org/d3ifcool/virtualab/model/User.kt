@@ -1,17 +1,17 @@
 package org.d3ifcool.virtualab.model
 
 data class User(
-    var user_id: Int,
     val full_name: String,
     val username: String,
-    val email: String,
-    val password: String,
     val user_type: Int,
-    val registration_status: RegistrationStatus = RegistrationStatus.pending,
+    val email: String,
+    val password: String? = null,
+    var user_id: Int,
+    val registration_status: RegistrationStatus? = RegistrationStatus.PENDING,
     val school: String,
-    val registration_date: String
+    val registration_date: String? = null
 )
 
 enum class RegistrationStatus {
-    pending, approved
+    PENDING, APPROVED
 }

@@ -15,12 +15,13 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
     name = "settings_preference"
 )
 
-class SettingsDataStore(private val context: Context) {
+class UserDataStore(private val context: Context) {
 
     companion object {
         private val IS_LOGGED_IN = booleanPreferencesKey("is_logged_in")
         private val USER_ID = intPreferencesKey("user_id")
         private val USER_NAME = stringPreferencesKey("user_fullname")
+        private val USER_EMAIL = stringPreferencesKey("user_email")
         private val USER_TYPE = intPreferencesKey("user_type")
     }
 
@@ -40,6 +41,10 @@ class SettingsDataStore(private val context: Context) {
         preferences[USER_TYPE] ?: -1
     }
 
+    val userEmailFlow: Flow<String> = context.dataStore.data.map { preferences ->
+        preferences[USER_EMAIL] ?: ""
+    }
+
     suspend fun setLoginStatus(isLoggedIn: Boolean) {
         context.dataStore.edit { preferences ->
             preferences[IS_LOGGED_IN] = isLoggedIn
@@ -55,6 +60,12 @@ class SettingsDataStore(private val context: Context) {
     suspend fun setUserFullName(fullname: String) {
         context.dataStore.edit { preferences ->
             preferences[USER_NAME] = fullname
+        }
+    }
+
+    suspend fun setUserEmail(email: String) {
+        context.dataStore.edit { preferences ->
+            preferences[USER_EMAIL] = email
         }
     }
 
