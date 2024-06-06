@@ -60,7 +60,7 @@ import org.d3ifcool.virtualab.ui.theme.Poppins
 import org.d3ifcool.virtualab.ui.theme.RedButton
 
 @Composable
-fun ProfileScreen(navController: NavHostController, id: Long? = 1L) {
+fun ProfileScreen(navController: NavHostController, id: Int) {
     Scaffold(
         topBar = {
             TopNav(R.string.profile_title, navController = navController)
@@ -69,13 +69,13 @@ fun ProfileScreen(navController: NavHostController, id: Long? = 1L) {
         },
         containerColor = Color.White
     ) {
-        ScreenContent(modifier = Modifier.padding(it), navController, id!!)
+        ScreenContent(modifier = Modifier.padding(it), navController, id)
     }
 }
 
 
 @Composable
-private fun ScreenContent(modifier: Modifier, navController: NavHostController, id: Long) {
+private fun ScreenContent(modifier: Modifier, navController: NavHostController, id: Int) {
     var fullname by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var uniqueId by remember { mutableStateOf("") }
@@ -112,18 +112,18 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
                 text = R.string.username_label,
                 readOnly = readOnly
             )
-            if (id == 0L) {
+            if (id == 0) {
                 UserTextFields(
                     value = uniqueId,
                     onValueChange = { uniqueId = it },
-                    text = R.string.nip_label,
+                    text = R.string.nisn_label,
                     readOnly = readOnly
                 )
             } else {
                 UserTextFields(
                     value = uniqueId,
                     onValueChange = { uniqueId = it },
-                    text = R.string.nisn_label,
+                    text = R.string.nip_label,
                     readOnly = readOnly
                 )
             }
@@ -293,5 +293,5 @@ fun UserTextFields(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun ProfileScreenPrev() {
-    ProfileScreen(rememberNavController(), 1L)
+    ProfileScreen(rememberNavController(), 1)
 }

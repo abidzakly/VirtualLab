@@ -1,14 +1,10 @@
 package org.d3ifcool.virtualab.ui.screen.admin
 
-import android.content.Context
-import android.content.Intent
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,15 +22,16 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -51,6 +48,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
@@ -60,16 +58,29 @@ import org.d3ifcool.virtualab.ui.component.LargeText
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.SemiLargeText
-import org.d3ifcool.virtualab.ui.screen.profile.UserTextFields
 import org.d3ifcool.virtualab.ui.theme.DarkBlue
 import org.d3ifcool.virtualab.ui.theme.GreenButton
 import org.d3ifcool.virtualab.ui.theme.LightBlue
-import org.d3ifcool.virtualab.ui.theme.Poppins
 import org.d3ifcool.virtualab.ui.theme.RedButton
+import org.d3ifcool.virtualab.utils.ViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UsersInfoScreen(navController: NavHostController) {
+fun UsersInfoScreen(navController: NavHostController, userId: Int) {
+    Log.d("Users Info Screen", "User ID at Users Info: $userId")
+    val context = LocalContext.current
+    val factory = ViewModelFactory(user_id = userId)
+    val viewModel: UsersInfoViewModel = viewModel(factory = factory)
+    val approveResponse by viewModel.approveResponse.collectAsState()
+
+    Log.d("APPROVE_RESPONSE", "APPROVE RESP?: ${approveResponse?.status}")
+    LaunchedEffect(approveResponse) {
+        if (approveResponse?.status == true) {
+            Toast.makeText(context, approveResponse!!.message, Toast.LENGTH_SHORT).show()
+            navController.navigate(Screen.AdminDashboard.route)
+        }
+    }
+
     Scaffold(topBar = {
         TopAppBar(
             navigationIcon = {
@@ -92,22 +103,50 @@ fun UsersInfoScreen(navController: NavHostController) {
     }, bottomBar = {
         BottomNav(currentRoute = Screen.AdminDashboard.route, navController = navController)
     }) {
-        ScreenContent(modifier = Modifier.padding(it), navController)
+        ScreenContent(modifier = Modifier.padding(it), navController, viewModel)
     }
 }
 
 @Composable
-private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
+private fun ScreenContent(
+    modifier: Modifier,
+    navController: NavHostController,
+    viewModel: UsersInfoViewModel
+) {
     val context = LocalContext.current
+
     var password by remember { mutableStateOf("") }
     var fullname by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("amruabid8212@gmail.com") }
+    var email by remember { mutableStateOf("") }
+    var userId by remember { mutableIntStateOf(0) }
     var uniqueId by remember { mutableStateOf("") }
     var school by remember { mutableStateOf("") }
-    var readOnly by remember { mutableStateOf(true) }
+
+    val fetchedUser by viewModel.fetchedUser.collectAsState()
+
+    if (fetchedUser != null) {
+        fullname = fetchedUser?.user?.full_name ?: ""
+        username = fetchedUser?.user?.username ?: ""
+        email = fetchedUser?.user?.email ?: ""
+        userId = fetchedUser?.user?.user_id ?: 0
+        school = fetchedUser?.user?.school ?: ""
+        uniqueId =
+            if (fetchedUser?.user?.user_type == 0) fetchedUser?.student?.nisn ?: ""
+            else fetchedUser?.teacher?.nip ?: ""
+    }
 
     var showDialog by remember { mutableStateOf(false) }
+    val isEmailSent by viewModel.emailSent.collectAsState()
+
+
+    Log.d("EMAIL_SENT", "email sent?: $isEmailSent")
+    LaunchedEffect(isEmailSent) {
+        if (isEmailSent) {
+            viewModel.approveUser(userId, password)
+        }
+    }
+
 
     Column(
         modifier = modifier
@@ -119,38 +158,45 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         UserInfoColumn(
-            value = "Suyanto",
-            onValueChange = { fullname = it },
+            value = fullname,
+            onValueChange = { },
             text = R.string.fullname_label,
-            readOnly = readOnly
+            readOnly = true
         )
         UserInfoColumn(
-            value = "yanto123",
-            onValueChange = { username = it },
+            value = username,
+            onValueChange = { },
             text = R.string.username_label,
-            readOnly = readOnly
+            readOnly = true
         )
         UserInfoColumn(
             value = email,
-            onValueChange = { email = it },
+            onValueChange = { },
             text = R.string.email_label,
-            readOnly = readOnly
+            readOnly = true
         )
         UserInfoColumn(
-            value = "199202262017051001",
-            onValueChange = { uniqueId = it },
+            value = uniqueId,
+            onValueChange = { },
             text = R.string.nip_label,
-            readOnly = readOnly
+            readOnly = true
         )
         UserInfoColumn(
-            value = "SMAN 1 Bandung",
-            onValueChange = { school = it },
+            value = school,
+            onValueChange = { },
             text = R.string.school_label,
-            readOnly = readOnly
+            readOnly = true
         )
         Spacer(modifier = Modifier.height(8.dp))
         Button(
-            onClick = { password = generatePassword(); sendEmail(context, email, password) },
+            onClick = {
+                password = viewModel.generatePassword()
+                viewModel.sendEmail(
+                    context,
+                    email,
+                    password
+                )
+            },
             shape = RoundedCornerShape(5.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = GreenButton,
@@ -170,14 +216,16 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
             RegularText(text = stringResource(id = R.string.button_tolak), color = Color.White)
         }
         if (showDialog) {
-            RejectPopup(onDismiss = { showDialog = false })
+            RejectPopup(onDismiss = { showDialog = false }) {
+                viewModel.rejectUser(userId)
+            }
         }
     }
 }
 
 @Composable
 fun UserInfoColumn(
-    modifier: Modifier? = null,
+    modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
     text: Int,
@@ -202,8 +250,7 @@ fun UserInfoColumn(
                 capitalization = KeyboardCapitalization.Words,
                 imeAction = ImeAction.Next
             ),
-            modifier = modifier?.fillMaxWidth()
-                ?: Modifier.fillMaxWidth(),
+            modifier = modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
                 unfocusedIndicatorColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,
@@ -215,7 +262,7 @@ fun UserInfoColumn(
 }
 
 @Composable
-fun RejectPopup(onDismiss: () -> Unit) {
+fun RejectPopup(onDismiss: () -> Unit, onConfirm: () -> Unit) {
     AlertDialog(
         containerColor = Color.White,
         onDismissRequest = { onDismiss() },
@@ -229,7 +276,7 @@ fun RejectPopup(onDismiss: () -> Unit) {
         title = { SemiLargeText(text = "Tolak akun ini?", fontWeight = FontWeight.SemiBold) },
         confirmButton = {
             Button(
-                onClick = { onDismiss() },
+                onClick = { onConfirm() },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = RedButton,
                     contentColor = Color.White
@@ -254,41 +301,8 @@ fun RejectPopup(onDismiss: () -> Unit) {
     )
 }
 
-fun sendEmail(context: Context, email: String, password: String) {
-    val intent = Intent(Intent.ACTION_SEND).apply {
-        type = "text/plain"
-        putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
-        putExtra(Intent.EXTRA_SUBJECT, "Password Akun Anda")
-        putExtra(Intent.EXTRA_TEXT, "Password untuk akun Virtual Lab Anda adalah:\n\n $password")
-    }
-
-    context.startActivity(Intent.createChooser(intent, "Send Email"))
-}
-
-fun generatePassword(): String {
-    val upperCaseLetters = ('A'..'Z')
-    val lowerCaseLetters = ('a'..'z')
-    val specialCharacters = "!@_."
-    val digits = ('0'..'9')
-
-    val allCharacters =
-        upperCaseLetters + lowerCaseLetters + specialCharacters.toCharArray() + digits
-
-    val password = StringBuilder()
-    password.append(upperCaseLetters.random())
-    password.append(lowerCaseLetters.random())
-    password.append(specialCharacters.random())
-    password.append(digits.random())
-
-    for (i in 4 until 8) {
-        password.append(allCharacters.random())
-    }
-
-    return password.toString().toList().shuffled().joinToString("")
-}
-
 @Preview
 @Composable
 private fun Prev() {
-    UsersInfoScreen(navController = rememberNavController())
+    UsersInfoScreen(navController = rememberNavController(), 0)
 }

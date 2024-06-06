@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.ui.screen.auth
+package org.d3ifcool.virtualab.network.create
 
 data class UserLogin(
     val username: String,

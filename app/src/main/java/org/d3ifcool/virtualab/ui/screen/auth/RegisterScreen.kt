@@ -2,6 +2,7 @@ package org.d3ifcool.virtualab.ui.screen.auth
 
 import android.content.res.Configuration
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
@@ -36,6 +37,8 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -59,9 +63,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
+import org.d3ifcool.virtualab.network.create.UserCreate
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.SmallText
@@ -72,7 +78,37 @@ import org.d3ifcool.virtualab.ui.theme.Poppins
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterScreen(navController: NavHostController, id: Long? = null) {
+fun RegisterScreen(navController: NavHostController, id: Int) {
+    val context = LocalContext.current
+    val viewModel: AuthViewModel = viewModel()
+    val registSuccess by viewModel.registerSuccess.collectAsState()
+    val errorMsg by viewModel.errorMsg.collectAsState()
+
+    Log.d("REGIST_STATUS", "Regist Status: ${registSuccess?.status}")
+    LaunchedEffect(registSuccess) {
+        if (registSuccess?.status == true) {
+            Toast.makeText(
+                context,
+                registSuccess!!.message,
+                Toast.LENGTH_SHORT
+            ).show()
+            navController.navigate(Screen.Login.route)
+        }
+    }
+
+    Log.d("REGISTER_ERROR", "Regist Error: $errorMsg")
+    Log.d("REGISTER_USER_TYPE", "User Type: $id")
+    LaunchedEffect(errorMsg) {
+        if (errorMsg != "") {
+            Toast.makeText(
+                context,
+                errorMsg,
+                Toast.LENGTH_SHORT
+            ).show()
+            viewModel.clearErrorMsg()
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(navigationIcon = {
@@ -93,22 +129,23 @@ fun RegisterScreen(navController: NavHostController, id: Long? = null) {
             )
         }, containerColor = Color.White
     ) {
-        RegisterScreenContent(modifier = Modifier.padding(it), navController = navController, id)
+        ScreenContent(modifier = Modifier.padding(it), viewModel, navController = navController, id)
     }
 }
 
 @Composable
-private fun RegisterScreenContent(
-    modifier: Modifier, navController: NavHostController, id: Long? = null
+private fun ScreenContent(
+    modifier: Modifier, viewModel: AuthViewModel, navController: NavHostController, id: Int
 ) {
+    val context = LocalContext.current
     var fullname by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var uniqueId by remember { mutableStateOf("") }
     var school by remember { mutableStateOf("") }
 
-
     var isChecked by remember { mutableStateOf(false) }
+
 
     Column(
         modifier = modifier
@@ -180,7 +217,9 @@ private fun RegisterScreenContent(
                         painterResource(if (!isChecked) R.drawable.check_box_outline_blank else R.drawable.check_box_filled),
                         contentDescription = null,
                         tint = Color(0xFF4D444C),
-                        modifier = Modifier.fillMaxSize().padding(8.dp)
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(8.dp)
                     )
                 }
                 Spacer(modifier = Modifier.width(4.dp))
@@ -193,7 +232,33 @@ private fun RegisterScreenContent(
         Spacer(modifier = Modifier.height(32.dp))
         Button(
             modifier = Modifier.padding(horizontal = 31.dp),
-            onClick = { navController.navigate(Screen.Login.route) },
+            onClick = {
+                    Log.d("Fullname Response", "FRes: ${fullnameCheck(fullname)}")
+                    Log.d("Username Response", "URes: ${usernameCheck(username)}")
+                    Log.d("Email Response", "ERes: ${emailCheck(email)}")
+                    Log.d("UniqueId Response", "UIRes: ${uniqueIdCheck(id, uniqueId)}")
+                when {
+                    fullnameCheck(fullname) != 0 -> return@Button
+                    usernameCheck(username) != 0 -> return@Button
+                    emailCheck(email) != 0 -> return@Button
+                    uniqueIdCheck(id, uniqueId) != 0 -> return@Button
+                    !isChecked -> Toast.makeText(context, "Anda harus menyetujui S&K sebelum mendaftar!", Toast.LENGTH_SHORT).show()
+                    school.isEmpty() || school.isBlank() -> return@Button
+                    else -> {
+                    Log.d("OTHER Response", "Response: Clicked!")
+                        viewModel.register(
+                            uniqueId,
+                            UserCreate(
+                                fullname,
+                                username,
+                                id,
+                                email = email,
+                                school = school
+                            )
+                        )
+                    }
+                }
+            },
             shape = RoundedCornerShape(10.dp),
             colors = buttonColors(
                 containerColor = LightBlue, contentColor = Color.Black
@@ -227,7 +292,7 @@ private fun RegisterScreenContent(
 
 private fun fullnameCheck(fullname: String): Int {
     return when {
-        fullname == "" -> 1
+        fullname.isEmpty() || fullname.isBlank() -> 1
         fullname.length > 60 -> 2
         else -> 0
     }
@@ -235,7 +300,7 @@ private fun fullnameCheck(fullname: String): Int {
 
 private fun usernameCheck(username: String): Int {
     return when {
-        username == "" -> 1
+        username.isEmpty() || username.isBlank() -> 1
         username.length !in 20 downTo 8 -> 2
         username.contains(
             Regex("[^A-Za-z0-9_]")
@@ -247,7 +312,7 @@ private fun usernameCheck(username: String): Int {
 
 private fun emailCheck(email: String): Int {
     return when {
-        email == "" -> 1
+        email.isEmpty() || email.isBlank() -> 1
         !email.contains(
             Regex("^.+@.+\\..+$")
         ) -> 2
@@ -256,24 +321,20 @@ private fun emailCheck(email: String): Int {
     }
 }
 
-private fun uniqueIdCheck(id: Long? = null, uniqueId: String): Int {
-    Log.d("ID_TEST", "ID: $id")
-    if (id != null) {
-        return if (id == 0L) {
-            when {
-                uniqueId == " " -> 1
-                uniqueId.length != 9 && uniqueId.length != 18 -> 2
-                else -> 0
-            }
-        } else {
-            when {
-                uniqueId == "" -> 1
-                uniqueId.length != 10 -> 3
-                else -> 0
-            }
+private fun uniqueIdCheck(id: Int, uniqueId: String): Int {
+    return if (id == 1) {
+        when {
+            uniqueId.isEmpty() || uniqueId.isBlank() -> 1
+            uniqueId.length != 9 && uniqueId.length != 18 -> 2
+            else -> 0
+        }
+    } else {
+        when {
+            uniqueId.isEmpty() || uniqueId.isBlank() -> 1
+            uniqueId.length != 10 -> 3
+            else -> 0
         }
     }
-    return 0
 }
 
 @Composable
@@ -296,7 +357,7 @@ private fun RegisterForm(
     password: String = "",
     onPasswordChange: (String) -> Unit = {},
     passwordIdResponse: Int = 0,
-    id: Long? = null,
+    id: Int,
 ) {
     RegistTextField(
         value = fullname,
@@ -336,20 +397,7 @@ private fun RegisterForm(
             else -> ""
         }
     )
-    if (id == 0L) {
-        RegistTextField(
-            value = uniqueId,
-            onValueChange = { onUniqueIdChange(it) },
-            label = R.string.nip_label,
-            isNumber = true,
-            isError = uniqueIdResponse != 0,
-            errorText = when (uniqueIdResponse) {
-                1 -> "NIP tidak boleh kosong!"
-                2 -> "Pastikan NIP berjumlah 9 atau 18 digit!"
-                else -> ""
-            }
-        )
-    } else {
+    if (id == 0) {
         RegistTextField(
             value = uniqueId,
             onValueChange = { onUniqueIdChange(it) },
@@ -362,13 +410,27 @@ private fun RegisterForm(
                 else -> ""
             }
         )
+    } else {
+        RegistTextField(
+            value = uniqueId,
+            onValueChange = { onUniqueIdChange(it) },
+            label = R.string.nip_label,
+            isNumber = true,
+            isError = uniqueIdResponse != 0,
+            errorText = when (uniqueIdResponse) {
+                1 -> "NIP tidak boleh kosong!"
+                2 -> "Pastikan NIP berjumlah 9 atau 18 digit!"
+                else -> ""
+            }
+        )
     }
     RegistTextField(
         value = school,
         onValueChange = { onSchoolChange(it) },
         label = R.string.school_label,
         isError = schoolResponse != 0,
-        errorText = if (schoolResponse != 0) "Nama sekolah tidak boleh kosong!" else ""
+        errorText = if (schoolResponse != 0) "Nama sekolah tidak boleh kosong!" else "",
+        imeAction = ImeAction.Done
     )
 //    RegistTextField(
 //        value = password,
@@ -389,7 +451,8 @@ private fun RegistTextField(
     isEmail: Boolean = false,
     isPassword: Boolean = false,
     isError: Boolean = false,
-    errorText: String = ""
+    errorText: String = "",
+    imeAction: ImeAction = ImeAction.Next
 ) {
     var passwordVisibility by remember { mutableStateOf(!isPassword) }
     var isFocused by remember { mutableStateOf(true) }
@@ -418,7 +481,7 @@ private fun RegistTextField(
             }, capitalization = when {
                 !isUsername && !isEmail -> KeyboardCapitalization.Words
                 else -> KeyboardCapitalization.None
-            }, imeAction = if (!isPassword) ImeAction.Next else ImeAction.Done
+            }, imeAction = if (!isPassword) imeAction else ImeAction.Done
         ),
         colors = TextFieldDefaults.colors(
             unfocusedContainerColor = Color.Transparent,
@@ -440,7 +503,8 @@ private fun RegistTextField(
                 }
             }
         },
-        visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation())
+        visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation()
+    )
     Spacer(modifier = Modifier.height(8.dp))
     if (isFocused) {
         if (isError) {

@@ -74,7 +74,7 @@ fun CheckFileScreen(navController: NavHostController) {
 
 @Composable
 private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
-    val viewModel: CheckUsersViewModel = viewModel()
+    val viewModel: CheckFileViewModel = viewModel()
     val data = viewModel.data
 
     Column(

@@ -1,6 +1,7 @@
 package org.d3ifcool.virtualab.navigation
 
-const val KEY_ID_USER= "idUser"
+const val KEY_USER_TYPE= "userType"
+const val KEY_USER_ID= "idType"
 
 sealed class Screen(val route: String) {
     data object Landing : Screen("landingScreen")
@@ -10,8 +11,8 @@ sealed class Screen(val route: String) {
 
     //    Auth
     data object Role : Screen("roleScreen")
-    data object Register : Screen("registerScreen/{$KEY_ID_USER}") {
-        fun withId(id: Long) = "registerScreen/$id"
+    data object Register : Screen("registerScreen/{$KEY_USER_TYPE}") {
+        fun withId(id: Int) = "registerScreen/$id"
     }
     data object Login : Screen("loginScreen")
 
@@ -38,6 +39,8 @@ sealed class Screen(val route: String) {
     data object AdminDashboard : Screen("adminDashboardScreen")
     data object CheckUser : Screen("checkUserScreen")
     data object CheckFile : Screen("checkFileScreen")
-    data object UsersInfo : Screen("usersInfoScreen")
+    data object UsersInfo : Screen("usersInfoScreen/{$KEY_USER_ID}") {
+        fun withId(id: Int) = "usersInfoScreen/$id"
+    }
     data object FileInfo : Screen("fileInfoScreen")
 }

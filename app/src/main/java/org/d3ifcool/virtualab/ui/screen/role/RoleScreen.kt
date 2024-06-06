@@ -26,6 +26,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -78,8 +79,8 @@ fun RoleScreen(navController: NavHostController) {
 
 @Composable
 fun ScreenContent(modifier: Modifier, navController: NavHostController) {
-    val guru by remember { mutableLongStateOf(0L) }
-    val murid by remember { mutableLongStateOf(1L) }
+    val murid by remember { mutableIntStateOf(0) }
+    val guru by remember { mutableIntStateOf(1) }
 
     Column(
         modifier = modifier
