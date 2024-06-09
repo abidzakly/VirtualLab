@@ -77,7 +77,7 @@ fun UsersInfoScreen(navController: NavHostController, userId: Int) {
     LaunchedEffect(approveResponse) {
         if (approveResponse?.status == true) {
             Toast.makeText(context, approveResponse!!.message, Toast.LENGTH_SHORT).show()
-            navController.navigate(Screen.AdminDashboard.route)
+            navController.navigate(Screen.CheckUser.route)
         }
     }
 
@@ -103,14 +103,13 @@ fun UsersInfoScreen(navController: NavHostController, userId: Int) {
     }, bottomBar = {
         BottomNav(currentRoute = Screen.AdminDashboard.route, navController = navController)
     }) {
-        ScreenContent(modifier = Modifier.padding(it), navController, viewModel)
+        ScreenContent(modifier = Modifier.padding(it), viewModel)
     }
 }
 
 @Composable
 private fun ScreenContent(
     modifier: Modifier,
-    navController: NavHostController,
     viewModel: UsersInfoViewModel
 ) {
     val context = LocalContext.current
@@ -216,7 +215,7 @@ private fun ScreenContent(
             RegularText(text = stringResource(id = R.string.button_tolak), color = Color.White)
         }
         if (showDialog) {
-            RejectPopup(onDismiss = { showDialog = false }) {
+            RejectAccountPopup(onDismiss = { showDialog = false }) {
                 viewModel.rejectUser(userId)
             }
         }
@@ -262,7 +261,7 @@ fun UserInfoColumn(
 }
 
 @Composable
-fun RejectPopup(onDismiss: () -> Unit, onConfirm: () -> Unit) {
+private fun RejectAccountPopup(onDismiss: () -> Unit, onConfirm: () -> Unit) {
     AlertDialog(
         containerColor = Color.White,
         onDismissRequest = { onDismiss() },

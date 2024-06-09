@@ -152,6 +152,12 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
     <!--    Users Info Admin   -->
     <string name="button_terima">Terima</string>
     <string name="button_tolak">Tolak</string>
-    <string name="accept_toast">Anda menerima akun ini</string>
+    <string name="accept_user_toast">Anda menerima akun ini</string>
+    <string name="nip_author">NIP</string>
 
+    <!--    Files Info Admin   -->
+    <string name="accept_file_toast">Anda menerima berkas ini</string>
+
+    <!--    Konten Pengenalan Admin   -->
+    <string name="update_icon">Ubah data konten</string>
 </resources>

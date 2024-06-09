@@ -14,6 +14,9 @@ import org.d3ifcool.virtualab.ui.screen.about.AboutScreen
 import org.d3ifcool.virtualab.ui.screen.admin.AdminDashboardScreen
 import org.d3ifcool.virtualab.ui.screen.admin.CheckFileScreen
 import org.d3ifcool.virtualab.ui.screen.admin.CheckUserScreen
+import org.d3ifcool.virtualab.ui.screen.admin.FileInfoScreen
+import org.d3ifcool.virtualab.ui.screen.admin.ManageContentScreen
+import org.d3ifcool.virtualab.ui.screen.admin.UpdateIntroContentScreen
 import org.d3ifcool.virtualab.ui.screen.admin.UsersInfoScreen
 import org.d3ifcool.virtualab.ui.screen.murid.dashboard.MuridDashboardScreen
 import org.d3ifcool.virtualab.ui.screen.murid.introduction.IntroductionScreen
@@ -152,6 +155,15 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
             )) {
             val userId = it.arguments!!.getInt(KEY_USER_ID)
             UsersInfoScreen(navController, userId)
+        }
+        composable(route = Screen.FileInfo.route) {
+            FileInfoScreen(navController)
+        }
+        composable(route = Screen.ManageIntroContent.route) {
+            ManageContentScreen(navController)
+        }
+        composable(route = Screen.UpdateIntroContent.route) {
+            UpdateIntroContentScreen(navController)
         }
     }
 }
