@@ -37,7 +37,7 @@ fun TopNavDashboard(name: String, navController: NavHostController) {
             )
             Column(modifier = Modifier.padding(start = 16.dp, top = 8.dp)) {
                 Text(
-                    text = "Halo,\n$name",
+                    text = "Halo,\n$name!",
                     fontSize = 16.sp,
                     lineHeight = 18.sp,
                     fontWeight = FontWeight.SemiBold,

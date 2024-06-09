@@ -67,7 +67,7 @@ import org.d3ifcool.virtualab.ui.theme.Poppins
 import org.d3ifcool.virtualab.ui.theme.RedButton
 
 @Composable
-fun ProfileScreen(navController: NavHostController, id: Long? = 1L) {
+fun ProfileScreen(navController: NavHostController, id: Int) {
     Scaffold(
         topBar = {
             TopNav(R.string.profile_title, navController = navController)
@@ -76,13 +76,13 @@ fun ProfileScreen(navController: NavHostController, id: Long? = 1L) {
         },
         containerColor = Color.White
     ) {
-        ScreenContent(modifier = Modifier.padding(it), navController, id!!)
+        ScreenContent(modifier = Modifier.padding(it), navController, id)
     }
 }
 
 
 @Composable
-private fun ScreenContent(modifier: Modifier, navController: NavHostController, id: Long) {
+private fun ScreenContent(modifier: Modifier, navController: NavHostController, id: Int) {
     var fullname by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -123,111 +123,67 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
                 text = R.string.username_label,
                 readOnly = true
             )
-            RegularText(
-                text = stringResource(id = R.string.email_label),
-                fontWeight = FontWeight.SemiBold
-            )
-            TextField(
-                textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
-                value = "asdf@gmail.com",
-                readOnly = readOnly,
-                onValueChange = { email = it },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Next,
-                ),
-                modifier = Modifier.fillMaxWidth(),
-                colors = if (readOnly) {
-                    TextFieldDefaults.colors(
-                        unfocusedIndicatorColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedContainerColor = Color(0xFFFAFAFA),
-                        focusedContainerColor = Color(0xFFFAFAFA)
-                    )
-                } else {
-                    TextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedContainerColor = Color.Transparent
-                    )
-                }
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            if (id == 0L) {
-                UserTextFields(
-                    value = uniqueId,
-                    onValueChange = { uniqueId = it },
-                    text = R.string.nip_label,
-                    readOnly = true
-                )
-            } else {
-                UserTextFields(
-                    value = uniqueId,
-                    onValueChange = { uniqueId = it },
-                    text = R.string.nisn_label,
-                    readOnly = true
-                )
-            }
-            UserTextFields(
-                value = school,
-                onValueChange = { school = it },
-                text = R.string.school_label,
-                readOnly = true
-            )
-            RegularText(
-                text = stringResource(id = R.string.password_label),
-                fontWeight = FontWeight.SemiBold
-            )
-            TextField(
-                textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
-                value = "asdfghjkl",
-                readOnly = readOnly,
-                onValueChange = { password = it },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    capitalization = KeyboardCapitalization.Words,
-                    imeAction = ImeAction.Next,
-                ),
-                visualTransformation =
-                if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-                trailingIcon = if (!readOnly) {
-                    {
-                        IconButton(onClick = {
-                            passwordVisibility = !passwordVisibility
-                        }) {
-                            Icon(
-                                imageVector = if (passwordVisibility) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                                contentDescription = if (passwordVisibility) "Hide password" else "Show password"
-                            )
-                        }
-                    }
-                } else null,
-                modifier = Modifier.fillMaxWidth(),
-                colors = if (readOnly) {
-                    TextFieldDefaults.colors(
-                        unfocusedIndicatorColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedContainerColor = Color(0xFFFAFAFA),
-                        focusedContainerColor = Color(0xFFFAFAFA)
-                    )
-                } else {
-                    TextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedContainerColor = Color.Transparent
-                    )
-                }
-            )
-            if (!readOnly) {
-                Spacer(modifier = Modifier.height(16.dp))
-
+            if (id == 0) {
                 RegularText(
-                    text = stringResource(R.string.edit_password_label)
+                    text = stringResource(id = R.string.email_label),
+                    fontWeight = FontWeight.SemiBold
                 )
                 TextField(
                     textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
-                    value = newPassword,
-                    onValueChange = { newPassword = it },
+                    value = "asdf@gmail.com",
+                    readOnly = readOnly,
+                    onValueChange = { email = it },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Next,
+                    ),
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = if (readOnly) {
+                        TextFieldDefaults.colors(
+                            unfocusedIndicatorColor = Color.Transparent,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedContainerColor = Color(0xFFFAFAFA),
+                            focusedContainerColor = Color(0xFFFAFAFA)
+                        )
+                    } else {
+                        TextFieldDefaults.colors(
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedContainerColor = Color.Transparent
+                        )
+                    }
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                if (id == 0) {
+                    UserTextFields(
+                        value = uniqueId,
+                        onValueChange = { uniqueId = it },
+                        text = R.string.nisn_label,
+                        readOnly = true
+                    )
+                } else {
+                    UserTextFields(
+                        value = uniqueId,
+                        onValueChange = { uniqueId = it },
+                        text = R.string.nip_label,
+                        readOnly = true
+                    )
+                }
+                UserTextFields(
+                    value = school,
+                    onValueChange = { school = it },
+                    text = R.string.school_label,
+                    readOnly = true
+                )
+                RegularText(
+                    text = stringResource(id = R.string.password_label),
+                    fontWeight = FontWeight.SemiBold
+                )
+                TextField(
+                    textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
+                    value = "asdfghjkl",
+                    readOnly = readOnly,
+                    onValueChange = { password = it },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Password,
@@ -235,98 +191,144 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
                         imeAction = ImeAction.Next,
                     ),
                     visualTransformation =
-                    if (passwordVisibility2) VisualTransformation.None else PasswordVisualTransformation(),
-                    trailingIcon = {
-                        IconButton(onClick = {
-                            passwordVisibility2 = !passwordVisibility2
-                        }) {
-                            Icon(
-                                imageVector = if (passwordVisibility2) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                                contentDescription = if (passwordVisibility2) "Hide password" else "Show password"
+                    if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+                    trailingIcon = if (!readOnly) {
+                        {
+                            IconButton(onClick = {
+                                passwordVisibility = !passwordVisibility
+                            }) {
+                                Icon(
+                                    imageVector = if (passwordVisibility) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                                    contentDescription = if (passwordVisibility) "Hide password" else "Show password"
+                                )
+                            }
+                        }
+                    } else null,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = if (readOnly) {
+                        TextFieldDefaults.colors(
+                            unfocusedIndicatorColor = Color.Transparent,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedContainerColor = Color(0xFFFAFAFA),
+                            focusedContainerColor = Color(0xFFFAFAFA)
+                        )
+                    } else {
+                        TextFieldDefaults.colors(
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedContainerColor = Color.Transparent
+                        )
+                    }
+                )
+                if (!readOnly) {
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    RegularText(
+                        text = stringResource(R.string.edit_password_label)
+                    )
+                    TextField(
+                        textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
+                        value = newPassword,
+                        onValueChange = { newPassword = it },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password,
+                            capitalization = KeyboardCapitalization.Words,
+                            imeAction = ImeAction.Next,
+                        ),
+                        visualTransformation =
+                        if (passwordVisibility2) VisualTransformation.None else PasswordVisualTransformation(),
+                        trailingIcon = {
+                            IconButton(onClick = {
+                                passwordVisibility2 = !passwordVisibility2
+                            }) {
+                                Icon(
+                                    imageVector = if (passwordVisibility2) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                                    contentDescription = if (passwordVisibility2) "Hide password" else "Show password"
+                                )
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors =
+                        TextFieldDefaults.colors(
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedContainerColor = Color.Transparent,
+                        )
+
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                ) {
+                    if (readOnly) {
+                        Button(
+                            onClick = { readOnly = !readOnly },
+                            shape = RoundedCornerShape(10.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = LightBlue,
+                                contentColor = Color.Black
+                            ),
+                            contentPadding = PaddingValues(horizontal = 42.dp, vertical = 12.dp)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.edit_button),
+                                fontWeight = FontWeight.SemiBold,
+                                fontFamily = Poppins,
+                                fontSize = 16.sp,
                             )
                         }
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors =
-                    TextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedContainerColor = Color.Transparent,
-                    )
+                        Button(
+                            onClick = { showLogoutDialog = true },
+                            shape = RoundedCornerShape(10.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = RedButton,
+                                contentColor = Color.Black
+                            ),
+                            contentPadding = PaddingValues(horizontal = 42.dp, vertical = 12.dp)
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.logout_button),
+                                fontWeight = FontWeight.SemiBold,
+                                fontFamily = Poppins,
+                                fontSize = 16.sp,
+                                color = Color.White
+                            )
+                        }
+                        if (showLogoutDialog) {
+                            ConfirmLogoutPopup(
+                                onDismiss = { showLogoutDialog = false },
+                                navController
+                            )
+                        }
+                    } else {
+                        Button(
+                            onClick = { showDialog = true },
+                            shape = RoundedCornerShape(10.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = LightBlue,
+                                contentColor = Color.Black
+                            ),
+                            contentPadding = PaddingValues(horizontal = 42.dp, vertical = 12.dp)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.save_button),
+                                fontWeight = FontWeight.SemiBold,
+                                fontFamily = Poppins,
+                                fontSize = 16.sp,
+                            )
 
-                )
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-            ) {
-                if (readOnly) {
-                    Button(
-                        onClick = { readOnly = !readOnly },
-                        shape = RoundedCornerShape(10.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = LightBlue,
-                            contentColor = Color.Black
-                        ),
-                        contentPadding = PaddingValues(horizontal = 42.dp, vertical = 12.dp)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.edit_button),
-                            fontWeight = FontWeight.SemiBold,
-                            fontFamily = Poppins,
-                            fontSize = 16.sp,
-                        )
-                    }
-                    Button(
-                        onClick = { showLogoutDialog = true },
-                        shape = RoundedCornerShape(10.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = RedButton,
-                            contentColor = Color.Black
-                        ),
-                        contentPadding = PaddingValues(horizontal = 42.dp, vertical = 12.dp)
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.logout_button),
-                            fontWeight = FontWeight.SemiBold,
-                            fontFamily = Poppins,
-                            fontSize = 16.sp,
-                            color = Color.White
-                        )
-                    }
-                    if (showLogoutDialog) {
-                        ConfirmLogoutPopup(
-                            onDismiss = { showLogoutDialog = false },
-                            navController
-                        )
-                    }
-                } else {
-                    Button(
-                        onClick = { showDialog = true },
-                        shape = RoundedCornerShape(10.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = LightBlue,
-                            contentColor = Color.Black
-                        ),
-                        contentPadding = PaddingValues(horizontal = 42.dp, vertical = 12.dp)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.save_button),
-                            fontWeight = FontWeight.SemiBold,
-                            fontFamily = Poppins,
-                            fontSize = 16.sp,
-                        )
-
-                    }
-                    if (showDialog) {
-                        SaveUpdatePopup(
-                            onDismiss = { showDialog = false }
-                        )
+                        }
+                        if (showDialog) {
+                            SaveUpdatePopup(
+                                onDismiss = { showDialog = false }
+                            )
+                        }
                     }
                 }
+                Spacer(modifier = Modifier.height(16.dp))
             }
-            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
@@ -427,6 +429,7 @@ private fun SaveUpdatePopup(onDismiss: () -> Unit) {
         }
     }
 }
+
 @Composable
 private fun ConfirmLogoutPopup(onDismiss: () -> Unit, navController: NavHostController) {
     AlertDialog(
@@ -440,7 +443,12 @@ private fun ConfirmLogoutPopup(onDismiss: () -> Unit, navController: NavHostCont
                 modifier = Modifier.size(50.dp)
             )
         },
-        title = { SemiLargeText(text = "Anda yakin ingin keluar?", fontWeight = FontWeight.SemiBold) },
+        title = {
+            SemiLargeText(
+                text = "Anda yakin ingin keluar?",
+                fontWeight = FontWeight.SemiBold
+            )
+        },
         confirmButton = {
             Button(
                 onClick = { navController.navigate(Screen.Login.route) },
@@ -467,9 +475,10 @@ private fun ConfirmLogoutPopup(onDismiss: () -> Unit, navController: NavHostCont
         }
     )
 }
+
 @Preview(showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun ProfileScreenPrev() {
-    ProfileScreen(rememberNavController(), 1L)
+    ProfileScreen(rememberNavController(), 1)
 }
