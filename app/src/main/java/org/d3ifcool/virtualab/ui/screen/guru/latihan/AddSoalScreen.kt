@@ -1,6 +1,6 @@
 package org.d3ifcool.virtualab.ui.screen.guru.latihan
 
-import  androidx.compose.foundation.layout.Arrangement
+import   androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -43,7 +43,6 @@ import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.RegularText
-import org.d3ifcool.virtualab.ui.component.SmallText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.GrayIco
 import org.d3ifcool.virtualab.ui.theme.GrayTextField
@@ -53,6 +52,10 @@ import org.d3ifcool.virtualab.ui.theme.LightBlue
 fun AddSoalScreen(navController: NavHostController) {
     var soal1 by remember { mutableStateOf("") }
     var soal2 by remember { mutableStateOf("") }
+    var jawaban1 by remember { mutableStateOf("") }
+    var jawaban2 by remember { mutableStateOf("") }
+    var jawaban3 by remember { mutableStateOf("") }
+    var jawaban4 by remember { mutableStateOf("") }
 
     Scaffold (
         topBar = {
@@ -67,7 +70,15 @@ fun AddSoalScreen(navController: NavHostController) {
             soal1 = soal1,
             onSoal1Change = { soal1 = it },
             soal2 = soal2,
-            onSoal2Change = { soal2 = it }
+            onSoal2Change = { soal2 = it },
+            jawaban1 = jawaban1,
+            onJawaban1Change = { jawaban1 = it },
+            jawaban2 = jawaban2,
+            onJawaban2Change = { jawaban2 = it },
+            jawaban3 = jawaban3,
+            onJawaban3Change = { jawaban3 = it },
+            jawaban4 = jawaban4,
+            onJawaban4Change = { jawaban4 = it }
         )
     }
 }
@@ -79,6 +90,14 @@ private fun ScreenContent(
     onSoal1Change: (String) -> Unit,
     soal2: String,
     onSoal2Change: (String) -> Unit,
+    jawaban1: String,
+    onJawaban1Change: (String) -> Unit,
+    jawaban2: String,
+    onJawaban2Change: (String) -> Unit,
+    jawaban3: String,
+    onJawaban3Change: (String) -> Unit,
+    jawaban4: String,
+    onJawaban4Change: (String) -> Unit,
 ) {
     var isChecked by remember { mutableStateOf(false) }
 
@@ -122,7 +141,11 @@ private fun ScreenContent(
                     )
                 }
                 Spacer(modifier = Modifier.width(4.dp))
-                SmallText(text = stringResource(R.string.pilihan_1))
+                CustomTextField2(
+                    value = jawaban1,
+                    onValueChange = { onJawaban1Change(it) },
+                    placeholder = R.string.pilihan_1
+                )
             }
             Row (
                 modifier = Modifier.padding(6.dp),
@@ -138,7 +161,11 @@ private fun ScreenContent(
                     )
                 }
                 Spacer(modifier = Modifier.width(4.dp))
-                SmallText(text = stringResource(R.string.pilihan_2))
+                CustomTextField2(
+                    value = jawaban2,
+                    onValueChange = { onJawaban2Change(it) },
+                    placeholder = R.string.pilihan_2
+                )
             }
             Row (
                 modifier = Modifier.padding(6.dp),
@@ -154,7 +181,11 @@ private fun ScreenContent(
                     )
                 }
                 Spacer(modifier = Modifier.width(4.dp))
-                SmallText(text = stringResource(R.string.pilihan_3))
+                CustomTextField2(
+                    value = jawaban3,
+                    onValueChange = { onJawaban3Change(it) },
+                    placeholder = R.string.pilihan_3
+                )
             }
             Row (
                 modifier = Modifier.padding(6.dp),
@@ -170,8 +201,13 @@ private fun ScreenContent(
                     )
                 }
                 Spacer(modifier = Modifier.width(4.dp))
-                SmallText(text = stringResource(R.string.pilihan_4))
+                CustomTextField2(
+                    value = jawaban4,
+                    onValueChange = { onJawaban4Change(it) },
+                    placeholder = R.string.pilihan_4
+                )
             }
+
             Spacer(modifier = Modifier.height(10.dp))
             HorizontalDivider(
                 color = Color.LightGray,
@@ -205,7 +241,11 @@ private fun ScreenContent(
                     )
                 }
                 Spacer(modifier = Modifier.width(4.dp))
-                SmallText(text = stringResource(R.string.pilihan_1))
+                CustomTextField2(
+                    value = jawaban1,
+                    onValueChange = { onJawaban1Change(it) },
+                    placeholder = R.string.pilihan_1
+                )
             }
             Row (
                 modifier = Modifier.padding(6.dp),
@@ -221,7 +261,11 @@ private fun ScreenContent(
                     )
                 }
                 Spacer(modifier = Modifier.width(4.dp))
-                SmallText(text = stringResource(R.string.pilihan_2))
+                CustomTextField2(
+                    value = jawaban2,
+                    onValueChange = { onJawaban2Change(it) },
+                    placeholder = R.string.pilihan_2
+                )
             }
             Row (
                 modifier = Modifier.padding(6.dp),
@@ -237,7 +281,11 @@ private fun ScreenContent(
                     )
                 }
                 Spacer(modifier = Modifier.width(4.dp))
-                SmallText(text = stringResource(R.string.pilihan_3))
+                CustomTextField2(
+                    value = jawaban3,
+                    onValueChange = { onJawaban3Change(it) },
+                    placeholder = R.string.pilihan_3
+                )
             }
             Row (
                 modifier = Modifier.padding(6.dp),
@@ -253,8 +301,13 @@ private fun ScreenContent(
                     )
                 }
                 Spacer(modifier = Modifier.width(4.dp))
-                SmallText(text = stringResource(R.string.pilihan_4))
+                CustomTextField2(
+                    value = jawaban4,
+                    onValueChange = { onJawaban4Change(it) },
+                    placeholder = R.string.pilihan_4
+                )
             }
+
             Spacer(modifier = Modifier.height(10.dp))
             HorizontalDivider(
                 color = Color.LightGray,
