@@ -31,6 +31,7 @@ import org.d3ifcool.virtualab.ui.screen.guru.latihan.GuruLatihanScreen
 import org.d3ifcool.virtualab.ui.screen.guru.materi.AddMateriScreen
 import org.d3ifcool.virtualab.ui.screen.guru.materi.DetailMateriScreen
 import org.d3ifcool.virtualab.ui.screen.guru.materi.GuruMateriScreen
+import org.d3ifcool.virtualab.ui.screen.murid.latihan.CekJawabanScreen
 import org.d3ifcool.virtualab.ui.screen.murid.latihan.MuridDetailLatihanScreen
 import org.d3ifcool.virtualab.ui.screen.murid.materi.MuridDetailMateriScreen
 import org.d3ifcool.virtualab.ui.screen.murid.materi.MuridMateriScreen
@@ -47,16 +48,16 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
     val userType by userDataStore.userTypeFlow.collectAsState(true)
     val isLoggedIn by userDataStore.loginStatusFlow.collectAsState(false)
     NavHost(
-        navController = navController, startDestination = Screen.Landing.route
-//        if (!isLoggedIn) {
-//            Screen.Landing.route
-//        } else {
-//            when (userType) {
-//                0 -> Screen.MuridDashboard.route
-//                1 -> Screen.GuruDashboard.route
-//                else -> Screen.Landing.route
-//            }
-//        }
+        navController = navController, startDestination =
+        if (!isLoggedIn) {
+            Screen.Landing.route
+        } else {
+            when (userType) {
+                0 -> Screen.MuridDashboard.route
+                1 -> Screen.GuruDashboard.route
+                else -> Screen.Landing.route
+            }
+        }
     ) {
         composable(route = Screen.Landing.route) {
             LandingScreen(navController)
@@ -112,6 +113,9 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
         }
         composable(route = Screen.Nilai.route) {
             NilaiScreen(navController)
+        }
+        composable(route = Screen.CekJawaban.route) {
+            CekJawabanScreen(navController)
         }
 
         //  Guru
