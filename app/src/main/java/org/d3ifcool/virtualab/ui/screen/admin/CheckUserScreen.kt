@@ -135,7 +135,7 @@ private fun ScreenContent(
 }
 
 @Composable
-fun AccountList(username: String, number: String, onClick: () -> Unit) {
+private fun AccountList(username: String, number: String, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

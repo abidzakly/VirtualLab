@@ -26,6 +26,8 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -64,14 +66,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.data.network.request.UserCreate
 import org.d3ifcool.virtualab.navigation.Screen
+import org.d3ifcool.virtualab.ui.component.MediumLargeText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.SmallText
 import org.d3ifcool.virtualab.ui.theme.BlueLink
+import org.d3ifcool.virtualab.ui.theme.DarkBlue
 import org.d3ifcool.virtualab.ui.theme.GrayText
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.Poppins
@@ -143,9 +148,9 @@ private fun ScreenContent(
     var email by remember { mutableStateOf("") }
     var uniqueId by remember { mutableStateOf("") }
     var school by remember { mutableStateOf("") }
+    var showDialog by remember { mutableStateOf(false) }
 
     var isChecked by remember { mutableStateOf(false) }
-
 
     Column(
         modifier = modifier
@@ -269,6 +274,12 @@ private fun ScreenContent(
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
+            )
+        }
+        if (showDialog) {
+            RegistSuccessPopup(
+                onDismiss = { showDialog = false },
+                navController
             )
         }
         Spacer(modifier = Modifier.padding(8.dp))
@@ -432,12 +443,6 @@ private fun RegisterForm(
         errorText = if (schoolResponse != 0) "Nama sekolah tidak boleh kosong!" else "",
         imeAction = ImeAction.Done
     )
-//    RegistTextField(
-//        value = password,
-//        onValueChange = { onPasswordChange(it) },
-//        label = R.string.password_label,
-//        isPassword = true
-//    )
 }
 
 @Composable
@@ -516,7 +521,60 @@ private fun RegistTextField(
         }
     }
 }
-
+@Composable
+private fun RegistSuccessPopup(onDismiss: () -> Unit, navController: NavHostController) {
+    Dialog(onDismissRequest = { onDismiss() }) {
+        Card(
+            modifier = Modifier.padding(16.dp),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardColors(
+                containerColor = Color.White,
+                contentColor = Color.Black,
+                disabledContainerColor = Color.Red,
+                disabledContentColor = Color.Red
+            )
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_process_success),
+                    contentDescription = "Ikon proses berhasil",
+                    tint = DarkBlue
+                )
+                RegularText(
+                    text = "Akun berhasil dibuat!\n" +
+                            "Mohon tunggu konfirmasi dari admin",
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Button(
+                        onClick = { onDismiss(); navController.navigate(Screen.Login.route)  },
+                        colors = buttonColors(
+                            containerColor = LightBlue,
+                            contentColor = Color.Black
+                        ),
+                        shape = RoundedCornerShape(10.dp)
+                    ) {
+                        MediumLargeText(
+                            text = "Ya",
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.Black
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
 @Preview(showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable

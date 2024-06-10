@@ -43,4 +43,7 @@ sealed class Screen(val route: String) {
         fun withId(id: Int) = "usersInfoScreen/$id"
     }
     data object FileInfo : Screen("fileInfoScreen")
+    data object ManageIntroContent : Screen("manageContentScreen")
+    data object UpdateIntroContent : Screen("updateIntroContentScreen")
+
 }
