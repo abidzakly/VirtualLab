@@ -6,13 +6,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import org.d3ifcool.virtualab.model.User
-import org.d3ifcool.virtualab.network.create.StudentCreate
-import org.d3ifcool.virtualab.network.create.UserCreate
-import org.d3ifcool.virtualab.network.create.UserLogin
-import org.d3ifcool.virtualab.network.UserApi
-import org.d3ifcool.virtualab.network.create.UserRegistration
-import org.d3ifcool.virtualab.network.response.MessageResponse
+import org.d3ifcool.virtualab.data.model.User
+import org.d3ifcool.virtualab.data.network.request.StudentCreate
+import org.d3ifcool.virtualab.data.network.request.UserCreate
+import org.d3ifcool.virtualab.data.network.request.UserLogin
+import org.d3ifcool.virtualab.data.network.UserApi
+import org.d3ifcool.virtualab.data.network.request.UserRegistration
+import org.d3ifcool.virtualab.data.network.response.MessageResponse
 import retrofit2.HttpException
 
 class AuthViewModel : ViewModel() {

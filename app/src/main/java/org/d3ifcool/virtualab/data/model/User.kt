@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.model
+package org.d3ifcool.virtualab.data.model
 
 data class User(
     val full_name: String,
@@ -7,7 +7,7 @@ data class User(
     val email: String,
     val password: String? = null,
     var user_id: Int,
-    val registration_status: RegistrationStatus? = RegistrationStatus.PENDING,
+    val registration_status: RegistrationStatus = RegistrationStatus.PENDING,
     val school: String,
     val registration_date: String? = null
 )

@@ -7,8 +7,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import org.d3ifcool.virtualab.network.UserApi
-import org.d3ifcool.virtualab.network.response.CombinedUsersResponse
+import org.d3ifcool.virtualab.data.network.UserApi
+import org.d3ifcool.virtualab.data.network.response.CombinedUsersResponse
 import retrofit2.HttpException
 
 class CheckUsersViewModel(userEmail: String) : ViewModel() {
@@ -27,7 +27,7 @@ class CheckUsersViewModel(userEmail: String) : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _userList.value = UserApi.service.getAllPendingUser(email)
-                Log.d("GET USER SUCCESS", "Get User: $_userList")
+                Log.d("GET PENDING USER SUCCESS", "Get User: $_userList")
             } catch (e: HttpException) {
                 _errorMsg.value =
                     e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")

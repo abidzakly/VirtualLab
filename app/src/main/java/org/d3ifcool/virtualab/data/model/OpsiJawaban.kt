@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.model
+package org.d3ifcool.virtualab.data.model
 
 data class OpsiJawaban(
     val optionId: Int,

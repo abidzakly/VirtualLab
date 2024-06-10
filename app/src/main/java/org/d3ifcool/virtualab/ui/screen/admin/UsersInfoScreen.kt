@@ -159,33 +159,23 @@ private fun ScreenContent(
     ) {
         UserInfoColumn(
             value = fullname,
-            onValueChange = { },
             text = R.string.fullname_label,
-            readOnly = true
         )
         UserInfoColumn(
             value = username,
-            onValueChange = { },
             text = R.string.username_label,
-            readOnly = true
         )
         UserInfoColumn(
             value = email,
-            onValueChange = { },
             text = R.string.email_label,
-            readOnly = true
         )
         UserInfoColumn(
             value = uniqueId,
-            onValueChange = { },
             text = R.string.nip_label,
-            readOnly = true
         )
         UserInfoColumn(
             value = school,
-            onValueChange = { },
             text = R.string.school_label,
-            readOnly = true
         )
         Spacer(modifier = Modifier.height(8.dp))
         Button(
@@ -227,9 +217,9 @@ private fun ScreenContent(
 fun UserInfoColumn(
     modifier: Modifier = Modifier,
     value: String,
-    onValueChange: (String) -> Unit,
+    onValueChange: (String) -> Unit = {},
     text: Int,
-    readOnly: Boolean,
+    readOnly: Boolean = true,
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),

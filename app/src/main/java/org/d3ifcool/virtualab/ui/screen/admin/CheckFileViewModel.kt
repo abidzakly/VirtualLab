@@ -1,7 +1,7 @@
 package org.d3ifcool.virtualab.ui.screen.admin
 
 import androidx.lifecycle.ViewModel
-import org.d3ifcool.virtualab.model.Latihan
+import org.d3ifcool.virtualab.data.model.Latihan
 
 class CheckFileViewModel: ViewModel() {
     val data = getDataDummy()

@@ -9,15 +9,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import org.d3ifcool.virtualab.network.UserApi
-import org.d3ifcool.virtualab.network.response.CombinedUser
-import org.d3ifcool.virtualab.network.response.MessageResponse
+import org.d3ifcool.virtualab.data.network.UserApi
+import org.d3ifcool.virtualab.data.network.response.CombinedUserResponse
+import org.d3ifcool.virtualab.data.network.response.MessageResponse
 import retrofit2.HttpException
 
 class UsersInfoViewModel(userId: Int) : ViewModel() {
 
-    private val _fetchedUser = MutableStateFlow<CombinedUser?>(null)
-    val fetchedUser: StateFlow<CombinedUser?> = _fetchedUser
+    private val _fetchedUser = MutableStateFlow<CombinedUserResponse?>(null)
+    val fetchedUser: StateFlow<CombinedUserResponse?> = _fetchedUser
 
     private val _errorMsg = MutableStateFlow<String?>("")
     val errorMsg: StateFlow<String?> = _errorMsg
@@ -47,32 +47,6 @@ class UsersInfoViewModel(userId: Int) : ViewModel() {
             }
         }
     }
-//
-//    private fun mergeUserData(unmergedUser: GetUserResponse): CombinedUser {
-//        var user: User? = null
-//        var student: Murid? = null
-//        var teacher: Guru? = null
-//
-//        for (mergedUser in unmergedUser.user) {
-//            if (user == null) {
-//                user = mergedUser.user
-//            }
-//            if (student == null && mergedUser.student != null) {
-//                student = mergedUser.student
-//            }
-//            if (teacher == null && mergedUser.teacher != null) {
-//                teacher = mergedUser.teacher
-//            }
-//            if (student != null && teacher != null) {
-//                break
-//            }
-//        }
-//        return CombinedUser(
-//            user = user,
-//            student = student,
-//            teacher = teacher
-//        )
-//    }
 
     fun approveUser(userId: Int, password: String) {
         viewModelScope.launch(Dispatchers.IO) {

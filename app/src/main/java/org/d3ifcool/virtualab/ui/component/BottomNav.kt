@@ -1,5 +1,6 @@
 package org.d3ifcool.virtualab.ui.component
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -49,8 +50,9 @@ fun BottomNav(
     isClicked: Boolean = false,
     onClick: () -> Unit = {}
 ) {
-val dataStore = UserDataStore(LocalContext.current)
-    val userId by dataStore.userIdFlow.collectAsState(true)
+    val dataStore = UserDataStore(LocalContext.current)
+    val userType by dataStore.userTypeFlow.collectAsState(-1)
+    Log.d("Bottom Nav", "userId: $userType")
     BottomAppBar(
         modifier = Modifier
             .shadow(elevation = 20.dp, shape = RectangleShape)
@@ -59,8 +61,8 @@ val dataStore = UserDataStore(LocalContext.current)
             .zIndex(99f),
         containerColor = Color.White
     ) {
-        when (userId) {
-            0L -> {
+        when (userType) {
+            0 -> {
                 Row(
                     modifier = Modifier.fillMaxSize(),
                     horizontalArrangement = Arrangement.SpaceEvenly
@@ -94,7 +96,8 @@ val dataStore = UserDataStore(LocalContext.current)
                     }
                 }
             }
-            1L -> {
+
+            1 -> {
                 Row(
                     modifier = Modifier.fillMaxSize(),
                     horizontalArrangement = Arrangement.SpaceEvenly
@@ -140,6 +143,7 @@ val dataStore = UserDataStore(LocalContext.current)
                     }
                 }
             }
+
             else -> {
                 Row(
                     modifier = Modifier.fillMaxSize(),
@@ -168,7 +172,13 @@ val dataStore = UserDataStore(LocalContext.current)
 }
 
 @Composable
-private fun BottomNavButton(icon: Int, title: Int, isSelected: Boolean, isSheet: Boolean = false, onClick: () -> Unit) {
+private fun BottomNavButton(
+    icon: Int,
+    title: Int,
+    isSelected: Boolean,
+    isSheet: Boolean = false,
+    onClick: () -> Unit
+) {
     Button(
         onClick = { onClick() },
         modifier = Modifier
