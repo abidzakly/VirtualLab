@@ -15,9 +15,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Warning
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Card
@@ -61,6 +65,7 @@ import org.d3ifcool.virtualab.ui.theme.DarkBlue
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.LightBlue2
+import org.d3ifcool.virtualab.ui.theme.RedButton
 
 @Composable
 fun MuridDetailLatihanScreen(navController: NavHostController) {
@@ -81,6 +86,7 @@ fun MuridDetailLatihanScreen(navController: NavHostController) {
 private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
     val viewModel: DetailLatihanVM = viewModel()
     var showDialog by remember { mutableStateOf(false) }
+    var showConfirmDialog by remember { mutableStateOf(false) }
     val answers by viewModel.answers.collectAsState()
     Log.d("Itemlist @Murid Detail Latihan", "answers: ${answers.size}")
 
@@ -104,8 +110,8 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
-                    if (answers.values.all { it.size == 2 } ) {
-                        showDialog = true
+                    if (answers.values.all { it.size == 2 }) {
+                        showConfirmDialog = true
                     } else {
                         Toast.makeText(
                             context,
@@ -118,10 +124,63 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                 contentPadding = PaddingValues(vertical = 9.dp, horizontal = 47.dp),
                 shape = RoundedCornerShape(5.dp)
             ) {
-                RegularText(text = "Cek", fontWeight = FontWeight.SemiBold, color = Color.White)
+                RegularText(
+                    text = "Kumpulkan Jawaban",
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.White
+                )
             }
             Spacer(modifier = Modifier.height(30.dp))
         }
+    }
+    if (showConfirmDialog) {
+        AlertDialog(
+            containerColor = Color.White,
+            onDismissRequest = { showConfirmDialog = false },
+            icon = {
+                Icon(
+                    imageVector = Icons.Outlined.Warning,
+                    contentDescription = "Konfirmasi Jawaban",
+                    tint = Color.Gray,
+                    modifier = Modifier.size(40.dp)
+                )
+            },
+            title = {
+                MediumLargeText(
+                    text = "Anda yakin ingin mengumpulkan jawaban?",
+                    fontWeight = FontWeight.SemiBold
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showConfirmDialog = false
+                        showDialog = true
+                    },
+                    colors = buttonColors(
+                        containerColor = LightBlue
+                    ),
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    RegularText(text = "Ya", fontWeight = FontWeight.SemiBold)
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { showConfirmDialog = false },
+                    colors = buttonColors(
+                        containerColor = RedButton
+                    ),
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    RegularText(
+                        text = "Batal",
+                        color = Color.White,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+            }
+        )
     }
     if (showDialog) {
         ExerciseDonePopup(
@@ -130,7 +189,6 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
         )
     }
 }
-
 
 @Composable
 private fun ItemList(noSoal: String, exerciseId: Int, viewModel: DetailLatihanVM) {
@@ -169,23 +227,25 @@ private fun ItemList(noSoal: String, exerciseId: Int, viewModel: DetailLatihanVM
                 .padding(horizontal = 8.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                questions.filter { it.exerciseId == exerciseId && it.questionId == noSoal.toInt() }.forEachIndexed { index, question ->
-                    val questionOptions = options.filter { it.questionId == question.questionId }
-                    QuestionItem(
-                        question = question,
-                        options = questionOptions,
-                        selectedAnswers = answers,
-                        onOptionSelected = { option, isSelected ->
-                            if (isSelected) {
-                                if (answers.size < 2) {
-                                    answers.add(option)
+                questions.filter { it.exerciseId == exerciseId && it.questionId == noSoal.toInt() }
+                    .forEachIndexed { index, question ->
+                        val questionOptions =
+                            options.filter { it.questionId == question.questionId }
+                        QuestionItem(
+                            question = question,
+                            options = questionOptions,
+                            selectedAnswers = answers,
+                            onOptionSelected = { option, isSelected ->
+                                if (isSelected) {
+                                    if (answers.size < 2) {
+                                        answers.add(option)
+                                    }
+                                } else {
+                                    answers.remove(option)
                                 }
-                            } else {
-                                answers.remove(option)
                             }
-                        }
-                    )
-                }
+                        )
+                    }
             }
         }
     }
@@ -193,7 +253,7 @@ private fun ItemList(noSoal: String, exerciseId: Int, viewModel: DetailLatihanVM
 }
 
 @Composable
-fun QuestionItem(
+private fun QuestionItem(
     question: Soal,
     options: List<OpsiJawaban>,
     selectedAnswers: List<OpsiJawaban>? = null,

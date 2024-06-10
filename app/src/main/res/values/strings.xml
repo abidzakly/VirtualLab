@@ -88,8 +88,14 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
 <!--   Detail Latihan   -->
     <string name="latihan_x">Latihan X</string>
     <string name="instructions">Pilih 2 jawaban:</string>
+<!--  Cek Jawaban  -->
+    <string name="cek_jawaban_title">Cek Jawaban</string>
+    <string name="lihat_kunci_jawaban">Lihat Kunci Jawaban</string>
+    <string name="answer_key">Jawaban yang benar adalah 4 dan 8</string>
+
 
 <!--   Contoh Reaksi   -->
+
 
 <!--   Dashboard Guru   -->
     <string name="dashboard_guru_sub_header">Konten yang baru ditambahkan: </string>
