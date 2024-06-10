@@ -16,6 +16,8 @@
     <string name="introduction_title">Pengenalan Reaksi Kimia</string>
     <string name="murid_detail_materi_title">Materi X</string>
     <string name="contoh_reaksi_title">Contoh Reaksi</string>
+    <string name="add_materi_title">Buat Latihan</string>
+    <string name="add_soal_title">Tambah Soal</string>
     <!--  Form Labels  -->
     <string name="fullname_label">Nama Lengkap</string>
     <string name="username_label">Nama Pengguna</string>
@@ -141,6 +143,46 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
     <string name="syarat_dan_ketentuan_label">Syarat dan Ketentuan</string>
     <string name="register_extra_note">Verifikasi akun hanya dilakukan pada hari Senin-Jumat pukul 07.00 - 17.00 WIB</string>
 
+    <!--   Buat Latihan Guru   -->
+    <string name="title_latihan">Judul Latihan</string>
+    <string name="difficulty_latihan">Tingkat Kesulitan</string>
+    <string name="dropdown_list">Pilih Kesulitan</string>
+    <string name="number_latihan">Jumlah Soal</string>
+    <string name="limit_latihan">Maksimal jumlah soal di buat adalah 10*</string>
+    <string name="button_tambahSoal">Tambah Soal</string>
+
+    <!--   Buat Soal Guru   -->
+    <string name="title_soal">Judul Latihan : Penyetaraan Reaksi Kimia</string>
+    <string name="difficulty_soal">Tingkat Kesulitan : Mudah</string>
+    <string name="number_soal_1">Soal 1</string>
+    <string name="soal">Tulis Soal</string>
+    <string name="pilihan_jawaban">Pilihan Jawaban</string>
+    <string name="pilihan_1">Jawaban 1</string>
+    <string name="pilihan_2">Jawaban 2</string>
+    <string name="pilihan_3">Jawaban 3</string>
+    <string name="pilihan_4">Jawaban 4</string>
+    <string name="number_soal_2">Soal 2</string>
+    <string name="button_unggah">Unggah Soal</string>
+
+    <string name="kosong">""</string>
+    <string name="terms">Syarat dan</string>
+    <string name="conditions">Ketentuan</string>
+    <string name="header">Syarat dan Ketentuan ini merupakan kesepakatan yang telah didiskusikan dari pihak Telkom University dan MGMP Kimia Kota Bandung.
+        Sebelum menggunakan aplikasi ini, mohon baca dengan seksama Syarat dan Ketentuan berikut:</string>
+    <string name="terms_1">1. Pendaftaran Akun</string>
+    <string name="terms_penjelasan_1">Untuk menggunakan aplikasi ini, Pengguna harus mendaftar akun. Pengguna harus memberikan informasi yang benar dan akurat saat mendaftar. Pengguna bertanggung jawab untuk menjaga keamanan akunnya, termasuk kata sandi yang didaftarkan.
+        Pengguna tidak boleh membagikan akunnya kepada orang lain.</string>
+    <string name="terms_2">2. Konten</string>
+    <string name="terms_penjelasan_2">Konten yang tersedia di aplikasi ini disediakan oleh  pengembang aplikasi dan guru melalui fitur akses media untuk akses gambar serta video yang ada di device. Konten tersebut hanya untuk tujuan pendidikan dan tidak digunakan untuk tujuan yang lain.
+        Pengguna tidak boleh menyalin atau menggunakan kembali konten apa pun tanpa izin dari pemilik konten.</string>
+    <string name="terms_3">3. Perilaku Pengguna</string>
+    <string name="terms_penjelasan_3">Pengguna harus menggunakan aplikasi ini dengan cara yang sopan dan bertanggung jawab. Pengguna tidak boleh menggunakan aplikasi ini untuk tujuan ilegal atau berbahaya.
+        Pengguna tidak boleh menyebarkan spam atau konten yang tidak pantas.</string>
+    <string name="terms_4">4. Privasi</string>
+    <string name="terms_penjelasan_4">Kami berkomitmen untuk melindungi privasi Anda. Kami hanya akan mengumpulkan dan menggunakan informasi pribadi Anda sesuai dengan Kebijakan Privasi kami.
+        Pengguna dapat mengakses dan memperbarui informasi pribadi  kapan saja.</string>
+    <string name="footer">Dengan mengakses dan menggunakan aplikasi ini,
+        pengguna dianggap memahami dan menyetujui semua syarat dan ketentuan yang berlaku.</string>
     <!--    Dashboard Admin   -->
     <string name="cek_role_categories">Cek Peran Akun</string>
     <string name="cek_file_categories">Cek Berkas</string>
