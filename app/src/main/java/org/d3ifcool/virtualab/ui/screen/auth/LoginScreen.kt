@@ -118,8 +118,8 @@ private fun LoginScreenContent(modifier: Modifier, navController: NavHostControl
     val loginSuccess by viewModel.loginSuccess.collectAsState()
     val errorMsg by viewModel.errorMsg.collectAsState()
 
-    var password by remember { mutableStateOf("") }
-    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("R@hbWOk7") }
+    var username by remember { mutableStateOf("aisyahfh") }
     var loginAttempt by remember { mutableIntStateOf(0) }
 
     var passwordVisibility by remember { mutableStateOf(false) }
@@ -171,7 +171,7 @@ private fun LoginScreenContent(modifier: Modifier, navController: NavHostControl
         )
         TextField(
             value = username,
-            onValueChange = { username = it },
+            onValueChange = {  },
             label = { Text(text = stringResource(R.string.username_label)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
@@ -189,7 +189,7 @@ private fun LoginScreenContent(modifier: Modifier, navController: NavHostControl
         Spacer(modifier = Modifier.padding(8.dp))
         TextField(
             value = password,
-            onValueChange = { password = it },
+            onValueChange = {  },
             label = { Text(text = stringResource(R.string.password_label)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
