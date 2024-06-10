@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,6 +45,25 @@ fun GuruEmptyState(text: String) {
     ) {
         Image(
             painter = painterResource(id = R.drawable.empty_state_guru),
+            contentDescription = "Gambar Empty State"
+        )
+        Spacer(modifier = Modifier.height(28.dp))
+        RegularText(
+            text = text,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+    }
+}
+@Composable
+fun AdminEmptyState(text: String) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.empty_state_admin),
             contentDescription = "Gambar Empty State"
         )
         Spacer(modifier = Modifier.height(28.dp))

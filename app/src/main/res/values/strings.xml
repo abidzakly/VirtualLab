@@ -90,19 +90,50 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
 
 <!--   Dashboard Guru   -->
     <string name="dashboard_guru_sub_header">Konten yang baru ditambahkan: </string>
+    <string name="guru_empty_state">Belum ada data yang ditambahkan</string>
+    <string name="gambar_empty_state_guru">Gambar belum ada data ditambahkan</string>
     <string name="fab_slide_up_title">Apa yang ingin kamu tambahkan?</string>
     <string name="lihat_slide_up_title">Apa yang ingin kamu lihat?</string>
     <string name="lihat_latihan_title">Lihat Latihan</string>
     <string name="lihat_materi_title">Lihat Materi</string>
-    <string name="buat_latihan_button">Buat Soal</string>
+    <string name="buat_latihan_button">Buat Latihan</string>
     <string name="buat_materi_button">Buat Materi</string>
     <string name="reaksi_content_header">Berikut adalah contoh reaksi kimia yang terjadi di kehidupan sehari-hari:</string>
     <string name="latihan_x">Latihan X</string>
     <string name="kerjakan_latihan_header">Setarakan persamaan reaksi berikut</string>
-
-    <string name="latihan_title_data">Penyetaraan Reaksi Kimia</string>
+    <!--   Materi Guru   -->
+    <string name="list_materi_kosong">Belum ada materi yang ditambahkan</string>
     <string name="materi_title_data">Persamaan Reaksi Kimia</string>
-    <string name="list_latihan_kosong">Belum ada data latihan</string>
+    <!--   Detail Materi Guru   -->
+    <string name="guru_detail_materi_title">Detail Materi</string>
+    <string name="judul_materi_guru">Judul Materi 5</string>
+    <string name="judul_materi_data">Penyetaraan Reaksi kimia melalui pendekatan reaksi pembakaran</string>
+    <string name="media_pembelajaran">Media Pembelajaran</string>
+    <string name="file_media_belajar">molekul.mov</string>
+    <string name="deskripsi_text">Deskripsi</string>
+    <string name="guru_deskripsi_materi_data">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ultricies lectus nec ultricies accumsan. Praesent consectetur rhoncus metus, in vestibulum nulla. Quisque vehicula lectus auctor, cursus nunc mollis, aliquet mi. In sollicitudin, augue quis posuere venenatis, ex nulla scelerisque massa, non semper augue velit a odio. </string>
+
+    <!--   Latihan Guru   -->
+    <string name="latihan_title_data">Penyetaraan Reaksi Kimia</string>
+    <string name="list_latihan_kosong">Belum ada latihan yang ditambahkan</string>
+    <string name="guru_detail_latihan_title">Detail Latihan</string>
+    <string name="judul_latihan_guru">Judul Latihan 5</string>
+    <string name="judul_latihan_data">Penyetaraan Reaksi kimia melalui pendekatan reaksi pembakaran</string>
+    <string name="tingkat_kesulitan_title">Tingkat Kesulitan</string>
+    <string name="tingkat_kesulitan_data">Mudah</string>
+    <string name="perintah_soal">Setarakan persamaan reaksi kimia berikut!</string>
+    <string name="soal_title">Soal 1</string>
+    <string name="pertanyaan">C4H10 + O2 = ...CO2 + ...H20 </string>
+    <string name="kunci_jawaban">Kunci Jawaban</string>
+    <string name="jawaban_pertama">Jawaban 1</string>
+    <string name="jawaban_kedua">Jawaban 2</string>
+
+    <!--    Buat Materi   -->
+    <string name="buat_materi">Buat Materi</string>
+    <string name="judul_materi_placholder">Tulis Judul Materi</string>
+    <string name="desc_materi">Deskripsi</string>
+    <string name="media_placeholder">Upload Media</string>
+    <string name="desc_materi_placeholder">Tulis deskripsi</string>
 
     <string name="empty_title" />
     <string name="empty_nilai">Belum ada latihan yang telah dikerjakan.</string>
@@ -148,8 +179,27 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
     <string name="terms_penjelasan_3">Pengguna harus menggunakan aplikasi ini dengan cara yang sopan dan bertanggung jawab. Pengguna tidak boleh menggunakan aplikasi ini untuk tujuan ilegal atau berbahaya.
         Pengguna tidak boleh menyebarkan spam atau konten yang tidak pantas.</string>
     <string name="terms_4">4. Privasi</string>
-    <string name="terms_penjelasan_4">Kami berkomitmen untuk melindungi privasi Anda. Kami hanya akan mengumpulkan dan menggunakan informasi pribadi Anda sesuai dengan Kebijakan Privasi kami. 
+    <string name="terms_penjelasan_4">Kami berkomitmen untuk melindungi privasi Anda. Kami hanya akan mengumpulkan dan menggunakan informasi pribadi Anda sesuai dengan Kebijakan Privasi kami.
         Pengguna dapat mengakses dan memperbarui informasi pribadi  kapan saja.</string>
     <string name="footer">Dengan mengakses dan menggunakan aplikasi ini,
         pengguna dianggap memahami dan menyetujui semua syarat dan ketentuan yang berlaku.</string>
+    <!--    Dashboard Admin   -->
+    <string name="cek_role_categories">Cek Peran Akun</string>
+    <string name="cek_file_categories">Cek Berkas</string>
+    <string name="icon_logout">Gambar ikon logout</string>
+    <string name="category_check_role">Cek Peran Akun</string>
+    <string name="category_check_file">Cek Berkas</string>
+    <string name="category_kelola_materi">Kelola Materi</string>
+
+    <!--    Users Info Admin   -->
+    <string name="button_terima">Terima</string>
+    <string name="button_tolak">Tolak</string>
+    <string name="accept_user_toast">Anda menerima akun ini</string>
+    <string name="nip_author">NIP</string>
+
+    <!--    Files Info Admin   -->
+    <string name="accept_file_toast">Anda menerima berkas ini</string>
+
+    <!--    Konten Pengenalan Admin   -->
+    <string name="update_icon">Ubah data konten</string>
 </resources>

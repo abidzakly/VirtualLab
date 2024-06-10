@@ -3,26 +3,16 @@ package org.d3ifcool.virtualab.ui.screen.guru.materi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,8 +23,8 @@ import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.ContentList
+import org.d3ifcool.virtualab.ui.component.GuruEmptyState
 import org.d3ifcool.virtualab.ui.component.TopNav
-import org.d3ifcool.virtualab.ui.theme.LightBlue
 
 @Composable
 fun GuruMateriScreen(navController: NavHostController) {
@@ -43,32 +33,24 @@ fun GuruMateriScreen(navController: NavHostController) {
     }, bottomBar = {
         BottomNav(currentRoute = Screen.GuruMateri.route, navController)
     }) {
-        ScreenContent(modifier = Modifier.padding(it))
+        ScreenContent(modifier = Modifier.padding(it), navController)
     }
 }
 
 @Composable
-private fun ScreenContent(modifier: Modifier) {
+private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
     val viewModel: GuruMateriViewModel = viewModel()
     val data = viewModel.data
-
-    if (data.isEmpty()) {
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(text = stringResource(id = R.string.list_latihan_kosong))
-        }
-    } else {
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .background(Color.White)
-                .padding(12.dp)
-        ) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(Color.White)
+            .padding(12.dp),
+        verticalArrangement = if (data.isNotEmpty()) Arrangement.Top else Arrangement.Center,
+    ) {
+        if (data.isEmpty()) {
+            GuruEmptyState(text = stringResource(id = R.string.list_latihan_kosong))
+        } else {
             Text(
                 text = "Materi yang pernah ditambahkan :",
                 Modifier.padding(start = 16.dp),
@@ -82,22 +64,23 @@ private fun ScreenContent(modifier: Modifier) {
                     )
             ) {
                 ContentList(title = "Materi 1", desc = "lorem ipsum dolor sit amet") {
-
+                    navController.navigate(Screen.GuruDetailMateri.route)
                 }
                 ContentList(title = "Materi 2", desc = "lorem ipsum dolor sit amet") {
-
+                    navController.navigate(Screen.GuruDetailMateri.route)
                 }
                 ContentList(title = "Materi 3", desc = "lorem ipsum dolor sit amet") {
-
+                    navController.navigate(Screen.GuruDetailMateri.route)
                 }
                 ContentList(title = "Materi 4", desc = "lorem ipsum dolor sit amet") {
-
+                    navController.navigate(Screen.GuruDetailMateri.route)
                 }
             }
         }
     }
 
 }
+
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 private fun LihatMateriPrev() {

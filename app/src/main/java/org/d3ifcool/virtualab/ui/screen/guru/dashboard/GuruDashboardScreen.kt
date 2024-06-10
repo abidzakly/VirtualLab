@@ -3,28 +3,22 @@ package org.d3ifcool.virtualab.ui.screen.guru.dashboard
 import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,15 +30,10 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.Color.Companion.White
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -56,20 +45,24 @@ import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.BottomSheet
 import org.d3ifcool.virtualab.ui.component.ContentList
-import org.d3ifcool.virtualab.ui.component.MediumText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNavDashboard
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
-import org.d3ifcool.virtualab.ui.theme.LightBlue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GuruDashboardScreen(navController: NavHostController) {
     val sheetStateBuat = rememberBottomSheetScaffoldState()
-    val sheetStateLihat = rememberBottomSheetScaffoldState()
+    val sheetStateLihat = rememberBottomSheetScaffoldState(
+        bottomSheetState = rememberStandardBottomSheetState(
+            initialValue = SheetValue.Hidden,
+            skipHiddenState = false
+        )
+    )
     val scope = rememberCoroutineScope()
-    var backgroundColor by remember { mutableStateOf(Transparent) }
     var isPressed by remember { mutableStateOf(false) }
+    var backgroundColor by remember { mutableStateOf(if (!isPressed) Transparent else Black) }
+    Log.d("isPressedB4", "$isPressed")
 
     Scaffold(
         bottomBar = {
@@ -78,7 +71,15 @@ fun GuruDashboardScreen(navController: NavHostController) {
                 navController,
                 isClicked = isPressed
             ) {
-
+                if (isPressed) {
+                    scope.launch {
+                        sheetStateLihat.bottomSheetState.hide()
+                    }
+                } else {
+                    scope.launch {
+                        sheetStateLihat.bottomSheetState.expand()
+                    }
+                }
             }
             Log.d("isPressed", "$isPressed")
         },
@@ -153,7 +154,7 @@ fun GuruDashboardScreen(navController: NavHostController) {
                     popUpTo(Screen.GuruDashboard.route)
                 }
             },
-            action2 = R.string.lihat_materi_title,
+            action2 = R.string.lihat_latihan_title,
             onClickAct2 = {
                 navController.navigate(Screen.GuruLatihan.route) {
                     popUpTo(Screen.GuruDashboard.route)
@@ -166,7 +167,7 @@ fun GuruDashboardScreen(navController: NavHostController) {
 @Composable
 private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
-        TopNavDashboard(name = "Guru", navController = navController)
+        TopNavDashboard(name = "Guru!", navController = navController)
         Column(
             modifier = Modifier
                 .padding(horizontal = 40.dp),
@@ -184,7 +185,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
             ContentList(title = "Materi 5", desc = "Lorem ipsum dolor sit amet, cacasdasd") {
 //                navController.navigate()
             }
-            ContentList(title = "Materi 5 asdasdasdasdasdasdasd", desc = "Test") {
+            ContentList(title = "Materi 5 asdasdasdasdasdasdasd", desc = "Testq") {
 //                navController.navigate()
             }
         }

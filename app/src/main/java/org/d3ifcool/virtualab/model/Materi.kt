@@ -1,13 +1,19 @@
 package org.d3ifcool.virtualab.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
-@Entity(tableName = "materi")
 data class Materi(
-    @PrimaryKey(autoGenerate = true)
-    val id: Long,
-    val judul: String,
-    val mediaPembelajaran: String,
-    val deskripsi: String
+    val materialId: Int,
+    val title: String,
+    val mediaType: String,
+    val mediaPath: String,
+    val description: String,
+    val authorId: Int,
+    val approvalStatus: ApprovalStatus = ApprovalStatus.PENDING
 )
+
+enum class MediaType {
+    IMAGE, VIDEO
+}
+
+enum class ApprovalStatus {
+    PENDING, APPROVED
+}

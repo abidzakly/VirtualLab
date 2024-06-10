@@ -20,13 +20,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults.cardColors
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -34,18 +36,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
-import org.d3ifcool.virtualab.model.Categories
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.SmallText
 import org.d3ifcool.virtualab.ui.component.TopNavDashboard
-import org.d3ifcool.virtualab.ui.theme.Poppins
 import org.d3ifcool.virtualab.ui.theme.WhiteLightBlue
+import org.d3ifcool.virtualab.utils.UserDataStore
 
 @Composable
 fun MuridDashboardScreen(navController: NavHostController) {
@@ -61,10 +61,10 @@ fun MuridDashboardScreen(navController: NavHostController) {
 
 @Composable
 private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
-//    val viewModel: DashboardMuridViewModel = viewModel()
-//    val data = viewModel.dashboardCategories
+    val dataStore = UserDataStore(LocalContext.current)
+    val userFullname by dataStore.userFullNameFlow.collectAsState(true)
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
-        TopNavDashboard(name = "Amru Abid", navController = navController)
+        TopNavDashboard(name = "$userFullname", navController = navController)
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -162,7 +162,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
 }
 
 @Composable
-fun GridItem(categories: Categories? = null, title: Int, image: Int, onClick: () -> Unit) {
+fun GridItem(title: Int, image: Int, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .size(153.dp)
