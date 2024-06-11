@@ -46,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -70,11 +71,54 @@ import org.d3ifcool.virtualab.ui.theme.GrayText
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.Poppins
 import org.d3ifcool.virtualab.utils.UserDataStore
+import org.d3ifcool.virtualab.utils.ViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(navController: NavHostController) {
+    val context = LocalContext.current
+    val dataStore = UserDataStore(context)
+    val factory = ViewModelFactory(userDataStore = dataStore)
+    val viewModel: AuthViewModel = viewModel(factory = factory)
 
+    val user by viewModel.currentUser.collectAsState()
+    val loginSuccess by viewModel.loginSuccess.collectAsState()
+    val errorMsg by viewModel.errorMsg.collectAsState()
+
+
+    LaunchedEffect(loginSuccess) {
+        if (loginSuccess) {
+            if (user != null) {
+                Log.d("LoginScreen", "UserType: ${user!!.user_type}")
+                Toast.makeText(context, "Login Berhasil!", Toast.LENGTH_SHORT).show()
+                when (user!!.user_type) {
+                    0 -> navController.navigate(Screen.MuridDashboard.withName(user!!.full_name)) {
+                        popUpTo(Screen.MuridDashboard.route)
+                    }
+
+                    1 -> navController.navigate(Screen.GuruDashboard.route) {
+                        popUpTo(Screen.GuruDashboard.route)
+                    }
+
+                    2 -> navController.navigate(Screen.AdminDashboard.route) {
+                        popUpTo(Screen.AdminDashboard.route)
+                    }
+                    else -> Toast.makeText(context, "ID tidak valid", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+    Log.d("LOGIN_ERROR", "Login Error: $errorMsg")
+    LaunchedEffect(errorMsg) {
+        if (errorMsg != "") {
+            Toast.makeText(
+                context,
+                errorMsg,
+                Toast.LENGTH_SHORT
+            ).show()
+            viewModel.clearErrorMsg()
+        }
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -92,7 +136,7 @@ fun LoginScreen(navController: NavHostController) {
                 },
                 title = {
                     Text(
-                        text = stringResource(id = R.string.signin),
+                        text = "TEst",
                         fontSize = 22.sp,
                         fontFamily = Poppins
                     )
@@ -105,54 +149,24 @@ fun LoginScreen(navController: NavHostController) {
         },
         containerColor = Color.White
     ) {
-        LoginScreenContent(modifier = Modifier.padding(it), navController)
+        LoginScreenContent(modifier = Modifier.padding(it), navController, viewModel)
     }
 }
 
 @Composable
-private fun LoginScreenContent(modifier: Modifier, navController: NavHostController) {
-    val context = LocalContext.current
-    val viewModel: AuthViewModel = viewModel()
-    val user by viewModel.currentUser.collectAsState()
-    val dataStore = UserDataStore(context)
-    val loginSuccess by viewModel.loginSuccess.collectAsState()
-    val errorMsg by viewModel.errorMsg.collectAsState()
+private fun LoginScreenContent(
+    modifier: Modifier,
+    navController: NavHostController,
+    viewModel: AuthViewModel
+) {
 
-    var password by remember { mutableStateOf("R@hbWOk7") }
-    var username by remember { mutableStateOf("aisyahfh") }
+
+    var password by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("") }
     var loginAttempt by remember { mutableIntStateOf(0) }
 
     var passwordVisibility by remember { mutableStateOf(false) }
-    LaunchedEffect(loginSuccess) {
-        if (loginSuccess) {
-            if (user != null) {
-                Log.d("USER TYPE", "${user!!.user_type}")
-                dataStore.setUserId(user!!.user_id)
-                dataStore.setUserFullName(user!!.full_name)
-                dataStore.setUserType(user!!.user_type)
-                dataStore.setUserEmail(user!!.email)
-                dataStore.setLoginStatus(true)
-                Toast.makeText(context, "Login Berhasil!", Toast.LENGTH_SHORT).show()
-                when (user!!.user_type) {
-                    0 -> navController.navigate(Screen.MuridDashboard.route)
-                    1 -> navController.navigate(Screen.GuruDashboard.route)
-                    2 -> navController.navigate(Screen.AdminDashboard.route)
-                    else -> Toast.makeText(context, "ID tidak valid", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
-    Log.d("LOGIN_ERROR", "Login Error: $errorMsg")
-    LaunchedEffect(errorMsg) {
-        if (errorMsg != "") {
-            Toast.makeText(
-                context,
-                errorMsg,
-                Toast.LENGTH_SHORT
-            ).show()
-            viewModel.clearErrorMsg()
-        }
-    }
+
 
     Column(
         modifier = modifier
@@ -171,7 +185,7 @@ private fun LoginScreenContent(modifier: Modifier, navController: NavHostControl
         )
         TextField(
             value = username,
-            onValueChange = {  },
+            onValueChange = { username = it },
             label = { Text(text = stringResource(R.string.username_label)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
@@ -189,7 +203,7 @@ private fun LoginScreenContent(modifier: Modifier, navController: NavHostControl
         Spacer(modifier = Modifier.padding(8.dp))
         TextField(
             value = password,
-            onValueChange = {  },
+            onValueChange = { password = it },
             label = { Text(text = stringResource(R.string.password_label)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
@@ -227,7 +241,8 @@ private fun LoginScreenContent(modifier: Modifier, navController: NavHostControl
             },
             modifier = Modifier
                 .height(47.dp)
-                .width(150.dp),
+                .width(150.dp)
+                .testTag("BUTTON_LOGIN"),
             shape = RoundedCornerShape(10.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = LightBlue,
@@ -236,7 +251,7 @@ private fun LoginScreenContent(modifier: Modifier, navController: NavHostControl
         ) {
             RegularText(
                 text = stringResource(id = R.string.signin),
-                fontWeight = FontWeight.SemiBold,
+                fontWeight = FontWeight.SemiBold
             )
         }
         Spacer(modifier = Modifier.padding(8.dp))

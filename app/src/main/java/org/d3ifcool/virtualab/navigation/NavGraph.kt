@@ -1,5 +1,6 @@
 package org.d3ifcool.virtualab.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -45,8 +46,10 @@ import org.d3ifcool.virtualab.utils.UserDataStore
 @Composable
 fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
     val userDataStore = UserDataStore(LocalContext.current)
-    val userType by userDataStore.userTypeFlow.collectAsState(true)
+    val userType by userDataStore.userTypeFlow.collectAsState(-1)
     val isLoggedIn by userDataStore.loginStatusFlow.collectAsState(false)
+    Log.d("NavGraph", "userType: $userType")
+    Log.d("NavGraph", "is LoggedIn: $isLoggedIn")
     NavHost(
         navController = navController, startDestination = Screen.Landing.route
 //        if (!isLoggedIn) {
@@ -66,7 +69,7 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
             AboutScreen(navController)
         }
         composable(route = Screen.Profile.route) {
-            ProfileScreen(navController, userType as Int)
+            ProfileScreen(navController, userType)
         }
         composable(route = Screen.TermsCondition.route) {
             TermsConditionScreen(navController)
@@ -90,8 +93,14 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
         }
 
         //  Murid
-        composable(route = Screen.MuridDashboard.route) {
-            MuridDashboardScreen(navController)
+        composable(route = Screen.MuridDashboard.route,
+            arguments = listOf(
+                navArgument(KEY_FULLNAME) {
+                    type = NavType.StringType
+                }
+            )) {
+            val name = it.arguments!!.getString(KEY_FULLNAME)
+            MuridDashboardScreen(navController, name!!)
         }
         composable(route = Screen.Introduction.route) {
             IntroductionScreen(navController)

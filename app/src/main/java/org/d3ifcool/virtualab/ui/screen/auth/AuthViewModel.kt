@@ -1,5 +1,6 @@
 package org.d3ifcool.virtualab.ui.screen.auth
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -13,22 +14,19 @@ import org.d3ifcool.virtualab.network.create.UserLogin
 import org.d3ifcool.virtualab.network.UserApi
 import org.d3ifcool.virtualab.network.create.UserRegistration
 import org.d3ifcool.virtualab.network.response.MessageResponse
+import org.d3ifcool.virtualab.utils.UserDataStore
 import retrofit2.HttpException
 
-class AuthViewModel : ViewModel() {
+class AuthViewModel(private val dataStore: UserDataStore) : ViewModel() {
 
     private val _currentUser = MutableStateFlow<User?>(null)
     val currentUser: StateFlow<User?> = _currentUser
-
-    private val _fetchStatus = MutableStateFlow(false)
-    val fetchStatus: StateFlow<Boolean> = _fetchStatus
 
     private val _loginSuccess = MutableStateFlow(false)
     val loginSuccess: StateFlow<Boolean> = _loginSuccess
 
     private val _registerSuccess = MutableStateFlow<MessageResponse?>(null)
     val registerSuccess: MutableStateFlow<MessageResponse?> = _registerSuccess
-
 
     private val _errorMsg = MutableStateFlow<String?>("")
     val errorMsg: StateFlow<String?> = _errorMsg
@@ -38,6 +36,11 @@ class AuthViewModel : ViewModel() {
             try {
                 _currentUser.value = UserApi.service.login(UserLogin(username, password))
                 _loginSuccess.value = true
+                dataStore.setUserId(_currentUser.value!!.user_id)
+                dataStore.setUserFullName(_currentUser.value!!.full_name)
+                dataStore.setUserType(_currentUser.value!!.user_type)
+                dataStore.setUserEmail(_currentUser.value!!.email)
+                dataStore.setLoginStatus(true)
             } catch (e: HttpException) {
                 _errorMsg.value =
                     e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
@@ -64,9 +67,6 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-    fun clearFetchStatus() {
-        _fetchStatus.value = false
-    }
 
     fun clearErrorMsg() {
         _errorMsg.value = ""

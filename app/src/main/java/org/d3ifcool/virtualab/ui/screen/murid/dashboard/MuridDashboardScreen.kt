@@ -1,5 +1,6 @@
 package org.d3ifcool.virtualab.ui.screen.murid.dashboard
 
+import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -48,27 +50,29 @@ import org.d3ifcool.virtualab.ui.theme.WhiteLightBlue
 import org.d3ifcool.virtualab.utils.UserDataStore
 
 @Composable
-fun MuridDashboardScreen(navController: NavHostController) {
+fun MuridDashboardScreen(navController: NavHostController, fullName: String) {
+//    val context = LocalContext.current
+//    val dataStore = UserDataStore(context)
     Scaffold(
         bottomBar = {
             BottomNav(Screen.MuridDashboard.route, navController)
         },
         containerColor = Color.White
     ) {
-        ScreenContent(modifier = Modifier.padding(it), navController)
+        ScreenContent(modifier = Modifier.padding(it), navController, fullName)
     }
 }
 
 @Composable
-private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
-    val dataStore = UserDataStore(LocalContext.current)
-    val userFullname by dataStore.userFullNameFlow.collectAsState(true)
+private fun ScreenContent(modifier: Modifier, navController: NavHostController, fullName: String) {
+//    val userFullname by dataStore.userFullNameFlow.collectAsState("")
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
-        TopNavDashboard(name = "$userFullname", navController = navController)
+        TopNavDashboard(name = fullName, navController = navController)
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 33.dp)
+//                .testTag(if (userFullname != "") "DONE" else "")
         ) {
             Column(modifier = Modifier.padding(top = 40.dp)) {
                 RegularText(
@@ -200,5 +204,5 @@ fun GridItem(title: Int, image: Int, onClick: () -> Unit) {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun DashboardScreenPrev() {
-    MuridDashboardScreen(navController = rememberNavController())
+    MuridDashboardScreen(navController = rememberNavController(), "abid")
 }

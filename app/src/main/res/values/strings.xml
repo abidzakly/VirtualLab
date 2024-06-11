@@ -31,7 +31,7 @@
     <string name="logout_button">Keluar</string>
     <string name="edit_button">Ubah</string>
     <string name="save_button">Simpan</string>
-    <string name="menu_buat_button">Buat</string>
+    <string name="menu_buat_button">Tambahkan</string>
     <string name="about_button">Tentang Aplikasi</string>
     <string name="account_exist">Sudah pernah mendaftar?</string>
     <string name="no_account">Belum punya akun?</string>
@@ -56,7 +56,7 @@
 <!--    Bottom Nav    -->
     <string name="bottom_app_beranda">Beranda</string>
     <string name="bottom_app_nilai">Nilai</string>
-    <string name="bottom_app_riwayat">Lihat</string>
+    <string name="bottom_app_riwayat">Riwayat</string>
     <string name="bottom_app_tambah">Tambah</string>
     <string name="bottom_app_profile">Profil</string>
 <!--    Profile   -->
@@ -102,11 +102,11 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
     <string name="guru_empty_state">Belum ada data yang ditambahkan</string>
     <string name="gambar_empty_state_guru">Gambar belum ada data ditambahkan</string>
     <string name="fab_slide_up_title">Apa yang ingin kamu tambahkan?</string>
-    <string name="lihat_slide_up_title">Apa yang ingin kamu lihat?</string>
-    <string name="lihat_latihan_title">Lihat Latihan</string>
-    <string name="lihat_materi_title">Lihat Materi</string>
-    <string name="buat_latihan_button">Buat Latihan</string>
-    <string name="buat_materi_button">Buat Materi</string>
+    <string name="lihat_slide_up_title">Riwayat apa yang ingin kamu lihat?</string>
+    <string name="lihat_latihan_title">Riwayat Latihan</string>
+    <string name="lihat_materi_title">Riwayat Materi</string>
+    <string name="buat_latihan_button">Tambah Latihan</string>
+    <string name="buat_materi_button">Tambah Materi</string>
     <string name="reaksi_content_header">Berikut adalah contoh reaksi kimia yang terjadi di kehidupan sehari-hari:</string>
     <string name="kerjakan_latihan_header">Setarakan persamaan reaksi berikut</string>
     <!--   Materi Guru   -->

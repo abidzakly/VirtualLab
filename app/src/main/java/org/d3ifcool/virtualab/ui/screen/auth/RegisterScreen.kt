@@ -50,6 +50,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -89,16 +90,19 @@ fun RegisterScreen(navController: NavHostController, id: Int) {
     val registSuccess by viewModel.registerSuccess.collectAsState()
     val errorMsg by viewModel.errorMsg.collectAsState()
 
+    var showDialog by remember { mutableStateOf(false) }
+
     Log.d("REGIST_STATUS", "Regist Status: ${registSuccess?.status}")
     LaunchedEffect(registSuccess) {
         if (registSuccess?.status == true) {
-            Toast.makeText(
-                context,
-                registSuccess!!.message,
-                Toast.LENGTH_SHORT
-            ).show()
-            navController.navigate(Screen.Login.route)
+            showDialog = true
         }
+    }
+    if (showDialog) {
+        RegistSuccessPopup(
+            onDismiss = { showDialog = false },
+            navController
+        )
     }
 
     Log.d("REGISTER_ERROR", "Regist Error: $errorMsg")
@@ -134,6 +138,7 @@ fun RegisterScreen(navController: NavHostController, id: Int) {
             )
         }, containerColor = Color.White
     ) {
+
         ScreenContent(modifier = Modifier.padding(it), viewModel, navController = navController, id)
     }
 }
@@ -148,7 +153,6 @@ private fun ScreenContent(
     var email by remember { mutableStateOf("") }
     var uniqueId by remember { mutableStateOf("") }
     var school by remember { mutableStateOf("") }
-    var showDialog by remember { mutableStateOf(false) }
 
     var isChecked by remember { mutableStateOf(false) }
 
@@ -274,12 +278,6 @@ private fun ScreenContent(
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
-            )
-        }
-        if (showDialog) {
-            RegistSuccessPopup(
-                onDismiss = { showDialog = false },
-                navController
             )
         }
         Spacer(modifier = Modifier.padding(8.dp))
@@ -565,7 +563,7 @@ private fun RegistSuccessPopup(onDismiss: () -> Unit, navController: NavHostCont
                         shape = RoundedCornerShape(10.dp)
                     ) {
                         MediumLargeText(
-                            text = "Ya",
+                            text = "Ok",
                             fontWeight = FontWeight.SemiBold,
                             color = Color.Black
                         )
@@ -580,4 +578,5 @@ private fun RegistSuccessPopup(onDismiss: () -> Unit, navController: NavHostCont
 @Composable
 private fun RegisterScreenPreview() {
     RegisterScreen(rememberNavController(), 0)
+//RegistSuccessPopup(onDismiss = { /*TODO*/ }, navController = rememberNavController())
 }

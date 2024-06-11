@@ -1,5 +1,6 @@
 package org.d3ifcool.virtualab.ui.component
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,11 +17,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
+import org.d3ifcool.virtualab.ui.screen.murid.dashboard.MuridDashboardScreen
 
 @Composable
 fun TopNavDashboard(name: String, navController: NavHostController) {
@@ -53,4 +57,10 @@ fun TopNavDashboard(name: String, navController: NavHostController) {
             )
         }
     }
+}
+@Preview(showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+private fun Prev() {
+    TopNavDashboard("Abid", navController = rememberNavController())
 }
