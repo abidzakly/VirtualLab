@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.vlab2024.virtuallab", appContext.packageName)
+        assertEquals("org.d3ifcool.virtualab", appContext.packageName)
     }
 }

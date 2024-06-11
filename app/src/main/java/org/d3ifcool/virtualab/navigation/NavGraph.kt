@@ -48,16 +48,16 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
     val userType by userDataStore.userTypeFlow.collectAsState(true)
     val isLoggedIn by userDataStore.loginStatusFlow.collectAsState(false)
     NavHost(
-        navController = navController, startDestination =
-        if (!isLoggedIn) {
-            Screen.Landing.route
-        } else {
-            when (userType) {
-                0 -> Screen.MuridDashboard.route
-                1 -> Screen.GuruDashboard.route
-                else -> Screen.Landing.route
-            }
-        }
+        navController = navController, startDestination = Screen.Landing.route
+//        if (!isLoggedIn) {
+//            Screen.Landing.route
+//        } else {
+//            when (userType) {
+//                0 -> Screen.MuridDashboard.route
+//                1 -> Screen.GuruDashboard.route
+//                else -> Screen.Landing.route
+//            }
+//        }
     ) {
         composable(route = Screen.Landing.route) {
             LandingScreen(navController)

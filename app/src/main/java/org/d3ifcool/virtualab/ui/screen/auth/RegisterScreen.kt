@@ -220,7 +220,7 @@ private fun ScreenContent(
                 IconButton(onClick = { isChecked = !isChecked }) {
                     Icon(
                         painterResource(if (!isChecked) R.drawable.check_box_outline_blank else R.drawable.check_box_filled),
-                        contentDescription = null,
+                        contentDescription = "Check box register",
                         tint = Color(0xFF4D444C),
                         modifier = Modifier
                             .fillMaxSize()
