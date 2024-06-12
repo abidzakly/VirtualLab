@@ -18,6 +18,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -34,6 +37,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
@@ -52,7 +58,7 @@ fun BottomNav(
 ) {
     val dataStore = UserDataStore(LocalContext.current)
     val userType by dataStore.userTypeFlow.collectAsState(-1)
-    BottomAppBar(
+   BottomAppBar(
         modifier = Modifier
             .shadow(elevation = 20.dp, shape = RectangleShape)
             .fillMaxWidth()
@@ -144,6 +150,23 @@ fun BottomNav(
             }
 
             else -> {
+                var showDialog by remember { mutableStateOf(false) }
+                if (showDialog) {
+                    PopUpDialog(
+                        onDismiss = { showDialog = false },
+                        icon = R.drawable.log_out_blue,
+                        title = "Anda yakin ingin keluar?"
+                    ) {
+                        showDialog = false
+                        CoroutineScope(Dispatchers.IO).launch {
+                            dataStore.setLoginStatus(false)
+                        }
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(Screen.Login.route)
+                        }
+                    }
+                }
+
                 Row(
                     modifier = Modifier.fillMaxSize(),
                     horizontalArrangement = Arrangement.SpaceEvenly
@@ -162,7 +185,7 @@ fun BottomNav(
                         title = R.string.logout_button,
                         isSelected = currentRoute == Screen.Login.route
                     ) {
-
+                        showDialog = true
                     }
                 }
             }

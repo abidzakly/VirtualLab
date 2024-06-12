@@ -24,5 +24,10 @@ val GrayIco = Color(0xFF6D6E6F)
 val RedButton = Color(0xFFD83A51)
 val GreenButton = Color(0xFF8ED333)
 
+val GreenStatus = Color(0xFF36A448)
+val RedStatus = Color(0xFFB13F3F)
+val YellowStatus = Color(0xFFB8963B)
+val GrayStatus = Color(0xFF7C7C7C)
+
 val BlueGradient = Color(0xFF40B9F0)
 
