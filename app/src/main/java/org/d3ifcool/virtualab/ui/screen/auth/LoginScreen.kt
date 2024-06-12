@@ -136,7 +136,7 @@ fun LoginScreen(navController: NavHostController) {
                 },
                 title = {
                     Text(
-                        text = "TEst",
+                        text = stringResource(id = R.string.login_title),
                         fontSize = 22.sp,
                         fontFamily = Poppins
                     )

@@ -1,5 +1,6 @@
 package org.d3ifcool.virtualab.ui.screen.admin
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -39,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -69,14 +71,24 @@ import org.d3ifcool.virtualab.utils.ViewModelFactory
 fun UsersInfoScreen(navController: NavHostController, userId: Int) {
     Log.d("Users Info Screen", "User ID at Users Info: $userId")
     val context = LocalContext.current
+//    val dataStore = UserDataStore(context)
+//    val adminEmail by dataStore.userEmailFlow.collectAsState("")
     val factory = ViewModelFactory(user_id = userId)
     val viewModel: UsersInfoViewModel = viewModel(factory = factory)
     val approveResponse by viewModel.approveResponse.collectAsState()
+    val rejectResponse by viewModel.rejectResponse.collectAsState()
 
     Log.d("APPROVE_RESPONSE", "APPROVE RESP?: ${approveResponse?.status}")
     LaunchedEffect(approveResponse) {
         if (approveResponse?.status == true) {
             Toast.makeText(context, approveResponse!!.message, Toast.LENGTH_SHORT).show()
+            navController.navigate(Screen.CheckUser.route)
+        }
+    }
+
+    LaunchedEffect(rejectResponse) {
+        if (rejectResponse?.status == true) {
+            Toast.makeText(context, rejectResponse!!.message, Toast.LENGTH_SHORT).show()
             navController.navigate(Screen.CheckUser.route)
         }
     }
@@ -103,16 +115,16 @@ fun UsersInfoScreen(navController: NavHostController, userId: Int) {
     }, bottomBar = {
         BottomNav(currentRoute = Screen.AdminDashboard.route, navController = navController)
     }) {
-        ScreenContent(modifier = Modifier.padding(it), viewModel)
+        ScreenContent(modifier = Modifier.padding(it), viewModel, context)
     }
 }
 
 @Composable
 private fun ScreenContent(
     modifier: Modifier,
-    viewModel: UsersInfoViewModel
+    viewModel: UsersInfoViewModel,
+    context: Context
 ) {
-    val context = LocalContext.current
 
     var password by remember { mutableStateOf("") }
     var fullname by remember { mutableStateOf("") }
@@ -121,7 +133,6 @@ private fun ScreenContent(
     var userId by remember { mutableIntStateOf(0) }
     var uniqueId by remember { mutableStateOf("") }
     var school by remember { mutableStateOf("") }
-
     val fetchedUser by viewModel.fetchedUser.collectAsState()
 
     if (fetchedUser != null) {
@@ -136,17 +147,15 @@ private fun ScreenContent(
     }
 
     var showDialog by remember { mutableStateOf(false) }
+
     val isEmailSent by viewModel.emailSent.collectAsState()
-
-
     Log.d("EMAIL_SENT", "email sent?: $isEmailSent")
+
     LaunchedEffect(isEmailSent) {
         if (isEmailSent) {
             viewModel.approveUser(userId, password)
         }
     }
-
-
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -275,6 +284,7 @@ private fun RejectAccountPopup(onDismiss: () -> Unit, onConfirm: () -> Unit) {
         title = { SemiLargeText(text = "Tolak akun ini?", fontWeight = FontWeight.SemiBold) },
         confirmButton = {
             Button(
+                modifier = Modifier.testTag("Button_Yes_Delete"),
                 onClick = { onConfirm() },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = RedButton,

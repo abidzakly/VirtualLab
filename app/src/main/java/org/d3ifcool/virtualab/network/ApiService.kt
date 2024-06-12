@@ -53,14 +53,16 @@ interface ApiService {
         @Body user: UserRegistration
     ): MessageResponse
 
-    @PUT("/v1/users/approve")
+    @PUT("/v1/users/approve/{user_id}")
     suspend fun approveUser(
-        @Query("user_id") userId: Int,
-        @Query("password") password: String
+        @Path("user_id") userId: Int,
+        @Query("password") password: String,
     ): MessageResponse
 
-    @DELETE("/v1/users/reject")
-    suspend fun rejectUser(): MessageResponse
+    @DELETE("/v1/users/reject/{user_id}")
+    suspend fun rejectUser(
+        @Path("user_id") userId: Int,
+    ): MessageResponse
 
 }
 

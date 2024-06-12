@@ -14,7 +14,7 @@ import org.d3ifcool.virtualab.network.response.CombinedUser
 import org.d3ifcool.virtualab.network.response.MessageResponse
 import retrofit2.HttpException
 
-class UsersInfoViewModel(userId: Int) : ViewModel() {
+class UsersInfoViewModel(private val userId: Int) : ViewModel() {
 
     private val _fetchedUser = MutableStateFlow<CombinedUser?>(null)
     val fetchedUser: StateFlow<CombinedUser?> = _fetchedUser
@@ -32,10 +32,10 @@ class UsersInfoViewModel(userId: Int) : ViewModel() {
     val rejectResponse: StateFlow<MessageResponse?> = _rejectResponse
 
     init {
-        getUsersInfo(userId)
+        getUsersInfo()
     }
 
-    private fun getUsersInfo(userId: Int) {
+    private fun getUsersInfo() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _fetchedUser.value = UserApi.service.getUserbyId(userId)
@@ -47,32 +47,6 @@ class UsersInfoViewModel(userId: Int) : ViewModel() {
             }
         }
     }
-//
-//    private fun mergeUserData(unmergedUser: GetUserResponse): CombinedUser {
-//        var user: User? = null
-//        var student: Murid? = null
-//        var teacher: Guru? = null
-//
-//        for (mergedUser in unmergedUser.user) {
-//            if (user == null) {
-//                user = mergedUser.user
-//            }
-//            if (student == null && mergedUser.student != null) {
-//                student = mergedUser.student
-//            }
-//            if (teacher == null && mergedUser.teacher != null) {
-//                teacher = mergedUser.teacher
-//            }
-//            if (student != null && teacher != null) {
-//                break
-//            }
-//        }
-//        return CombinedUser(
-//            user = user,
-//            student = student,
-//            teacher = teacher
-//        )
-//    }
 
     fun approveUser(userId: Int, password: String) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -89,7 +63,7 @@ class UsersInfoViewModel(userId: Int) : ViewModel() {
     fun rejectUser(userId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-
+                _rejectResponse.value = UserApi.service.rejectUser(userId)
             } catch (e: HttpException) {
                 _errorMsg.value =
                     e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")

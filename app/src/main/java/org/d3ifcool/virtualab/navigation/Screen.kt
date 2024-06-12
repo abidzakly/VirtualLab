@@ -21,6 +21,7 @@ sealed class Screen(val route: String) {
     //    Guru
     data object GuruDashboard : Screen("guruDashboardScreen")
     data object AddMateri : Screen("addMateriScreen")
+    data object  AddSoal : Screen("addSoalScreen")
     data object AddLatihan : Screen("addLatihanScreen")
     data object GuruMateri : Screen("guruMateriScreen")
     data object GuruLatihan : Screen("guruLatihanScreen")

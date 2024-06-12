@@ -81,12 +81,16 @@ import org.d3ifcool.virtualab.ui.theme.DarkBlue
 import org.d3ifcool.virtualab.ui.theme.GrayText
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.Poppins
+import org.d3ifcool.virtualab.utils.UserDataStore
+import org.d3ifcool.virtualab.utils.ViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(navController: NavHostController, id: Int) {
     val context = LocalContext.current
-    val viewModel: AuthViewModel = viewModel()
+    val dataStore = UserDataStore(context)
+    val factory = ViewModelFactory(userDataStore = dataStore)
+    val viewModel: AuthViewModel = viewModel(factory = factory)
     val registSuccess by viewModel.registerSuccess.collectAsState()
     val errorMsg by viewModel.errorMsg.collectAsState()
 

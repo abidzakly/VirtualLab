@@ -82,7 +82,6 @@ fun CekJawabanScreen(navController: NavHostController) {
 @Composable
 private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
     val viewModel: DetailLatihanVM = viewModel()
-    var showDialog by remember { mutableStateOf(false) }
 
     val answers by viewModel.answers.collectAsState()
     Log.d("Itemlist @Cek Jawaban", "answers: ${answers.size}")
@@ -118,12 +117,6 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
             }
             Spacer(modifier = Modifier.height(30.dp))
         }
-    }
-    if (showDialog) {
-        ExerciseDonePopup(
-            onDismiss = { showDialog = false },
-            navController = navController
-        )
     }
 }
 
@@ -207,64 +200,6 @@ private fun ItemList(question: Soal, jawabanMurid: JawabanMurid?, viewModel: Det
     }
     Spacer(modifier = Modifier.height(14.dp))
 }
-@Composable
-private fun ExerciseDonePopup(onDismiss: () -> Unit, navController: NavHostController) {
-    Dialog(onDismissRequest = { onDismiss() }) {
-        Card(
-            modifier = Modifier.padding(16.dp),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardColors(
-                containerColor = Color.White,
-                contentColor = Color.Black,
-                disabledContainerColor = Color.Red,
-                disabledContentColor = Color.Red
-            )
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.icon_process_success),
-                    contentDescription = "Ikon proses berhasil",
-                    tint = DarkBlue
-                )
-                RegularText(
-                    text = "Bagus sekali!\n" +
-                            "Anda telah menyelesaikan semua soal",
-                    fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.Center
-                )
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Button(
-                        onClick = {
-                            onDismiss()
-                            navController.navigate(Screen.CekJawaban.route)
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = LightBlue,
-                            contentColor = Color.Black
-                        ),
-                        shape = RoundedCornerShape(10.dp)
-                    ) {
-                        MediumLargeText(
-                            text = "OK",
-                            fontWeight = FontWeight.SemiBold,
-                            color = Color.Black
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
 @Preview
 @Composable
 private fun Prev() {
