@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,6 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -41,6 +44,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
+import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.ui.component.AdminEmptyState
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.LargeText
@@ -93,6 +97,7 @@ private fun ScreenContent(
 ) {
     val userList by viewModel.userList.collectAsState()
     val errorMsg by viewModel.errorMsg.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
 
     Log.d("GET ALL USER Error", "Get User Error: $errorMsg")
     Log.d("GET ALL USER", "Get USER: $userList")
@@ -104,36 +109,60 @@ private fun ScreenContent(
             .padding(12.dp),
         verticalArrangement = if (userList.isNotEmpty()) Arrangement.Top else Arrangement.Center,
     ) {
-        if (userList.isEmpty()) {
-            AdminEmptyState(text = "Belum ada akun yang perlu diperiksa")
-        } else {
-            RegularText(
-                text = "Daftar akun baru dibuat: ",
-                modifier = Modifier.padding(start = 16.dp)
-            )
-            LazyColumn(
-                modifier = Modifier
-                    .padding(16.dp)
-            ) {
-                items(userList) { user ->
-                    user?.let {
+        when (isLoading) {
+            ApiStatus.LOADING -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            }
+
+            ApiStatus.SUCCESS -> {
+                RegularText(
+                    text = stringResource(R.string.check_users_title),
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(16.dp)
+                ) {
+                    var nomorUrut = 1
+                    items(userList) {
                         AccountList(
-                            username = it.username ?: "Unknown",
-                            number = it.nip ?: it.nisn ?: "Unknown"
+                            modifier = Modifier.testTag("Akun user ke $nomorUrut"),
+                            username = it!!.username,
+                            number = it.nip ?: it.nisn ?: ""
                         ) {
                             navController.navigate(Screen.UsersInfo.withId(it.user_id))
                         }
+                        Log.d(
+                            "CheckUserScreen",
+                            "nama:${it.username}, akun user ke: $nomorUrut"
+                        )
+                        nomorUrut++
+                        Log.d("CheckUserScreen", "ukuran list:${userList.size}")
+                        if (nomorUrut > userList.size) {
+                            nomorUrut = 1
+                        }
                     }
                 }
+            }
+
+            ApiStatus.FAILED -> {
+                AdminEmptyState(text = "Belum ada akun yang perlu diperiksa")
             }
         }
     }
 }
 
 @Composable
-private fun AccountList(username: String, number: String, onClick: () -> Unit) {
+private fun AccountList(
+    modifier: Modifier = Modifier,
+    username: String,
+    number: String,
+    onClick: () -> Unit
+) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(8.dp)
             .shadow(elevation = 6.dp, shape = RoundedCornerShape(12.dp))

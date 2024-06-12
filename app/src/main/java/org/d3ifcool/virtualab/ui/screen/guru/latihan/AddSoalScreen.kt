@@ -31,10 +31,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -105,12 +107,10 @@ private fun ScreenContent(
     viewModel: AddSoalViewModel,
     exerciseId: Int
 ) {
-
-    val latihanData by viewModel.latihanData.collectAsState()
-    Log.d("AddSoalScreen", "Latihan Data: $latihanData")
-
     val context = LocalContext.current
-
+    val latihanData by viewModel.latihanData.collectAsState()
+    var isClicked by remember { mutableStateOf(false) }
+    Log.d("AddSoalScreen", "Latihan Data: $latihanData")
     if (latihanData != null) {
         var soal = remember {
             mutableStateListOf(*Array(latihanData!!.latihan.question_count) {
@@ -169,6 +169,8 @@ private fun ScreenContent(
                         RegularText(text = stringResource(R.string.pilihan_jawaban))
                         for (i in 0 until 4) {
                             ListJawaban(
+                                modifier = Modifier.testTag("Jawaban ${i + 1}"),
+                                modifier2 = Modifier.testTag("Checkbox ${i + 1}"),
                                 isChecked = isChecked[i],
                                 onClick = {
                                     if (isChecked[i]) {
@@ -223,6 +225,8 @@ private fun ScreenContent(
                                 answerKey.toList()
                             )
                             Log.d("AddSoalScreen", "soal $count added.\n soal: ${soal[count]}")
+                        } else {
+                            soal[count] = QuestionCreate(-1, "", emptyList(), emptyList())
                         }
                     }
                 }
@@ -233,14 +237,16 @@ private fun ScreenContent(
                     .padding(12.dp),
                 onClick = {
                     if (soal.all {
-                            it.question_text == ""
-                                    || it.option_text.isEmpty()
+                            it.question_text == "" || it.question_text.isEmpty()
+                                    || it.option_text.isEmpty() || it.option_text.size < 4
                                     || it.exercise_id == -1
-                                    || it.answer_keys.isEmpty()
+                                    || it.answer_keys.isEmpty() || it.answer_keys.size < 2
                         }
                     ) {
-                        return@Button
+                        Toast.makeText(context, "Semua data harus diisi, yaa", Toast.LENGTH_SHORT).show()
+                        Log.d("AddSoalScreen", "IF IS TRUE")
                     } else {
+                        Log.d("AddSoalScreen", "FALSE IS TRUE")
                         viewModel.addSoal(soal.toList())
                         Log.d("AddSoalScreen", "Soal: ${soal.toList()}")
                     }
@@ -293,6 +299,8 @@ fun CustomTextField2(
 
 @Composable
 fun ListJawaban(
+    modifier: Modifier = Modifier,
+    modifier2: Modifier = Modifier,
     isChecked: Boolean,
     onClick: (Boolean) -> Unit,
     jawaban: String,
@@ -303,7 +311,7 @@ fun ListJawaban(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
-        IconButton(onClick = { onClick(!isChecked) }) {
+        IconButton(modifier = modifier2, onClick = { onClick(!isChecked) }) {
             Icon(
                 painterResource(if (!isChecked) R.drawable.check_box_outline_blank else R.drawable.check_box_filled),
                 contentDescription = null,
@@ -313,6 +321,7 @@ fun ListJawaban(
         }
         Spacer(modifier = Modifier.width(4.dp))
         CustomTextField2(
+            modifier = modifier,
             value = jawaban,
             onValueChange = { onJawabanChange(it) },
             placeholder = R.string.jawaban_placeholder

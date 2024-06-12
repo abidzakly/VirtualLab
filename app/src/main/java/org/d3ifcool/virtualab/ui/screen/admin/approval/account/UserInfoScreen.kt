@@ -1,5 +1,6 @@
 package org.d3ifcool.virtualab.ui.screen.admin.approval.account
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -41,6 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -72,7 +74,7 @@ import org.d3ifcool.virtualab.utils.ViewModelFactory
 fun UsersInfoScreen(navController: NavHostController, userId: Int) {
     Log.d("Users Info Screen", "User ID at Users Info: $userId")
     val context = LocalContext.current
-    val factory = ViewModelFactory(userId = userId)
+    val factory = ViewModelFactory(user_id = userId)
     val viewModel: UserInfoViewModel = viewModel(factory = factory)
     val approveResponse by viewModel.approveResponse.collectAsState()
     val rejectResponse by viewModel.rejectResponse.collectAsState()
@@ -84,6 +86,7 @@ fun UsersInfoScreen(navController: NavHostController, userId: Int) {
             navController.navigate(Screen.CheckUser.route)
         }
     }
+
     LaunchedEffect(rejectResponse) {
         if (rejectResponse?.status == true) {
             Toast.makeText(context, rejectResponse!!.message, Toast.LENGTH_SHORT).show()
@@ -113,16 +116,16 @@ fun UsersInfoScreen(navController: NavHostController, userId: Int) {
     }, bottomBar = {
         BottomNav(currentRoute = Screen.AdminDashboard.route, navController = navController)
     }) {
-        ScreenContent(modifier = Modifier.padding(it), viewModel)
+        ScreenContent(modifier = Modifier.padding(it), viewModel, context)
     }
 }
 
 @Composable
 private fun ScreenContent(
     modifier: Modifier,
-    viewModel: UserInfoViewModel
+    viewModel: UserInfoViewModel,
+    context: Context
 ) {
-    val context = LocalContext.current
 
     var password by remember { mutableStateOf("") }
     var fullname by remember { mutableStateOf("") }
@@ -131,7 +134,6 @@ private fun ScreenContent(
     var userId by remember { mutableIntStateOf(0) }
     var uniqueId by remember { mutableStateOf("") }
     var school by remember { mutableStateOf("") }
-
     val fetchedUser by viewModel.fetchedUser.collectAsState()
 
     if (fetchedUser != null) {
@@ -146,10 +148,10 @@ private fun ScreenContent(
     }
 
     var showDialog by remember { mutableStateOf(false) }
+
     val isEmailSent by viewModel.emailSent.collectAsState()
-
-
     Log.d("EMAIL_SENT", "email sent?: $isEmailSent")
+
     LaunchedEffect(isEmailSent) {
         if (isEmailSent) {
             viewModel.approveUser(userId, password)

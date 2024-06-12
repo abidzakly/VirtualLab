@@ -12,7 +12,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -43,7 +47,11 @@ fun DetailLatihanScreen(navController: NavHostController, exerciseId: Int) {
     val viewModel: DetailLatihanViewModel = viewModel(factory = factory)
 
     Scaffold(topBar = {
-        TopNav(title = R.string.guru_detail_latihan_title, navController = navController)
+        TopNav(title = R.string.guru_detail_latihan_title, navController = navController){
+            IconButton(onClick = { /*TODO*/ }) {
+                Icon(imageVector = Icons.Filled.Delete, contentDescription = "Delete Icon")
+            }
+        }
     }, bottomBar = {
         BottomNav(currentRoute = Screen.GuruLatihan.route, navController)
     }) {

@@ -1,6 +1,6 @@
 [versions]
 accompanistSystemuicontrollerVersion = "0.27.0"
-agp = "8.3.2"
+agp = "8.4.1"
 converterMoshiVersion = "2.10.0"
 coilComposeVersion = "2.4.0"
 coreSplashscreen = "1.0.1"
@@ -26,6 +26,7 @@ retrofitVersion = "2.10.0"
 roomKtxVersion = "2.6.1"
 roomRuntimeVersion = "2.6.1"
 uiTextGoogleFonts = "1.6.7"
+navigationTestingVersion = "2.7.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -63,6 +64,7 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayoutCompose" }
 moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshiKotlinVersion" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofitVersion" }
+androidx-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "navigationTestingVersion" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

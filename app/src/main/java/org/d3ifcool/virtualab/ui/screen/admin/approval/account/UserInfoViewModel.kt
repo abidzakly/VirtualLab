@@ -14,7 +14,7 @@ import org.d3ifcool.virtualab.data.network.response.CombinedUserResponse
 import org.d3ifcool.virtualab.data.network.response.MessageResponse
 import retrofit2.HttpException
 
-class UserInfoViewModel(userId: Int) : ViewModel() {
+class UserInfoViewModel(private val userId: Int) : ViewModel() {
 
     private val _fetchedUser = MutableStateFlow<CombinedUserResponse?>(null)
     val fetchedUser: StateFlow<CombinedUserResponse?> = _fetchedUser
@@ -32,10 +32,10 @@ class UserInfoViewModel(userId: Int) : ViewModel() {
     val rejectResponse: StateFlow<MessageResponse?> = _rejectResponse
 
     init {
-        getUsersInfo(userId)
+        getUsersInfo()
     }
 
-    private fun getUsersInfo(userId: Int) {
+    private fun getUsersInfo() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _fetchedUser.value = UserApi.service.getUserbyId(userId)

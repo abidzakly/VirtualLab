@@ -57,8 +57,8 @@ fun BottomNav(
     onClick: () -> Unit = {}
 ) {
     val dataStore = UserDataStore(LocalContext.current)
-    val userType by dataStore.userTypeFlow.collectAsState(-1)
-   BottomAppBar(
+    val userType by dataStore.userTypeFlow.collectAsState(0)
+    BottomAppBar(
         modifier = Modifier
             .shadow(elevation = 20.dp, shape = RectangleShape)
             .fillMaxWidth()

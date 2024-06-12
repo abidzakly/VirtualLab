@@ -81,7 +81,7 @@ fun ContentList(title: String, desc: String, status: String, onClick: () -> Unit
             Spacer(modifier = Modifier.width(4.dp))
             Icon(
                 painter = painterResource(id = R.drawable.arrow_circle),
-                contentDescription = "Detail Button",
+                contentDescription = "Arrow to Details Icon",
                 tint = Color.Black
             )
         }

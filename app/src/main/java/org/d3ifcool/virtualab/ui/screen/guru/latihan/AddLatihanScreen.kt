@@ -2,6 +2,8 @@ package org.d3ifcool.virtualab.ui.screen.guru.latihan
 
 import android.content.Context
 import android.widget.Toast
+import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -37,6 +39,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -78,6 +81,7 @@ fun AddLatihanScreen(navController: NavHostController) {
     LaunchedEffect(errorMsg) {
         if (errorMsg != null) {
             Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show()
+            viewModel.clearErrorMsg()
         }
     }
 
@@ -106,15 +110,9 @@ private fun ScreenContent(
     val options = listOf("Mudah", "Sedang", "Sulit")
     var judulLatihan by remember { mutableStateOf("") }
     var jumlahSoal by remember { mutableStateOf("") }
-    var jmlSoalError by remember { mutableStateOf(false) }
+//    var jmlSoalError by remember { mutableStateOf(false) }
     var onClicked by remember { mutableStateOf(false) }
     var selectedOptionText by remember { mutableStateOf("") }
-
-    LaunchedEffect(jumlahSoal) {
-        if (onClicked && jumlahSoal.isNotEmpty() && jumlahSoal.toInt() > 10) {
-            Toast.makeText(context, "Jumlah soal melebihi batas!", Toast.LENGTH_SHORT).show()
-        }
-    }
 
     val dataStore = UserDataStore(LocalContext.current)
     val userId by dataStore.userIdFlow.collectAsState(-1)
@@ -124,9 +122,13 @@ private fun ScreenContent(
             .fillMaxSize()
             .padding(horizontal = 48.dp, vertical = 24.dp)
     ) {
-        RegularText(text = stringResource(R.string.title_latihan))
+        RegularText(
+            modifier = Modifier.testTag("Judul Latihan Title"),
+            text = stringResource(R.string.title_latihan)
+        )
         Spacer(modifier = Modifier.height(20.dp))
         CustomTextField(
+            modifier = Modifier.testTag("Judul Latihan TF"),
             value = judulLatihan,
             onValueChange = { judulLatihan = it },
             placeholder = R.string.title_latihan
@@ -134,12 +136,13 @@ private fun ScreenContent(
         RegularText(text = stringResource(R.string.difficulty_latihan))
         Spacer(modifier = Modifier.height(20.dp))
         DropdownForm(selectedOptionText, options) { selectedOptionText = it }
-        RegularText(text = stringResource(R.string.number_latihan))
+        RegularText(text = stringResource(R.string.question_count))
         Spacer(modifier = Modifier.height(20.dp))
         CustomTextField(
+            modifier = Modifier.testTag("Jumlah Soal TF"),
             value = jumlahSoal,
             onValueChange = { jumlahSoal = it },
-            placeholder = R.string.number_latihan,
+            placeholder = R.string.question_count,
             isPhone = true
         )
         ExtraSmallText(
@@ -153,8 +156,11 @@ private fun ScreenContent(
         ) {
             Button(
                 onClick = {
-                    if (jmlSoalError || judulLatihan.isEmpty() || selectedOptionText.isEmpty()) {
-                        return@Button
+                    onClicked = true
+                    if (onClicked && jumlahSoal.isEmpty() || onClicked && judulLatihan.isEmpty() || onClicked && selectedOptionText.isEmpty()) {
+                        Toast.makeText(context, "Semua data harus diisi, yaa", Toast.LENGTH_SHORT)
+                            .show()
+                        onClicked = false
                     } else {
                         viewModel.addLatihan(
                             judulLatihan,
@@ -194,7 +200,7 @@ fun DropdownForm(selectedText: String, options: List<String>, onChange: (String)
             .padding(10.dp)
     ) {
         ExposedDropdownMenuBox(
-            expanded = expanded,
+            modifier = Modifier.testTag("Dropdown Menu"), expanded = expanded,
             onExpandedChange = { expanded = !expanded }
         ) {
             OutlinedTextField(
@@ -215,10 +221,12 @@ fun DropdownForm(selectedText: String, options: List<String>, onChange: (String)
             )
             ExposedDropdownMenu(
                 expanded = expanded,
-                onDismissRequest = { }
+                onDismissRequest = { expanded = false }
             ) {
+                var nomor = 1
                 options.forEach { selectedOption ->
                     DropdownMenuItem(
+                        modifier = Modifier.testTag("Pilihan Menu $nomor"),
                         text = { Text(text = selectedOption) },
                         onClick = {
                             onChange(selectedOption)
@@ -227,6 +235,7 @@ fun DropdownForm(selectedText: String, options: List<String>, onChange: (String)
                         },
                         contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                     )
+                    nomor++
                 }
             }
         }
