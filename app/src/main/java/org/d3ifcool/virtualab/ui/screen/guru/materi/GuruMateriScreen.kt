@@ -63,16 +63,16 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                         rememberScrollState()
                     )
             ) {
-                ContentList(title = "Materi 1", desc = "lorem ipsum dolor sit amet") {
+                ContentList(title = "Materi 1", desc = "lorem ipsum dolor sit amet", status = "PENDING") {
                     navController.navigate(Screen.GuruDetailMateri.route)
                 }
-                ContentList(title = "Materi 2", desc = "lorem ipsum dolor sit amet") {
+                ContentList(title = "Materi 2", desc = "lorem ipsum dolor sit amet", "APPROVED") {
                     navController.navigate(Screen.GuruDetailMateri.route)
                 }
-                ContentList(title = "Materi 3", desc = "lorem ipsum dolor sit amet") {
+                ContentList(title = "Materi 3", desc = "lorem ipsum dolor sit amet", "DRAFT") {
                     navController.navigate(Screen.GuruDetailMateri.route)
                 }
-                ContentList(title = "Materi 4", desc = "lorem ipsum dolor sit amet") {
+                ContentList(title = "Materi 4", desc = "lorem ipsum dolor sit amet", "REJETED") {
                     navController.navigate(Screen.GuruDetailMateri.route)
                 }
             }

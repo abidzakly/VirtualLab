@@ -193,32 +193,46 @@ class VirtualabTest {
                 .fetchSemanticsNodes().size == 1
         }
         rule.onNodeWithTag("Judul Latihan Title").assertExists()
-        rule.onNodeWithTag("Judul Latihan TF").performTextInput("Latihan Persamaan Reaksi Kimia")
+        rule.onNodeWithTag("Judul Latihan TF").performTextInput("Uji Pemahaman 1")
         rule.onNodeWithTag("Dropdown Menu").performClick()
-        rule.onNodeWithTag("Pilihan Menu 3").performClick()
-        rule.onNodeWithTag("Jumlah Soal TF").performTextInput("2")
+        rule.onNodeWithTag("Pilihan Menu 1").performClick()
+        rule.onNodeWithTag("Jumlah Soal TF").performTextInput("1")
         rule.onNodeWithText("Tambah Soal").performClick()
         rule.waitUntil {
-            rule.onAllNodesWithTag("Judul Soal")
+            rule.onAllNodesWithText("Soal 1")
                 .fetchSemanticsNodes().size == 1
         }
-        rule.onNodeWithTag("Judul Soal").assertExists()
+        rule.onNodeWithText("Soal 1").assertExists()
+        rule.onNodeWithText("Tulis Soal").performTextInput("C3H8 + O2 → ... CO2 + ... H2O")
+        rule.onNodeWithTag("Jawaban 1").performTextInput("1")
+        rule.onNodeWithTag("Jawaban 2").performTextInput("2")
+        rule.onNodeWithTag("Jawaban 3").performTextInput("3")
+        rule.onNodeWithTag("Jawaban 4").performTextInput("4")
+        rule.onNodeWithTag("Checkbox 1").performClick()
+        rule.onNodeWithTag("Checkbox 3").performClick()
 
-        rule.onNodeWithTag("Soal 1").assertExists()
-        rule.onNodeWithTag("Tulis Soal").performTextInput("C3H8 + O2 → ... CO2 + ... H2O")
-        rule.onNodeWithTag("JAWABAN1_SOAL1").performTextInput("1")
-        rule.onNodeWithTag("JAWABAN2_SOAL1").performTextInput("2")
-        rule.onNodeWithTag("JAWABAN3_SOAL1").performTextInput("3")
-        rule.onNodeWithTag("JAWABAN4_SOAL1").performTextInput("4")
+        rule.onNodeWithText("Unggah Soal").performClick()
 
-        rule.onNodeWithTag("Soal 2").assertExists()
-        rule.onNodeWithTag("Tulis Soal").performTextInput("Fe2O3 + CO → ... Fe + ... CO2")
-        rule.onNodeWithTag("JAWABAN1_SOAL2").performTextInput("1")
-        rule.onNodeWithTag("JAWABAN2_SOAL2").performTextInput("2")
-        rule.onNodeWithTag("JAWABAN3_SOAL2").performTextInput("3")
-        rule.onNodeWithTag("JAWABAN4_SOAL2").performTextInput("4")
+        rule.waitForIdle()
+        rule.onNodeWithText("Riwayat Latihan").assertExists()
+        rule.onNodeWithText("Profil").assertExists()
+        rule.onNodeWithText("Profil").performClick()
+        rule.waitForIdle()
+        rule.onNodeWithText("Keluar").assertExists().performScrollTo()
+        Thread.sleep(1000)
+        rule.onNodeWithText("Keluar").performClick()
+        rule.waitForIdle()
+        Thread.sleep(1000)
+        rule.onNode(
+            isDialog() and hasAnyDescendant(hasText("Tidak", ignoreCase = true)),
+            useUnmergedTree = true
+        ).assertIsDisplayed()
+        rule.onNodeWithText("Ya").isDisplayed()
+        rule.onNodeWithText("Ya").performClick()
+
+        rule.waitForIdle()
+        rule.onNodeWithText("Belum punya akun?").assertExists()
         Thread.sleep(5000)
-//        Done sampai buat latihan saja, kurang buat soal
     }
 
     @Test

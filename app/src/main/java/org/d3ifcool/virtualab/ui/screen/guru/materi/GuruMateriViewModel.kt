@@ -1,7 +1,7 @@
 package org.d3ifcool.virtualab.ui.screen.guru.materi
 
 import androidx.lifecycle.ViewModel
-import org.d3ifcool.virtualab.model.Materi
+import org.d3ifcool.virtualab.data.model.Materi
 
 class GuruMateriViewModel: ViewModel() {
     val data = getDataDummy()

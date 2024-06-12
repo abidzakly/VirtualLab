@@ -3,6 +3,7 @@ package org.d3ifcool.virtualab.navigation
 const val KEY_USER_TYPE = "userType"
 const val KEY_USER_ID = "idType"
 const val KEY_FULLNAME = "stringType"
+const val KEY_EXERCISE_ID = "exerciseIdType"
 
 sealed class Screen(val route: String) {
     data object Landing : Screen("landingScreen")
@@ -21,12 +22,16 @@ sealed class Screen(val route: String) {
     //    Guru
     data object GuruDashboard : Screen("guruDashboardScreen")
     data object AddMateri : Screen("addMateriScreen")
-    data object  AddSoal : Screen("addSoalScreen")
+    data object AddSoal : Screen("addSoalScreen/{$KEY_EXERCISE_ID}") {
+        fun withId(id: Int) = "addSoalScreen/$id"
+    }
     data object AddLatihan : Screen("addLatihanScreen")
     data object GuruMateri : Screen("guruMateriScreen")
     data object GuruLatihan : Screen("guruLatihanScreen")
     data object GuruDetailMateri : Screen("guruDetailMateriScreen")
-    data object GuruDetailLatihan : Screen("guruDetailLatihanScreen")
+    data object GuruDetailLatihan : Screen("guruDetailLatihanScreen/{$KEY_EXERCISE_ID}") {
+        fun withId(id: Int) = "guruDetailLatihanScreen/$id"
+    }
 
     //    Murid
     data object MuridDashboard : Screen("muridDashboardScreen/{$KEY_FULLNAME}") {

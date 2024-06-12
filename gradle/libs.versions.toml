@@ -6,23 +6,26 @@ coilComposeVersion = "2.4.0"
 coreSplashscreen = "1.0.1"
 datastorePreferencesAndroidVersion = "1.1.1"
 exoplayerVersion = "2.19.1"
-generativeai = "0.4.0"
+generativeai = "0.7.0"
 kotlin = "1.9.0"
-coreKtx = "1.13.0"
+coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
-lifecycleRuntimeKtx = "2.7.0"
+lifecycleRuntimeKtx = "2.8.1"
 activityCompose = "1.9.0"
-composeBom = "2024.04.01"
-materialIconsExtended = "1.6.6"
+composeBom = "2024.05.00"
+materialIconsExtended = "1.6.7"
+media3UiVersion = "1.3.1"
+media3ExoplayerDashVersion = "1.3.1"
+media3ExoplayerVersion = "1.3.1"
 moshiKotlinVersion = "1.9.3"
 navigationCompose = "2.7.7"
 constraintlayoutCompose = "1.0.1"
 retrofitVersion = "2.10.0"
 roomKtxVersion = "2.6.1"
 roomRuntimeVersion = "2.6.1"
-uiTextGoogleFonts = "1.6.6"
+uiTextGoogleFonts = "1.6.7"
 navigationTestingVersion = "2.7.7"
 
 [libraries]
@@ -30,7 +33,11 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-datastore-preferences-android = { module = "androidx.datastore:datastore-preferences-android", version.ref = "datastorePreferencesAndroidVersion" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
+androidx-material = { module = "androidx.compose.material:material", version.ref = "materialIconsExtended" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
+androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3UiVersion" }
+androidx-media3-exoplayer-dash = { module = "androidx.media3:media3-exoplayer-dash", version.ref = "media3ExoplayerDashVersion" }
+androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3ExoplayerVersion" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntimeVersion" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtxVersion" }

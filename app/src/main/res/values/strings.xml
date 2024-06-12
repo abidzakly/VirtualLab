@@ -117,7 +117,7 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
     <string name="materi_title_data">Persamaan Reaksi Kimia</string>
     <!--   Detail Materi Guru   -->
     <string name="guru_detail_materi_title">Detail Materi</string>
-    <string name="judul_materi_guru">Judul Materi 5</string>
+    <string name="judul_materi_guru">Judul Materi</string>
     <string name="judul_materi_data">Penyetaraan Reaksi kimia melalui pendekatan reaksi pembakaran</string>
     <string name="media_pembelajaran">Media Pembelajaran</string>
     <string name="file_media_belajar">molekul.mov</string>
@@ -163,15 +163,15 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
     <string name="button_tambahSoal">Tambah Soal</string>
 
     <!--   Buat Soal Guru   -->
-    <string name="title_soal">Judul Latihan : Penyetaraan Reaksi Kimia</string>
-    <string name="difficulty_soal">Tingkat Kesulitan : Mudah</string>
+    <string name="title_soal">Judul Latihan : </string>
+    <string name="difficulty_soal">Tingkat Kesulitan : </string>
     <string name="number_soal_1">Soal 1</string>
     <string name="soal">Tulis Soal</string>
     <string name="pilihan_jawaban">Pilihan Jawaban</string>
-    <string name="pilihan_1">Jawaban 1</string>
-    <string name="pilihan_2">Jawaban 2</string>
-    <string name="pilihan_3">Jawaban 3</string>
-    <string name="pilihan_4">Jawaban 4</string>
+    <string name="jawaban_placeholder">Jawaban</string>
+<!--    <string name="pilihan_2">Jawaban 2</string>-->
+<!--    <string name="pilihan_3">Jawaban 3</string>-->
+<!--    <string name="pilihan_4">Jawaban 4</string>-->
     <string name="number_soal_2">Soal 2</string>
     <string name="button_unggah">Unggah Soal</string>
 

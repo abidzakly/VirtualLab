@@ -53,8 +53,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
-import org.d3ifcool.virtualab.model.OpsiJawaban
-import org.d3ifcool.virtualab.model.Soal
+import org.d3ifcool.virtualab.data.model.OpsiJawaban
+import org.d3ifcool.virtualab.data.model.SoalDummy
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
@@ -193,8 +193,8 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
 @Composable
 private fun ItemList(noSoal: String, exerciseId: Int, viewModel: DetailLatihanVM) {
     val questions = listOf(
-        Soal(1, 1, "C4H10 + O2 = ... CO2 + O...", "2;4"),
-        Soal(2, 1, "H2 + O2 = ... H2O", "2;1")
+        SoalDummy(1, 1, "C4H10 + O2 = ... CO2 + O...", "2;4"),
+        SoalDummy(2, 1, "H2 + O2 = ... H2O", "2;1")
     )
     val options = listOf(
         OpsiJawaban(1, 1, "2"),
@@ -254,7 +254,7 @@ private fun ItemList(noSoal: String, exerciseId: Int, viewModel: DetailLatihanVM
 
 @Composable
 private fun QuestionItem(
-    question: Soal,
+    question: SoalDummy,
     options: List<OpsiJawaban>,
     selectedAnswers: List<OpsiJawaban>? = null,
     onOptionSelected: (OpsiJawaban, Boolean) -> Unit

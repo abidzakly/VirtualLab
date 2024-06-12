@@ -1,6 +1,7 @@
 package org.d3ifcool.virtualab.ui.component
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,7 +20,11 @@ import org.d3ifcool.virtualab.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopNav(title: Int, navController: NavHostController) {
+fun TopNav(
+    title: Int,
+    navController: NavHostController,
+    actions: @Composable() (RowScope.() -> Unit) = {},
+) {
     TopAppBar(
         navigationIcon = {
             IconButton(onClick = { navController.popBackStack() }) {
@@ -39,6 +44,7 @@ fun TopNav(title: Int, navController: NavHostController) {
             containerColor = Color.Transparent,
             titleContentColor = Color.Black
         ),
+        actions = actions,
     )
 }
 

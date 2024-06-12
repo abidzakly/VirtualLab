@@ -50,8 +50,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
-import org.d3ifcool.virtualab.model.JawabanMurid
-import org.d3ifcool.virtualab.model.Soal
+import org.d3ifcool.virtualab.data.model.JawabanMuridDummy
+import org.d3ifcool.virtualab.data.model.SoalDummy
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
@@ -86,8 +86,8 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
     val answers by viewModel.answers.collectAsState()
     Log.d("Itemlist @Cek Jawaban", "answers: ${answers.size}")
 
-    val question1 = Soal(1, 1, "C4H10 + O2 = ... CO2 + O...", "2;4")
-    val jawabanMurid1 = JawabanMurid(1, 1, 1, 2)
+    val question1 = SoalDummy(1, 1, "C4H10 + O2 = ... CO2 + O...", "2;4")
+    val jawabanMurid1 = JawabanMuridDummy(1, 1, 1, 2)
 
     Column(
         modifier = modifier
@@ -121,7 +121,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
 }
 
 @Composable
-private fun ItemList(question: Soal, jawabanMurid: JawabanMurid?, viewModel: DetailLatihanVM) {
+private fun ItemList(question: SoalDummy, jawabanMurid: JawabanMuridDummy?, viewModel: DetailLatihanVM) {
     val jawabanBenar = question.answerKey.split(";").map { it.toInt() }
     val isCorrect = jawabanMurid?.selectedOptionId in jawabanBenar
     val nilaiSoal = if (isCorrect) 10 else 0
