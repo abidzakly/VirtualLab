@@ -1,9 +1,7 @@
 package org.d3ifcool.virtualab.ui.screen.murid.latihan
 
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,24 +13,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Warning
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.outlined.KeyboardArrowDown
+import androidx.compose.material.icons.outlined.KeyboardArrowUp
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults.buttonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -41,7 +39,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -53,25 +50,25 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
-import org.d3ifcool.virtualab.model.OpsiJawaban
+import org.d3ifcool.virtualab.model.JawabanMurid
 import org.d3ifcool.virtualab.model.Soal
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
-import org.d3ifcool.virtualab.ui.component.MediumText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.DarkBlue
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
+import org.d3ifcool.virtualab.ui.theme.GreenButton
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.LightBlue2
 import org.d3ifcool.virtualab.ui.theme.RedButton
 
 @Composable
-fun MuridDetailLatihanScreen(navController: NavHostController) {
+fun CekJawabanScreen(navController: NavHostController) {
     Scaffold(
         topBar = {
-            TopNav(title = R.string.latihan_x, navController = navController)
+            TopNav(title = R.string.cek_jawaban_title, navController = navController)
         },
         bottomBar = {
             BottomNav(currentRoute = Screen.MuridDashboard.route, navController = navController)
@@ -86,11 +83,12 @@ fun MuridDetailLatihanScreen(navController: NavHostController) {
 private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
     val viewModel: DetailLatihanVM = viewModel()
     var showDialog by remember { mutableStateOf(false) }
-    var showConfirmDialog by remember { mutableStateOf(false) }
-    val answers by viewModel.answers.collectAsState()
-    Log.d("Itemlist @Murid Detail Latihan", "answers: ${answers.size}")
 
-    val context = LocalContext.current
+    val answers by viewModel.answers.collectAsState()
+    Log.d("Itemlist @Cek Jawaban", "answers: ${answers.size}")
+
+    val question1 = Soal(1, 1, "C4H10 + O2 = ... CO2 + O...", "2;4")
+    val jawabanMurid1 = JawabanMurid(1, 1, 1, 2)
 
     Column(
         modifier = modifier
@@ -105,82 +103,21 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                 .padding(top = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ItemList(noSoal = "1", exerciseId = 1, viewModel)
-            ItemList(noSoal = "2", exerciseId = 1, viewModel)
+            ItemList(question1, jawabanMurid1, viewModel)
+            ItemList(question1, jawabanMurid1, viewModel)
             Spacer(modifier = Modifier.height(16.dp))
+            RegularText(text = "Nilai Latihan : 50", fontWeight = FontWeight.SemiBold)
+            Spacer(modifier = Modifier.height(24.dp))
             Button(
-                onClick = {
-                    if (answers.values.all { it.size == 2 }) {
-                        showConfirmDialog = true
-                    } else {
-                        Toast.makeText(
-                            context,
-                            "Harus memilih 2 jawaban untuk tiap soal",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                },
-                colors = buttonColors(DarkBlueDarker),
+                onClick = { navController.navigate(Screen.Nilai.route) },
+                colors = ButtonDefaults.buttonColors(DarkBlueDarker),
                 contentPadding = PaddingValues(vertical = 9.dp, horizontal = 47.dp),
                 shape = RoundedCornerShape(5.dp)
             ) {
-                RegularText(
-                    text = "Kumpulkan Jawaban",
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.White
-                )
+                RegularText(text = "Selesai", fontWeight = FontWeight.SemiBold, color = Color.White)
             }
             Spacer(modifier = Modifier.height(30.dp))
         }
-    }
-    if (showConfirmDialog) {
-        AlertDialog(
-            containerColor = Color.White,
-            onDismissRequest = { showConfirmDialog = false },
-            icon = {
-                Icon(
-                    imageVector = Icons.Outlined.Warning,
-                    contentDescription = "Konfirmasi Jawaban",
-                    tint = Color.Gray,
-                    modifier = Modifier.size(40.dp)
-                )
-            },
-            title = {
-                MediumLargeText(
-                    text = "Anda yakin ingin mengumpulkan jawaban?",
-                    fontWeight = FontWeight.SemiBold
-                )
-            },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        showConfirmDialog = false
-                        showDialog = true
-                    },
-                    colors = buttonColors(
-                        containerColor = LightBlue
-                    ),
-                    shape = RoundedCornerShape(10.dp)
-                ) {
-                    RegularText(text = "Ya", fontWeight = FontWeight.SemiBold)
-                }
-            },
-            dismissButton = {
-                Button(
-                    onClick = { showConfirmDialog = false },
-                    colors = buttonColors(
-                        containerColor = RedButton
-                    ),
-                    shape = RoundedCornerShape(10.dp)
-                ) {
-                    RegularText(
-                        text = "Batal",
-                        color = Color.White,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
-            }
-        )
     }
     if (showDialog) {
         ExerciseDonePopup(
@@ -191,32 +128,36 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
 }
 
 @Composable
-private fun ItemList(noSoal: String, exerciseId: Int, viewModel: DetailLatihanVM) {
-    val questions = listOf(
-        Soal(1, 1, "C4H10 + O2 = ... CO2 + O...", "2;4"),
-        Soal(2, 1, "H2 + O2 = ... H2O", "2;1")
-    )
-    val options = listOf(
-        OpsiJawaban(1, 1, "2"),
-        OpsiJawaban(2, 1, "3"),
-        OpsiJawaban(3, 1, "4"),
-        OpsiJawaban(4, 1, "5"),
-        OpsiJawaban(5, 2, "1"),
-        OpsiJawaban(6, 2, "2"),
-        OpsiJawaban(7, 2, "3"),
-        OpsiJawaban(8, 2, "4")
-    )
+private fun ItemList(question: Soal, jawabanMurid: JawabanMurid?, viewModel: DetailLatihanVM) {
+    val jawabanBenar = question.answerKey.split(";").map { it.toInt() }
+    val isCorrect = jawabanMurid?.selectedOptionId in jawabanBenar
+    val nilaiSoal = if (isCorrect) 10 else 0
 
-    val answers = remember { mutableStateListOf<OpsiJawaban>() }
-
-    LaunchedEffect(answers.size) {
-        if (answers.size <= 2) {
-            viewModel.setAnswers(noSoal.toInt(), answers)
-        }
-    }
-
+    var expanded by remember { mutableStateOf(false) }
     Column {
-        RegularText(text = "Soal $noSoal")
+        Row(
+            modifier = Modifier
+            .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            RegularText(text = "Soal ${question.questionId}")
+            Spacer(modifier = Modifier.width(4.dp))
+            if (isCorrect) {
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = "Jawaban benar",
+                    tint = GreenButton
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Default.Cancel,
+                    contentDescription = "Jawaban salah",
+                    tint = RedButton
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(14.dp))
+        MediumLargeText(text = question.questionText)
         Spacer(modifier = Modifier.height(14.dp))
         Box(
             modifier = Modifier
@@ -226,70 +167,46 @@ private fun ItemList(noSoal: String, exerciseId: Int, viewModel: DetailLatihanVM
                 .clip(shape = RoundedCornerShape(10.dp))
                 .padding(horizontal = 8.dp)
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                questions.filter { it.exerciseId == exerciseId && it.questionId == noSoal.toInt() }
-                    .forEachIndexed { index, question ->
-                        val questionOptions =
-                            options.filter { it.questionId == question.questionId }
-                        QuestionItem(
-                            question = question,
-                            options = questionOptions,
-                            selectedAnswers = answers,
-                            onOptionSelected = { option, isSelected ->
-                                if (isSelected) {
-                                    if (answers.size < 2) {
-                                        answers.add(option)
-                                    }
-                                } else {
-                                    answers.remove(option)
-                                }
-                            }
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                RegularText(text = "Jawaban kamu: ", fontWeight = FontWeight.SemiBold)
+                RegularText(text = "${jawabanMurid?.selectedOptionId}")
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { expanded = !expanded },
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    RegularText(text = stringResource(id = R.string.lihat_kunci_jawaban))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Icon(
+                        imageVector = if (expanded) Icons.Outlined.KeyboardArrowUp else Icons.Outlined.KeyboardArrowDown,
+                        contentDescription = "Expand/Collapse",
+                        tint = Color.Black
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                if (expanded) {
+                    Box(
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .background(color = LightBlue, shape = RoundedCornerShape(10.dp))
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        RegularText(
+                            text = "Jawaban Benar: ${question.answerKey}"
                         )
                     }
+                }
             }
         }
     }
     Spacer(modifier = Modifier.height(14.dp))
 }
-
-@Composable
-private fun QuestionItem(
-    question: Soal,
-    options: List<OpsiJawaban>,
-    selectedAnswers: List<OpsiJawaban>? = null,
-    onOptionSelected: (OpsiJawaban, Boolean) -> Unit
-) {
-    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        MediumLargeText(text = question.questionText)
-        RegularText(
-            text = stringResource(id = R.string.instructions),
-            fontWeight = FontWeight.SemiBold
-        )
-        options.forEach { option ->
-            val isSelected = selectedAnswers?.contains(option) == true
-            val borderColor = if (isSelected) DarkBlueDarker else Color.Transparent
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .clip(shape = RoundedCornerShape(5.dp))
-                    .background(LightBlue)
-                    .border(4.dp, borderColor, shape = RoundedCornerShape(5.dp))
-                    .padding(8.dp)
-                    .padding(horizontal = 16.dp)
-                    .clickable {
-                        onOptionSelected(option, !isSelected)
-                    }
-            ) {
-                MediumText(
-                    text = option.optionText,
-                    textAlign = TextAlign.Start,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-        }
-    }
-}
-
 @Composable
 private fun ExerciseDonePopup(onDismiss: () -> Unit, navController: NavHostController) {
     Dialog(onDismissRequest = { onDismiss() }) {
@@ -330,7 +247,7 @@ private fun ExerciseDonePopup(onDismiss: () -> Unit, navController: NavHostContr
                             onDismiss()
                             navController.navigate(Screen.CekJawaban.route)
                         },
-                        colors = buttonColors(
+                        colors = ButtonDefaults.buttonColors(
                             containerColor = LightBlue,
                             contentColor = Color.Black
                         ),

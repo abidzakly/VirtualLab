@@ -86,7 +86,18 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
     </string>
 <!--   Latihan   -->
     <string name="latihan_header">Latihan ini dilakukan untuk menguji seberapa jauh kamu memahami konsep dari reaksi kimia dan penyataraannya.</string>
+
+<!--   Detail Latihan   -->
+    <string name="latihan_x">Latihan X</string>
+    <string name="instructions">Pilih 2 jawaban:</string>
+<!--  Cek Jawaban  -->
+    <string name="cek_jawaban_title">Cek Jawaban</string>
+    <string name="lihat_kunci_jawaban">Lihat Kunci Jawaban</string>
+    <string name="answer_key">Jawaban yang benar adalah 4 dan 8</string>
+
+
 <!--   Contoh Reaksi   -->
+
 
 <!--   Dashboard Guru   -->
     <string name="dashboard_guru_sub_header">Konten yang baru ditambahkan: </string>
@@ -99,7 +110,6 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
     <string name="buat_latihan_button">Buat Latihan</string>
     <string name="buat_materi_button">Buat Materi</string>
     <string name="reaksi_content_header">Berikut adalah contoh reaksi kimia yang terjadi di kehidupan sehari-hari:</string>
-    <string name="latihan_x">Latihan X</string>
     <string name="kerjakan_latihan_header">Setarakan persamaan reaksi berikut</string>
     <!--   Materi Guru   -->
     <string name="list_materi_kosong">Belum ada materi yang ditambahkan</string>

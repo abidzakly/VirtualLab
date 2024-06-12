@@ -58,7 +58,7 @@ fun MuridLatihanScreen(navController: NavHostController) {
 
 @Composable
 private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
-    var isEmpty by remember { mutableStateOf(true) }
+    var isEmpty by remember { mutableStateOf(false) }
 
     GradientPage(modifier, image = R.drawable.latihan_header) {
         if (!isEmpty) {

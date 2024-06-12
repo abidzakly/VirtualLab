@@ -58,8 +58,7 @@ fun BottomNav(
 ) {
     val dataStore = UserDataStore(LocalContext.current)
     val userType by dataStore.userTypeFlow.collectAsState(-1)
-    Log.d("Bottom Nav", "user TYPE: $userType")
-    BottomAppBar(
+   BottomAppBar(
         modifier = Modifier
             .shadow(elevation = 20.dp, shape = RectangleShape)
             .fillMaxWidth()
