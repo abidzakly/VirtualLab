@@ -7,13 +7,9 @@ data class Materi(
     val mediaPath: String,
     val description: String,
     val authorId: Int,
-    val approvalStatus: ApprovalStatus = ApprovalStatus.PENDING
+    val approvalStatus: String = "DRAFT"
 )
 
 enum class MediaType {
     IMAGE, VIDEO
-}
-
-enum class ApprovalStatus {
-    PENDING, APPROVED
 }

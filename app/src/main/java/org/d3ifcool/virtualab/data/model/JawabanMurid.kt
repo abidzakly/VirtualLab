@@ -4,5 +4,5 @@ data class JawabanMurid(
     val answerId: Int,
     val resultId: Int,
     val questionId: Int,
-    val selectedOptionId: Int
+    val selectedOptionId: List<String>
 )

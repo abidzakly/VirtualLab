@@ -179,13 +179,13 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                     .padding(vertical = 24.dp)
                     .fillMaxWidth()
             )
-            ContentList(title = "Pengenalan Reaksi Kimiaadasdasd", desc = "Lorem ipsum dolor sit amet, cacasdasd") {
+            ContentList(title = "Pengenalan Reaksi Kimiaadasdasd", desc = "Lorem ipsum dolor sit amet, cacasdasd", status = "APPROVED") {
 //                navController.navigate()
             }
-            ContentList(title = "Materi 5", desc = "Lorem ipsum dolor sit amet, cacasdasd") {
+            ContentList(title = "Materi 5", desc = "Lorem ipsum dolor sit amet, cacasdasd", "DRAFT") {
 //                navController.navigate()
             }
-            ContentList(title = "Materi 5 asdasdasdasdasdasdasd", desc = "Testq") {
+            ContentList(title = "Materi 5 asdasdasdasdasdasdasd", desc = "Testq", "PENDING") {
 //                navController.navigate()
             }
         }

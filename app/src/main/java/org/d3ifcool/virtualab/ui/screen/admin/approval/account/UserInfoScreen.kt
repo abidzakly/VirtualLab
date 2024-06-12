@@ -1,24 +1,26 @@
-package org.d3ifcool.virtualab.ui.screen.admin
+package org.d3ifcool.virtualab.ui.screen.admin.approval.account
 
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -48,14 +50,15 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.LargeText
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
+import org.d3ifcool.virtualab.ui.component.PopUpDialog
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.SemiLargeText
 import org.d3ifcool.virtualab.ui.theme.DarkBlue
@@ -69,14 +72,21 @@ import org.d3ifcool.virtualab.utils.ViewModelFactory
 fun UsersInfoScreen(navController: NavHostController, userId: Int) {
     Log.d("Users Info Screen", "User ID at Users Info: $userId")
     val context = LocalContext.current
-    val factory = ViewModelFactory(user_id = userId)
-    val viewModel: UsersInfoViewModel = viewModel(factory = factory)
+    val factory = ViewModelFactory(userId = userId)
+    val viewModel: UserInfoViewModel = viewModel(factory = factory)
     val approveResponse by viewModel.approveResponse.collectAsState()
+    val rejectResponse by viewModel.rejectResponse.collectAsState()
 
     Log.d("APPROVE_RESPONSE", "APPROVE RESP?: ${approveResponse?.status}")
     LaunchedEffect(approveResponse) {
         if (approveResponse?.status == true) {
             Toast.makeText(context, approveResponse!!.message, Toast.LENGTH_SHORT).show()
+            navController.navigate(Screen.CheckUser.route)
+        }
+    }
+    LaunchedEffect(rejectResponse) {
+        if (rejectResponse?.status == true) {
+            Toast.makeText(context, rejectResponse!!.message, Toast.LENGTH_SHORT).show()
             navController.navigate(Screen.CheckUser.route)
         }
     }
@@ -110,7 +120,7 @@ fun UsersInfoScreen(navController: NavHostController, userId: Int) {
 @Composable
 private fun ScreenContent(
     modifier: Modifier,
-    viewModel: UsersInfoViewModel
+    viewModel: UserInfoViewModel
 ) {
     val context = LocalContext.current
 
@@ -205,7 +215,11 @@ private fun ScreenContent(
             RegularText(text = stringResource(id = R.string.button_tolak), color = Color.White)
         }
         if (showDialog) {
-            RejectAccountPopup(onDismiss = { showDialog = false }) {
+            PopUpDialog(
+                onDismiss = { showDialog = false },
+                icon = R.drawable.icon_accept_akun,
+                "Tolak Akun ini?"
+            ) {
                 viewModel.rejectUser(userId)
             }
         }
@@ -250,48 +264,16 @@ fun UserInfoColumn(
     }
 }
 
-@Composable
-private fun RejectAccountPopup(onDismiss: () -> Unit, onConfirm: () -> Unit) {
-    AlertDialog(
-        containerColor = Color.White,
-        onDismissRequest = { onDismiss() },
-        icon = {
-            Icon(
-                painter = painterResource(id = R.drawable.icon_accept_akun),
-                contentDescription = "Ikon penerimaan akun",
-                tint = DarkBlue
-            )
-        },
-        title = { SemiLargeText(text = "Tolak akun ini?", fontWeight = FontWeight.SemiBold) },
-        confirmButton = {
-            Button(
-                onClick = { onConfirm() },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = RedButton,
-                    contentColor = Color.White
-                ),
-                shape = RoundedCornerShape(10.dp)
-            ) {
-                MediumLargeText(text = "Ya", fontWeight = FontWeight.SemiBold, color = Color.White)
-            }
-        },
-        dismissButton = {
-            Button(
-                onClick = { onDismiss() },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = LightBlue,
-                    contentColor = Color.Black
-                ),
-                shape = RoundedCornerShape(10.dp)
-            ) {
-                MediumLargeText(text = "Tidak", fontWeight = FontWeight.SemiBold)
-            }
-        }
-    )
-}
 
 @Preview
 @Composable
 private fun Prev() {
-    UsersInfoScreen(navController = rememberNavController(), 0)
+    PopUpDialog(
+        onDismiss = { /*TODO*/ },
+        icon = R.drawable.icon_accept_akun,
+        title = "Tolak akun ini?"
+    ) {
+
+    }
+//    UsersInfoScreen(navController = rememberNavController(), 0)
 }

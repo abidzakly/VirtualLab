@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.ui.screen.landing
+package org.d3ifcool.virtualab.ui.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

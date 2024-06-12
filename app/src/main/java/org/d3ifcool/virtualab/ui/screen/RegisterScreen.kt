@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.ui.screen.auth
+package org.d3ifcool.virtualab.ui.screen
 
 import android.content.res.Configuration
 import android.util.Log
@@ -365,10 +365,7 @@ private fun RegisterForm(
     school: String,
     onSchoolChange: (String) -> Unit,
     schoolResponse: Int = 0,
-    password: String = "",
-    onPasswordChange: (String) -> Unit = {},
-    passwordIdResponse: Int = 0,
-    id: Int,
+    id: Int
 ) {
     RegistTextField(
         value = fullname,

@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.ui.screen.role
+package org.d3ifcool.virtualab.ui.screen
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
@@ -27,7 +27,6 @@ import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -78,7 +77,7 @@ fun RoleScreen(navController: NavHostController) {
 }
 
 @Composable
-fun ScreenContent(modifier: Modifier, navController: NavHostController) {
+private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
     val murid by remember { mutableIntStateOf(0) }
     val guru by remember { mutableIntStateOf(1) }
 

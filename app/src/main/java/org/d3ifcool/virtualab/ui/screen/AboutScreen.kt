@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.ui.screen.about
+package org.d3ifcool.virtualab.ui.screen
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image

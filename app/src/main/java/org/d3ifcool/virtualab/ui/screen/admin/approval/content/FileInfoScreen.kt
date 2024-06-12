@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.ui.screen.admin
+package org.d3ifcool.virtualab.ui.screen.admin.approval.content
 
 import android.widget.Toast
 import androidx.compose.foundation.Image

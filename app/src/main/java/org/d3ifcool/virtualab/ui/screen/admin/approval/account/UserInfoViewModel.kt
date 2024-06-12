@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.ui.screen.admin
+package org.d3ifcool.virtualab.ui.screen.admin.approval.account
 
 import android.content.Context
 import android.content.Intent
@@ -14,7 +14,7 @@ import org.d3ifcool.virtualab.data.network.response.CombinedUserResponse
 import org.d3ifcool.virtualab.data.network.response.MessageResponse
 import retrofit2.HttpException
 
-class UsersInfoViewModel(userId: Int) : ViewModel() {
+class UserInfoViewModel(userId: Int) : ViewModel() {
 
     private val _fetchedUser = MutableStateFlow<CombinedUserResponse?>(null)
     val fetchedUser: StateFlow<CombinedUserResponse?> = _fetchedUser
@@ -63,7 +63,7 @@ class UsersInfoViewModel(userId: Int) : ViewModel() {
     fun rejectUser(userId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-
+                _rejectResponse.value = UserApi.service.rejectUser(userId)
             } catch (e: HttpException) {
                 _errorMsg.value =
                     e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")

@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.ui.screen.auth
+package org.d3ifcool.virtualab.ui.screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

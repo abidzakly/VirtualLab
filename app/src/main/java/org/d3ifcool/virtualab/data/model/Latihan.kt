@@ -1,14 +1,10 @@
 package org.d3ifcool.virtualab.data.model
 
 data class Latihan(
-    val exerciseId: Int,
+    val exercise_id: Int,
     val title: String,
-    val difficulty: TingkatKesulitan,
-    val questionCount: Int,
-    val authorId: Int,
-    val approvalStatus: ApprovalStatus = ApprovalStatus.PENDING
+    val difficulty: String,
+    val question_count: Int,
+    val approval_status: String = "DRAFT",
+    val author_id: Int,
 )
-
-enum class TingkatKesulitan {
-    EASY, MEDIUM, HARD
-}

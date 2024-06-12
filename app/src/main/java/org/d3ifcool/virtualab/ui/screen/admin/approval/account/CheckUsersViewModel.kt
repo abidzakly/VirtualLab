@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.ui.screen.admin
+package org.d3ifcool.virtualab.ui.screen.admin.approval.account
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

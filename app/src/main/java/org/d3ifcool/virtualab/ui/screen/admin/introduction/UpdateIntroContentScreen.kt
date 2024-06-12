@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.ui.screen.admin
+package org.d3ifcool.virtualab.ui.screen.admin.introduction
 
 import androidx.navigation.NavHostController
 

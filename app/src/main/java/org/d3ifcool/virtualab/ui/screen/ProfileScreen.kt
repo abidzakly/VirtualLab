@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.ui.screen.profile
+package org.d3ifcool.virtualab.ui.screen
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
@@ -123,7 +123,6 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
                 text = R.string.username_label,
                 readOnly = true
             )
-            if (id == 0) {
                 RegularText(
                     text = stringResource(id = R.string.email_label),
                     fontWeight = FontWeight.SemiBold
@@ -328,7 +327,6 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-            }
         }
     }
 }
@@ -451,7 +449,9 @@ private fun ConfirmLogoutPopup(onDismiss: () -> Unit, navController: NavHostCont
         },
         confirmButton = {
             Button(
-                onClick = { navController.navigate(Screen.Login.route) },
+                onClick = { navController.navigate(Screen.Login.route) {
+                    popUpTo(Screen.Login.route)
+                } },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = RedButton,
                     contentColor = Color.White
@@ -480,5 +480,5 @@ private fun ConfirmLogoutPopup(onDismiss: () -> Unit, navController: NavHostCont
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun ProfileScreenPrev() {
-    ProfileScreen(rememberNavController(), 1)
+    ProfileScreen(rememberNavController(), 0)
 }

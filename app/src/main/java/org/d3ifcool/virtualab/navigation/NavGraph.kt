@@ -10,20 +10,20 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import org.d3ifcool.virtualab.ui.screen.about.AboutScreen
-import org.d3ifcool.virtualab.ui.screen.admin.AdminDashboardScreen
-import org.d3ifcool.virtualab.ui.screen.admin.CheckFileScreen
-import org.d3ifcool.virtualab.ui.screen.admin.CheckUserScreen
-import org.d3ifcool.virtualab.ui.screen.admin.FileInfoScreen
-import org.d3ifcool.virtualab.ui.screen.admin.ManageContentScreen
-import org.d3ifcool.virtualab.ui.screen.admin.UpdateIntroContentScreen
-import org.d3ifcool.virtualab.ui.screen.admin.UsersInfoScreen
+import org.d3ifcool.virtualab.ui.screen.AboutScreen
+import org.d3ifcool.virtualab.ui.screen.admin.dashboard.AdminDashboardScreen
+import org.d3ifcool.virtualab.ui.screen.admin.approval.content.CheckFileScreen
+import org.d3ifcool.virtualab.ui.screen.admin.approval.account.CheckUserScreen
+import org.d3ifcool.virtualab.ui.screen.admin.approval.content.FileInfoScreen
+import org.d3ifcool.virtualab.ui.screen.admin.introduction.ManageContentScreen
+import org.d3ifcool.virtualab.ui.screen.admin.introduction.UpdateIntroContentScreen
+import org.d3ifcool.virtualab.ui.screen.admin.approval.account.UsersInfoScreen
 import org.d3ifcool.virtualab.ui.screen.murid.dashboard.MuridDashboardScreen
 import org.d3ifcool.virtualab.ui.screen.murid.introduction.IntroductionScreen
-import org.d3ifcool.virtualab.ui.screen.landing.LandingScreen
+import org.d3ifcool.virtualab.ui.screen.LandingScreen
 import org.d3ifcool.virtualab.ui.screen.murid.latihan.MuridLatihanScreen
-import org.d3ifcool.virtualab.ui.screen.auth.RegisterScreen
-import org.d3ifcool.virtualab.ui.screen.auth.LoginScreen
+import org.d3ifcool.virtualab.ui.screen.RegisterScreen
+import org.d3ifcool.virtualab.ui.screen.LoginScreen
 import org.d3ifcool.virtualab.ui.screen.guru.dashboard.GuruDashboardScreen
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddLatihanScreen
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddSoalScreen
@@ -36,10 +36,10 @@ import org.d3ifcool.virtualab.ui.screen.murid.latihan.MuridDetailLatihanScreen
 import org.d3ifcool.virtualab.ui.screen.murid.materi.MuridDetailMateriScreen
 import org.d3ifcool.virtualab.ui.screen.murid.materi.MuridMateriScreen
 import org.d3ifcool.virtualab.ui.screen.murid.nilai.NilaiScreen
-import org.d3ifcool.virtualab.ui.screen.profile.ProfileScreen
+import org.d3ifcool.virtualab.ui.screen.ProfileScreen
 import org.d3ifcool.virtualab.ui.screen.murid.reaksi.ReaksiScreen
-import org.d3ifcool.virtualab.ui.screen.role.RoleScreen
-import org.d3ifcool.virtualab.ui.screen.terms.TermsConditionScreen
+import org.d3ifcool.virtualab.ui.screen.RoleScreen
+import org.d3ifcool.virtualab.ui.screen.TermsConditionScreen
 import org.d3ifcool.virtualab.utils.UserDataStore
 
 @Composable
@@ -134,8 +134,14 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
         composable(route = Screen.GuruDetailMateri.route) {
             DetailMateriScreen(navController)
         }
-        composable(route = Screen.GuruDetailLatihan.route) {
-            DetailLatihanScreen(navController)
+        composable(route = Screen.GuruDetailLatihan.route,
+            arguments = listOf(
+                navArgument(KEY_EXERCISE_ID) {
+                    type = NavType.IntType
+                }
+            )) {
+            val exerciseId = it.arguments!!.getInt(KEY_EXERCISE_ID)
+            DetailLatihanScreen(navController, exerciseId)
         }
 
         // Admin
@@ -166,8 +172,14 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
         composable(route = Screen.UpdateIntroContent.route) {
             UpdateIntroContentScreen(navController)
         }
-        composable(route = Screen.AddSoal.route) {
-            AddSoalScreen(navController)
+        composable(route = Screen.AddSoal.route,
+            arguments = listOf(
+            navArgument(KEY_EXERCISE_ID) {
+                type = NavType.IntType
+            }
+        )) {
+            val exerciseId = it.arguments!!.getInt(KEY_EXERCISE_ID)
+            AddSoalScreen(navController, exerciseId = exerciseId)
         }
     }
 }

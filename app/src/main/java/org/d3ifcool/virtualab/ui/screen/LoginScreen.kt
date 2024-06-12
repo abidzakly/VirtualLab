@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.ui.screen.auth
+package org.d3ifcool.virtualab.ui.screen
 
 import android.content.res.Configuration
 import android.util.Log
@@ -219,6 +219,11 @@ private fun LoginScreenContent(modifier: Modifier, navController: NavHostControl
         Button(
             onClick = {
                 if (username.isEmpty() || password.isEmpty()) {
+                    Toast.makeText(
+                        context,
+                        "Harap mengisi semua data terlebih dahulu!",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     return@Button
                 } else {
                     loginAttempt++

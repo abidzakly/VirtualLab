@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.ui.screen.admin
+package org.d3ifcool.virtualab.ui.screen.admin.approval.content
 
 import androidx.lifecycle.ViewModel
 import org.d3ifcool.virtualab.data.model.Latihan

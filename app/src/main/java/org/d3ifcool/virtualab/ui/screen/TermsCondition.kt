@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.ui.screen.terms
+package org.d3ifcool.virtualab.ui.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
