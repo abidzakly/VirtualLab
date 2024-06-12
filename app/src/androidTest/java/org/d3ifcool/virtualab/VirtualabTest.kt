@@ -126,6 +126,27 @@ class VirtualabTest {
         rule.onNodeWithText("Profil").assertExists()
         rule.onNodeWithText("Profil").performClick()
 
+        //Edit Profile
+        rule.onNodeWithText("Ubah").assertExists().performScrollTo()
+        Thread.sleep(1000)
+        rule.onNodeWithText("Ubah").performClick()
+        rule.waitUntil {
+            rule.onAllNodesWithText("Simpan", ignoreCase = true)
+                .fetchSemanticsNodes().size == 1
+        }
+        rule.onNodeWithText("Simpan").assertExists()
+        rule.onNodeWithTag("PASSWORD_FIELD").performScrollTo().performTextInput("abid1234")
+        rule.onNodeWithText("Ubah Password").assertExists()
+        rule.onNodeWithTag("NEW_PASSWORD_FIELD").performScrollTo().performTextInput("password12")
+        rule.onNodeWithText("Simpan").assertExists()
+            .performScrollTo().performClick()
+        Thread.sleep(1000)
+        rule.onNode(
+            isDialog() and hasAnyDescendant(hasText("Ya", ignoreCase = true)),
+            useUnmergedTree = true
+        ).assertIsDisplayed()
+        rule.onNodeWithText("Ya").isDisplayed()
+        rule.onNodeWithText("Ya").performClick()
 
         rule.onNodeWithText("Keluar").assertExists().performScrollTo()
         Thread.sleep(1000)
@@ -146,7 +167,7 @@ class VirtualabTest {
     }
 
     @Test
-    fun testAddLatihan() {
+    fun testUIGuru() {
         rule.onNodeWithText("Selamat\nDatang\ndi Virtual Lab").assertExists()
         rule.onNodeWithText("Masuk").assertExists().performClick()
 
@@ -182,6 +203,20 @@ class VirtualabTest {
                 .fetchSemanticsNodes().size == 1
         }
         rule.onNodeWithTag("Judul Soal").assertExists()
+
+        rule.onNodeWithTag("Soal 1").assertExists()
+        rule.onNodeWithTag("Tulis Soal").performTextInput("C3H8 + O2 → ... CO2 + ... H2O")
+        rule.onNodeWithTag("JAWABAN1_SOAL1").performTextInput("1")
+        rule.onNodeWithTag("JAWABAN2_SOAL1").performTextInput("2")
+        rule.onNodeWithTag("JAWABAN3_SOAL1").performTextInput("3")
+        rule.onNodeWithTag("JAWABAN4_SOAL1").performTextInput("4")
+
+        rule.onNodeWithTag("Soal 2").assertExists()
+        rule.onNodeWithTag("Tulis Soal").performTextInput("Fe2O3 + CO → ... Fe + ... CO2")
+        rule.onNodeWithTag("JAWABAN1_SOAL2").performTextInput("1")
+        rule.onNodeWithTag("JAWABAN2_SOAL2").performTextInput("2")
+        rule.onNodeWithTag("JAWABAN3_SOAL2").performTextInput("3")
+        rule.onNodeWithTag("JAWABAN4_SOAL2").performTextInput("4")
         Thread.sleep(5000)
 //        Done sampai buat latihan saja, kurang buat soal
     }

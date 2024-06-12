@@ -1,6 +1,7 @@
 package org.d3ifcool.virtualab.ui.screen.profile
 
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,6 +39,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -85,18 +88,20 @@ fun ProfileScreen(navController: NavHostController, id: Int) {
 private fun ScreenContent(modifier: Modifier, navController: NavHostController, id: Int) {
     var fullname by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("amruabid@gmail.com") }
     var uniqueId by remember { mutableStateOf("") }
     var school by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
     var readOnly by remember { mutableStateOf(true) }
+    var password by remember { mutableStateOf(if (readOnly) "apa123" else "t") }
 
     var showDialog by remember { mutableStateOf(false) }
     var showLogoutDialog by remember { mutableStateOf(false) }
 
     var passwordVisibility by remember { mutableStateOf(false) }
     var passwordVisibility2 by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
     Column(
         modifier
             .fillMaxSize()
@@ -112,13 +117,13 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
         Spacer(modifier = Modifier.height(24.dp))
         Column(modifier = Modifier.padding(horizontal = 48.dp)) {
             UserTextFields(
-                value = fullname,
+                value = "Amru Abid Zakly",
                 onValueChange = { fullname = it },
                 text = R.string.fullname_label,
                 readOnly = true
             )
             UserTextFields(
-                value = username,
+                value = "abidzakly",
                 onValueChange = { username = it },
                 text = R.string.username_label,
                 readOnly = true
@@ -130,7 +135,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
                 )
                 TextField(
                     textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
-                    value = "asdf@gmail.com",
+                    value = email,
                     readOnly = readOnly,
                     onValueChange = { email = it },
                     singleLine = true,
@@ -156,7 +161,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
                 Spacer(modifier = Modifier.height(16.dp))
                 if (id == 0) {
                     UserTextFields(
-                        value = uniqueId,
+                        value = "0041284417",
                         onValueChange = { uniqueId = it },
                         text = R.string.nisn_label,
                         readOnly = true
@@ -170,7 +175,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
                     )
                 }
                 UserTextFields(
-                    value = school,
+                    value = "SMAN 1 Bandung",
                     onValueChange = { school = it },
                     text = R.string.school_label,
                     readOnly = true
@@ -181,7 +186,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
                 )
                 TextField(
                     textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
-                    value = "asdfghjkl",
+                    value = password,
                     readOnly = readOnly,
                     onValueChange = { password = it },
                     singleLine = true,
@@ -204,7 +209,11 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
                             }
                         }
                     } else null,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = if (readOnly) {
+                        Modifier.fillMaxWidth()
+                    } else {
+                        Modifier.fillMaxWidth().testTag("PASSWORD_FIELD")
+                           },
                     colors = if (readOnly) {
                         TextFieldDefaults.colors(
                             unfocusedIndicatorColor = Color.Transparent,
@@ -247,7 +256,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
                                 )
                             }
                         },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().testTag("NEW_PASSWORD_FIELD"),
                         colors =
                         TextFieldDefaults.colors(
                             unfocusedContainerColor = Color.Transparent,
@@ -304,7 +313,13 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
                         }
                     } else {
                         Button(
-                            onClick = { showDialog = true },
+                            onClick = {
+                                if (email.isEmpty() || password.isEmpty() || newPassword.isEmpty()){
+                                    Toast.makeText(context, "Harap isi semua data!", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    showDialog = true
+                                }
+                                      },
                             shape = RoundedCornerShape(10.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = LightBlue,
@@ -322,7 +337,8 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
                         }
                         if (showDialog) {
                             SaveUpdatePopup(
-                                onDismiss = { showDialog = false }
+                                onDismiss = { showDialog = false },
+                                navController
                             )
                         }
                     }
@@ -349,7 +365,7 @@ fun UserTextFields(
             textStyle = TextStyle(fontSize = 16.sp, color = Color(0xFF6D6E6F)),
             shape = RoundedCornerShape(5.dp),
             readOnly = readOnly,
-            value = "test",
+            value = value,
             onValueChange = { onValueChange(it) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
@@ -377,7 +393,7 @@ fun UserTextFields(
 }
 
 @Composable
-private fun SaveUpdatePopup(onDismiss: () -> Unit) {
+private fun SaveUpdatePopup(onDismiss: () -> Unit, navController: NavHostController) {
     Dialog(onDismissRequest = { onDismiss() }) {
         Card(
             modifier = Modifier.padding(16.dp),
@@ -411,7 +427,7 @@ private fun SaveUpdatePopup(onDismiss: () -> Unit) {
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Button(
-                        onClick = { onDismiss() },
+                        onClick = { onDismiss(); navController.navigate(Screen.Profile.route)},
                         colors = ButtonDefaults.buttonColors(
                             containerColor = LightBlue,
                             contentColor = Color.Black

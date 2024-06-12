@@ -19,13 +19,13 @@
       <SelectionState runConfigName="testAddLatihan()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="testApproveUser()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="testUIDoExercise()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
       <SelectionState runConfigName="testUIMurid()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="testUIGuru()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

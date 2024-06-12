@@ -145,7 +145,8 @@ private fun ScreenContent(
                 CustomTextField2(
                     value = jawaban1,
                     onValueChange = { onJawaban1Change(it) },
-                    placeholder = R.string.pilihan_1
+                    placeholder = R.string.pilihan_1,
+                    modifier = Modifier.testTag("JAWABAN1_SOAL1")
                 )
             }
             Row (
@@ -165,7 +166,8 @@ private fun ScreenContent(
                 CustomTextField2(
                     value = jawaban2,
                     onValueChange = { onJawaban2Change(it) },
-                    placeholder = R.string.pilihan_2
+                    placeholder = R.string.pilihan_2,
+                    modifier = Modifier.testTag("JAWABAN2_SOAL1")
                 )
             }
             Row (
@@ -185,7 +187,8 @@ private fun ScreenContent(
                 CustomTextField2(
                     value = jawaban3,
                     onValueChange = { onJawaban3Change(it) },
-                    placeholder = R.string.pilihan_3
+                    placeholder = R.string.pilihan_3,
+                    modifier = Modifier.testTag("JAWABAN3_SOAL1")
                 )
             }
             Row (
@@ -205,7 +208,8 @@ private fun ScreenContent(
                 CustomTextField2(
                     value = jawaban4,
                     onValueChange = { onJawaban4Change(it) },
-                    placeholder = R.string.pilihan_4
+                    placeholder = R.string.pilihan_4,
+                    modifier = Modifier.testTag("JAWABAN4_SOAL1")
                 )
             }
 
@@ -245,7 +249,8 @@ private fun ScreenContent(
                 CustomTextField2(
                     value = jawaban1,
                     onValueChange = { onJawaban1Change(it) },
-                    placeholder = R.string.pilihan_1
+                    placeholder = R.string.pilihan_1,
+                    modifier = Modifier.testTag("JAWABAN1_SOAL2")
                 )
             }
             Row (
@@ -265,7 +270,8 @@ private fun ScreenContent(
                 CustomTextField2(
                     value = jawaban2,
                     onValueChange = { onJawaban2Change(it) },
-                    placeholder = R.string.pilihan_2
+                    placeholder = R.string.pilihan_2,
+                    modifier = Modifier.testTag("JAWABAN2_SOAL2")
                 )
             }
             Row (
@@ -285,7 +291,8 @@ private fun ScreenContent(
                 CustomTextField2(
                     value = jawaban3,
                     onValueChange = { onJawaban3Change(it) },
-                    placeholder = R.string.pilihan_3
+                    placeholder = R.string.pilihan_3,
+                    modifier = Modifier.testTag("JAWABAN3_SOAL2")
                 )
             }
             Row (
@@ -305,7 +312,8 @@ private fun ScreenContent(
                 CustomTextField2(
                     value = jawaban4,
                     onValueChange = { onJawaban4Change(it) },
-                    placeholder = R.string.pilihan_4
+                    placeholder = R.string.pilihan_4,
+                    modifier = Modifier.testTag("JAWABAN4_SOAL2")
                 )
             }
 
