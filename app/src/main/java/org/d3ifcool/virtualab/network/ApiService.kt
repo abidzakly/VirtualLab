@@ -34,32 +34,32 @@ interface ApiService {
 //    @GET("/users/{user_id}")
 //    suspend fun getCurrentUser(@Path("user_id") id: Int): User
 
-    @GET("/users/pending/")
+    @GET("/v1/users/pending")
     suspend fun getAllPendingUser(
         @Header("Authorization") email: String
     ): List<CombinedUsersResponse>
 
-    @GET("/users/{user_id}")
+    @GET("/v1/users/{user_id}")
     suspend fun getUserbyId(
         @Path("user_id") userId: Int
     ): CombinedUser
 
     //    Auth
-    @POST("/users/login/")
+    @POST("/v1/users/login")
     suspend fun login(@Body user: UserLogin): User
 
-    @POST("/users/create/")
+    @POST("/v1/users/create")
     suspend fun register(
         @Body user: UserRegistration
     ): MessageResponse
 
-    @PUT("/users/approve/")
+    @PUT("/v1/users/approve")
     suspend fun approveUser(
         @Query("user_id") userId: Int,
         @Query("password") password: String
     ): MessageResponse
 
-    @DELETE("/users/reject/")
+    @DELETE("/v1/users/reject")
     suspend fun rejectUser(): MessageResponse
 
 }
