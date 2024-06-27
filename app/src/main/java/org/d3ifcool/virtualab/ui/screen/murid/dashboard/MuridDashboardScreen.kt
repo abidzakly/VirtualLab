@@ -50,24 +50,24 @@ import org.d3ifcool.virtualab.ui.theme.WhiteLightBlue
 import org.d3ifcool.virtualab.utils.UserDataStore
 
 @Composable
-fun MuridDashboardScreen(navController: NavHostController, fullName: String? = null) {
-//    val context = LocalContext.current
-//    val dataStore = UserDataStore(context)
+fun MuridDashboardScreen(navController: NavHostController) {
+    val context = LocalContext.current
+    val dataStore = UserDataStore(context)
     Scaffold(
         bottomBar = {
             BottomNav(Screen.MuridDashboard.route, navController)
         },
         containerColor = Color.White
     ) {
-        ScreenContent(modifier = Modifier.padding(it), navController, fullName ?: "")
+        ScreenContent(modifier = Modifier.padding(it), navController, dataStore)
     }
 }
 
 @Composable
-private fun ScreenContent(modifier: Modifier, navController: NavHostController, fullName: String) {
-//    val userFullname by dataStore.userFullNameFlow.collectAsState("")
+private fun ScreenContent(modifier: Modifier, navController: NavHostController, dataStore: UserDataStore) {
+    val userFullname by dataStore.userFullNameFlow.collectAsState("")
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
-        TopNavDashboard(name = fullName, navController = navController)
+        TopNavDashboard(name = userFullname, navController = navController)
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -204,5 +204,5 @@ fun GridItem(title: Int, image: Int, onClick: () -> Unit) {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun DashboardScreenPrev() {
-    MuridDashboardScreen(navController = rememberNavController(), "abid")
+    MuridDashboardScreen(navController = rememberNavController())
 }

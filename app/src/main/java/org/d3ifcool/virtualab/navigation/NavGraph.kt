@@ -94,14 +94,8 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
         }
 
         //  Murid
-        composable(route = Screen.MuridDashboard.route,
-            arguments = listOf(
-                navArgument(KEY_USER_FULLNAME) {
-                    type = NavType.StringType
-                }
-            )) {
-            val name = it.arguments!!.getString(KEY_USER_FULLNAME)
-            MuridDashboardScreen(navController, name)
+        composable(route = Screen.MuridDashboard.route) {
+            MuridDashboardScreen(navController)
         }
         composable(route = Screen.Introduction.route) {
             IntroductionScreen(navController)

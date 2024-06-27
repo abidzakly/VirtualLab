@@ -9,7 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import org.d3ifcool.virtualab.data.network.UserApi
+import org.d3ifcool.virtualab.data.network.ApiService
 import org.d3ifcool.virtualab.data.network.response.CombinedUser
 import org.d3ifcool.virtualab.data.network.response.MessageResponse
 import retrofit2.HttpException
@@ -38,7 +38,7 @@ class UserInfoViewModel(private val userId: Int) : ViewModel() {
     private fun getUsersInfo() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                _fetchedUser.value = UserApi.service.getUserbyId(userId)
+                _fetchedUser.value = ApiService.userService.getUserbyId(userId)
                 Log.d("FETCHED_USER", "Fetched User: ${_fetchedUser.value}")
             } catch (e: HttpException) {
                 _errorMsg.value =
@@ -51,7 +51,7 @@ class UserInfoViewModel(private val userId: Int) : ViewModel() {
     fun approveUser(auth: String, userId: Int, password: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                _approveResponse.value = UserApi.service.approveUser(auth, userId, password)
+                _approveResponse.value = ApiService.userService.approveUser(auth, userId, password)
             } catch (e: HttpException) {
                 _errorMsg.value =
                     e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
@@ -63,7 +63,7 @@ class UserInfoViewModel(private val userId: Int) : ViewModel() {
     fun rejectUser(auth: String, userId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                _rejectResponse.value = UserApi.service.rejectUser(auth, userId)
+                _rejectResponse.value = ApiService.userService.rejectUser(auth, userId)
             } catch (e: HttpException) {
                 _errorMsg.value =
                     e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
