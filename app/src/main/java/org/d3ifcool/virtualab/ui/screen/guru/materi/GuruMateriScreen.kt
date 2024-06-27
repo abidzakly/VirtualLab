@@ -25,6 +25,7 @@ import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.ContentList
 import org.d3ifcool.virtualab.ui.component.GuruEmptyState
 import org.d3ifcool.virtualab.ui.component.TopNav
+import org.d3ifcool.virtualab.ui.theme.Poppins
 
 @Composable
 fun GuruMateriScreen(navController: NavHostController) {
@@ -54,7 +55,8 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
             Text(
                 text = "Materi yang pernah ditambahkan :",
                 Modifier.padding(start = 16.dp),
-                fontSize = 16.sp
+                fontSize = 16.sp,
+                fontFamily = Poppins
             )
             Column(
                 modifier = Modifier
@@ -63,16 +65,16 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                         rememberScrollState()
                     )
             ) {
-                ContentList(title = "Materi 1", desc = "lorem ipsum dolor sit amet") {
+                ContentList(title = "Materi 1", desc = "lorem ipsum dolor sit amet", status = "PENDING") {
                     navController.navigate(Screen.GuruDetailMateri.route)
                 }
-                ContentList(title = "Materi 2", desc = "lorem ipsum dolor sit amet") {
+                ContentList(title = "Materi 2", desc = "lorem ipsum dolor sit amet", "APPROVED") {
                     navController.navigate(Screen.GuruDetailMateri.route)
                 }
-                ContentList(title = "Materi 3", desc = "lorem ipsum dolor sit amet") {
+                ContentList(title = "Materi 3", desc = "lorem ipsum dolor sit amet", "DRAFT") {
                     navController.navigate(Screen.GuruDetailMateri.route)
                 }
-                ContentList(title = "Materi 4", desc = "lorem ipsum dolor sit amet") {
+                ContentList(title = "Materi 4", desc = "lorem ipsum dolor sit amet", "REJETED") {
                     navController.navigate(Screen.GuruDetailMateri.route)
                 }
             }

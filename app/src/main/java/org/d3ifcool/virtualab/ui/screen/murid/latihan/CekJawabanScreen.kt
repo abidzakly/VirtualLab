@@ -50,8 +50,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
-import org.d3ifcool.virtualab.model.JawabanMurid
-import org.d3ifcool.virtualab.model.Soal
+import org.d3ifcool.virtualab.data.model.JawabanMuridDummy
+import org.d3ifcool.virtualab.data.model.SoalDummy
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
@@ -82,13 +82,12 @@ fun CekJawabanScreen(navController: NavHostController) {
 @Composable
 private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
     val viewModel: DetailLatihanVM = viewModel()
-    var showDialog by remember { mutableStateOf(false) }
 
     val answers by viewModel.answers.collectAsState()
     Log.d("Itemlist @Cek Jawaban", "answers: ${answers.size}")
 
-    val question1 = Soal(1, 1, "C4H10 + O2 = ... CO2 + O...", "2;4")
-    val jawabanMurid1 = JawabanMurid(1, 1, 1, 2)
+    val question1 = SoalDummy(1, 1, "C4H10 + O2 = ... CO2 + O...", "2;4")
+    val jawabanMurid1 = JawabanMuridDummy(1, 1, 1, 2)
 
     Column(
         modifier = modifier
@@ -119,16 +118,10 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
             Spacer(modifier = Modifier.height(30.dp))
         }
     }
-    if (showDialog) {
-        ExerciseDonePopup(
-            onDismiss = { showDialog = false },
-            navController = navController
-        )
-    }
 }
 
 @Composable
-private fun ItemList(question: Soal, jawabanMurid: JawabanMurid?, viewModel: DetailLatihanVM) {
+private fun ItemList(question: SoalDummy, jawabanMurid: JawabanMuridDummy?, viewModel: DetailLatihanVM) {
     val jawabanBenar = question.answerKey.split(";").map { it.toInt() }
     val isCorrect = jawabanMurid?.selectedOptionId in jawabanBenar
     val nilaiSoal = if (isCorrect) 10 else 0
@@ -207,64 +200,6 @@ private fun ItemList(question: Soal, jawabanMurid: JawabanMurid?, viewModel: Det
     }
     Spacer(modifier = Modifier.height(14.dp))
 }
-@Composable
-private fun ExerciseDonePopup(onDismiss: () -> Unit, navController: NavHostController) {
-    Dialog(onDismissRequest = { onDismiss() }) {
-        Card(
-            modifier = Modifier.padding(16.dp),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardColors(
-                containerColor = Color.White,
-                contentColor = Color.Black,
-                disabledContainerColor = Color.Red,
-                disabledContentColor = Color.Red
-            )
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.icon_process_success),
-                    contentDescription = "Ikon proses berhasil",
-                    tint = DarkBlue
-                )
-                RegularText(
-                    text = "Bagus sekali!\n" +
-                            "Anda telah menyelesaikan semua soal",
-                    fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.Center
-                )
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Button(
-                        onClick = {
-                            onDismiss()
-                            navController.navigate(Screen.CekJawaban.route)
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = LightBlue,
-                            contentColor = Color.Black
-                        ),
-                        shape = RoundedCornerShape(10.dp)
-                    ) {
-                        MediumLargeText(
-                            text = "OK",
-                            fontWeight = FontWeight.SemiBold,
-                            color = Color.Black
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
 @Preview
 @Composable
 private fun Prev() {
