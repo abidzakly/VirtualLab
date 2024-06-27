@@ -10,14 +10,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.data.network.UserApi
-import org.d3ifcool.virtualab.data.network.response.CombinedUserResponse
+import org.d3ifcool.virtualab.data.network.response.CombinedUser
 import org.d3ifcool.virtualab.data.network.response.MessageResponse
 import retrofit2.HttpException
 
 class UserInfoViewModel(private val userId: Int) : ViewModel() {
 
-    private val _fetchedUser = MutableStateFlow<CombinedUserResponse?>(null)
-    val fetchedUser: StateFlow<CombinedUserResponse?> = _fetchedUser
+    private val _fetchedUser = MutableStateFlow<CombinedUser?>(null)
+    val fetchedUser: StateFlow<CombinedUser?> = _fetchedUser
 
     private val _errorMsg = MutableStateFlow<String?>("")
     val errorMsg: StateFlow<String?> = _errorMsg
@@ -48,10 +48,10 @@ class UserInfoViewModel(private val userId: Int) : ViewModel() {
         }
     }
 
-    fun approveUser(userId: Int, password: String) {
+    fun approveUser(auth: String, userId: Int, password: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                _approveResponse.value = UserApi.service.approveUser(userId, password)
+                _approveResponse.value = UserApi.service.approveUser(auth, userId, password)
             } catch (e: HttpException) {
                 _errorMsg.value =
                     e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
@@ -60,10 +60,10 @@ class UserInfoViewModel(private val userId: Int) : ViewModel() {
         }
     }
 
-    fun rejectUser(userId: Int) {
+    fun rejectUser(auth: String, userId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                _rejectResponse.value = UserApi.service.rejectUser(userId)
+                _rejectResponse.value = UserApi.service.rejectUser(auth, userId)
             } catch (e: HttpException) {
                 _errorMsg.value =
                     e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")

@@ -73,7 +73,7 @@ fun AddLatihanScreen(navController: NavHostController) {
     LaunchedEffect(latihan) {
         if (latihan != null) {
             navController.navigate(Screen.AddSoal.withId(latihan!!.exercise_id)) {
-                popUpTo(Screen.GuruLatihan.route)
+                popUpTo(Screen.GuruDashboard.route)
             }
         }
     }
@@ -191,7 +191,6 @@ fun DropdownForm(selectedText: String, options: List<String>, onChange: (String)
     var expanded by remember { mutableStateOf(false) }
     var textFilledSize by remember { mutableStateOf(Size.Zero) }
 
-//    var isFocused by remember { mutableStateOf(true) }
     var isClicked by remember { mutableIntStateOf(0) }
 
 

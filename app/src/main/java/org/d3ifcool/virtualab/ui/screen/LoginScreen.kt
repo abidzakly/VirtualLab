@@ -82,28 +82,24 @@ fun LoginScreen(navController: NavHostController) {
     val factory = ViewModelFactory(userDataStore = dataStore)
     val viewModel: AuthViewModel = viewModel(factory = factory)
 
-    val user by viewModel.currentUser.collectAsState()
+    val currentUser by viewModel.currentUser.collectAsState()
     val loginSuccess by viewModel.loginSuccess.collectAsState()
     val errorMsg by viewModel.errorMsg.collectAsState()
 
 
     LaunchedEffect(loginSuccess) {
         if (loginSuccess) {
-            if (user != null) {
-                Log.d("LoginScreen", "UserType: ${user!!.user_type}")
+            if (currentUser != null) {
+                Log.d("LoginScreen", "UserType: ${currentUser!!.user!!.user_type}")
+                Log.d("LoginScreen", "User: ${currentUser!!.user!!}, Guru: ${currentUser!!.teacher}, Murid: ${currentUser!!.student}")
                 Toast.makeText(context, "Login Berhasil!", Toast.LENGTH_SHORT).show()
-                when (user!!.user_type) {
-                    0 -> navController.navigate(Screen.MuridDashboard.withName(user!!.full_name)) {
-                        popUpTo(Screen.MuridDashboard.route)
-                    }
+                when (currentUser!!.user!!.user_type) {
+                    0 -> navController.navigate(Screen.MuridDashboard.withName(currentUser!!.user?.full_name
+                        ?: ""))
 
-                    1 -> navController.navigate(Screen.GuruDashboard.route) {
-                        popUpTo(Screen.GuruDashboard.route)
-                    }
+                    1 -> navController.navigate(Screen.GuruDashboard.route)
 
-                    2 -> navController.navigate(Screen.AdminDashboard.route) {
-                        popUpTo(Screen.AdminDashboard.route)
-                    }
+                    2 -> navController.navigate(Screen.AdminDashboard.route)
                     else -> Toast.makeText(context, "ID tidak valid", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -188,7 +184,7 @@ private fun LoginScreenContent(
         TextField(
             value = username,
             onValueChange = { username = it },
-            label = { Text(text = stringResource(R.string.username_label)) },
+            label = { Text(text = stringResource(R.string.username_label), fontFamily = Poppins) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.None,
@@ -206,7 +202,7 @@ private fun LoginScreenContent(
         TextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text(text = stringResource(R.string.password_label)) },
+            label = { Text(text = stringResource(R.string.password_label), fontFamily = Poppins) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,

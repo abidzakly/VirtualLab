@@ -1,9 +1,12 @@
 package org.d3ifcool.virtualab.ui.screen
 
+import android.content.Context
 import android.content.res.Configuration
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -12,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -20,11 +22,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -32,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,12 +58,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.R
+import org.d3ifcool.virtualab.data.model.User
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
+import org.d3ifcool.virtualab.ui.component.PopUpDialog
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.SemiLargeText
 import org.d3ifcool.virtualab.ui.component.TopNav
@@ -68,9 +77,23 @@ import org.d3ifcool.virtualab.ui.theme.DarkBlue
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.Poppins
 import org.d3ifcool.virtualab.ui.theme.RedButton
+import org.d3ifcool.virtualab.utils.UserDataStore
+import org.d3ifcool.virtualab.utils.ViewModelFactory
 
 @Composable
-fun ProfileScreen(navController: NavHostController, id: Int) {
+fun ProfileScreen(navController: NavHostController) {
+    val context = LocalContext.current
+    val dataStore = UserDataStore(context)
+    val currentUser by dataStore.userFlow.collectAsState(User())
+    val uniqueId = when (currentUser.user_type) {
+        0 -> dataStore.nisnFlow.collectAsState("")
+        else -> dataStore.nipFlow.collectAsState("")
+    }.value
+    Log.d("ProfileScreen", "user: $currentUser")
+    Log.d("ProfileScreen", "nipOrNisn: $uniqueId")
+    val factory = ViewModelFactory(userDataStore = dataStore)
+    val viewModel: AuthViewModel = viewModel(factory = factory)
+
     Scaffold(
         topBar = {
             TopNav(R.string.profile_title, navController = navController)
@@ -79,28 +102,51 @@ fun ProfileScreen(navController: NavHostController, id: Int) {
         },
         containerColor = Color.White
     ) {
-        ScreenContent(modifier = Modifier.padding(it), navController, id)
+        if (uniqueId.isNotEmpty()) {
+            ScreenContent(
+                modifier = Modifier.padding(it),
+                navController,
+                currentUser,
+                uniqueId,
+                viewModel,
+                context
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .padding(it)
+                    .fillMaxSize(), contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
     }
 }
 
 
 @Composable
-private fun ScreenContent(modifier: Modifier, navController: NavHostController, id: Int) {
-    var fullname by remember { mutableStateOf("") }
-    var username by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("amruabid@gmail.com") }
-    var uniqueId by remember { mutableStateOf("") }
-    var school by remember { mutableStateOf("") }
+private fun ScreenContent(
+    modifier: Modifier,
+    navController: NavHostController,
+    user: User,
+    nipOrNisn: String,
+    viewModel: AuthViewModel,
+    context: Context
+) {
+    var fullname by remember { mutableStateOf(user.full_name) }
+    var username by remember { mutableStateOf(user.username) }
+    var email by remember { mutableStateOf(user.email) }
+    var uniqueId by remember { mutableStateOf(nipOrNisn) }
+    var school by remember { mutableStateOf(user.school) }
     var newPassword by remember { mutableStateOf("") }
     var readOnly by remember { mutableStateOf(true) }
-    var password by remember { mutableStateOf(if (readOnly) "apa123" else "t") }
+    var password by remember { mutableStateOf(user.password) }
 
     var showDialog by remember { mutableStateOf(false) }
     var showLogoutDialog by remember { mutableStateOf(false) }
 
     var passwordVisibility by remember { mutableStateOf(false) }
     var passwordVisibility2 by remember { mutableStateOf(false) }
-    val context = LocalContext.current
 
     Column(
         modifier
@@ -117,77 +163,128 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
         Spacer(modifier = Modifier.height(24.dp))
         Column(modifier = Modifier.padding(horizontal = 48.dp)) {
             UserTextFields(
-                value = "Amru Abid Zakly",
+                value = fullname,
                 onValueChange = { fullname = it },
                 text = R.string.fullname_label,
                 readOnly = true
             )
             UserTextFields(
-                value = "abidzakly",
+                value = username,
                 onValueChange = { username = it },
                 text = R.string.username_label,
                 readOnly = true
             )
-                RegularText(
-                    text = stringResource(id = R.string.email_label),
-                    fontWeight = FontWeight.SemiBold
-                )
-                TextField(
-                    textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
-                    value = email,
-                    readOnly = readOnly,
-                    onValueChange = { email = it },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Email,
-                        imeAction = ImeAction.Next,
-                    ),
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = if (readOnly) {
-                        TextFieldDefaults.colors(
-                            unfocusedIndicatorColor = Color.Transparent,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedContainerColor = Color(0xFFFAFAFA),
-                            focusedContainerColor = Color(0xFFFAFAFA)
-                        )
-                    } else {
-                        TextFieldDefaults.colors(
-                            unfocusedContainerColor = Color.Transparent,
-                            focusedContainerColor = Color.Transparent
-                        )
-                    }
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                if (id == 0) {
-                    UserTextFields(
-                        value = "0041284417",
-                        onValueChange = { uniqueId = it },
-                        text = R.string.nisn_label,
-                        readOnly = true
+            RegularText(
+                text = stringResource(id = R.string.email_label),
+                fontWeight = FontWeight.SemiBold
+            )
+            TextField(
+                textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
+                value = email,
+                readOnly = readOnly,
+                onValueChange = { email = it },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next,
+                ),
+                modifier = Modifier.fillMaxWidth(),
+                colors = if (readOnly) {
+                    TextFieldDefaults.colors(
+                        unfocusedIndicatorColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedContainerColor = Color(0xFFFAFAFA),
+                        focusedContainerColor = Color(0xFFFAFAFA)
                     )
                 } else {
-                    UserTextFields(
-                        value = uniqueId,
-                        onValueChange = { uniqueId = it },
-                        text = R.string.nip_label,
-                        readOnly = true
+                    TextFieldDefaults.colors(
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedContainerColor = Color.Transparent
                     )
                 }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            if (user.user_type == 0) {
                 UserTextFields(
-                    value = "SMAN 1 Bandung",
-                    onValueChange = { school = it },
-                    text = R.string.school_label,
+                    value = uniqueId,
+                    onValueChange = { uniqueId = it },
+                    text = R.string.nisn_label,
                     readOnly = true
                 )
+            } else {
+                UserTextFields(
+                    value = uniqueId,
+                    onValueChange = { uniqueId = it },
+                    text = R.string.nip_label,
+                    readOnly = true
+                )
+            }
+            UserTextFields(
+                value = school,
+                onValueChange = { school = it },
+                text = R.string.school_label,
+                readOnly = true
+            )
+            RegularText(
+                text = stringResource(id = R.string.password_label),
+                fontWeight = FontWeight.SemiBold
+            )
+            TextField(
+                textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
+                value = password!!,
+                readOnly = readOnly,
+                onValueChange = { password = it },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    capitalization = KeyboardCapitalization.Words,
+                    imeAction = ImeAction.Next,
+                ),
+                visualTransformation =
+                if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = if (!readOnly) {
+                    {
+                        IconButton(onClick = {
+                            passwordVisibility = !passwordVisibility
+                        }) {
+                            Icon(
+                                imageVector = if (passwordVisibility) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                                contentDescription = if (passwordVisibility) "Hide password" else "Show password"
+                            )
+                        }
+                    }
+                } else null,
+                modifier = if (readOnly) {
+                    Modifier.fillMaxWidth()
+                } else {
+                    Modifier
+                        .fillMaxWidth()
+                        .testTag("PASSWORD_FIELD")
+                },
+                colors = if (readOnly) {
+                    TextFieldDefaults.colors(
+                        unfocusedIndicatorColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedContainerColor = Color(0xFFFAFAFA),
+                        focusedContainerColor = Color(0xFFFAFAFA)
+                    )
+                } else {
+                    TextFieldDefaults.colors(
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedContainerColor = Color.Transparent
+                    )
+                }
+            )
+            if (!readOnly) {
+                Spacer(modifier = Modifier.height(16.dp))
+
                 RegularText(
-                    text = stringResource(id = R.string.password_label),
-                    fontWeight = FontWeight.SemiBold
+                    text = stringResource(R.string.edit_password_label)
                 )
                 TextField(
                     textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
-                    value = password,
-                    readOnly = readOnly,
-                    onValueChange = { password = it },
+                    value = newPassword,
+                    onValueChange = { newPassword = it },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Password,
@@ -195,154 +292,117 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
                         imeAction = ImeAction.Next,
                     ),
                     visualTransformation =
-                    if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-                    trailingIcon = if (!readOnly) {
-                        {
-                            IconButton(onClick = {
-                                passwordVisibility = !passwordVisibility
-                            }) {
-                                Icon(
-                                    imageVector = if (passwordVisibility) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                                    contentDescription = if (passwordVisibility) "Hide password" else "Show password"
-                                )
-                            }
+                    if (passwordVisibility2) VisualTransformation.None else PasswordVisualTransformation(),
+                    trailingIcon = {
+                        IconButton(onClick = {
+                            passwordVisibility2 = !passwordVisibility2
+                        }) {
+                            Icon(
+                                imageVector = if (passwordVisibility2) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                                contentDescription = if (passwordVisibility2) "Hide password" else "Show password"
+                            )
                         }
-                    } else null,
-                    modifier = if (readOnly) {
-                        Modifier.fillMaxWidth()
-                    } else {
-                        Modifier.fillMaxWidth().testTag("PASSWORD_FIELD")
-                           },
-                    colors = if (readOnly) {
-                        TextFieldDefaults.colors(
-                            unfocusedIndicatorColor = Color.Transparent,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedContainerColor = Color(0xFFFAFAFA),
-                            focusedContainerColor = Color(0xFFFAFAFA)
-                        )
-                    } else {
-                        TextFieldDefaults.colors(
-                            unfocusedContainerColor = Color.Transparent,
-                            focusedContainerColor = Color.Transparent
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("NEW_PASSWORD_FIELD"),
+                    colors =
+                    TextFieldDefaults.colors(
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedContainerColor = Color.Transparent,
+                    )
+
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+            ) {
+                if (readOnly) {
+                    Button(
+                        onClick = { readOnly = !readOnly },
+                        shape = RoundedCornerShape(10.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = LightBlue,
+                            contentColor = Color.Black
+                        ),
+                        contentPadding = PaddingValues(horizontal = 42.dp, vertical = 12.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.edit_button),
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = Poppins,
+                            fontSize = 16.sp,
                         )
                     }
-                )
-                if (!readOnly) {
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    RegularText(
-                        text = stringResource(R.string.edit_password_label)
-                    )
-                    TextField(
-                        textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
-                        value = newPassword,
-                        onValueChange = { newPassword = it },
-                        singleLine = true,
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Password,
-                            capitalization = KeyboardCapitalization.Words,
-                            imeAction = ImeAction.Next,
+                    Button(
+                        onClick = { showLogoutDialog = true },
+                        shape = RoundedCornerShape(10.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = RedButton,
+                            contentColor = Color.Black
                         ),
-                        visualTransformation =
-                        if (passwordVisibility2) VisualTransformation.None else PasswordVisualTransformation(),
-                        trailingIcon = {
-                            IconButton(onClick = {
-                                passwordVisibility2 = !passwordVisibility2
-                            }) {
-                                Icon(
-                                    imageVector = if (passwordVisibility2) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                                    contentDescription = if (passwordVisibility2) "Hide password" else "Show password"
-                                )
+                        contentPadding = PaddingValues(horizontal = 42.dp, vertical = 12.dp)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.logout_button),
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = Poppins,
+                            fontSize = 16.sp,
+                            color = Color.White
+                        )
+                    }
+                    if (showLogoutDialog) {
+                        PopUpDialog(
+                            onDismiss = { showLogoutDialog = false },
+                            icon = R.drawable.log_out_blue,
+                            "Anda yakin ingin keluar?"
+                        ) {
+                            showLogoutDialog = false
+                            CoroutineScope(Dispatchers.IO).launch {
+                                viewModel.logout()
+                            }
+                            navController.navigate(Screen.Login.route) {
+                                popUpTo(Screen.Login.route)
+                            }
+                        }
+                    }
+                } else {
+                    Button(
+                        onClick = {
+                            if (email.isEmpty() || password!!.isEmpty() || newPassword.isEmpty()) {
+                                Toast.makeText(context, "Harap isi semua data!", Toast.LENGTH_SHORT)
+                                    .show()
+                            } else {
+                                showDialog = true
                             }
                         },
-                        modifier = Modifier.fillMaxWidth().testTag("NEW_PASSWORD_FIELD"),
-                        colors =
-                        TextFieldDefaults.colors(
-                            unfocusedContainerColor = Color.Transparent,
-                            focusedContainerColor = Color.Transparent,
+                        shape = RoundedCornerShape(10.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = LightBlue,
+                            contentColor = Color.Black
+                        ),
+                        contentPadding = PaddingValues(horizontal = 42.dp, vertical = 12.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.save_button),
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = Poppins,
+                            fontSize = 16.sp,
                         )
 
-                    )
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                ) {
-                    if (readOnly) {
-                        Button(
-                            onClick = { readOnly = !readOnly },
-                            shape = RoundedCornerShape(10.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = LightBlue,
-                                contentColor = Color.Black
-                            ),
-                            contentPadding = PaddingValues(horizontal = 42.dp, vertical = 12.dp)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.edit_button),
-                                fontWeight = FontWeight.SemiBold,
-                                fontFamily = Poppins,
-                                fontSize = 16.sp,
-                            )
-                        }
-                        Button(
-                            onClick = { showLogoutDialog = true },
-                            shape = RoundedCornerShape(10.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = RedButton,
-                                contentColor = Color.Black
-                            ),
-                            contentPadding = PaddingValues(horizontal = 42.dp, vertical = 12.dp)
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.logout_button),
-                                fontWeight = FontWeight.SemiBold,
-                                fontFamily = Poppins,
-                                fontSize = 16.sp,
-                                color = Color.White
-                            )
-                        }
-                        if (showLogoutDialog) {
-                            ConfirmLogoutPopup(
-                                onDismiss = { showLogoutDialog = false },
-                                navController
-                            )
-                        }
-                    } else {
-                        Button(
-                            onClick = {
-                                if (email.isEmpty() || password.isEmpty() || newPassword.isEmpty()){
-                                    Toast.makeText(context, "Harap isi semua data!", Toast.LENGTH_SHORT).show()
-                                } else {
-                                    showDialog = true
-                                }
-                                      },
-                            shape = RoundedCornerShape(10.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = LightBlue,
-                                contentColor = Color.Black
-                            ),
-                            contentPadding = PaddingValues(horizontal = 42.dp, vertical = 12.dp)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.save_button),
-                                fontWeight = FontWeight.SemiBold,
-                                fontFamily = Poppins,
-                                fontSize = 16.sp,
-                            )
-
-                        }
-                        if (showDialog) {
-                            SaveUpdatePopup(
-                                onDismiss = { showDialog = false },
-                                navController
-                            )
-                        }
+                    }
+                    if (showDialog) {
+                        SaveUpdatePopup(
+                            onDismiss = { showDialog = false },
+                            navController
+                        )
                     }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+            }
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
@@ -425,7 +485,7 @@ private fun SaveUpdatePopup(onDismiss: () -> Unit, navController: NavHostControl
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Button(
-                        onClick = { onDismiss(); navController.navigate(Screen.Profile.route)},
+                        onClick = { onDismiss(); navController.navigate(Screen.Profile.route) },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = LightBlue,
                             contentColor = Color.Black
@@ -444,57 +504,9 @@ private fun SaveUpdatePopup(onDismiss: () -> Unit, navController: NavHostControl
     }
 }
 
-@Composable
-private fun ConfirmLogoutPopup(onDismiss: () -> Unit, navController: NavHostController) {
-    AlertDialog(
-        containerColor = Color.White,
-        onDismissRequest = { onDismiss() },
-        icon = {
-            Icon(
-                painter = painterResource(id = R.drawable.icon_logout),
-                contentDescription = "Ikon konfirmasi logout",
-                tint = DarkBlue,
-                modifier = Modifier.size(50.dp)
-            )
-        },
-        title = {
-            SemiLargeText(
-                text = "Anda yakin ingin keluar?",
-                fontWeight = FontWeight.SemiBold
-            )
-        },
-        confirmButton = {
-            Button(
-                onClick = { navController.navigate(Screen.Login.route) {
-                    popUpTo(Screen.Login.route)
-                } },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = RedButton,
-                    contentColor = Color.White
-                ),
-                shape = RoundedCornerShape(10.dp)
-            ) {
-                MediumLargeText(text = "Ya", fontWeight = FontWeight.SemiBold, color = Color.White)
-            }
-        },
-        dismissButton = {
-            Button(
-                onClick = { onDismiss() },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = LightBlue,
-                    contentColor = Color.Black
-                ),
-                shape = RoundedCornerShape(10.dp)
-            ) {
-                MediumLargeText(text = "Tidak", fontWeight = FontWeight.SemiBold)
-            }
-        }
-    )
-}
-
 @Preview(showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun ProfileScreenPrev() {
-    ProfileScreen(rememberNavController(), 0)
+    ProfileScreen(rememberNavController())
 }

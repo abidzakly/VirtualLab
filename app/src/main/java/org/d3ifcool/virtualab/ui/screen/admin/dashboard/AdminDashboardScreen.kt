@@ -2,6 +2,7 @@ package org.d3ifcool.virtualab.ui.screen.admin.dashboard
 
 import android.content.res.Configuration
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
+import org.d3ifcool.virtualab.data.model.User
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.RegularText
@@ -62,12 +64,10 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
 //    val viewModel: DashboardMuridViewModel = viewModel()
 //    val data = viewModel.dashboardCategories
     val dataStore = UserDataStore(LocalContext.current)
-    val loggedInEmail by dataStore.userEmailFlow.collectAsState("")
-    val loggedInUserType by dataStore.userTypeFlow.collectAsState(-1)
-    val loggedInUserId by dataStore.userIdFlow.collectAsState(-1)
+    val user by dataStore.userFlow.collectAsState(User())
     Log.d(
-        "Admin Data",
-        "Admin data = email: $loggedInEmail, userType: $loggedInUserType, id: $loggedInUserId"
+        "Admin Dashboard",
+        "Admin data = email: ${user.email}, userType: ${user.user_type}, id: ${user.user_id}"
     )
 
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
@@ -87,7 +87,9 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                 RegularText(
                     text = stringResource(R.string.dashboard_category_title),
                     fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp)
                 )
                 Column(
                     modifier = Modifier.fillMaxSize(),
@@ -98,10 +100,10 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         GridItem(
-                            title = R.string.category_check_role,
+                            title = R.string.category_check_account,
                             image = R.drawable.check_role_illustration,
                         ) {
-                            navController.navigate(Screen.CheckUser.route)
+                            navController.navigate(Screen.CheckUser.withEmail(user.email))
                         }
                         GridItem(
                             title = R.string.category_check_file,

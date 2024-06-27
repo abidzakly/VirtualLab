@@ -60,6 +60,7 @@ import org.d3ifcool.virtualab.utils.ViewModelFactory
 
 @Composable
 fun AddSoalScreen(navController: NavHostController, exerciseId: Int) {
+
     Log.d("AddSoalScreen", "exercise ID: $exerciseId")
     val factory = ViewModelFactory(exerciseId = exerciseId)
     val viewModel: AddSoalViewModel = viewModel(factory = factory)

@@ -61,8 +61,17 @@ fun GuruDashboardScreen(navController: NavHostController) {
     )
     val scope = rememberCoroutineScope()
     var isPressed by remember { mutableStateOf(false) }
+    var fabPressed by remember { mutableStateOf(true) }
     var backgroundColor by remember { mutableStateOf(if (!isPressed) Transparent else Black) }
     Log.d("isPressedB4", "$isPressed")
+
+    LaunchedEffect(fabPressed) {
+        if (!fabPressed) {
+            scope.launch {
+                sheetStateBuat.bottomSheetState.hide()
+            }
+        }
+    }
 
     Scaffold(
         bottomBar = {
@@ -88,6 +97,7 @@ fun GuruDashboardScreen(navController: NavHostController) {
                 modifier = Modifier.zIndex(-1f),
                 containerColor = DarkBlueDarker,
                 onClick = {
+                    fabPressed = true
                     scope.launch {
                         sheetStateBuat.bottomSheetState.expand()
                     }
@@ -167,7 +177,7 @@ fun GuruDashboardScreen(navController: NavHostController) {
 @Composable
 private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
-        TopNavDashboard(name = "Guru!", navController = navController)
+        TopNavDashboard(name = "Guru", navController = navController)
         Column(
             modifier = Modifier
                 .padding(horizontal = 40.dp),
@@ -179,13 +189,21 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                     .padding(vertical = 24.dp)
                     .fillMaxWidth()
             )
-            ContentList(title = "Pengenalan Reaksi Kimiaadasdasd", desc = "Lorem ipsum dolor sit amet, cacasdasd", status = "APPROVED") {
+            ContentList(
+                title = "Pengenalan Reaksi Kimiaadasdasd",
+                desc = "Lorem ipsum dolor sit amet, cacasdasd",
+                status = "APPROVED"
+            ) {
 //                navController.navigate()
             }
-            ContentList(title = "Materi 5", desc = "Lorem ipsum dolor sit amet, cacasdasd", "DRAFT") {
+            ContentList(
+                title = "Persamaan Reaksi 2",
+                desc = "Lorem ipsum dolor sit amet, cacasdasd",
+                "DRAFT"
+            ) {
 //                navController.navigate()
             }
-            ContentList(title = "Materi 5 asdasdasdasdasdasdasd", desc = "Testq", "PENDING") {
+            ContentList(title = "Reaksi Kimia pada...", desc = "Lorem ipsum dolor sit amet, cacasdasd", "PENDING") {
 //                navController.navigate()
             }
         }

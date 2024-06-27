@@ -6,6 +6,7 @@ import android.provider.OpenableColumns
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -27,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -45,6 +48,7 @@ import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.DarkBlue
 import org.d3ifcool.virtualab.ui.theme.LightBlue
+import java.io.InputStream
 
 @Composable
 fun AddMateriScreen(navController: NavHostController) {
@@ -116,6 +120,7 @@ fun PickVideo() {
     val result = remember { mutableStateOf<Uri?>(null) }
     var fileName by remember { mutableStateOf("") }
 
+
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) {
         result.value = it
         it?.let {
@@ -153,6 +158,16 @@ fun PickVideo() {
                     .background(Color.Gray)
                     .padding(8.dp)
             ) {
+                val inputStream: InputStream? = context.contentResolver.openInputStream(it)
+                val bitmap =
+                    inputStream?.let { stream -> android.graphics.BitmapFactory.decodeStream(stream) }
+                bitmap?.let { bmp ->
+                    Image(
+                        bitmap = bmp.asImageBitmap(),
+                        contentDescription = null,
+                        modifier = Modifier.size(300.dp)
+                    )
+                }
                 RegularText(
                     text = fileName,
                     maxLines = 1,

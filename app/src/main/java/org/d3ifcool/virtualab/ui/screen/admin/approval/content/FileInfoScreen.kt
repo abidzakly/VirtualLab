@@ -60,7 +60,7 @@ fun FileInfoScreen(navController: NavHostController) {
         topBar = {
             TopNav(title = R.string.category_check_file, navController = navController)
         }, bottomBar = {
-            BottomNav(currentRoute = Screen.AdminDashboard.route, navController)
+            BottomNav(navController = navController)
         }) {
         ScreenContent(modifier = Modifier.padding(it))
     }

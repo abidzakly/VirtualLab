@@ -73,7 +73,7 @@ fun ManageContentScreen(navController: NavHostController) {
             )
         },
             bottomBar = {
-                BottomNav(currentRoute = Screen.AdminDashboard.route, navController = navController)
+                BottomNav(navController = navController)
             }) {
             Column(
                 modifier = Modifier
