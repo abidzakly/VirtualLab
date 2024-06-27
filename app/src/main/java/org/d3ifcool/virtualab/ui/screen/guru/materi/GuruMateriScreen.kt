@@ -25,6 +25,7 @@ import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.ContentList
 import org.d3ifcool.virtualab.ui.component.GuruEmptyState
 import org.d3ifcool.virtualab.ui.component.TopNav
+import org.d3ifcool.virtualab.ui.theme.Poppins
 
 @Composable
 fun GuruMateriScreen(navController: NavHostController) {
@@ -54,7 +55,8 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
             Text(
                 text = "Materi yang pernah ditambahkan :",
                 Modifier.padding(start = 16.dp),
-                fontSize = 16.sp
+                fontSize = 16.sp,
+                fontFamily = Poppins
             )
             Column(
                 modifier = Modifier

@@ -135,7 +135,7 @@ fun RegisterScreen(navController: NavHostController, id: Int) {
                     )
                 }
             }, title = {
-                Text(text = stringResource(id = R.string.register_title))
+                Text(text = stringResource(id = R.string.register_title), fontFamily = Poppins)
             }, colors = TopAppBarDefaults.mediumTopAppBarColors(
                 containerColor = Color.Transparent, titleContentColor = Color.Black
             )
@@ -471,8 +471,8 @@ private fun RegistTextField(
         onValueChange = { onValueChange(it) },
         label = {
             Row {
-                Text(text = stringResource(label), fontSize = 14.sp)
-                Text(text = supportingLabel, fontStyle = FontStyle.Italic, fontSize = 14.sp)
+                Text(text = stringResource(label), fontSize = 14.sp, fontFamily = Poppins)
+                Text(text = supportingLabel, fontStyle = FontStyle.Italic, fontSize = 14.sp, fontFamily = Poppins)
             }
         },
         singleLine = true,

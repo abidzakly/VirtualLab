@@ -1,6 +1,8 @@
 package org.d3ifcool.virtualab.ui.component
 
+import android.app.Activity
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,6 +43,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.R
+import org.d3ifcool.virtualab.data.model.User
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.ui.theme.DarkBlueText
@@ -51,12 +54,13 @@ import org.d3ifcool.virtualab.utils.UserDataStore
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomNav(
-    currentRoute: String,
+    currentRoute: String = "",
     navController: NavHostController,
     isClicked: Boolean = false,
     onClick: () -> Unit = {}
 ) {
-    val dataStore = UserDataStore(LocalContext.current)
+    val context = LocalContext.current
+    val dataStore = UserDataStore(context)
     val userType by dataStore.userTypeFlow.collectAsState(0)
     BottomAppBar(
         modifier = Modifier
@@ -151,18 +155,32 @@ fun BottomNav(
 
             else -> {
                 var showDialog by remember { mutableStateOf(false) }
+                var quitApp by remember { mutableStateOf(false) }
+
+                if (currentRoute == Screen.AdminDashboard.route) {
+                    BackHandler {
+                        quitApp = true
+                        showDialog = true
+                    }
+                }
                 if (showDialog) {
                     PopUpDialog(
-                        onDismiss = { showDialog = false },
+                        onDismiss = { showDialog = false; quitApp = false },
                         icon = R.drawable.log_out_blue,
-                        title = "Anda yakin ingin keluar?"
+                        title = if (!quitApp) "Anda yakin ingin keluar?" else "Anda yakin ingin menutup aplikasi?"
                     ) {
                         showDialog = false
-                        CoroutineScope(Dispatchers.IO).launch {
-                            dataStore.setLoginStatus(false)
-                        }
-                        navController.navigate(Screen.Login.route) {
-                            popUpTo(Screen.Login.route)
+                        if (!quitApp) {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                dataStore.saveData(User())
+                                dataStore.setLoginStatus(false)
+                            }
+                            navController.navigate(Screen.Login.route) {
+                                popUpTo(Screen.Landing.route) { inclusive = true }
+                            }
+                        } else {
+                            quitApp = false
+                            (context as? Activity)?.finish()
                         }
                     }
                 }
@@ -174,16 +192,16 @@ fun BottomNav(
                     BottomNavButton(
                         icon = R.drawable.baseline_home_filled_28,
                         title = R.string.bottom_app_beranda,
-                        isSelected = if (!isClicked) currentRoute == Screen.AdminDashboard.route else false
+                        isSelected = if (!isClicked && !showDialog) currentRoute == Screen.AdminDashboard.route else false
                     ) {
                         navController.navigate(Screen.AdminDashboard.route) {
-                            popUpTo(Screen.Login.route)
+                            popUpTo(Screen.AdminDashboard.route)
                         }
                     }
                     BottomNavButton(
                         icon = R.drawable.icon_logout,
                         title = R.string.logout_button,
-                        isSelected = currentRoute == Screen.Login.route
+                        isSelected = showDialog
                     ) {
                         showDialog = true
                     }

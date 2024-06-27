@@ -59,14 +59,14 @@ fun CheckFileScreen(navController: NavHostController) {
                     )
                 }
             },
-            title = { LargeText(text = stringResource(id = R.string.category_check_role)) },
+            title = { LargeText(text = stringResource(id = R.string.category_check_account)) },
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = Color.Transparent,
                 titleContentColor = Color.Black
             ),
         )
     }, bottomBar = {
-        BottomNav(currentRoute = Screen.AdminDashboard.route, navController = navController)
+        BottomNav(navController = navController)
     }) {
         ScreenContent(modifier = Modifier.padding(it), navController)
     }

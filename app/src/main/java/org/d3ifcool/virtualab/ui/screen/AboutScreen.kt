@@ -27,6 +27,7 @@ import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
+import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
 
 @Composable
@@ -47,11 +48,9 @@ fun AboutScreen(navController: NavHostController) {
                 .padding(horizontal = 40.dp)
         ) {
             Spacer(Modifier.height(44.dp))
-            Text(
+            RegularText(
                 text = stringResource(R.string.about_app),
-                fontSize = 16.sp,
                 textAlign = TextAlign.Justify,
-                color = Color.Black
             )
             Spacer(modifier = Modifier.height(48.dp))
             Row(
@@ -64,7 +63,8 @@ fun AboutScreen(navController: NavHostController) {
                         contentDescription = "Logo Telkom University",
                         modifier = Modifier.size(73.dp)
                     )
-                    Text(
+                    Spacer(modifier = Modifier.height(8.dp))
+                    RegularText(
                         text = stringResource(R.string.universitas_telkom_title),
                         textAlign = TextAlign.Center,
                         color = Color.Black
@@ -76,7 +76,8 @@ fun AboutScreen(navController: NavHostController) {
                         contentDescription = "Logo MGMP",
                         modifier = Modifier.size(73.dp)
                     )
-                    Text(
+                    Spacer(modifier = Modifier.height(8.dp))
+                    RegularText(
                         text = stringResource(R.string.mgmp_title),
                         textAlign = TextAlign.Center,
                         color = Color.Black

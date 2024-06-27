@@ -50,7 +50,7 @@ import org.d3ifcool.virtualab.ui.theme.WhiteLightBlue
 import org.d3ifcool.virtualab.utils.UserDataStore
 
 @Composable
-fun MuridDashboardScreen(navController: NavHostController, fullName: String) {
+fun MuridDashboardScreen(navController: NavHostController, fullName: String? = null) {
 //    val context = LocalContext.current
 //    val dataStore = UserDataStore(context)
     Scaffold(
@@ -59,7 +59,7 @@ fun MuridDashboardScreen(navController: NavHostController, fullName: String) {
         },
         containerColor = Color.White
     ) {
-        ScreenContent(modifier = Modifier.padding(it), navController, fullName)
+        ScreenContent(modifier = Modifier.padding(it), navController, fullName ?: "")
     }
 }
 

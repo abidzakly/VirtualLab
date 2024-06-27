@@ -32,7 +32,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -50,16 +49,12 @@ import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.LargeText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.theme.LightBlue
-import org.d3ifcool.virtualab.utils.UserDataStore
 import org.d3ifcool.virtualab.utils.ViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CheckUserScreen(navController: NavHostController) {
-    val dataStore = UserDataStore(LocalContext.current)
-    val loggedInEmail by dataStore.userEmailFlow.collectAsState("")
-
-    val factory = ViewModelFactory(loggedInEmail)
+fun CheckUserScreen(navController: NavHostController, email: String) {
+    val factory = ViewModelFactory(email)
     val viewModel: CheckUsersViewModel = viewModel(factory = factory)
 
 
@@ -76,14 +71,14 @@ fun CheckUserScreen(navController: NavHostController) {
                     )
                 }
             },
-            title = { LargeText(text = stringResource(id = R.string.category_check_role)) },
+            title = { LargeText(text = stringResource(id = R.string.category_check_account)) },
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = Color.Transparent,
                 titleContentColor = Color.Black
             ),
         )
     }, bottomBar = {
-        BottomNav(currentRoute = Screen.AdminDashboard.route, navController = navController)
+        BottomNav(navController = navController)
     }) {
         ScreenContent(modifier = Modifier.padding(it), navController, viewModel)
     }
@@ -205,5 +200,5 @@ private fun AccountList(
 @Preview
 @Composable
 private fun Prev() {
-    CheckUserScreen(navController = rememberNavController())
+    CheckUserScreen(navController = rememberNavController(), "")
 }

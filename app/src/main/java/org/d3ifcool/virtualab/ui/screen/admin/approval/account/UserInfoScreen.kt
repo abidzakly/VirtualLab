@@ -6,13 +6,11 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -21,7 +19,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,8 +39,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -52,21 +47,18 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import org.d3ifcool.virtualab.R
+import org.d3ifcool.virtualab.data.model.User
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.LargeText
-import org.d3ifcool.virtualab.ui.component.MediumLargeText
 import org.d3ifcool.virtualab.ui.component.PopUpDialog
 import org.d3ifcool.virtualab.ui.component.RegularText
-import org.d3ifcool.virtualab.ui.component.SemiLargeText
-import org.d3ifcool.virtualab.ui.theme.DarkBlue
 import org.d3ifcool.virtualab.ui.theme.GreenButton
-import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.RedButton
+import org.d3ifcool.virtualab.utils.UserDataStore
 import org.d3ifcool.virtualab.utils.ViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -74,6 +66,8 @@ import org.d3ifcool.virtualab.utils.ViewModelFactory
 fun UsersInfoScreen(navController: NavHostController, userId: Int) {
     Log.d("Users Info Screen", "User ID at Users Info: $userId")
     val context = LocalContext.current
+    val dataStore = UserDataStore(context)
+    val adminData by dataStore.userFlow.collectAsState(User())
     val factory = ViewModelFactory(user_id = userId)
     val viewModel: UserInfoViewModel = viewModel(factory = factory)
     val approveResponse by viewModel.approveResponse.collectAsState()
@@ -83,14 +77,18 @@ fun UsersInfoScreen(navController: NavHostController, userId: Int) {
     LaunchedEffect(approveResponse) {
         if (approveResponse?.status == true) {
             Toast.makeText(context, approveResponse!!.message, Toast.LENGTH_SHORT).show()
-            navController.navigate(Screen.CheckUser.route)
+            navController.navigate(Screen.CheckUser.route) {
+                popUpTo(Screen.AdminDashboard.route)
+            }
         }
     }
 
     LaunchedEffect(rejectResponse) {
         if (rejectResponse?.status == true) {
             Toast.makeText(context, rejectResponse!!.message, Toast.LENGTH_SHORT).show()
-            navController.navigate(Screen.CheckUser.route)
+            navController.navigate(Screen.CheckUser.route) {
+                popUpTo(Screen.AdminDashboard.route)
+            }
         }
     }
 
@@ -107,16 +105,16 @@ fun UsersInfoScreen(navController: NavHostController, userId: Int) {
                     )
                 }
             },
-            title = { LargeText(text = stringResource(id = R.string.category_check_role)) },
+            title = { LargeText(text = stringResource(id = R.string.category_check_account)) },
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = Color.White,
                 titleContentColor = Color.Black
             ),
         )
     }, bottomBar = {
-        BottomNav(currentRoute = Screen.AdminDashboard.route, navController = navController)
+        BottomNav(navController = navController)
     }) {
-        ScreenContent(modifier = Modifier.padding(it), viewModel, context)
+        ScreenContent(modifier = Modifier.padding(it), viewModel, context, adminData.email)
     }
 }
 
@@ -124,7 +122,8 @@ fun UsersInfoScreen(navController: NavHostController, userId: Int) {
 private fun ScreenContent(
     modifier: Modifier,
     viewModel: UserInfoViewModel,
-    context: Context
+    context: Context,
+    adminEmail: String?
 ) {
 
     var password by remember { mutableStateOf("") }
@@ -154,7 +153,7 @@ private fun ScreenContent(
 
     LaunchedEffect(isEmailSent) {
         if (isEmailSent) {
-            viewModel.approveUser(userId, password)
+            viewModel.approveUser(adminEmail!!, userId, password)
         }
     }
 
@@ -222,7 +221,7 @@ private fun ScreenContent(
                 icon = R.drawable.icon_accept_akun,
                 "Tolak Akun ini?"
             ) {
-                viewModel.rejectUser(userId)
+                viewModel.rejectUser(adminEmail!!, userId)
             }
         }
     }

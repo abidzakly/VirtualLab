@@ -52,16 +52,16 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
     Log.d("NavGraph", "userType: $userType")
     Log.d("NavGraph", "is LoggedIn: $isLoggedIn")
     NavHost(
-        navController = navController, startDestination = Screen.Landing.route
-//        if (!isLoggedIn) {
-//            Screen.Landing.route
-//        } else {
-//            when (userType) {
-//                0 -> Screen.MuridDashboard.route
-//                1 -> Screen.GuruDashboard.route
-//                else -> Screen.Landing.route
-//            }
-//        }
+        navController = navController, startDestination =
+        if (!isLoggedIn) {
+            Screen.Landing.route
+        } else {
+            when (userType) {
+                0 -> Screen.MuridDashboard.route
+                1 -> Screen.GuruDashboard.route
+                else -> Screen.AdminDashboard.route
+            }
+        }
     ) {
         composable(route = Screen.Landing.route) {
             LandingScreen(navController)
@@ -70,7 +70,7 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
             AboutScreen(navController)
         }
         composable(route = Screen.Profile.route) {
-            ProfileScreen(navController, userType)
+            ProfileScreen(navController)
         }
         composable(route = Screen.TermsCondition.route) {
             TermsConditionScreen(navController)
@@ -96,12 +96,12 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
         //  Murid
         composable(route = Screen.MuridDashboard.route,
             arguments = listOf(
-                navArgument(KEY_FULLNAME) {
+                navArgument(KEY_USER_FULLNAME) {
                     type = NavType.StringType
                 }
             )) {
-            val name = it.arguments!!.getString(KEY_FULLNAME)
-            MuridDashboardScreen(navController, name!!)
+            val name = it.arguments!!.getString(KEY_USER_FULLNAME)
+            MuridDashboardScreen(navController, name)
         }
         composable(route = Screen.Introduction.route) {
             IntroductionScreen(navController)
@@ -161,8 +161,14 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
         composable(route = Screen.AdminDashboard.route) {
             AdminDashboardScreen(navController)
         }
-        composable(route = Screen.CheckUser.route) {
-            CheckUserScreen(navController)
+        composable(route = Screen.CheckUser.route,
+            arguments = listOf(
+                navArgument(KEY_USER_EMAIL) {
+                    type = NavType.StringType
+                }
+            )) {
+            val email = it.arguments!!.getString(KEY_USER_EMAIL)
+            CheckUserScreen(navController, email!!)
         }
         composable(route = Screen.CheckFile.route) {
             CheckFileScreen(navController)

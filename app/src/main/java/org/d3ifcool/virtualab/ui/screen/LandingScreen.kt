@@ -30,6 +30,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
+import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.theme.DarkBlue
 import org.d3ifcool.virtualab.ui.theme.DarkBlueText
 import org.d3ifcool.virtualab.ui.theme.LightBlue
@@ -74,13 +75,12 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                     .fillMaxWidth()
                     .size(width = 301.dp, height = 237.dp)
             )
-            Text(
+            RegularText(
                 text = stringResource(id = R.string.slogan),
-                textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Medium,
-                fontSize = 16.sp,
                 modifier = Modifier.padding(top = 32.dp, bottom = 50.dp),
-                color = DarkBlueText
+                color = DarkBlueText,
+                textAlign = TextAlign.Center
             )
             Button(
                 onClick = { navController.navigate(Screen.Login.route) },
@@ -91,7 +91,10 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                     contentColor = Color.Black
                 )
             ) {
-                Text(text = stringResource(id = R.string.signin), fontWeight = FontWeight.SemiBold, fontFamily = Poppins, fontSize = 16.sp)
+                RegularText(
+                    text = stringResource(id = R.string.signin),
+                    fontWeight = FontWeight.SemiBold
+                )
             }
             Spacer(modifier = Modifier.padding(15.dp))
             Button(
@@ -100,12 +103,12 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = DarkBlue,
-                    contentColor = Color.White
                 )
             ) {
-                Text(
+                RegularText(
                     text = stringResource(id = R.string.create_acc),
-                    fontWeight = FontWeight.SemiBold, fontFamily = Poppins, fontSize = 16.sp
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.White
                 )
             }
         }
