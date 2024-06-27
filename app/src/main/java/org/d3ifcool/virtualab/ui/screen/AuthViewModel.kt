@@ -13,7 +13,7 @@ import org.d3ifcool.virtualab.data.model.User
 import org.d3ifcool.virtualab.data.network.request.StudentCreate
 import org.d3ifcool.virtualab.data.network.request.UserCreate
 import org.d3ifcool.virtualab.data.network.request.UserLogin
-import org.d3ifcool.virtualab.data.network.UserApi
+import org.d3ifcool.virtualab.data.network.ApiService
 import org.d3ifcool.virtualab.data.network.request.TeacherCreate
 import org.d3ifcool.virtualab.data.network.request.UserRegistration
 import org.d3ifcool.virtualab.data.network.response.CombinedUser
@@ -31,36 +31,34 @@ class AuthViewModel(private val dataStore: UserDataStore) : ViewModel() {
     private val _registerSuccess = MutableStateFlow<MessageResponse?>(null)
     val registerSuccess: MutableStateFlow<MessageResponse?> = _registerSuccess
 
+    private val _updateSuccess = MutableStateFlow<MessageResponse?>(null)
+    val updateSuccess: MutableStateFlow<MessageResponse?> = _registerSuccess
+
     private val _errorMsg = MutableStateFlow<String?>("")
     val errorMsg: StateFlow<String?> = _errorMsg
 
     fun login(username: String, password: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                _currentUser.value = UserApi.service.login(UserLogin(username, password))
+                _currentUser.value = ApiService.userService.login(UserLogin(username, password))
                 _loginSuccess.value = true
+                val user = _currentUser.value!!.user!!
+                val student = _currentUser.value!!.student?.let {
+                    Murid(
+                        student_id = it.student_id,
+                        nisn = it.nisn
+                    )
+                }
+                val teacher = _currentUser.value!!.teacher?.let {
+                    Guru(
+                        teacher_id = it.teacher_id,
+                        nip = it.nip
+                    )
+                }
                 dataStore.saveData(
-                    User(
-                        full_name = _currentUser.value!!.user!!.full_name,
-                        username = _currentUser.value!!.user!!.username,
-                        user_type = _currentUser.value!!.user!!.user_type,
-                        email = _currentUser.value!!.user!!.email,
-                        password = _currentUser.value!!.user!!.password,
-                        user_id = _currentUser.value!!.user!!.user_id,
-                        school = _currentUser.value!!.user!!.school,
-                    ),
-                    _currentUser.value!!.student?.let {
-                        Murid(
-                            student_id = it.student_id,
-                            nisn = it.nisn
-                        )
-                    },
-                    _currentUser.value!!.teacher?.let {
-                        Guru(
-                            teacher_id = it.teacher_id,
-                            nip = it.nip
-                        )
-                    }
+                    user,
+                    student,
+                    teacher
                 )
                 dataStore.setLoginStatus(true)
             } catch (e: HttpException) {
@@ -75,7 +73,7 @@ class AuthViewModel(private val dataStore: UserDataStore) : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _registerSuccess.value =
-                    UserApi.service.register(
+                    ApiService.userService.register(
                         UserRegistration(
                             student = StudentCreate(uniqueId),
                             teacher = TeacherCreate(uniqueId),
@@ -86,6 +84,23 @@ class AuthViewModel(private val dataStore: UserDataStore) : ViewModel() {
                 _errorMsg.value =
                     e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                         ?.replace("detail", "")
+            }
+        }
+    }
+
+    fun update() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+
+            } catch (e: HttpException) {
+                val errorMessage =
+                    e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
+                        ?.replace("detail", "")
+                if (e.code() == 500)
+                    _errorMsg.value = "Terjadi Kesalahan."
+                else
+                    _errorMsg.value = errorMessage
+
             }
         }
     }

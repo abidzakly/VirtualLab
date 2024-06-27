@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.data.network.ApiStatus
-import org.d3ifcool.virtualab.data.network.UserApi
+import org.d3ifcool.virtualab.data.network.ApiService
 import org.d3ifcool.virtualab.data.network.response.CombinedUsersResponse
 
 import retrofit2.HttpException
@@ -32,7 +32,7 @@ class CheckUsersViewModel(userEmail: String) : ViewModel() {
         _isLoading.value = ApiStatus.LOADING
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                _userList.value = UserApi.service.getAllPendingUser(email)
+                _userList.value = ApiService.userService.getAllPendingUser(email)
                 _isLoading.value = ApiStatus.SUCCESS
                 Log.d("GET PENDING USER SUCCESS", "Get User: $_userList")
             } catch (e: HttpException) {

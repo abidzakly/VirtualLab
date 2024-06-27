@@ -1,13 +1,12 @@
 package org.d3ifcool.virtualab.data.model
 
 data class Materi(
-    val materialId: Int,
+    val material_id: Int,
+    val author_id: Int,
+    val media_type: String,
     val title: String,
-    val mediaType: String,
-    val mediaPath: String,
+    val filename: String,
     val description: String,
-    val authorId: Int,
-    val approvalStatus: String = "DRAFT"
 )
 
 enum class MediaType {

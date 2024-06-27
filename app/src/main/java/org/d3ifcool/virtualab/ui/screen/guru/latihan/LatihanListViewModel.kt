@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.data.model.Latihan
 import org.d3ifcool.virtualab.data.network.ApiStatus
-import org.d3ifcool.virtualab.data.network.UserApi
+import org.d3ifcool.virtualab.data.network.ApiService
 import retrofit2.HttpException
 
 class LatihanListViewModel(userId: Int) : ViewModel() {
@@ -36,7 +36,7 @@ class LatihanListViewModel(userId: Int) : ViewModel() {
         Log.d("HomeLatihanVM", "userId: $userId")
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                _latihanList.value = UserApi.service.getLatihanByAuthor(userId)
+                _latihanList.value = ApiService.latihanService.getLatihanByAuthor(userId)
                 _apiStatus.value = ApiStatus.SUCCESS
                 Log.d("HomeLatihanVM", "latihan list: ${_latihanList.value}")
             } catch (e: HttpException) {

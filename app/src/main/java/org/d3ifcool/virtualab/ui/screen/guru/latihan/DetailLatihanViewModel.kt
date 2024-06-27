@@ -6,8 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import org.d3ifcool.virtualab.data.network.ApiStatus
-import org.d3ifcool.virtualab.data.network.UserApi
+import org.d3ifcool.virtualab.data.network.ApiService
 import org.d3ifcool.virtualab.data.network.response.CombinedLatihan
 import retrofit2.HttpException
 
@@ -27,7 +26,7 @@ class DetailLatihanViewModel(exerciseId: Int) : ViewModel() {
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                _latihanData.value = UserApi.service.getCurrentLatihan(exerciseId)
+                _latihanData.value = ApiService.latihanService.getCurrentLatihan(exerciseId)
             } catch (e: HttpException) {
                 _errorMsg.value =
                     e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")

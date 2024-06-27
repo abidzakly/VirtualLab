@@ -28,11 +28,12 @@
     <string name="school_label">Asal Sekolah</string>
     <string name="password_label">Password</string>
     <string name="edit_password_label">Ubah Password</string>
-<!--  Auth Buttons -->
+<!--  Buttons -->
     <string name="signup_button">Daftar dan Verifikasi</string>
     <string name="signup_clickable">Daftar</string>
     <string name="logout_button">Keluar</string>
     <string name="edit_button">Ubah</string>
+    <string name="cancel_button">Batal</string>
     <string name="save_button">Simpan</string>
     <string name="menu_buat_button">Tambahkan</string>
     <string name="about_button">Tentang Aplikasi</string>
