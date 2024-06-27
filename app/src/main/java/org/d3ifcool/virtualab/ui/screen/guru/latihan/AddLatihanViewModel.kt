@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.data.model.Latihan
-import org.d3ifcool.virtualab.data.network.UserApi
+import org.d3ifcool.virtualab.data.network.ApiService
 import org.d3ifcool.virtualab.data.network.request.ExerciseCreate
 import retrofit2.HttpException
 
@@ -28,7 +28,7 @@ class AddLatihanViewModel() : ViewModel() {
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                _latihanData.value = UserApi.service.addLatihan(
+                _latihanData.value = ApiService.latihanService.addLatihan(
                     ExerciseCreate(
                         title,
                         difficulty,

@@ -141,7 +141,7 @@ private fun ScreenContent(
     var newPassword by remember { mutableStateOf("") }
     var readOnly by remember { mutableStateOf(true) }
     var password by remember { mutableStateOf(user.password) }
-
+    password = if (!readOnly) "" else user.password
     var showDialog by remember { mutableStateOf(false) }
     var showLogoutDialog by remember { mutableStateOf(false) }
 
@@ -231,7 +231,7 @@ private fun ScreenContent(
             )
             TextField(
                 textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
-                value = password!!,
+                value = password,
                 readOnly = readOnly,
                 onValueChange = { password = it },
                 singleLine = true,
@@ -322,7 +322,7 @@ private fun ScreenContent(
             ) {
                 if (readOnly) {
                     Button(
-                        onClick = { readOnly = !readOnly },
+                        onClick = { readOnly = false },
                         shape = RoundedCornerShape(10.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = LightBlue,
@@ -371,11 +371,29 @@ private fun ScreenContent(
                     }
                 } else {
                     Button(
+                        onClick = { readOnly = true },
+                        shape = RoundedCornerShape(10.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = RedButton,
+                        ),
+                        contentPadding = PaddingValues(horizontal = 42.dp, vertical = 12.dp)
+                    ) {
+                        RegularText(
+                            text = stringResource(R.string.cancel_button),
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.White
+                        )
+                    }
+                    Button(
                         onClick = {
-                            if (email.isEmpty() || password!!.isEmpty() || newPassword.isEmpty()) {
-                                Toast.makeText(context, "Harap isi semua data!", Toast.LENGTH_SHORT)
+                            if (email.isEmpty()) {
+                                Toast.makeText(context, "Email tidak boleh kosong!", Toast.LENGTH_SHORT)
+                                    .show()
+                            } else if (password.isEmpty()){
+                                Toast.makeText(context, "Password tidak boleh kosong!", Toast.LENGTH_SHORT)
                                     .show()
                             } else {
+                                viewModel.update()
                                 showDialog = true
                             }
                         },
@@ -392,17 +410,16 @@ private fun ScreenContent(
                             fontFamily = Poppins,
                             fontSize = 16.sp,
                         )
-
-                    }
-                    if (showDialog) {
-                        SaveUpdatePopup(
-                            onDismiss = { showDialog = false },
-                            navController
-                        )
                     }
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
+            if (showDialog) {
+                SaveUpdatePopup(
+                    onDismiss = { showDialog = false },
+                    navController
+                )
+            }
         }
     }
 }

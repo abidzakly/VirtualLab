@@ -91,11 +91,13 @@ fun LoginScreen(navController: NavHostController) {
         if (loginSuccess) {
             if (currentUser != null) {
                 Log.d("LoginScreen", "UserType: ${currentUser!!.user!!.user_type}")
-                Log.d("LoginScreen", "User: ${currentUser!!.user!!}, Guru: ${currentUser!!.teacher}, Murid: ${currentUser!!.student}")
+                Log.d(
+                    "LoginScreen",
+                    "User: ${currentUser!!.user!!}, Guru: ${currentUser!!.teacher}, Murid: ${currentUser!!.student}"
+                )
                 Toast.makeText(context, "Login Berhasil!", Toast.LENGTH_SHORT).show()
                 when (currentUser!!.user!!.user_type) {
-                    0 -> navController.navigate(Screen.MuridDashboard.withName(currentUser!!.user?.full_name
-                        ?: ""))
+                    0 -> navController.navigate(Screen.MuridDashboard.route)
 
                     1 -> navController.navigate(Screen.GuruDashboard.route)
 
