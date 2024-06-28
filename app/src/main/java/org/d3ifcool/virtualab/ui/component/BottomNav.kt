@@ -127,9 +127,7 @@ fun BottomNav(
                             isSelected = true,
                             isSheet = isClicked
                         ) {
-                            navController.navigate(currentRoute) {
-                                popUpTo(Screen.GuruDashboard.route)
-                            }
+                            onClick()
                         }
                     } else {
                         BottomNavButton(

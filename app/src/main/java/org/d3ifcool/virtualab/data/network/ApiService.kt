@@ -26,9 +26,9 @@ object ApiService {
     val latihanService: LatihanApiService by lazy {
         retrofit.create(LatihanApiService::class.java)
     }
-//    val materiService: UserApiService by lazy {
-//        retrofit.create(UserApiService::class.java)
-//    }
+    val materiService: UserApiService by lazy {
+        retrofit.create(UserApiService::class.java)
+    }
 //    val kerjaLatihanService: ApiService by lazy {
 //        retrofit.create(ApiService::class.java)
 //    }
