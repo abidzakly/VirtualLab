@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.data.network.ApiService
-import org.d3ifcool.virtualab.data.network.response.CombinedLatihan
+import org.d3ifcool.virtualab.data.model.CombinedLatihan
 import retrofit2.HttpException
 
 class DetailLatihanViewModel(exerciseId: Int) : ViewModel() {

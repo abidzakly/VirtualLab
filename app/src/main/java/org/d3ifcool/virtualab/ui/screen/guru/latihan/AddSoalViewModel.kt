@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.data.network.ApiService
-import org.d3ifcool.virtualab.data.network.request.QuestionCreate
-import org.d3ifcool.virtualab.data.network.response.CombinedLatihan
+import org.d3ifcool.virtualab.data.model.CombinedLatihan
+import org.d3ifcool.virtualab.data.model.QuestionCreate
 import retrofit2.HttpException
 
 class AddSoalViewModel(exerciseId: Int) : ViewModel() {
@@ -40,15 +40,19 @@ class AddSoalViewModel(exerciseId: Int) : ViewModel() {
         }
     }
 
-    fun addSoal(soal: List<QuestionCreate>) {
+    fun addSoal(exerciseId: Int, soal: List<QuestionCreate>) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val result = ApiService.latihanService.addSoal(
+                    exerciseId,
                     soal
                 ).status
                 if (result) {
                     _uploadStatus.value =
-                        ApiService.latihanService.modifyLatihanStatus(soal[0].exercise_id, "PENDING").status
+                        ApiService.latihanService.modifyLatihanStatus(
+                            soal[0].exercise_id,
+                            "PENDING"
+                        ).status
                 }
             } catch (e: HttpException) {
                 _errorMsg.value =

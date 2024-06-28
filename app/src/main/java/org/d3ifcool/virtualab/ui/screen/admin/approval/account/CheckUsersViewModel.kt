@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.data.network.ApiService
-import org.d3ifcool.virtualab.data.network.response.CombinedUsersResponse
+import org.d3ifcool.virtualab.data.model.CombinedUsersResponse
 
 import retrofit2.HttpException
 
@@ -18,7 +18,7 @@ class CheckUsersViewModel(userEmail: String) : ViewModel() {
     private val _userList = MutableStateFlow<List<CombinedUsersResponse?>>(emptyList())
     val userList: StateFlow<List<CombinedUsersResponse?>> = _userList
 
-    private val _isLoading = MutableStateFlow(ApiStatus.LOADING)
+    private val _isLoading = MutableStateFlow(ApiStatus.IDLE)
     val isLoading: StateFlow<ApiStatus> = _isLoading
 
     private val _errorMsg = MutableStateFlow<String?>("")

@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.data.network.ApiService
-import org.d3ifcool.virtualab.data.network.response.CombinedUser
-import org.d3ifcool.virtualab.data.network.response.MessageResponse
+import org.d3ifcool.virtualab.data.model.CombinedUser
+import org.d3ifcool.virtualab.data.model.MessageResponse
 import retrofit2.HttpException
 
 class UserInfoViewModel(private val userId: Int) : ViewModel() {
