@@ -7,4 +7,10 @@ data class Soal(
     val option_text: List<String>,
     val answer_keys: List<String>
 )
+data class QuestionCreate(
+    val exercise_id: Int,
+    val question_text: String,
+    val option_text: List<String>,
+    val answer_keys: List<String>
+)
 

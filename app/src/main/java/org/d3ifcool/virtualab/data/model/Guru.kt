@@ -4,3 +4,7 @@ data class Guru(
     val teacher_id: Int? = -1,
     val nip: String = ""
 )
+
+data class TeacherCreate(
+    val nip: String,
+)

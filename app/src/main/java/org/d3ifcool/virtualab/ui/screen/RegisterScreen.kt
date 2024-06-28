@@ -50,7 +50,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -71,7 +70,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
-import org.d3ifcool.virtualab.data.network.request.UserCreate
+import org.d3ifcool.virtualab.data.model.UserCreate
+import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
 import org.d3ifcool.virtualab.ui.component.RegularText
@@ -91,17 +91,31 @@ fun RegisterScreen(navController: NavHostController, id: Int) {
     val dataStore = UserDataStore(context)
     val factory = ViewModelFactory(userDataStore = dataStore)
     val viewModel: AuthViewModel = viewModel(factory = factory)
-    val registSuccess by viewModel.registerSuccess.collectAsState()
+    val apiStatus by viewModel.apiStatus.collectAsState()
     val errorMsg by viewModel.errorMsg.collectAsState()
 
     var showDialog by remember { mutableStateOf(false) }
 
-    Log.d("REGIST_STATUS", "Regist Status: ${registSuccess?.status}")
-    LaunchedEffect(registSuccess) {
-        if (registSuccess?.status == true) {
-            showDialog = true
+    LaunchedEffect(apiStatus) {
+        when (apiStatus) {
+            ApiStatus.LOADING -> {
+                Toast.makeText(context, "Loading..", Toast.LENGTH_SHORT).show()
+            }
+
+            ApiStatus.SUCCESS -> {
+                showDialog = true
+            }
+
+            ApiStatus.FAILED -> {
+                Log.d("RegisterScreen", "Register Error: $errorMsg")
+                Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show()
+                viewModel.clearErrorMsg()
+            }
+
+            ApiStatus.IDLE -> null
         }
     }
+
     if (showDialog) {
         RegistSuccessPopup(
             onDismiss = { showDialog = false },
@@ -246,19 +260,24 @@ private fun ScreenContent(
         Button(
             modifier = Modifier.padding(horizontal = 31.dp),
             onClick = {
-                    Log.d("Fullname Response", "FRes: ${fullnameCheck(fullname)}")
-                    Log.d("Username Response", "URes: ${usernameCheck(username)}")
-                    Log.d("Email Response", "ERes: ${emailCheck(email)}")
-                    Log.d("UniqueId Response", "UIRes: ${uniqueIdCheck(id, uniqueId)}")
+                Log.d("Fullname Response", "FRes: ${fullnameCheck(fullname)}")
+                Log.d("Username Response", "URes: ${usernameCheck(username)}")
+                Log.d("Email Response", "ERes: ${emailCheck(email)}")
+                Log.d("UniqueId Response", "UIRes: ${uniqueIdCheck(id, uniqueId)}")
                 when {
                     fullnameCheck(fullname) != 0 -> return@Button
                     usernameCheck(username) != 0 -> return@Button
                     emailCheck(email) != 0 -> return@Button
                     uniqueIdCheck(id, uniqueId) != 0 -> return@Button
-                    !isChecked -> Toast.makeText(context, "Anda harus menyetujui S&K sebelum mendaftar!", Toast.LENGTH_SHORT).show()
+                    !isChecked -> Toast.makeText(
+                        context,
+                        "Anda harus menyetujui S&K sebelum mendaftar!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
                     school.isEmpty() || school.isBlank() -> return@Button
                     else -> {
-                    Log.d("OTHER Response", "Response: Clicked!")
+                        Log.d("OTHER Response", "Response: Clicked!")
                         viewModel.register(
                             uniqueId,
                             UserCreate(
@@ -472,7 +491,12 @@ private fun RegistTextField(
         label = {
             Row {
                 Text(text = stringResource(label), fontSize = 14.sp, fontFamily = Poppins)
-                Text(text = supportingLabel, fontStyle = FontStyle.Italic, fontSize = 14.sp, fontFamily = Poppins)
+                Text(
+                    text = supportingLabel,
+                    fontStyle = FontStyle.Italic,
+                    fontSize = 14.sp,
+                    fontFamily = Poppins
+                )
             }
         },
         singleLine = true,
@@ -520,6 +544,7 @@ private fun RegistTextField(
         }
     }
 }
+
 @Composable
 private fun RegistSuccessPopup(onDismiss: () -> Unit, navController: NavHostController) {
     Dialog(onDismissRequest = { onDismiss() }) {
@@ -556,7 +581,7 @@ private fun RegistSuccessPopup(onDismiss: () -> Unit, navController: NavHostCont
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Button(
-                        onClick = { onDismiss(); navController.navigate(Screen.Login.route)  },
+                        onClick = { onDismiss(); navController.navigate(Screen.Login.route) },
                         colors = buttonColors(
                             containerColor = LightBlue,
                             contentColor = Color.Black
@@ -574,6 +599,7 @@ private fun RegistSuccessPopup(onDismiss: () -> Unit, navController: NavHostCont
         }
     }
 }
+
 @Preview(showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable

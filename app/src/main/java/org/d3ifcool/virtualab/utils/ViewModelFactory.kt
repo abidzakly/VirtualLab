@@ -3,6 +3,7 @@ package org.d3ifcool.virtualab.utils
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import org.d3ifcool.virtualab.ui.screen.AuthViewModel
+import org.d3ifcool.virtualab.ui.screen.ProfileViewModel
 import org.d3ifcool.virtualab.ui.screen.admin.approval.account.CheckUsersViewModel
 import org.d3ifcool.virtualab.ui.screen.admin.approval.account.UserInfoViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddSoalViewModel
@@ -31,6 +32,8 @@ class ViewModelFactory(
             return DetailLatihanViewModel(exerciseId!!) as T
         } else if (modelClass.isAssignableFrom(LatihanListViewModel::class.java)) {
             return LatihanListViewModel(user_id!!) as T
+        } else if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
+            return ProfileViewModel(userDataStore!!) as T
         } else {
         throw IllegalArgumentException("Unknown ViewModel class")
         }
