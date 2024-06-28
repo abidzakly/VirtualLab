@@ -2,10 +2,7 @@ package org.d3ifcool.virtualab.data.network.apis
 
 import okhttp3.MultipartBody
 import org.d3ifcool.virtualab.data.model.Materi
-import org.d3ifcool.virtualab.data.network.request.UserRegistration
-import org.d3ifcool.virtualab.data.network.response.CombinedUsersResponse
-import org.d3ifcool.virtualab.data.network.response.MessageResponse
-import retrofit2.http.Body
+import org.d3ifcool.virtualab.data.model.MessageResponse
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
@@ -16,12 +13,12 @@ import retrofit2.http.Path
 
 interface MaterialApiService {
     @Multipart
-    @POST("/v1/materials/create")
+    @POST("/v1/users/{teacherId}/materials")
     suspend fun register(
+        @Path("teacherId") id: Int,
         @Part("title") title: String,
         @Part("media_type") mediaType: String,
         @Part("description") desc: String,
-        @Part("author_id") authorId: Int,
         @Part("file") file: MultipartBody.Part,
     ): MessageResponse
 
@@ -43,6 +40,18 @@ interface MaterialApiService {
     @PUT("/v1/materials/{material_id")
     suspend fun updateMateri(
         @Path("material_id") id: Int
+    ): MessageResponse
+
+    @PUT("/v1/materials/approve/{material_id")
+    suspend fun approveMateri(
+        @Path("material_id") id: Int,
+        @Header("authorization") email: String
+    ): MessageResponse
+
+    @PUT("/v1/materials/reject/{material_id")
+    suspend fun rejectMateri(
+        @Path("material_id") id: Int,
+        @Header("authorization") email: String
     ): MessageResponse
 
 

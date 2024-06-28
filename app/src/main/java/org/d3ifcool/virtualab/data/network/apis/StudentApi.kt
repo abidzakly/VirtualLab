@@ -2,7 +2,6 @@ package org.d3ifcool.virtualab.data.network.apis
 
 import org.d3ifcool.virtualab.data.model.UserLogin
 import org.d3ifcool.virtualab.data.model.UserRegistration
-import org.d3ifcool.virtualab.data.model.UserUpdate
 import org.d3ifcool.virtualab.data.model.CombinedUser
 import org.d3ifcool.virtualab.data.model.CombinedUsersResponse
 import org.d3ifcool.virtualab.data.model.MessageResponse
@@ -15,7 +14,7 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface UserApiService {
+interface StudentApiService {
     //    Auth
     @POST("/v1/auth/register")
     suspend fun register(
@@ -37,10 +36,9 @@ interface UserApiService {
     ): CombinedUser
 
     @PUT("/v1/users/{userId}")
-    suspend fun updateUser(
+    suspend fun editProfile(
         @Path("userId") userId: Int,
-        @Query("old_password") oldPassword: String,
-        @Body user: UserUpdate
+        @Query("password") password: String
     ): MessageResponse
 
     @PUT("/v1/users/{userId}/approve")

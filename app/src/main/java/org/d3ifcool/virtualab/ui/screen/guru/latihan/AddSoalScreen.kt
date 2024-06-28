@@ -48,7 +48,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
-import org.d3ifcool.virtualab.data.network.request.QuestionCreate
+import org.d3ifcool.virtualab.data.model.QuestionCreate
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.RegularText
@@ -248,7 +248,7 @@ private fun ScreenContent(
                         Log.d("AddSoalScreen", "IF IS TRUE")
                     } else {
                         Log.d("AddSoalScreen", "FALSE IS TRUE")
-                        viewModel.addSoal(soal.toList())
+                        viewModel.addSoal(exerciseId, soal.toList())
                         Log.d("AddSoalScreen", "Soal: ${soal.toList()}")
                     }
                 },

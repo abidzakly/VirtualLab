@@ -139,6 +139,7 @@ private fun ScreenContent(
                 )
             }
         }
+        ApiStatus.IDLE -> null
     }
 }
 

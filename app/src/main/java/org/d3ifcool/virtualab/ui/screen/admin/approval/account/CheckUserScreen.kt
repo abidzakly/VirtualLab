@@ -145,6 +145,7 @@ private fun ScreenContent(
             ApiStatus.FAILED -> {
                 AdminEmptyState(text = "Belum ada akun yang perlu diperiksa")
             }
+            ApiStatus.IDLE -> null
         }
     }
 }

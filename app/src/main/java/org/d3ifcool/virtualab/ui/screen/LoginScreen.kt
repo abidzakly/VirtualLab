@@ -65,6 +65,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
+import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.theme.BlueLink
@@ -83,17 +84,20 @@ fun LoginScreen(navController: NavHostController) {
     val viewModel: AuthViewModel = viewModel(factory = factory)
 
     val currentUser by viewModel.currentUser.collectAsState()
-    val loginSuccess by viewModel.loginSuccess.collectAsState()
+    val apiStatus by viewModel.apiStatus.collectAsState()
     val errorMsg by viewModel.errorMsg.collectAsState()
 
+    when (apiStatus) {
+        ApiStatus.LOADING -> {
+            Toast.makeText(context, "Loading..", Toast.LENGTH_SHORT).show()
+        }
 
-    LaunchedEffect(loginSuccess) {
-        if (loginSuccess) {
+        ApiStatus.SUCCESS -> {
             if (currentUser != null) {
                 Log.d("LoginScreen", "UserType: ${currentUser!!.user!!.user_type}")
                 Log.d(
                     "LoginScreen",
-                    "User: ${currentUser!!.user!!}, Guru: ${currentUser!!.teacher}, Murid: ${currentUser!!.student}"
+                    "User: ${currentUser!!.user!!}\nGuru: ${currentUser!!.teacher}\nMurid: ${currentUser!!.student}"
                 )
                 Toast.makeText(context, "Login Berhasil!", Toast.LENGTH_SHORT).show()
                 when (currentUser!!.user!!.user_type) {
@@ -106,18 +110,16 @@ fun LoginScreen(navController: NavHostController) {
                 }
             }
         }
-    }
-    Log.d("LOGIN_ERROR", "Login Error: $errorMsg")
-    LaunchedEffect(errorMsg) {
-        if (errorMsg != "") {
-            Toast.makeText(
-                context,
-                errorMsg,
-                Toast.LENGTH_SHORT
-            ).show()
+
+        ApiStatus.FAILED -> {
+            Log.d("LoginScreen", "Login Error: $errorMsg")
+            Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show()
             viewModel.clearErrorMsg()
         }
+
+        ApiStatus.IDLE -> null
     }
+
     Scaffold(
         topBar = {
             TopAppBar(

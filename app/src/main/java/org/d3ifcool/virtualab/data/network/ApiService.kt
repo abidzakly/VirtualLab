@@ -34,4 +34,4 @@ object ApiService {
 //    }
 }
 
-enum class ApiStatus { LOADING, SUCCESS, FAILED }
+enum class ApiStatus { IDLE, LOADING, SUCCESS, FAILED }

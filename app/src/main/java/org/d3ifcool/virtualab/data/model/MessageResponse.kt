@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.data.network.response
+package org.d3ifcool.virtualab.data.model
 
 data class MessageResponse(
     val message: String,

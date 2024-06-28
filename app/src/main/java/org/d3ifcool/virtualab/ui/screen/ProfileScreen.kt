@@ -66,6 +66,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.data.model.User
+import org.d3ifcool.virtualab.data.model.UserUpdate
+import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
@@ -92,7 +94,8 @@ fun ProfileScreen(navController: NavHostController) {
     Log.d("ProfileScreen", "user: $currentUser")
     Log.d("ProfileScreen", "nipOrNisn: $uniqueId")
     val factory = ViewModelFactory(userDataStore = dataStore)
-    val viewModel: AuthViewModel = viewModel(factory = factory)
+    val profileViewModel: ProfileViewModel = viewModel(factory = factory)
+    val authViewModel: AuthViewModel = viewModel(factory = factory)
 
     Scaffold(
         topBar = {
@@ -108,8 +111,8 @@ fun ProfileScreen(navController: NavHostController) {
                 navController,
                 currentUser,
                 uniqueId,
-                viewModel,
-                context
+                profileViewModel,
+                authViewModel,
             )
         } else {
             Box(
@@ -130,9 +133,11 @@ private fun ScreenContent(
     navController: NavHostController,
     user: User,
     nipOrNisn: String,
-    viewModel: AuthViewModel,
-    context: Context
+    profileViewModel: ProfileViewModel,
+    authViewModel: AuthViewModel,
 ) {
+    val context = LocalContext.current
+
     var fullname by remember { mutableStateOf(user.full_name) }
     var username by remember { mutableStateOf(user.username) }
     var email by remember { mutableStateOf(user.email) }
@@ -141,12 +146,36 @@ private fun ScreenContent(
     var newPassword by remember { mutableStateOf("") }
     var readOnly by remember { mutableStateOf(true) }
     var password by remember { mutableStateOf(user.password) }
-    password = if (!readOnly) "" else user.password
+    var oldPassword by remember { mutableStateOf("") }
+    password = if (!readOnly) oldPassword else user.password
     var showDialog by remember { mutableStateOf(false) }
     var showLogoutDialog by remember { mutableStateOf(false) }
 
     var passwordVisibility by remember { mutableStateOf(false) }
     var passwordVisibility2 by remember { mutableStateOf(false) }
+
+    val apiStatus by profileViewModel.apiStatus.collectAsState()
+    Log.d("ProfileScreen", "Api Status: $apiStatus")
+    val errorMsg by profileViewModel.errorMsg.collectAsState()
+
+    when (apiStatus) {
+        ApiStatus.LOADING -> {
+            Toast.makeText(context, "Loading..", Toast.LENGTH_SHORT).show()
+        }
+
+        ApiStatus.SUCCESS -> {
+            showDialog = true
+            profileViewModel.clearStatus()
+        }
+
+        ApiStatus.FAILED -> {
+            Log.d("ProfileScreen", "Edit Profile Error: $errorMsg")
+            Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show()
+            profileViewModel.clearErrorMsg()
+        }
+
+        ApiStatus.IDLE -> null
+    }
 
     Column(
         modifier
@@ -233,7 +262,7 @@ private fun ScreenContent(
                 textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
                 value = password,
                 readOnly = readOnly,
-                onValueChange = { password = it },
+                onValueChange = { oldPassword = it },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
@@ -289,7 +318,7 @@ private fun ScreenContent(
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Password,
                         capitalization = KeyboardCapitalization.Words,
-                        imeAction = ImeAction.Next,
+                        imeAction = ImeAction.Done,
                     ),
                     visualTransformation =
                     if (passwordVisibility2) VisualTransformation.None else PasswordVisualTransformation(),
@@ -362,7 +391,7 @@ private fun ScreenContent(
                         ) {
                             showLogoutDialog = false
                             CoroutineScope(Dispatchers.IO).launch {
-                                viewModel.logout()
+                                authViewModel.logout()
                             }
                             navController.navigate(Screen.Login.route) {
                                 popUpTo(Screen.Login.route)
@@ -386,16 +415,40 @@ private fun ScreenContent(
                     }
                     Button(
                         onClick = {
-                            if (email.isEmpty()) {
-                                Toast.makeText(context, "Email tidak boleh kosong!", Toast.LENGTH_SHORT)
-                                    .show()
-                            } else if (password.isEmpty()){
-                                Toast.makeText(context, "Password tidak boleh kosong!", Toast.LENGTH_SHORT)
-                                    .show()
-                            } else {
-                                viewModel.update()
-                                showDialog = true
+                            Log.d(
+                                "ProfileScreen",
+                                "email:$email\noldPassword:$password\nnewPassword:$newPassword"
+                            )
+                            if (email == "") {
+                                Toast.makeText(
+                                    context,
+                                    "Email tidak boleh kosong!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                return@Button
                             }
+                            if (oldPassword == "") {
+                                Toast.makeText(
+                                    context,
+                                    "Password Lama tidak boleh kosong!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                return@Button
+                            }
+                            if (newPassword == "") {
+                                Toast.makeText(
+                                    context,
+                                    "Password Baru tidak boleh kosong!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                return@Button
+
+                            }
+                            profileViewModel.update(
+                                user.user_id,
+                                password,
+                                UserUpdate(email, newPassword)
+                            )
                         },
                         shape = RoundedCornerShape(10.dp),
                         colors = ButtonDefaults.buttonColors(
@@ -417,8 +470,15 @@ private fun ScreenContent(
             if (showDialog) {
                 SaveUpdatePopup(
                     onDismiss = { showDialog = false },
-                    navController
-                )
+                    navController,
+                    { readOnly = it }
+                ) {
+                    showDialog = false
+                    passwordVisibility = false
+                    passwordVisibility2 = false
+                    oldPassword = ""
+                    newPassword = ""
+                }
             }
         }
     }
@@ -468,7 +528,12 @@ fun UserTextFields(
 }
 
 @Composable
-private fun SaveUpdatePopup(onDismiss: () -> Unit, navController: NavHostController) {
+private fun SaveUpdatePopup(
+    onDismiss: () -> Unit,
+    navController: NavHostController,
+    onChange: (Boolean) -> Unit,
+    onClick: () -> Unit
+) {
     Dialog(onDismissRequest = { onDismiss() }) {
         Card(
             modifier = Modifier.padding(16.dp),
@@ -502,7 +567,11 @@ private fun SaveUpdatePopup(onDismiss: () -> Unit, navController: NavHostControl
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Button(
-                        onClick = { onDismiss(); navController.navigate(Screen.Profile.route) },
+                        onClick = {
+                            onChange(true)
+                            onClick()
+//                            navController.navigate(Screen.Profile.route)
+                        },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = LightBlue,
                             contentColor = Color.Black
