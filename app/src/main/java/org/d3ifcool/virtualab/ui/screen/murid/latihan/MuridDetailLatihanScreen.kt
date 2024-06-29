@@ -2,6 +2,7 @@ package org.d3ifcool.virtualab.ui.screen.murid.latihan
 
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -61,11 +63,15 @@ import org.d3ifcool.virtualab.ui.component.MediumLargeText
 import org.d3ifcool.virtualab.ui.component.MediumText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
+import org.d3ifcool.virtualab.ui.theme.BlueIndicator
 import org.d3ifcool.virtualab.ui.theme.DarkBlue
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
+import org.d3ifcool.virtualab.ui.theme.GreenIndicator
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.LightBlue2
 import org.d3ifcool.virtualab.ui.theme.RedButton
+import org.d3ifcool.virtualab.ui.theme.RedIndicator
+import org.d3ifcool.virtualab.ui.theme.YellowIndicator
 
 @Composable
 fun MuridDetailLatihanScreen(navController: NavHostController) {
@@ -100,6 +106,8 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
     ) {
         Spacer(modifier = Modifier.height(12.dp))
         RegularText(text = stringResource(R.string.kerjakan_latihan_header))
+        Spacer(modifier = Modifier.height(6.dp))
+        IndicatorHeader()
         Column(
             modifier = Modifier
                 .padding(top = 16.dp),
@@ -216,7 +224,14 @@ private fun ItemList(noSoal: String, exerciseId: Int, viewModel: DetailLatihanVM
     }
 
     Column {
-        RegularText(text = "Soal $noSoal")
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            RegularText(text = "Soal $noSoal")
+            Image(painter = painterResource(id = R.drawable.indikator_soal), contentDescription = stringResource(id = R.string.indicator_soal) )
+        }
         Spacer(modifier = Modifier.height(14.dp))
         Box(
             modifier = Modifier
@@ -260,6 +275,9 @@ private fun QuestionItem(
     onOptionSelected: (OpsiJawaban, Boolean) -> Unit
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        var clickedOptions by remember { mutableStateOf<List<OpsiJawaban>>(emptyList()) }
+        val borderColors = listOf(RedIndicator, YellowIndicator, GreenIndicator, BlueIndicator)
+
         MediumLargeText(text = question.questionText)
         RegularText(
             text = stringResource(id = R.string.instructions),
@@ -267,7 +285,13 @@ private fun QuestionItem(
         )
         options.forEach { option ->
             val isSelected = selectedAnswers?.contains(option) == true
-            val borderColor = if (isSelected) DarkBlueDarker else Color.Transparent
+            val borderColor = if (isSelected) {
+//                DarkBlueDarker
+                val index = clickedOptions.indexOf(option)
+                borderColors.getOrNull(index) ?: Color.Transparent
+            } else {
+                Color.Transparent
+            }
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -277,6 +301,11 @@ private fun QuestionItem(
                     .padding(8.dp)
                     .padding(horizontal = 16.dp)
                     .clickable {
+                        if (isSelected) {
+                            clickedOptions = clickedOptions - option
+                        } else {
+                            clickedOptions = (clickedOptions + option).take(4)
+                        }
                         onOptionSelected(option, !isSelected)
                     }
             ) {
@@ -345,6 +374,29 @@ private fun ExerciseDonePopup(onDismiss: () -> Unit, navController: NavHostContr
                 }
             }
         }
+    }
+}
+@Composable
+private fun IndicatorHeader() {
+    Row(modifier = Modifier.padding(vertical = 4.dp)) {
+        Image(painter = painterResource(id = R.drawable.indicator_merah), contentDescription = stringResource(R.string.indicator_merah))
+        Spacer(modifier = Modifier.width(8.dp))
+        RegularText(text = stringResource(id = R.string.indicator_pertama))
+    }
+    Row(modifier = Modifier.padding(vertical = 4.dp)) {
+        Image(painter = painterResource(id = R.drawable.indicator_kuning), contentDescription = stringResource(R.string.indicator_merah))
+        Spacer(modifier = Modifier.width(8.dp))
+        RegularText(text = stringResource(id = R.string.indicator_kedua))
+    }
+    Row(modifier = Modifier.padding(vertical = 4.dp)) {
+        Image(painter = painterResource(id = R.drawable.indicator_hijau), contentDescription = stringResource(R.string.indicator_merah))
+        Spacer(modifier = Modifier.width(8.dp))
+        RegularText(text = stringResource(id = R.string.indicator_ketiga))
+    }
+    Row(modifier = Modifier.padding(vertical = 4.dp)) {
+        Image(painter = painterResource(id = R.drawable.indicator_biru), contentDescription = stringResource(R.string.indicator_merah))
+        Spacer(modifier = Modifier.width(8.dp))
+        RegularText(text = stringResource(id = R.string.indicator_keempat))
     }
 }
 
