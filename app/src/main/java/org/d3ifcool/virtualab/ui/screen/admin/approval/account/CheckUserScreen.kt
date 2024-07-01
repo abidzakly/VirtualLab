@@ -16,8 +16,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -38,9 +42,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.data.network.ApiStatus
@@ -48,16 +50,12 @@ import org.d3ifcool.virtualab.ui.component.AdminEmptyState
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.LargeText
 import org.d3ifcool.virtualab.ui.component.RegularText
+import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.ui.theme.LightBlue
-import org.d3ifcool.virtualab.utils.ViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CheckUserScreen(navController: NavHostController, email: String) {
-    val factory = ViewModelFactory(email)
-    val viewModel: CheckUsersViewModel = viewModel(factory = factory)
-
-
+fun CheckUserScreen(navController: NavHostController, viewModel: CheckUsersViewModel) {
     Scaffold(topBar = {
         TopAppBar(
             navigationIcon = {
@@ -84,6 +82,7 @@ fun CheckUserScreen(navController: NavHostController, email: String) {
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun ScreenContent(
     modifier: Modifier,
@@ -93,60 +92,76 @@ private fun ScreenContent(
     val userList by viewModel.userList.collectAsState()
     val errorMsg by viewModel.errorMsg.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
+
+
+    val refreshState = rememberPullRefreshState(
+        refreshing = isRefreshing,
+        onRefresh = { viewModel.getAllPendingUser() }
+    )
 
     Log.d("GET ALL USER Error", "Get User Error: $errorMsg")
     Log.d("GET ALL USER", "Get USER: $userList")
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(12.dp),
-        verticalArrangement = if (userList.isNotEmpty()) Arrangement.Top else Arrangement.Center,
-    ) {
-        when (isLoading) {
-            ApiStatus.LOADING -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
+    Box(modifier = modifier.pullRefresh(refreshState)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .padding(12.dp),
+            verticalArrangement = if (userList.isNotEmpty()) Arrangement.Top else Arrangement.Center,
+        ) {
+            when (isLoading) {
+                ApiStatus.LOADING -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = DarkBlueDarker)
+                    }
                 }
-            }
-
-            ApiStatus.SUCCESS -> {
-                RegularText(
-                    text = stringResource(R.string.check_users_title),
-                    modifier = Modifier.padding(start = 16.dp)
-                )
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(16.dp)
-                ) {
-                    var nomorUrut = 1
-                    items(userList) {
-                        AccountList(
-                            modifier = Modifier.testTag("Akun user ke $nomorUrut"),
-                            username = it!!.username,
-                            number = it.nip ?: it.nisn ?: ""
-                        ) {
-                            navController.navigate(Screen.UsersInfo.withId(it.user_id))
-                        }
-                        Log.d(
-                            "CheckUserScreen",
-                            "nama:${it.username}, akun user ke: $nomorUrut"
-                        )
-                        nomorUrut++
-                        Log.d("CheckUserScreen", "ukuran list:${userList.size}")
-                        if (nomorUrut > userList.size) {
-                            nomorUrut = 1
+                ApiStatus.SUCCESS -> {
+                    RegularText(
+                        text = stringResource(R.string.check_users_title),
+                        modifier = Modifier.padding(start = 16.dp)
+                    )
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(16.dp)
+                    ) {
+                        var nomorUrut = 1
+                        items(userList) {
+                            AccountList(
+                                modifier = Modifier.testTag("Akun user ke $nomorUrut"),
+                                username = it!!.username,
+                                number = it.nip ?: it.nisn ?: ""
+                            ) {
+                                navController.navigate(Screen.UsersInfo.withId(it.userId))
+                            }
+                            Log.d(
+                                "CheckUserScreen",
+                                "nama:${it.username}, akun user ke: $nomorUrut"
+                            )
+                            nomorUrut++
+                            Log.d("CheckUserScreen", "ukuran list:${userList.size}")
+                            if (nomorUrut > userList.size) {
+                                nomorUrut = 1
+                            }
                         }
                     }
                 }
-            }
 
-            ApiStatus.FAILED -> {
-                AdminEmptyState(text = "Belum ada akun yang perlu diperiksa")
+                ApiStatus.FAILED -> {
+                    AdminEmptyState(text = "Belum ada akun yang perlu diperiksa")
+                }
+
+                ApiStatus.IDLE -> null
             }
-            ApiStatus.IDLE -> null
         }
+        PullRefreshIndicator(
+            refreshing = isRefreshing,
+            state = refreshState,
+            modifier = Modifier.align(Alignment.TopCenter),
+            contentColor = Color.White,
+            backgroundColor = DarkBlueDarker
+        )
     }
 }
 
@@ -201,5 +216,5 @@ private fun AccountList(
 @Preview
 @Composable
 private fun Prev() {
-    CheckUserScreen(navController = rememberNavController(), "")
+//    CheckUserScreen(navController = rememberNavController(), "")
 }

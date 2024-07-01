@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
@@ -21,7 +20,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -43,7 +41,7 @@ import org.d3ifcool.virtualab.utils.ViewModelFactory
 
 @Composable
 fun DetailLatihanScreen(navController: NavHostController, exerciseId: Int) {
-    val factory = ViewModelFactory(exerciseId = exerciseId)
+    val factory = ViewModelFactory(id = exerciseId)
     val viewModel: DetailLatihanViewModel = viewModel(factory = factory)
 
     Scaffold(topBar = {
@@ -62,7 +60,7 @@ fun DetailLatihanScreen(navController: NavHostController, exerciseId: Int) {
 @Composable
 private fun ScreenContent(modifier: Modifier, viewModel: DetailLatihanViewModel) {
     val latihanData by viewModel.latihanData.collectAsState()
-
+    val latihan = latihanData!!.latihan!!
     if (latihanData != null) {
         LazyColumn(
             modifier = modifier
@@ -77,13 +75,13 @@ private fun ScreenContent(modifier: Modifier, viewModel: DetailLatihanViewModel)
                     text = stringResource(R.string.judul_materi_guru),
                     fontWeight = FontWeight.SemiBold
                 )
-                RegularText(text = latihanData!!.latihan.title, fontWeight = FontWeight.Normal)
+                RegularText(text = latihan.title, fontWeight = FontWeight.Normal)
                 Spacer(modifier = Modifier.height(16.dp))
                 RegularText(
                     text = stringResource(R.string.tingkat_kesulitan_title),
                     fontWeight = FontWeight.SemiBold
                 )
-                RegularText(text = latihanData!!.latihan.difficulty, fontWeight = FontWeight.Normal)
+                RegularText(text = latihan.difficulty, fontWeight = FontWeight.Normal)
                 Spacer(modifier = Modifier.height(16.dp))
                 RegularText(
                     text = stringResource(R.string.perintah_soal),
@@ -94,9 +92,9 @@ private fun ScreenContent(modifier: Modifier, viewModel: DetailLatihanViewModel)
             items(latihanData?.soal!!) {
                 ListSoal(
                     title = "Soal ${nomorSoal + 1}",
-                    question = it.question_text,
-                    firstAnswer = it.answer_keys[0],
-                    secondAnswer = it.answer_keys[1]
+                    question = it.questionText,
+                    firstAnswer = it.answerKeys[0],
+                    secondAnswer = it.answerKeys[1]
                 )
                 nomorSoal++
             }

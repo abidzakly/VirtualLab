@@ -1,6 +1,5 @@
 package org.d3ifcool.virtualab.ui.screen
 
-import android.content.Context
 import android.content.res.Configuration
 import android.util.Log
 import android.widget.Toast
@@ -58,9 +57,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -76,26 +73,26 @@ import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.SemiLargeText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.DarkBlue
+import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.Poppins
 import org.d3ifcool.virtualab.ui.theme.RedButton
 import org.d3ifcool.virtualab.utils.UserDataStore
-import org.d3ifcool.virtualab.utils.ViewModelFactory
 
 @Composable
-fun ProfileScreen(navController: NavHostController) {
-    val context = LocalContext.current
-    val dataStore = UserDataStore(context)
+fun ProfileScreen(
+    navController: NavHostController,
+    profileViewModel: ProfileViewModel,
+    authViewModel: AuthViewModel,
+    dataStore: UserDataStore
+) {
     val currentUser by dataStore.userFlow.collectAsState(User())
-    val uniqueId = when (currentUser.user_type) {
+    val uniqueId = when (currentUser.userType) {
         0 -> dataStore.nisnFlow.collectAsState("")
         else -> dataStore.nipFlow.collectAsState("")
     }.value
     Log.d("ProfileScreen", "user: $currentUser")
     Log.d("ProfileScreen", "nipOrNisn: $uniqueId")
-    val factory = ViewModelFactory(userDataStore = dataStore)
-    val profileViewModel: ProfileViewModel = viewModel(factory = factory)
-    val authViewModel: AuthViewModel = viewModel(factory = factory)
 
     Scaffold(
         topBar = {
@@ -120,7 +117,7 @@ fun ProfileScreen(navController: NavHostController) {
                     .padding(it)
                     .fillMaxSize(), contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(color = DarkBlueDarker)
             }
         }
     }
@@ -138,16 +135,14 @@ private fun ScreenContent(
 ) {
     val context = LocalContext.current
 
-    var fullname by remember { mutableStateOf(user.full_name) }
+    var fullname by remember { mutableStateOf(user.fullName) }
     var username by remember { mutableStateOf(user.username) }
     var email by remember { mutableStateOf(user.email) }
     var uniqueId by remember { mutableStateOf(nipOrNisn) }
     var school by remember { mutableStateOf(user.school) }
     var newPassword by remember { mutableStateOf("") }
     var readOnly by remember { mutableStateOf(true) }
-    var password by remember { mutableStateOf(user.password) }
     var oldPassword by remember { mutableStateOf("") }
-    password = if (!readOnly) oldPassword else user.password
     var showDialog by remember { mutableStateOf(false) }
     var showLogoutDialog by remember { mutableStateOf(false) }
 
@@ -233,7 +228,7 @@ private fun ScreenContent(
                 }
             )
             Spacer(modifier = Modifier.height(16.dp))
-            if (user.user_type == 0) {
+            if (user.userType == 0) {
                 UserTextFields(
                     value = uniqueId,
                     onValueChange = { uniqueId = it },
@@ -254,61 +249,62 @@ private fun ScreenContent(
                 text = R.string.school_label,
                 readOnly = true
             )
-            RegularText(
-                text = stringResource(id = R.string.password_label),
-                fontWeight = FontWeight.SemiBold
-            )
-            TextField(
-                textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
-                value = password,
-                readOnly = readOnly,
-                onValueChange = { oldPassword = it },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    capitalization = KeyboardCapitalization.Words,
-                    imeAction = ImeAction.Next,
-                ),
-                visualTransformation =
-                if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-                trailingIcon = if (!readOnly) {
-                    {
-                        IconButton(onClick = {
-                            passwordVisibility = !passwordVisibility
-                        }) {
-                            Icon(
-                                imageVector = if (passwordVisibility) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                                contentDescription = if (passwordVisibility) "Hide password" else "Show password"
-                            )
-                        }
-                    }
-                } else null,
-                modifier = if (readOnly) {
-                    Modifier.fillMaxWidth()
-                } else {
-                    Modifier
-                        .fillMaxWidth()
-                        .testTag("PASSWORD_FIELD")
-                },
-                colors = if (readOnly) {
-                    TextFieldDefaults.colors(
-                        unfocusedIndicatorColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedContainerColor = Color(0xFFFAFAFA),
-                        focusedContainerColor = Color(0xFFFAFAFA)
-                    )
-                } else {
-                    TextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedContainerColor = Color.Transparent
-                    )
-                }
-            )
             if (!readOnly) {
+                RegularText(
+                    text = stringResource(id = R.string.password_label),
+                    fontWeight = FontWeight.SemiBold
+                )
+                TextField(
+                    textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
+                    value = oldPassword,
+                    onValueChange = { oldPassword = it },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password,
+                        capitalization = KeyboardCapitalization.Words,
+                        imeAction = ImeAction.Next,
+                    ),
+                    visualTransformation =
+                    if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+                    trailingIcon = if (!readOnly) {
+                        {
+                            IconButton(onClick = {
+                                passwordVisibility = !passwordVisibility
+                            }) {
+                                Icon(
+                                    imageVector = if (passwordVisibility) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                                    contentDescription = if (passwordVisibility) "Hide password" else "Show password"
+                                )
+                            }
+                        }
+                    } else null,
+                    modifier = if (readOnly) {
+                        Modifier.fillMaxWidth()
+                    } else {
+                        Modifier
+                            .fillMaxWidth()
+                            .testTag("PASSWORD_FIELD")
+                    },
+                    colors = if (readOnly) {
+                        TextFieldDefaults.colors(
+                            unfocusedIndicatorColor = Color.Transparent,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedContainerColor = Color(0xFFFAFAFA),
+                            focusedContainerColor = Color(0xFFFAFAFA)
+                        )
+                    } else {
+                        TextFieldDefaults.colors(
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedContainerColor = Color.Transparent
+                        )
+                    }
+                )
+
                 Spacer(modifier = Modifier.height(16.dp))
 
                 RegularText(
-                    text = stringResource(R.string.edit_password_label)
+                    text = stringResource(R.string.edit_password_label),
+                    fontWeight = FontWeight.SemiBold
                 )
                 TextField(
                     textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
@@ -415,10 +411,6 @@ private fun ScreenContent(
                     }
                     Button(
                         onClick = {
-                            Log.d(
-                                "ProfileScreen",
-                                "email:$email\noldPassword:$password\nnewPassword:$newPassword"
-                            )
                             if (email == "") {
                                 Toast.makeText(
                                     context,
@@ -445,8 +437,8 @@ private fun ScreenContent(
 
                             }
                             profileViewModel.update(
-                                user.user_id,
-                                password,
+                                user.userId,
+                                oldPassword,
                                 UserUpdate(email, newPassword)
                             )
                         },
@@ -594,5 +586,5 @@ private fun SaveUpdatePopup(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun ProfileScreenPrev() {
-    ProfileScreen(rememberNavController())
+//    ProfileScreen(rememberNavController())
 }

@@ -31,6 +31,7 @@ class UserDataStore(private val context: Context) {
         private val USER_PASSWORD = stringPreferencesKey("user_password")
         private val MURID_NISN = stringPreferencesKey("murid_nisn")
         private val GURU_NIP = stringPreferencesKey("guru_nip")
+        private val ACCESS_TOKEN = stringPreferencesKey("access_token")
     }
 
     val loginStatusFlow: Flow<Boolean> = context.dataStore.data.map { preferences ->
@@ -39,14 +40,17 @@ class UserDataStore(private val context: Context) {
 
     val userFlow: Flow<User> = context.dataStore.data.map {
         User(
-            user_id = it[USER_ID] ?: -1,
-            full_name = it[USER_FULLNAME] ?: "",
+            userId = it[USER_ID] ?: -1,
+            fullName = it[USER_FULLNAME] ?: "",
             email = it[USER_EMAIL] ?: "",
             username = it[USER_USERNAME] ?: "",
             school = it[USER_SCHOOL] ?: "",
-            user_type = it[USER_TYPE] ?: -1,
-            password = it[USER_PASSWORD] ?: ""
+            userType = it[USER_TYPE] ?: -1,
         )
+    }
+
+    val accessTokenFlow: Flow<String> = context.dataStore.data.map {
+            it[ACCESS_TOKEN] ?: ""
     }
 
     val nisnFlow: Flow<String> = context.dataStore.data.map {
@@ -79,15 +83,21 @@ class UserDataStore(private val context: Context) {
         }
     }
 
+    suspend fun saveToken(accessToken: String) {
+        context.dataStore.edit {
+            it[ACCESS_TOKEN] = accessToken
+        }
+    }
+
+
     suspend fun saveData(user: User, murid: Murid? = null, guru: Guru? = null) {
         context.dataStore.edit {
-            it[USER_ID] = user.user_id
-            it[USER_FULLNAME] = user.full_name
+            it[USER_ID] = user.userId
+            it[USER_FULLNAME] = user.fullName
             it[USER_EMAIL] = user.email
-            it[USER_PASSWORD] = user.password
             it[USER_SCHOOL] = user.school
             it[USER_USERNAME] = user.username
-            it[USER_TYPE] = user.user_type
+            it[USER_TYPE] = user.userType
             if (murid != null) {
                 it[MURID_NISN] = murid.nisn
             } else if (guru != null) {

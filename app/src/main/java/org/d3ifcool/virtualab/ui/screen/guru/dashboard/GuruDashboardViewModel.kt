@@ -1,37 +1,42 @@
-package org.d3ifcool.virtualab.ui.screen.guru.materi
+package org.d3ifcool.virtualab.ui.screen.guru.dashboard
 
+import UserRepository
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import org.d3ifcool.virtualab.data.model.Materi
+import org.d3ifcool.virtualab.data.model.CombinedPost
 import org.d3ifcool.virtualab.data.network.ApiStatus
-import org.d3ifcool.virtualab.repository.MaterialRepository
 import org.d3ifcool.virtualab.utils.Resource
 
-class GuruMateriViewModel(private val materialRepository: MaterialRepository) : ViewModel() {
+class GuruDashboardViewModel(
+    private val teacherId: Int,
+    private val userRepository: UserRepository
+) : ViewModel() {
 
-    var materials = MutableStateFlow(emptyList<Materi>())
+    var combinedPosts = MutableStateFlow(emptyList<CombinedPost>())
+        private set
+
     var apiStatus = MutableStateFlow(ApiStatus.LOADING)
         private set
-    var isRefreshing = MutableStateFlow(false)
-        private set
+
     var errorMessage = MutableStateFlow<String?>(null)
         private set
 
     init {
-        getMyMateri()
+        getPosts()
     }
 
-    fun getMyMateri() {
+    fun getPosts() {
         viewModelScope.launch(Dispatchers.IO) {
             apiStatus.value = ApiStatus.LOADING
-            when (val response = materialRepository.getMyMateri()){
+            when (val response = userRepository.getRecentPosts(teacherId)) {
                 is Resource.Success -> {
-                    materials.value = response.data!!
+                    combinedPosts.value = response.data!!
                     apiStatus.value = ApiStatus.SUCCESS
                 }
+
                 is Resource.Error -> {
                     errorMessage.value = response.message
                     apiStatus.value = ApiStatus.FAILED
@@ -39,9 +44,5 @@ class GuruMateriViewModel(private val materialRepository: MaterialRepository) : 
             }
         }
     }
-    fun refreshData() {
-        isRefreshing.value = true
-        getMyMateri()
-        isRefreshing.value = false
-    }
+
 }

@@ -1,12 +1,15 @@
 package org.d3ifcool.virtualab.ui.screen.admin.approval.content
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,18 +20,23 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -38,21 +46,54 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import org.d3ifcool.virtualab.R
+import org.d3ifcool.virtualab.data.model.LatihanDetail
+import org.d3ifcool.virtualab.data.model.LatihanReview
+import org.d3ifcool.virtualab.data.model.Materi
+import org.d3ifcool.virtualab.data.model.MateriReview
+import org.d3ifcool.virtualab.data.network.ApiService
+import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
+import org.d3ifcool.virtualab.ui.component.LargeText
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.SemiLargeText
 import org.d3ifcool.virtualab.ui.component.SmallText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.DarkBlue
+import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.ui.theme.GreenButton
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.RedButton
 
 @Composable
-fun FileInfoScreen(navController: NavHostController) {
+fun FileInfoScreen(
+    navController: NavHostController,
+    postType: String,
+    viewModel: FileInfoViewModel
+) {
+    val context = LocalContext.current
+
+    val successMessage by viewModel.successMessage.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
+
+    LaunchedEffect(successMessage) {
+        if (successMessage != null) {
+            Toast.makeText(context, successMessage, Toast.LENGTH_SHORT).show()
+            navController.navigate(Screen.CheckFile.route) {
+                popUpTo(Screen.AdminDashboard.route)
+            } 
+        }
+    }
+
+    LaunchedEffect(errorMessage) {
+        if (errorMessage != null) {
+            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+        }
+    }
     val snackBarHostState = remember {
         SnackbarHostState()
     }
@@ -62,94 +103,177 @@ fun FileInfoScreen(navController: NavHostController) {
         }, bottomBar = {
             BottomNav(navController = navController)
         }) {
-        ScreenContent(modifier = Modifier.padding(it))
+        ScreenContent(modifier = Modifier.padding(it), postType, viewModel)
     }
 }
 
 @Composable
-private fun ScreenContent(modifier: Modifier) {
+private fun ScreenContent(modifier: Modifier, postType: String, viewModel: FileInfoViewModel) {
     var showDialog by remember { mutableStateOf(false) }
-    val context = LocalContext.current
+    val status by viewModel.apiStatus.collectAsState()
+    val data by viewModel.data.collectAsState()
+    var materiData: Materi? = null
+    var latihanData: LatihanDetail? = null
+    var dataId: Int? = null
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(24.dp)
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        InfoAuthor(nip = "199202262017051001", username = "suyanto")
-        RegularText(
-            text = stringResource(R.string.judul_materi_guru),
-            fontWeight = FontWeight.SemiBold
-        )
-        RegularText(
-            text = stringResource(R.string.judul_materi_data),
-            fontWeight = FontWeight.Normal
-        )
-        RegularText(
-            text = stringResource(R.string.media_pembelajaran),
-            fontWeight = FontWeight.SemiBold
-        )
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Image(
-                modifier = Modifier.size(90.dp),
-                painter = painterResource(R.drawable.media_example),
-                contentDescription = "File Media Pembelajaran"
-            )
-            Spacer(modifier = Modifier.padding(vertical = 6.dp))
-            RegularText(
-                text = stringResource(R.string.file_media_belajar),
-                fontWeight = FontWeight.Normal
-            )
+
+    when (status) {
+        ApiStatus.IDLE -> null
+        ApiStatus.LOADING -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(color = DarkBlueDarker)
+            }
         }
-        RegularText(
-            text = stringResource(R.string.deskripsi_text),
-            fontWeight = FontWeight.SemiBold
-        )
-        RegularText(
-            text = stringResource(R.string.guru_deskripsi_materi_data),
-            fontWeight = FontWeight.Normal,
-            textAlign = TextAlign.Justify
-        )
-        Column(
-            modifier = Modifier
-                .padding(vertical = 8.dp)
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Button(
-                onClick = {
-                    Toast.makeText(context, R.string.accept_file_toast, Toast.LENGTH_LONG).show()
-                },
-                shape = RoundedCornerShape(5.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = GreenButton,
-                    contentColor = Color.Black
-                )
-            ) {
-                RegularText(text = stringResource(id = R.string.button_terima))
+
+        ApiStatus.SUCCESS -> {
+            if (postType == "Materi") {
+                materiData = data as Materi
+                dataId = materiData.materiReview!!.materialId
+            } else {
+                latihanData = data as LatihanDetail
+                dataId = latihanData.latihanReview!!.exerciseId
             }
-            Button(
-                onClick = { showDialog = true },
-                shape = RoundedCornerShape(5.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = RedButton,
-                    contentColor = Color.White
-                )
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .background(Color.White)
+                    .padding(24.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                RegularText(text = stringResource(id = R.string.button_tolak), color = Color.White)
+                if (postType == "Materi") {
+                    MaterialContent(data = materiData!!.materiReview!!)
+                } else {
+                    ExerciseContent(data = latihanData!!.latihanReview!!)
+                }
+                Column(
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Button(
+                        onClick = {
+                            viewModel.approveData(dataId, postType)
+                        },
+                        shape = RoundedCornerShape(5.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = GreenButton,
+                            contentColor = Color.Black
+                        )
+                    ) {
+                        RegularText(text = stringResource(id = R.string.button_terima))
+                    }
+                    Button(
+                        onClick = { showDialog = true },
+                        shape = RoundedCornerShape(5.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = RedButton,
+                            contentColor = Color.White
+                        )
+                    ) {
+                        RegularText(
+                            text = stringResource(id = R.string.button_tolak),
+                            color = Color.White
+                        )
+                    }
+                    if (showDialog) {
+                        RejectFilePopup(onDismiss = { showDialog = false }) {
+                            viewModel.rejectData(dataId, postType)
+                        }
+                    }
+                }
             }
-            if (showDialog) {
-                RejectFilePopup(onDismiss = { showDialog = false })
+        }
+
+        ApiStatus.FAILED -> {
+            RegularText(text = "Gagal memuat data.")
+            Button(onClick = { viewModel.getData() }) {
+                RegularText(text = "Coba Lagi.")
             }
         }
     }
+}
+
+@Composable
+private fun MaterialContent(data: MateriReview) {
+    InfoAuthor(nip = data.authorNip, username = data.authorUserName)
+    RegularText(
+        text = stringResource(R.string.judul_materi_guru),
+        fontWeight = FontWeight.SemiBold
+    )
+    RegularText(
+        text = data.title,
+        fontWeight = FontWeight.Normal
+    )
+    RegularText(
+        text = stringResource(R.string.media_pembelajaran),
+        fontWeight = FontWeight.SemiBold
+    )
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        if (data.mediaType == "image") {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(ApiService.getContent(data.materialId))
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(id = R.drawable.loading_img),
+                    error = painterResource(id = R.drawable.broken_image),
+                    modifier = Modifier
+                        .size(225.dp)
+                        .aspectRatio(1f)
+                        .clip(RoundedCornerShape(10.dp))
+                )
+            }
+        }
+        Spacer(modifier = Modifier.padding(vertical = 6.dp))
+        RegularText(
+            text = data.filename,
+            fontWeight = FontWeight.Normal,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+    RegularText(
+        text = stringResource(R.string.deskripsi_text),
+        fontWeight = FontWeight.SemiBold
+    )
+    RegularText(
+        text = data.description,
+        fontWeight = FontWeight.Normal,
+        textAlign = TextAlign.Justify
+    )
+}
+
+@Composable
+private fun ExerciseContent(data: LatihanReview) {
+    InfoAuthor(nip = data.authorNip, username = data.authorUserName)
+    RegularText(
+        text = "Soal Latihan",
+        fontWeight = FontWeight.SemiBold
+    )
+    RegularText(
+        text = data.title,
+        fontWeight = FontWeight.Normal
+    )
+    SmallText(
+        text = "Jumlah Soal: ${data.questionCount}",
+        fontWeight = FontWeight.SemiBold
+    )
+    RegularText(
+        text = "Tingkat Kesulitan",
+        fontWeight = FontWeight.SemiBold
+    )
+    RegularText(
+        text = data.difficulty,
+        fontWeight = FontWeight.Normal,
+    )
 }
 
 @Composable
@@ -189,7 +313,7 @@ private fun InfoAuthor(nip: String, username: String) {
 }
 
 @Composable
-private fun RejectFilePopup(onDismiss: () -> Unit) {
+private fun RejectFilePopup(onDismiss: () -> Unit, onClick: () -> Unit) {
     AlertDialog(
         containerColor = Color.White,
         onDismissRequest = { onDismiss() },
@@ -203,7 +327,7 @@ private fun RejectFilePopup(onDismiss: () -> Unit) {
         title = { SemiLargeText(text = "Tolak berkas ini?", fontWeight = FontWeight.SemiBold) },
         confirmButton = {
             Button(
-                onClick = { onDismiss() },
+                onClick = { onClick() },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = RedButton,
                     contentColor = Color.White
@@ -231,5 +355,5 @@ private fun RejectFilePopup(onDismiss: () -> Unit) {
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 private fun Prev() {
-    FileInfoScreen(rememberNavController())
+//    FileInfoScreen(rememberNavController())
 }

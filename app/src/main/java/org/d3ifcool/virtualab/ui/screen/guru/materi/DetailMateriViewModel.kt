@@ -1,5 +1,6 @@
 package org.d3ifcool.virtualab.ui.screen.guru.materi
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -10,38 +11,38 @@ import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.repository.MaterialRepository
 import org.d3ifcool.virtualab.utils.Resource
 
-class GuruMateriViewModel(private val materialRepository: MaterialRepository) : ViewModel() {
+class DetailMateriViewModel(
+    private val materialId: Int,
+    private val materialRepository: MaterialRepository
+) : ViewModel() {
+    var materiData = MutableStateFlow<Materi?>(null)
+        private set
 
-    var materials = MutableStateFlow(emptyList<Materi>())
     var apiStatus = MutableStateFlow(ApiStatus.LOADING)
         private set
-    var isRefreshing = MutableStateFlow(false)
-        private set
+
     var errorMessage = MutableStateFlow<String?>(null)
         private set
 
     init {
-        getMyMateri()
+        Log.d("DetailMateriVM", "material ID: $materialId")
+        getMateri()
     }
 
-    fun getMyMateri() {
+    fun getMateri() {
         viewModelScope.launch(Dispatchers.IO) {
             apiStatus.value = ApiStatus.LOADING
-            when (val response = materialRepository.getMyMateri()){
+            when (val response = materialRepository.getDetailMateri(materialId)) {
                 is Resource.Success -> {
-                    materials.value = response.data!!
+                    materiData.value = response.data!!
                     apiStatus.value = ApiStatus.SUCCESS
                 }
+
                 is Resource.Error -> {
                     errorMessage.value = response.message
                     apiStatus.value = ApiStatus.FAILED
                 }
             }
         }
-    }
-    fun refreshData() {
-        isRefreshing.value = true
-        getMyMateri()
-        isRefreshing.value = false
     }
 }

@@ -47,10 +47,8 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import org.d3ifcool.virtualab.R
-import org.d3ifcool.virtualab.data.model.User
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.LargeText
@@ -58,18 +56,11 @@ import org.d3ifcool.virtualab.ui.component.PopUpDialog
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.theme.GreenButton
 import org.d3ifcool.virtualab.ui.theme.RedButton
-import org.d3ifcool.virtualab.utils.UserDataStore
-import org.d3ifcool.virtualab.utils.ViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UsersInfoScreen(navController: NavHostController, userId: Int) {
-    Log.d("Users Info Screen", "User ID at Users Info: $userId")
+fun UsersInfoScreen(navController: NavHostController, viewModel: UserInfoViewModel) {
     val context = LocalContext.current
-    val dataStore = UserDataStore(context)
-    val adminData by dataStore.userFlow.collectAsState(User())
-    val factory = ViewModelFactory(user_id = userId)
-    val viewModel: UserInfoViewModel = viewModel(factory = factory)
     val approveResponse by viewModel.approveResponse.collectAsState()
     val rejectResponse by viewModel.rejectResponse.collectAsState()
 
@@ -114,7 +105,7 @@ fun UsersInfoScreen(navController: NavHostController, userId: Int) {
     }, bottomBar = {
         BottomNav(navController = navController)
     }) {
-        ScreenContent(modifier = Modifier.padding(it), viewModel, context, adminData.email)
+        ScreenContent(modifier = Modifier.padding(it), viewModel, context)
     }
 }
 
@@ -123,7 +114,6 @@ private fun ScreenContent(
     modifier: Modifier,
     viewModel: UserInfoViewModel,
     context: Context,
-    adminEmail: String?
 ) {
 
     var password by remember { mutableStateOf("") }
@@ -136,13 +126,13 @@ private fun ScreenContent(
     val fetchedUser by viewModel.fetchedUser.collectAsState()
 
     if (fetchedUser != null) {
-        fullname = fetchedUser?.user?.full_name ?: ""
+        fullname = fetchedUser?.user?.fullName ?: ""
         username = fetchedUser?.user?.username ?: ""
         email = fetchedUser?.user?.email ?: ""
-        userId = fetchedUser?.user?.user_id ?: 0
+        userId = fetchedUser?.user?.userId ?: 0
         school = fetchedUser?.user?.school ?: ""
         uniqueId =
-            if (fetchedUser?.user?.user_type == 0) fetchedUser?.student?.nisn ?: ""
+            if (fetchedUser?.user?.userType == 0) fetchedUser?.student?.nisn ?: ""
             else fetchedUser?.teacher?.nip ?: ""
     }
 
@@ -153,7 +143,7 @@ private fun ScreenContent(
 
     LaunchedEffect(isEmailSent) {
         if (isEmailSent) {
-            viewModel.approveUser(adminEmail!!, userId, password)
+            viewModel.approveUser(userId, password)
         }
     }
 
@@ -221,7 +211,7 @@ private fun ScreenContent(
                 icon = R.drawable.icon_accept_akun,
                 "Tolak Akun ini?"
             ) {
-                viewModel.rejectUser(adminEmail!!, userId)
+                viewModel.rejectUser(userId)
             }
         }
     }

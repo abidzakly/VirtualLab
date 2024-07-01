@@ -86,11 +86,9 @@ import org.d3ifcool.virtualab.utils.ViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterScreen(navController: NavHostController, id: Int) {
+fun RegisterScreen(navController: NavHostController, id: Int, viewModel: AuthViewModel) {
     val context = LocalContext.current
     val dataStore = UserDataStore(context)
-    val factory = ViewModelFactory(userDataStore = dataStore)
-    val viewModel: AuthViewModel = viewModel(factory = factory)
     val apiStatus by viewModel.apiStatus.collectAsState()
     val errorMsg by viewModel.errorMsg.collectAsState()
 
@@ -604,6 +602,6 @@ private fun RegistSuccessPopup(onDismiss: () -> Unit, navController: NavHostCont
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun RegisterScreenPreview() {
-    RegisterScreen(rememberNavController(), 0)
+//    RegisterScreen(rememberNavController(), 0)
 //RegistSuccessPopup(onDismiss = { /*TODO*/ }, navController = rememberNavController())
 }
