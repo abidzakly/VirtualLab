@@ -170,7 +170,8 @@ fun ManageContentScreen(navController: NavHostController) {
         },
             bottomBar = {
                 BottomNav(currentRoute = Screen.AdminDashboard.route, navController = navController)
-            }) {
+            }
+        ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
