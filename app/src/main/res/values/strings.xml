@@ -213,6 +213,7 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
     <string name="category_kelola_materi">Kelola Materi</string>
 
     <!--    Users Info Admin   -->
+    <string name="check_users_title">"Daftar akun baru dibuat: "</string>
     <string name="button_terima">Terima</string>
     <string name="button_tolak">Tolak</string>
     <string name="accept_user_toast">Anda menerima akun ini</string>
@@ -223,5 +224,6 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
 
     <!--    Konten Pengenalan Admin   -->
     <string name="update_icon">Ubah data konten</string>
-    <string name="check_users_title">"Daftar akun baru dibuat: "</string>
+    <string name="video_pengenalan_title">Video pengenalan</string>
+    <string name="judul_pengenalan">Judul Pengenalan Materi</string>
 </resources>
