@@ -1,18 +1,40 @@
 package org.d3ifcool.virtualab.data.model
 
+import com.squareup.moshi.Json
+
 data class Latihan(
-    val exercise_id: Int,
+    @Json(name = "exercise_id")
+    val exerciseId: Int,
     val title: String,
     val difficulty: String,
-    val question_count: Int,
-    val approval_status: String = "DRAFT",
-    val author_id: Int,
+    @Json(name = "question_count")
+    val questionCount: Int,
+    @Json(name = "approval_status")
+    val approvalStatus: String = "DRAFT",
+    @Json(name = "author_id")
+    val authorId: Int,
+)
+
+data class LatihanReview(
+    val title: String,
+    val difficulty: String,
+    @Json(name = "question_count")
+    val questionCount: Int,
+    @Json(name = "exercise_id")
+    val exerciseId: Int,
+    @Json(name = "author_username")
+    val authorUserName: String,
+    @Json(name = "author_nip")
+    val authorNip: String,
 )
 
 data class ExerciseCreate(
     val title: String,
     val difficulty: String,
-    val question_count: Int,
-    val author_id: Int,
-    val approval_status: String = "DRAFT",
+    @Json(name = "question_count")
+    val questionCount: Int,
+    @Json(name = "author_id")
+    val authorId: Int,
+    @Json(name = "approval_status")
+    val approvalStatus: String = "DRAFT",
 )

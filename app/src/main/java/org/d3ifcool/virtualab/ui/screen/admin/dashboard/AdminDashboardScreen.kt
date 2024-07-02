@@ -2,7 +2,6 @@ package org.d3ifcool.virtualab.ui.screen.admin.dashboard
 
 import android.content.res.Configuration
 import android.util.Log
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -67,7 +66,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
     val user by dataStore.userFlow.collectAsState(User())
     Log.d(
         "Admin Dashboard",
-        "Admin data = email: ${user.email}, userType: ${user.user_type}, id: ${user.user_id}"
+        "Admin data = email: ${user.email}, userType: ${user.userType}, id: ${user.userId}"
     )
 
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
@@ -103,7 +102,7 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                             title = R.string.category_check_account,
                             image = R.drawable.check_role_illustration,
                         ) {
-                            navController.navigate(Screen.CheckUser.withEmail(user.email))
+                            navController.navigate(Screen.CheckUser.route)
                         }
                         GridItem(
                             title = R.string.category_check_file,

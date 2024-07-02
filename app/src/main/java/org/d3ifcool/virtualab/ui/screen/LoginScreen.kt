@@ -36,7 +36,6 @@ import androidx.compose.material3.TextFieldDefaults.colors
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -61,9 +60,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
@@ -72,16 +69,11 @@ import org.d3ifcool.virtualab.ui.theme.BlueLink
 import org.d3ifcool.virtualab.ui.theme.GrayText
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.Poppins
-import org.d3ifcool.virtualab.utils.UserDataStore
-import org.d3ifcool.virtualab.utils.ViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController: NavHostController) {
+fun LoginScreen(navController: NavHostController, viewModel: AuthViewModel) {
     val context = LocalContext.current
-    val dataStore = UserDataStore(context)
-    val factory = ViewModelFactory(userDataStore = dataStore)
-    val viewModel: AuthViewModel = viewModel(factory = factory)
 
     val currentUser by viewModel.currentUser.collectAsState()
     val apiStatus by viewModel.apiStatus.collectAsState()
@@ -94,13 +86,8 @@ fun LoginScreen(navController: NavHostController) {
 
         ApiStatus.SUCCESS -> {
             if (currentUser != null) {
-                Log.d("LoginScreen", "UserType: ${currentUser!!.user!!.user_type}")
-                Log.d(
-                    "LoginScreen",
-                    "User: ${currentUser!!.user!!}\nGuru: ${currentUser!!.teacher}\nMurid: ${currentUser!!.student}"
-                )
                 Toast.makeText(context, "Login Berhasil!", Toast.LENGTH_SHORT).show()
-                when (currentUser!!.user!!.user_type) {
+                when (currentUser!!.user!!.userType) {
                     0 -> navController.navigate(Screen.MuridDashboard.route)
 
                     1 -> navController.navigate(Screen.GuruDashboard.route)
@@ -285,5 +272,5 @@ private fun LoginScreenContent(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun LoginScreenPreview() {
-    LoginScreen(rememberNavController())
+//    LoginScreen(rememberNavController())
 }

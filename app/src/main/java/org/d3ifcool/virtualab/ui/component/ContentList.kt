@@ -56,7 +56,8 @@ fun ContentList(title: String, desc: String, status: String, onClick: () -> Unit
                     text = desc,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    fontWeight = FontWeight.ExtraLight
+                    fontWeight = FontWeight.ExtraLight,
+                    color = GrayStatus
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Row {

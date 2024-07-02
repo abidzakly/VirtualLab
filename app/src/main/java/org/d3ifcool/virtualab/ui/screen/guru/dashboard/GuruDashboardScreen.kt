@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -21,6 +23,7 @@ import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,7 +41,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
@@ -51,7 +53,7 @@ import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GuruDashboardScreen(navController: NavHostController) {
+fun GuruDashboardScreen(navController: NavHostController, viewModel: GuruDashboardViewModel) {
     val sheetStateBuat = rememberBottomSheetScaffoldState()
     val sheetStateLihat = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberStandardBottomSheetState(
@@ -115,7 +117,8 @@ fun GuruDashboardScreen(navController: NavHostController) {
             modifier = Modifier
                 .padding(padding)
                 .zIndex(-2f),
-            navController
+            navController,
+            viewModel
         )
         LaunchedEffect(sheetStateBuat.bottomSheetState) {
             snapshotFlow { sheetStateBuat.bottomSheetState.currentValue }
@@ -175,37 +178,61 @@ fun GuruDashboardScreen(navController: NavHostController) {
 }
 
 @Composable
-private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
-    Column(modifier = modifier.verticalScroll(rememberScrollState())) {
+private fun ScreenContent(
+    modifier: Modifier,
+    navController: NavHostController,
+    viewModel: GuruDashboardViewModel
+) {
+    val combinedPosts by viewModel.combinedPosts.collectAsState()
+    Column(modifier = modifier) {
         TopNavDashboard(name = "Guru", navController = navController)
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .padding(horizontal = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            RegularText(
-                text = stringResource(id = R.string.dashboard_guru_sub_header),
-                modifier = Modifier
-                    .padding(vertical = 24.dp)
-                    .fillMaxWidth()
-            )
-            ContentList(
-                title = "Pengenalan Reaksi Kimiaadasdasd",
-                desc = "Lorem ipsum dolor sit amet, cacasdasd",
-                status = "APPROVED"
-            ) {
-//                navController.navigate()
+            item {
+                RegularText(
+                    text = stringResource(id = R.string.dashboard_guru_sub_header),
+                    modifier = Modifier
+                        .padding(vertical = 24.dp)
+                        .fillMaxWidth()
+                )
             }
-            ContentList(
-                title = "Persamaan Reaksi 2",
-                desc = "Lorem ipsum dolor sit amet, cacasdasd",
-                "DRAFT"
-            ) {
-//                navController.navigate()
+            items(combinedPosts) {
+                Log.d("GuruDashboard", "CombinedPost: $it")
+                ContentList(
+                    title = it.title,
+                    desc = if (it.postType == "Materi") it.description else "Tingkat Kesulitan: ${it.description}",
+                    status = it.approvalStatus
+                ) {
+                    if (it.postType == "Materi") {
+                        Log.d("GuruDashboard", "material ID: ${it.postId}")
+                        navController.navigate(Screen.GuruDetailMateri.withId(it.postId))
+                    }
+                }
             }
-            ContentList(title = "Reaksi Kimia pada...", desc = "Lorem ipsum dolor sit amet, cacasdasd", "PENDING") {
-//                navController.navigate()
-            }
+//            ContentList(
+//                title = "Pengenalan Reaksi Kimiaadasdasd",
+//                desc = "Lorem ipsum dolor sit amet, cacasdasd",
+//                status = "APPROVED"
+//            ) {
+////                navController.navigate()
+//            }
+//            ContentList(
+//                title = "Persamaan Reaksi 2",
+//                desc = "Lorem ipsum dolor sit amet, cacasdasd",
+//                "DRAFT"
+//            ) {
+////                navController.navigate()
+//            }
+//            ContentList(
+//                title = "Reaksi Kimia pada...",
+//                desc = "Lorem ipsum dolor sit amet, cacasdasd",
+//                "PENDING"
+//            ) {
+////                navController.navigate()
+//            }
         }
     }
 }
@@ -215,5 +242,5 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun Prev() {
-    GuruDashboardScreen(navController = rememberNavController())
+//    GuruDashboardScreen(navController = rememberNavController())
 }

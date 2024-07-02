@@ -1,5 +1,6 @@
 package org.d3ifcool.virtualab.ui.screen.admin.approval.account
 
+import UserRepository
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -9,18 +10,21 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import org.d3ifcool.virtualab.data.network.ApiService
 import org.d3ifcool.virtualab.data.model.CombinedUser
 import org.d3ifcool.virtualab.data.model.MessageResponse
-import retrofit2.HttpException
+import org.d3ifcool.virtualab.data.network.ApiStatus
+import org.d3ifcool.virtualab.utils.Resource
 
-class UserInfoViewModel(private val userId: Int) : ViewModel() {
+class UserInfoViewModel(private val userId: Int, private val userRepository: UserRepository) : ViewModel() {
 
     private val _fetchedUser = MutableStateFlow<CombinedUser?>(null)
     val fetchedUser: StateFlow<CombinedUser?> = _fetchedUser
 
     private val _errorMsg = MutableStateFlow<String?>("")
     val errorMsg: StateFlow<String?> = _errorMsg
+
+    private val _apiStatus = MutableStateFlow(ApiStatus.LOADING)
+    val apiStatus: StateFlow<ApiStatus> = _apiStatus
 
     private val _approveResponse = MutableStateFlow<MessageResponse?>(null)
     val approveResponse: StateFlow<MessageResponse?> = _approveResponse
@@ -37,37 +41,42 @@ class UserInfoViewModel(private val userId: Int) : ViewModel() {
 
     private fun getUsersInfo() {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                _fetchedUser.value = ApiService.userService.getUserbyId(userId)
+                when (val response = userRepository.getUserById(userId, true)) {
+                    is Resource.Success -> {
+                        _fetchedUser.value = response.data
+                        _apiStatus.value = ApiStatus.SUCCESS
+                    }
+                    is Resource.Error -> {
+                        _errorMsg.value = response.message
+                        _apiStatus.value = ApiStatus.FAILED
+                    }
+                }
                 Log.d("FETCHED_USER", "Fetched User: ${_fetchedUser.value}")
-            } catch (e: HttpException) {
-                _errorMsg.value =
-                    e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
-                        ?.replace("detail", "")
+        }
+    }
+
+    fun approveUser(userId: Int, password: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            when (val response = userRepository.approveUser(userId, password)) {
+                is Resource.Success -> {
+                    _approveResponse.value = response.data
+                }
+                is Resource.Error -> {
+                    _errorMsg.value = response.message
+                }
             }
         }
     }
 
-    fun approveUser(auth: String, userId: Int, password: String) {
+    fun rejectUser(userId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                _approveResponse.value = ApiService.userService.approveUser(auth, userId, password)
-            } catch (e: HttpException) {
-                _errorMsg.value =
-                    e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
-                        ?.replace("detail", "")
-            }
-        }
-    }
-
-    fun rejectUser(auth: String, userId: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                _rejectResponse.value = ApiService.userService.rejectUser(auth, userId)
-            } catch (e: HttpException) {
-                _errorMsg.value =
-                    e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
-                        ?.replace("detail", "")
+            when (val response = userRepository.rejectUser(userId)) {
+                is Resource.Success -> {
+                    _rejectResponse.value = response.data
+                }
+                is Resource.Error -> {
+                    _errorMsg.value = response.message
+                }
             }
         }
     }

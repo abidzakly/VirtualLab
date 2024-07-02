@@ -1,25 +1,23 @@
-import org.d3ifcool.virtualab.data.model.CombinedPost
-import org.d3ifcool.virtualab.data.model.CombinedUser
-import org.d3ifcool.virtualab.data.model.CombinedUsers
-import org.d3ifcool.virtualab.data.model.Guru
+package org.d3ifcool.virtualab.repository
+
+import org.d3ifcool.virtualab.data.model.CombinedLatihan
+import org.d3ifcool.virtualab.data.model.LatihanDetail
+import org.d3ifcool.virtualab.data.model.ExerciseCreate
+import org.d3ifcool.virtualab.data.model.Latihan
 import org.d3ifcool.virtualab.data.model.MessageResponse
-import org.d3ifcool.virtualab.data.model.Murid
-import org.d3ifcool.virtualab.data.model.PendingPosts
-import org.d3ifcool.virtualab.data.model.UserUpdate
-import org.d3ifcool.virtualab.data.network.apis.AuthorizedUserApi
+import org.d3ifcool.virtualab.data.model.QuestionCreate
+import org.d3ifcool.virtualab.data.model.Soal
+import org.d3ifcool.virtualab.data.network.apis.AuthorizedLatihanApi
 import org.d3ifcool.virtualab.utils.ErrorMessage
 import org.d3ifcool.virtualab.utils.Resource
-import org.d3ifcool.virtualab.utils.UserDataStore
 import retrofit2.HttpException
 
-class UserRepository(
-    private val dataStore: UserDataStore,
-    private val userApi: AuthorizedUserApi
+class ExerciseRepository(
+    private val latihanApi: AuthorizedLatihanApi
 ) {
-
-    suspend fun getPendingPosts(): Resource<List<PendingPosts>> {
+    suspend fun addLatihan(content: ExerciseCreate): Resource<Latihan> {
         return try {
-            val response = userApi.getPendingPosts()
+            val response = latihanApi.addLatihan(content)
             Resource.Success(response)
         } catch (e: HttpException) {
             val errorMessage =
@@ -34,45 +32,9 @@ class UserRepository(
         }
     }
 
-    suspend fun getRecentPosts(teacherId: Int): Resource<List<CombinedPost>> {
+    suspend fun getMyLatihan(): Resource<List<Latihan>> {
         return try {
-            val response = userApi.getRecentPosts(teacherId)
-            Resource.Success(response)
-        } catch (e: HttpException) {
-            val errorMessage =
-                when (e.code()) {
-                    500 -> ErrorMessage.applicationError
-                    else -> {
-                        e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
-                            ?.replace("detail", "")
-                    }
-                }
-            Resource.Error(errorMessage!!)
-        }
-    }
-    suspend fun getPendingUser(): Resource<List<CombinedUsers>> {
-        return try {
-            val response = userApi.getAllPendingUser()
-            return Resource.Success(data = response)
-        } catch (e: HttpException) {
-            val errorMessage =
-                when (e.code()) {
-                    500 -> ErrorMessage.applicationError
-                    else -> {
-                        e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
-                            ?.replace("detail", "")
-                    }
-                }
-            Resource.Error(errorMessage!!)
-        }
-    }
-
-    suspend fun getUserById(userId: Int, isAdmin: Boolean): Resource<CombinedUser> {
-        return try {
-            val response = userApi.getUserbyId(userId)
-            if (!isAdmin) {
-                updateToDataStore(response)
-            }
+            val response = latihanApi.getMyLatihan()
             Resource.Success(response)
         } catch (e: HttpException) {
             val errorMessage =
@@ -87,11 +49,9 @@ class UserRepository(
         }
     }
 
-
-    suspend fun update(userId: Int, oldPassword: String, update: UserUpdate): Resource<MessageResponse> {
+    suspend fun getDetailLatihan(latihanId: Int): Resource<LatihanDetail> {
         return try {
-            val response = userApi.updateUser(userId, oldPassword, update)
-            this.getUserById(userId, false)
+            val response = latihanApi.getDetailLatihan(latihanId)
             Resource.Success(response)
         } catch (e: HttpException) {
             val errorMessage =
@@ -106,30 +66,9 @@ class UserRepository(
         }
     }
 
-    private suspend fun updateToDataStore(data: CombinedUser) {
-        val user = data.user!!
-        val student = data.student?.let {
-            Murid(
-                studentId = it.studentId,
-                nisn = it.nisn
-            )
-        }
-        val teacher = data.teacher?.let {
-            Guru(
-                teacherId = it.teacherId,
-                nip = it.nip
-            )
-        }
-        dataStore.saveData(
-            user,
-            student,
-            teacher
-        )
-    }
-
-    suspend fun approveUser(userId: Int, password: String): Resource<MessageResponse> {
+    suspend fun deleteLatihan(latihanId: Int): Resource<MessageResponse> {
         return try {
-            val response = userApi.approveUser(userId, password)
+            val response = latihanApi.deleteLatihan(latihanId)
             Resource.Success(response)
         } catch (e: HttpException) {
             val errorMessage =
@@ -144,9 +83,43 @@ class UserRepository(
         }
     }
 
-    suspend fun rejectUser(userId: Int): Resource<MessageResponse> {
+    suspend fun addSoal(latihanId: Int, soal: List<QuestionCreate>): Resource<MessageResponse> {
         return try {
-            val response = userApi.rejectUser(userId)
+            val response = latihanApi.addSoal(latihanId, soal)
+            Resource.Success(response)
+        } catch (e: HttpException) {
+            val errorMessage =
+                when (e.code()) {
+                    500 -> ErrorMessage.applicationError
+                    else -> {
+                        e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
+                            ?.replace("detail", "")
+                    }
+                }
+            Resource.Error(errorMessage!!)
+        }
+    }
+
+    suspend fun getSoalByExerciseId(latihanId: Int): Resource<List<CombinedLatihan>> {
+        return try {
+            val response = latihanApi.getSoalbyExerciseId(latihanId)
+            Resource.Success(response)
+        } catch (e: HttpException) {
+            val errorMessage =
+                when (e.code()) {
+                    500 -> ErrorMessage.applicationError
+                    else -> {
+                        e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
+                            ?.replace("detail", "")
+                    }
+                }
+            Resource.Error(errorMessage!!)
+        }
+    }
+
+    suspend fun approveOrReject(latihanId: Int, status: String): Resource<MessageResponse> {
+        return try {
+            val response = latihanApi.modifyLatihanStatus(latihanId, status)
             Resource.Success(response)
         } catch (e: HttpException) {
             val errorMessage =

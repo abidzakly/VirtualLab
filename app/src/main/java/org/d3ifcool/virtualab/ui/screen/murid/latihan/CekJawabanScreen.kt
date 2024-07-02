@@ -50,8 +50,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
-import org.d3ifcool.virtualab.data.model.JawabanMuridDummy
-import org.d3ifcool.virtualab.data.model.SoalDummy
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
@@ -75,133 +73,136 @@ fun CekJawabanScreen(navController: NavHostController) {
         },
         containerColor = Color.White
     ) {
-        ScreenContent(modifier = Modifier.padding(it), navController)
+        Column(modifier = Modifier.padding(it)) {
+
+        }
+//        ScreenContent(modifier = Modifier.padding(it), navController)
     }
 }
 
-@Composable
-private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
-    val viewModel: DetailLatihanVM = viewModel()
-
-    val answers by viewModel.answers.collectAsState()
-    Log.d("Itemlist @Cek Jawaban", "answers: ${answers.size}")
-
-    val question1 = SoalDummy(1, 1, "C4H10 + O2 = ... CO2 + O...", "2;4")
-    val jawabanMurid1 = JawabanMuridDummy(1, 1, 1, 2)
-
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 32.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
-        Spacer(modifier = Modifier.height(12.dp))
-        RegularText(text = stringResource(R.string.kerjakan_latihan_header))
-        Column(
-            modifier = Modifier
-                .padding(top = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            ItemList(question1, jawabanMurid1, viewModel)
-            ItemList(question1, jawabanMurid1, viewModel)
-            Spacer(modifier = Modifier.height(16.dp))
-            RegularText(text = "Nilai Latihan : 50", fontWeight = FontWeight.SemiBold)
-            Spacer(modifier = Modifier.height(24.dp))
-            Button(
-                onClick = { navController.navigate(Screen.Nilai.route) },
-                colors = ButtonDefaults.buttonColors(DarkBlueDarker),
-                contentPadding = PaddingValues(vertical = 9.dp, horizontal = 47.dp),
-                shape = RoundedCornerShape(5.dp)
-            ) {
-                RegularText(text = "Selesai", fontWeight = FontWeight.SemiBold, color = Color.White)
-            }
-            Spacer(modifier = Modifier.height(30.dp))
-        }
-    }
-}
-
-@Composable
-private fun ItemList(question: SoalDummy, jawabanMurid: JawabanMuridDummy?, viewModel: DetailLatihanVM) {
-    val jawabanBenar = question.answerKey.split(";").map { it.toInt() }
-    val isCorrect = jawabanMurid?.selectedOptionId in jawabanBenar
-    val nilaiSoal = if (isCorrect) 10 else 0
-
-    var expanded by remember { mutableStateOf(false) }
-    Column {
-        Row(
-            modifier = Modifier
-            .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            RegularText(text = "Soal ${question.questionId}")
-            Spacer(modifier = Modifier.width(4.dp))
-            if (isCorrect) {
-                Icon(
-                    imageVector = Icons.Default.CheckCircle,
-                    contentDescription = "Jawaban benar",
-                    tint = GreenButton
-                )
-            } else {
-                Icon(
-                    imageVector = Icons.Default.Cancel,
-                    contentDescription = "Jawaban salah",
-                    tint = RedButton
-                )
-            }
-        }
-        Spacer(modifier = Modifier.height(14.dp))
-        MediumLargeText(text = question.questionText)
-        Spacer(modifier = Modifier.height(14.dp))
-        Box(
-            modifier = Modifier
-                .shadow(elevation = 5.dp, shape = RoundedCornerShape(10.dp))
-                .fillMaxWidth()
-                .background(LightBlue2)
-                .clip(shape = RoundedCornerShape(10.dp))
-                .padding(horizontal = 8.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp)
-            ) {
-                RegularText(text = "Jawaban kamu: ", fontWeight = FontWeight.SemiBold)
-                RegularText(text = "${jawabanMurid?.selectedOptionId}")
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { expanded = !expanded },
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    RegularText(text = stringResource(id = R.string.lihat_kunci_jawaban))
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Icon(
-                        imageVector = if (expanded) Icons.Outlined.KeyboardArrowUp else Icons.Outlined.KeyboardArrowDown,
-                        contentDescription = "Expand/Collapse",
-                        tint = Color.Black
-                    )
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                if (expanded) {
-                    Box(
-                        modifier = Modifier
-                            .padding(top = 8.dp)
-                            .background(color = LightBlue, shape = RoundedCornerShape(10.dp))
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                    ) {
-                        RegularText(
-                            text = "Jawaban Benar: ${question.answerKey}"
-                        )
-                    }
-                }
-            }
-        }
-    }
-    Spacer(modifier = Modifier.height(14.dp))
-}
-@Preview
-@Composable
-private fun Prev() {
-    MuridDetailLatihanScreen(rememberNavController())
-}
+//@Composable
+//private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
+//    val viewModel: DetailLatihanVM = viewModel()
+//
+//    val answers by viewModel.answers.collectAsState()
+//    Log.d("Itemlist @Cek Jawaban", "answers: ${answers.size}")
+//
+////    val question1 = SoalDummy(1, 1, "C4H10 + O2 = ... CO2 + O...", "2;4")
+////    val jawabanMurid1 = JawabanMuridDummy(1, 1, 1, 2)
+//
+//    Column(
+//        modifier = modifier
+//            .fillMaxSize()
+//            .padding(horizontal = 32.dp)
+//            .verticalScroll(rememberScrollState())
+//    ) {
+//        Spacer(modifier = Modifier.height(12.dp))
+//        RegularText(text = stringResource(R.string.kerjakan_latihan_header))
+//        Column(
+//            modifier = Modifier
+//                .padding(top = 16.dp),
+//            horizontalAlignment = Alignment.CenterHorizontally
+//        ) {
+////            ItemList(question1, jawabanMurid1, viewModel)
+////            ItemList(question1, jawabanMurid1, viewModel)
+//            Spacer(modifier = Modifier.height(16.dp))
+//            RegularText(text = "Nilai Latihan : 50", fontWeight = FontWeight.SemiBold)
+//            Spacer(modifier = Modifier.height(24.dp))
+//            Button(
+//                onClick = { navController.navigate(Screen.Nilai.route) },
+//                colors = ButtonDefaults.buttonColors(DarkBlueDarker),
+//                contentPadding = PaddingValues(vertical = 9.dp, horizontal = 47.dp),
+//                shape = RoundedCornerShape(5.dp)
+//            ) {
+//                RegularText(text = "Selesai", fontWeight = FontWeight.SemiBold, color = Color.White)
+//            }
+//            Spacer(modifier = Modifier.height(30.dp))
+//        }
+//    }
+//}
+//
+//@Composable
+//private fun ItemList(question: SoalDummy, jawabanMurid: JawabanMuridDummy?, viewModel: DetailLatihanVM) {
+//    val jawabanBenar = question.answerKey.split(";").map { it.toInt() }
+//    val isCorrect = jawabanMurid?.selectedOptionId in jawabanBenar
+//    val nilaiSoal = if (isCorrect) 10 else 0
+//
+//    var expanded by remember { mutableStateOf(false) }
+//    Column {
+//        Row(
+//            modifier = Modifier
+//            .fillMaxWidth(),
+//            verticalAlignment = Alignment.CenterVertically
+//        ) {
+//            RegularText(text = "Soal ${question.questionId}")
+//            Spacer(modifier = Modifier.width(4.dp))
+//            if (isCorrect) {
+//                Icon(
+//                    imageVector = Icons.Default.CheckCircle,
+//                    contentDescription = "Jawaban benar",
+//                    tint = GreenButton
+//                )
+//            } else {
+//                Icon(
+//                    imageVector = Icons.Default.Cancel,
+//                    contentDescription = "Jawaban salah",
+//                    tint = RedButton
+//                )
+//            }
+//        }
+//        Spacer(modifier = Modifier.height(14.dp))
+//        MediumLargeText(text = question.questionText)
+//        Spacer(modifier = Modifier.height(14.dp))
+//        Box(
+//            modifier = Modifier
+//                .shadow(elevation = 5.dp, shape = RoundedCornerShape(10.dp))
+//                .fillMaxWidth()
+//                .background(LightBlue2)
+//                .clip(shape = RoundedCornerShape(10.dp))
+//                .padding(horizontal = 8.dp)
+//        ) {
+//            Column(
+//                modifier = Modifier.padding(16.dp)
+//            ) {
+//                RegularText(text = "Jawaban kamu: ", fontWeight = FontWeight.SemiBold)
+//                RegularText(text = "${jawabanMurid?.selectedOptionId}")
+//                Spacer(modifier = Modifier.height(8.dp))
+//                Row(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .clickable { expanded = !expanded },
+//                    horizontalArrangement = Arrangement.Center,
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//                    RegularText(text = stringResource(id = R.string.lihat_kunci_jawaban))
+//                    Spacer(modifier = Modifier.width(8.dp))
+//                    Icon(
+//                        imageVector = if (expanded) Icons.Outlined.KeyboardArrowUp else Icons.Outlined.KeyboardArrowDown,
+//                        contentDescription = "Expand/Collapse",
+//                        tint = Color.Black
+//                    )
+//                }
+//                Spacer(modifier = Modifier.height(8.dp))
+//                if (expanded) {
+//                    Box(
+//                        modifier = Modifier
+//                            .padding(top = 8.dp)
+//                            .background(color = LightBlue, shape = RoundedCornerShape(10.dp))
+//                            .fillMaxWidth()
+//                            .padding(16.dp)
+//                    ) {
+//                        RegularText(
+//                            text = "Jawaban Benar: ${question.answerKey}"
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//    }
+//    Spacer(modifier = Modifier.height(14.dp))
+//}
+//@Preview
+//@Composable
+//private fun Prev() {
+//    MuridDetailLatihanScreen(rememberNavController())
+//}

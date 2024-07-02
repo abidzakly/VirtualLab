@@ -1,25 +1,19 @@
-import org.d3ifcool.virtualab.data.model.CombinedPost
-import org.d3ifcool.virtualab.data.model.CombinedUser
-import org.d3ifcool.virtualab.data.model.CombinedUsers
-import org.d3ifcool.virtualab.data.model.Guru
+package org.d3ifcool.virtualab.repository
+
+import okhttp3.MultipartBody
+import org.d3ifcool.virtualab.data.model.Materi
 import org.d3ifcool.virtualab.data.model.MessageResponse
-import org.d3ifcool.virtualab.data.model.Murid
-import org.d3ifcool.virtualab.data.model.PendingPosts
-import org.d3ifcool.virtualab.data.model.UserUpdate
-import org.d3ifcool.virtualab.data.network.apis.AuthorizedUserApi
+import org.d3ifcool.virtualab.data.network.apis.AuthorizedMateriApi
 import org.d3ifcool.virtualab.utils.ErrorMessage
 import org.d3ifcool.virtualab.utils.Resource
-import org.d3ifcool.virtualab.utils.UserDataStore
 import retrofit2.HttpException
 
-class UserRepository(
-    private val dataStore: UserDataStore,
-    private val userApi: AuthorizedUserApi
+class MaterialRepository(
+    private val materialApi: AuthorizedMateriApi
 ) {
-
-    suspend fun getPendingPosts(): Resource<List<PendingPosts>> {
+    suspend fun addMateri(title: String, mediaType: String, description: String, file: MultipartBody.Part): Resource<MessageResponse> {
         return try {
-            val response = userApi.getPendingPosts()
+            val response = materialApi.addMateri(title, mediaType, description, file)
             Resource.Success(response)
         } catch (e: HttpException) {
             val errorMessage =
@@ -34,45 +28,9 @@ class UserRepository(
         }
     }
 
-    suspend fun getRecentPosts(teacherId: Int): Resource<List<CombinedPost>> {
+    suspend fun getMyMateri(): Resource<List<Materi>> {
         return try {
-            val response = userApi.getRecentPosts(teacherId)
-            Resource.Success(response)
-        } catch (e: HttpException) {
-            val errorMessage =
-                when (e.code()) {
-                    500 -> ErrorMessage.applicationError
-                    else -> {
-                        e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
-                            ?.replace("detail", "")
-                    }
-                }
-            Resource.Error(errorMessage!!)
-        }
-    }
-    suspend fun getPendingUser(): Resource<List<CombinedUsers>> {
-        return try {
-            val response = userApi.getAllPendingUser()
-            return Resource.Success(data = response)
-        } catch (e: HttpException) {
-            val errorMessage =
-                when (e.code()) {
-                    500 -> ErrorMessage.applicationError
-                    else -> {
-                        e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
-                            ?.replace("detail", "")
-                    }
-                }
-            Resource.Error(errorMessage!!)
-        }
-    }
-
-    suspend fun getUserById(userId: Int, isAdmin: Boolean): Resource<CombinedUser> {
-        return try {
-            val response = userApi.getUserbyId(userId)
-            if (!isAdmin) {
-                updateToDataStore(response)
-            }
+            val response = materialApi.getMyMateri()
             Resource.Success(response)
         } catch (e: HttpException) {
             val errorMessage =
@@ -87,11 +45,9 @@ class UserRepository(
         }
     }
 
-
-    suspend fun update(userId: Int, oldPassword: String, update: UserUpdate): Resource<MessageResponse> {
+    suspend fun getDetailMateri(materialId: Int): Resource<Materi> {
         return try {
-            val response = userApi.updateUser(userId, oldPassword, update)
-            this.getUserById(userId, false)
+            val response = materialApi.getDetailmateri(materialId)
             Resource.Success(response)
         } catch (e: HttpException) {
             val errorMessage =
@@ -106,30 +62,9 @@ class UserRepository(
         }
     }
 
-    private suspend fun updateToDataStore(data: CombinedUser) {
-        val user = data.user!!
-        val student = data.student?.let {
-            Murid(
-                studentId = it.studentId,
-                nisn = it.nisn
-            )
-        }
-        val teacher = data.teacher?.let {
-            Guru(
-                teacherId = it.teacherId,
-                nip = it.nip
-            )
-        }
-        dataStore.saveData(
-            user,
-            student,
-            teacher
-        )
-    }
-
-    suspend fun approveUser(userId: Int, password: String): Resource<MessageResponse> {
+    suspend fun updateMateri(materialId: Int): Resource<MessageResponse> {
         return try {
-            val response = userApi.approveUser(userId, password)
+            val response = materialApi.updateMateri(materialId)
             Resource.Success(response)
         } catch (e: HttpException) {
             val errorMessage =
@@ -144,9 +79,26 @@ class UserRepository(
         }
     }
 
-    suspend fun rejectUser(userId: Int): Resource<MessageResponse> {
+    suspend fun approveOrReject(materialId: Int, status: String): Resource<MessageResponse> {
         return try {
-            val response = userApi.rejectUser(userId)
+            val response = materialApi.modifyMateriStatus(materialId, status)
+            Resource.Success(response)
+        } catch (e: HttpException) {
+            val errorMessage =
+                when (e.code()) {
+                    500 -> ErrorMessage.applicationError
+                    else -> {
+                        e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
+                            ?.replace("detail", "")
+                    }
+                }
+            Resource.Error(errorMessage!!)
+        }
+    }
+
+    suspend fun deleteMateri(materialId: Int): Resource<MessageResponse> {
+        return try {
+            val response = materialApi.deleteMateri(materialId)
             Resource.Success(response)
         } catch (e: HttpException) {
             val errorMessage =

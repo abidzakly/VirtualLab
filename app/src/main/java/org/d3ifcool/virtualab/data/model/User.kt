@@ -1,20 +1,26 @@
 package org.d3ifcool.virtualab.data.model
 
+import com.squareup.moshi.Json
+
 
 data class User(
-    val full_name: String = "",
+    @Json(name = "full_name")
+    val fullName: String = "",
     val username: String = "",
-    val user_type: Int = -1,
+    @Json(name = "user_type")
+    val userType: Int = -1,
     val email: String = "",
-    val password: String = "",
-    var user_id: Int = -1,
+    @Json(name = "user_id")
+    val userId: Int = -1,
     val school: String = "",
 )
 
 data class UserCreate(
-    val full_name: String,
+    @Json(name = "full_name")
+    val fullName: String,
     val username: String,
-    val user_type: Int,
+    @Json(name = "user_type")
+    val userType: Int,
     val school: String,
     val email: String,
 )

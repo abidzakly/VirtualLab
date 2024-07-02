@@ -5,6 +5,9 @@ const val KEY_USER_ID = "idType"
 const val KEY_EXERCISE_ID = "exerciseIdType"
 const val KEY_USER_EMAIL = "emailType"
 
+const val KEY_ID_TYPE = "id"
+const val KEY_STR_TYPE = "str"
+
 sealed class Screen(val route: String) {
     data object Landing : Screen("landingScreen")
     data object About : Screen("aboutScreen")
@@ -28,7 +31,9 @@ sealed class Screen(val route: String) {
     data object AddLatihan : Screen("addLatihanScreen")
     data object GuruMateri : Screen("guruMateriScreen")
     data object GuruLatihan : Screen("guruLatihanScreen")
-    data object GuruDetailMateri : Screen("guruDetailMateriScreen")
+    data object GuruDetailMateri : Screen("guruDetailMateriScreen/{$KEY_ID_TYPE}") {
+        fun withId(id: Int) = "guruDetailMateriScreen/$id"
+    }
     data object GuruDetailLatihan : Screen("guruDetailLatihanScreen/{$KEY_EXERCISE_ID}") {
         fun withId(id: Int) = "guruDetailLatihanScreen/$id"
     }
@@ -46,15 +51,15 @@ sealed class Screen(val route: String) {
 
     // Admin
     data object AdminDashboard : Screen("adminDashboardScreen")
-    data object CheckUser : Screen("checkUserScreen/{$KEY_USER_EMAIL}") {
-        fun withEmail(email: String) = "checkUserScreen/$email"
-    }
+    data object CheckUser : Screen("checkUserScreen")
     data object CheckFile : Screen("checkFileScreen")
     data object UsersInfo : Screen("usersInfoScreen/{$KEY_USER_ID}") {
         fun withId(id: Int) = "usersInfoScreen/$id"
     }
 
-    data object FileInfo : Screen("fileInfoScreen")
+    data object FileInfo : Screen("fileInfoScreen/{$KEY_ID_TYPE}/{$KEY_STR_TYPE}") {
+        fun withId(id: Int, postType: String) = "fileInfoScreen/$id/$postType"
+    }
     data object ManageIntroContent : Screen("manageContentScreen")
     data object UpdateIntroContent : Screen("updateIntroContentScreen")
 
