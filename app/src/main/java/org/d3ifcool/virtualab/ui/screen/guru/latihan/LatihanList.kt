@@ -12,6 +12,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -34,29 +35,19 @@ import org.d3ifcool.virtualab.ui.component.ContentList
 import org.d3ifcool.virtualab.ui.component.GuruEmptyState
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
+import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
+import org.d3ifcool.virtualab.utils.ErrorMessage
 import org.d3ifcool.virtualab.utils.UserDataStore
 import org.d3ifcool.virtualab.utils.ViewModelFactory
 
 @Composable
-fun GuruLatihanScreen(navController: NavHostController) {
-    val context = LocalContext.current
-    val dataStore = UserDataStore(context)
-    val userId by dataStore.userIdFlow.collectAsState(-1)
-    val viewModel: LatihanListViewModel? = if (userId != -1) {
-        val factory = ViewModelFactory(user_id = userId)
-        viewModel(factory = factory)
-    } else {
-        null
-    }
-
+fun GuruLatihanScreen(navController: NavHostController, viewModel: LatihanListViewModel) {
     Scaffold(topBar = {
         TopNav(title = R.string.lihat_latihan_title, navController = navController)
     }, bottomBar = {
         BottomNav(currentRoute = Screen.GuruLatihan.route, navController = navController)
     }) {
-        if (viewModel != null) {
-            ScreenContent(modifier = Modifier.padding(it), navController, viewModel, userId)
-        }
+            ScreenContent(modifier = Modifier.padding(it), navController, viewModel)
     }
 }
 
@@ -65,25 +56,25 @@ fun GuruLatihanScreen(navController: NavHostController) {
 private fun ScreenContent(
     modifier: Modifier,
     navController: NavHostController,
-    viewModel: LatihanListViewModel,
-    userId: Int
+    viewModel: LatihanListViewModel
 ) {
     val latihanList by viewModel.latihanList.collectAsState()
     var nomorSoal: Int
 
     val apiStatus by viewModel.apiStatus.collectAsState()
+    val errorMessage by viewModel.errorMsg.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
 
 
     val refreshState = rememberPullRefreshState(
         refreshing = isRefreshing,
-        onRefresh = { viewModel.refreshData(userId) }
+        onRefresh = { viewModel.refreshData() }
     )
 
     when (apiStatus) {
         ApiStatus.LOADING -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(color = DarkBlueDarker)
             }
         }
 
@@ -95,7 +86,14 @@ private fun ScreenContent(
                     .padding(12.dp),
                 verticalArrangement = Arrangement.Center
             ) {
-                GuruEmptyState(text = "Belum ada latihan yang ditambahkan")
+                if (errorMessage == ErrorMessage.applicationError) {
+                    GuruEmptyState(text = "Terjadi kesalahan, Harap Coba Lagi")
+                    Button(onClick = { viewModel.getMyLatihan() }) {
+                        RegularText(text = "Coba Lagi")
+                    }
+                } else {
+                    GuruEmptyState(text = "Belum ada latihan yang ditambahkan")
+                }
             }
         }
 
@@ -120,12 +118,12 @@ private fun ScreenContent(
                             ContentList(
                                 title = "Latihan ${nomorSoal + 1}",
                                 desc = it.title,
-                                status = it.approval_status
+                                status = it.approvalStatus
                             ) {
-                                if (it.approval_status != "DRAFT")
-                                    navController.navigate(Screen.GuruDetailLatihan.withId(it.exercise_id))
+                                if (it.approvalStatus != "DRAFT")
+                                    navController.navigate(Screen.GuruDetailLatihan.withId(it.exerciseId))
                                 else
-                                    navController.navigate(Screen.AddSoal.withId(it.exercise_id))
+                                    navController.navigate(Screen.AddSoal.withId(it.exerciseId))
 
                             }
                             nomorSoal++
@@ -135,10 +133,13 @@ private fun ScreenContent(
                 PullRefreshIndicator(
                     refreshing = isRefreshing,
                     state = refreshState,
-                    modifier = Modifier.align(Alignment.TopCenter)
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    contentColor = Color.White,
+                    backgroundColor = DarkBlueDarker
                 )
             }
         }
+
         ApiStatus.IDLE -> null
     }
 }
@@ -146,5 +147,5 @@ private fun ScreenContent(
 @Preview
 @Composable
 private fun Prev() {
-    GuruLatihanScreen(navController = rememberNavController())
+//    GuruLatihanScreen(navController = rememberNavController())
 }

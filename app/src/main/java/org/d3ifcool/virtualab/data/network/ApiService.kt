@@ -1,9 +1,14 @@
 package org.d3ifcool.virtualab.data.network
 
+import android.util.Log
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import org.d3ifcool.virtualab.data.network.apis.LatihanApiService
-import org.d3ifcool.virtualab.data.network.apis.UserApiService
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
+import org.d3ifcool.virtualab.data.network.apis.AuthorizedUserApi
+import org.d3ifcool.virtualab.data.network.apis.AuthorizedLatihanApi
+import org.d3ifcool.virtualab.data.network.apis.AuthorizedMateriApi
+import org.d3ifcool.virtualab.data.network.apis.UnauthedApi
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
@@ -20,18 +25,44 @@ private val retrofit = Retrofit.Builder()
 
 
 object ApiService {
-    val userService: UserApiService by lazy {
-        retrofit.create(UserApiService::class.java)
+    val unauthedService: UnauthedApi by lazy {
+        retrofit.create(UnauthedApi::class.java)
     }
-    val latihanService: LatihanApiService by lazy {
-        retrofit.create(LatihanApiService::class.java)
+    var userService: AuthorizedUserApi? = null
+        private set
+    var latihanService: AuthorizedLatihanApi? = null
+        private set
+
+    var materiService: AuthorizedMateriApi? = null
+        private set
+
+    fun createAuthorizedService(authorization: String) {
+        val okHttpClient = OkHttpClient.Builder().apply {
+            addInterceptor(Interceptor { chain ->
+                val original = chain.request()
+                val requestWithAuthorization = original.newBuilder()
+
+                    .header("Authorization", "Bearer $authorization")
+                    .build()
+                chain.proceed(requestWithAuthorization)
+            })
+        }.build()
+        Log.d("ApiService Create", "Bearer $authorization")
+
+        val retrofitWithAuth = Retrofit.Builder()
+            .client(okHttpClient)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .baseUrl(BASE_URL)
+            .build()
+        userService = retrofitWithAuth.create(AuthorizedUserApi::class.java)
+        latihanService = retrofitWithAuth.create(AuthorizedLatihanApi::class.java)
+        materiService = retrofitWithAuth.create(AuthorizedMateriApi::class.java)
+        Log.d("ApiService create", "retrofit with auth created!")
     }
-    val materiService: UserApiService by lazy {
-        retrofit.create(UserApiService::class.java)
+
+    fun getContent(materialId: Int): String{
+        return "$BASE_URL/v1/materials/$materialId/content"
     }
-//    val kerjaLatihanService: ApiService by lazy {
-//        retrofit.create(ApiService::class.java)
-//    }
 }
 
 enum class ApiStatus { IDLE, LOADING, SUCCESS, FAILED }

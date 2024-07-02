@@ -1,5 +1,6 @@
 package org.d3ifcool.virtualab.ui.screen.admin.approval.account
 
+import UserRepository
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,14 +10,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.data.network.ApiService
-import org.d3ifcool.virtualab.data.model.CombinedUsersResponse
+import org.d3ifcool.virtualab.data.model.CombinedUsers
+import org.d3ifcool.virtualab.utils.Resource
 
 import retrofit2.HttpException
 
-class CheckUsersViewModel(userEmail: String) : ViewModel() {
+class CheckUsersViewModel(private val userRepository: UserRepository) : ViewModel() {
 
-    private val _userList = MutableStateFlow<List<CombinedUsersResponse?>>(emptyList())
-    val userList: StateFlow<List<CombinedUsersResponse?>> = _userList
+    private val _userList = MutableStateFlow<List<CombinedUsers?>>(emptyList())
+    val userList: StateFlow<List<CombinedUsers?>> = _userList
 
     private val _isLoading = MutableStateFlow(ApiStatus.IDLE)
     val isLoading: StateFlow<ApiStatus> = _isLoading
@@ -24,22 +26,26 @@ class CheckUsersViewModel(userEmail: String) : ViewModel() {
     private val _errorMsg = MutableStateFlow<String?>("")
     val errorMsg: StateFlow<String?> = _errorMsg
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing
+
     init {
-        getAllPendingUser(userEmail)
+        getAllPendingUser()
     }
 
-    private fun getAllPendingUser(email: String) {
+    fun getAllPendingUser() {
         _isLoading.value = ApiStatus.LOADING
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                _userList.value = ApiService.userService.getAllPendingUser(email)
-                _isLoading.value = ApiStatus.SUCCESS
-                Log.d("GET PENDING USER SUCCESS", "Get User: $_userList")
-            } catch (e: HttpException) {
-                _isLoading.value = ApiStatus.FAILED
-                _errorMsg.value =
-                    e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
-                        ?.replace("detail", "")
+            when (val response = userRepository.getPendingUser()) {
+                is Resource.Success -> {
+                    _userList.value = response.data!!
+                    _isLoading.value = ApiStatus.SUCCESS
+                }
+
+                is Resource.Error -> {
+                    _errorMsg.value = response.message
+                    _isLoading.value = ApiStatus.FAILED
+                }
             }
         }
     }

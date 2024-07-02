@@ -1,26 +1,19 @@
 package org.d3ifcool.virtualab.ui.screen
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import org.d3ifcool.virtualab.data.model.Guru
-import org.d3ifcool.virtualab.data.model.Murid
-import org.d3ifcool.virtualab.utils.UserDataStore
-import org.d3ifcool.virtualab.data.model.User
-import org.d3ifcool.virtualab.data.network.ApiService
 import org.d3ifcool.virtualab.data.model.CombinedUser
-import org.d3ifcool.virtualab.data.model.StudentCreate
-import org.d3ifcool.virtualab.data.model.TeacherCreate
 import org.d3ifcool.virtualab.data.model.UserCreate
-import org.d3ifcool.virtualab.data.model.UserLogin
-import org.d3ifcool.virtualab.data.model.UserRegistration
 import org.d3ifcool.virtualab.data.network.ApiStatus
-import retrofit2.HttpException
+import org.d3ifcool.virtualab.repository.AuthRepository
+import org.d3ifcool.virtualab.utils.Resource
 
-class AuthViewModel(private val dataStore: UserDataStore) : ViewModel() {
+class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
 
     private val _currentUser = MutableStateFlow<CombinedUser?>(null)
     val currentUser: StateFlow<CombinedUser?> = _currentUser
@@ -34,82 +27,48 @@ class AuthViewModel(private val dataStore: UserDataStore) : ViewModel() {
     fun login(username: String, password: String) {
         _apiStatus.value = ApiStatus.LOADING
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                _currentUser.value = ApiService.userService.login(UserLogin(username, password))
-                saveToDataStore(_currentUser.value!!)
-                apiStatus.value = ApiStatus.SUCCESS
-            } catch (e: HttpException) {
-                _errorMsg.value =
-                    when (e.code()) {
-                        500 -> "Terjadi Kesalahan. Harap coba lagi."
-                        else -> {
-                            e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
-                                ?.replace("detail", "")
-                        }
-                    }
-                _apiStatus.value = ApiStatus.FAILED
+            when (val response = authRepository.login(username, password)) {
+                is Resource.Success -> {
+                    Log.d(
+                        "AuthVM",
+                        "User: ${response.data!!.user!!}\nGuru: ${response.data.teacher}\nMurid: ${response.data.student}"
+                    )
+                    Log.d("AuthVM", "Token: ${response.data.accessToken}")
+                    _currentUser.value = response.data
+                    _apiStatus.value = ApiStatus.SUCCESS
+                }
+                is Resource.Error -> {
+                    _errorMsg.value = response.message
+                    _apiStatus.value = ApiStatus.FAILED
+                }
             }
         }
     }
 
-    private fun saveToDataStore(data: CombinedUser) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val user = data.user!!
-            val student = data.student?.let {
-                Murid(
-                    student_id = it.student_id,
-                    nisn = it.nisn
-                )
-            }
-            val teacher = data.teacher?.let {
-                Guru(
-                    teacher_id = it.teacher_id,
-                    nip = it.nip
-                )
-            }
-            dataStore.saveData(
-                user,
-                student,
-                teacher
-            )
-            dataStore.setLoginStatus(true)
-        }
-    }
 
     fun register(uniqueId: String, user: UserCreate) {
         _apiStatus.value = ApiStatus.LOADING
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val response = ApiService.userService.register(
-                    UserRegistration(
-                        student = StudentCreate(uniqueId),
-                        teacher = TeacherCreate(uniqueId),
-                        user = user
-                    )
-                )
-
-                if (response.status) {
+            when ( val response = authRepository.register(uniqueId, user)) {
+                is Resource.Success -> {
                     _apiStatus.value = ApiStatus.SUCCESS
                 }
-            } catch (e: HttpException) {
-                _errorMsg.value =
-                    when (e.code()) {
-                        500 -> "Terjadi Kesalahan. Harap coba lagi."
-                        else -> {
-                            e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
-                                ?.replace("detail", "")
-                        }
-                    }
-                _apiStatus.value = ApiStatus.FAILED
+                is Resource.Error -> {
+                    _errorMsg.value = response.message
+                    _apiStatus.value = ApiStatus.FAILED
+                }
             }
         }
     }
 
     fun logout() {
         viewModelScope.launch(Dispatchers.IO) {
-            dataStore.saveData(User(), Murid(), Guru())
-            dataStore.setLoginStatus(false)
+            authRepository.logout()
         }
+    }
+
+    fun clearStatus() {
+        _apiStatus.value = ApiStatus.IDLE
     }
 
     fun clearErrorMsg() {

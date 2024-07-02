@@ -174,6 +174,7 @@ fun BottomNav(
                             CoroutineScope(Dispatchers.IO).launch {
                                 dataStore.saveData(User())
                                 dataStore.setLoginStatus(false)
+                                dataStore.saveToken("")
                             }
                             navController.navigate(Screen.Login.route) {
                                 popUpTo(Screen.Landing.route) { inclusive = true }

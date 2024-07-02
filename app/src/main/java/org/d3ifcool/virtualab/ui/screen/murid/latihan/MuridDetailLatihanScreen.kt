@@ -84,7 +84,10 @@ fun MuridDetailLatihanScreen(navController: NavHostController) {
         },
         containerColor = Color.White
     ) {
-        ScreenContent(modifier = Modifier.padding(it), navController)
+        Column(modifier = Modifier.padding(it)) {
+
+        }
+//        ScreenContent(modifier = Modifier.padding(it), navController)
     }
 }
 

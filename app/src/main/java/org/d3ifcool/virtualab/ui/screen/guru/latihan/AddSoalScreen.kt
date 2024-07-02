@@ -62,7 +62,7 @@ import org.d3ifcool.virtualab.utils.ViewModelFactory
 fun AddSoalScreen(navController: NavHostController, exerciseId: Int) {
 
     Log.d("AddSoalScreen", "exercise ID: $exerciseId")
-    val factory = ViewModelFactory(exerciseId = exerciseId)
+    val factory = ViewModelFactory(id = exerciseId)
     val viewModel: AddSoalViewModel = viewModel(factory = factory)
     val uploadStatus by viewModel.uploadStatus.collectAsState()
     val errorMsg by viewModel.errorMsg.collectAsState()
@@ -110,11 +110,13 @@ private fun ScreenContent(
 ) {
     val context = LocalContext.current
     val latihanData by viewModel.latihanData.collectAsState()
+    val latihan = latihanData!!.latihan!!
+    val soal = latihanData!!.soal!!
     var isClicked by remember { mutableStateOf(false) }
     Log.d("AddSoalScreen", "Latihan Data: $latihanData")
     if (latihanData != null) {
         var soal = remember {
-            mutableStateListOf(*Array(latihanData!!.latihan.question_count) {
+            mutableStateListOf(*Array(latihan.questionCount) {
                 QuestionCreate(
                     -1,
                     "",
@@ -134,14 +136,14 @@ private fun ScreenContent(
                     .fillMaxWidth()
                     .padding(bottom = 60.dp) // Menambah ruang di bagian bawah untuk tombol
             ) {
-                RegularText(text = "${stringResource(R.string.title_soal)} ${latihanData!!.latihan.title}")
-                RegularText(text = "${stringResource(R.string.difficulty_soal)} ${latihanData!!.latihan.difficulty}")
+                RegularText(text = "${stringResource(R.string.title_soal)} ${latihan.title}")
+                RegularText(text = "${stringResource(R.string.difficulty_soal)} ${latihan.difficulty}")
                 LazyColumn(
                     modifier = Modifier
                         .padding(20.dp)
                         .weight(1f) // Memberi bobot agar LazyColumn menggunakan sisa ruang yang tersedia
                 ) {
-                    items(latihanData!!.latihan.question_count) { count ->
+                    items(latihan.questionCount) { count ->
                         // Semua konten soal
                         var isChecked = remember { mutableStateListOf(false, false, false, false) }
                         var answerOption = remember {
@@ -155,7 +157,7 @@ private fun ScreenContent(
                         var answerKey = remember { mutableStateListOf("", "") }
                         var selectedAnswersCount = remember { mutableStateOf(0) }
                         var questionText =
-                            remember { mutableStateListOf(*Array(latihanData!!.latihan.question_count) { "" }) }
+                            remember { mutableStateListOf(*Array(latihan.questionCount) { "" }) }
                         RegularText(
                             text = "Soal ${count + 1}",
                             fontWeight = FontWeight.SemiBold
@@ -238,10 +240,10 @@ private fun ScreenContent(
                     .padding(12.dp),
                 onClick = {
                     if (soal.all {
-                            it.question_text == "" || it.question_text.isEmpty()
-                                    || it.option_text.isEmpty() || it.option_text.size < 4
-                                    || it.exercise_id == -1
-                                    || it.answer_keys.isEmpty() || it.answer_keys.size < 2
+                            it.questionText == "" || it.questionText.isEmpty()
+                                    || it.optionText.isEmpty() || it.optionText.size < 4
+                                    || it.exerciseId == -1
+                                    || it.answerKeys.isEmpty() || it.answerKeys.size < 2
                         }
                     ) {
                         Toast.makeText(context, "Semua data harus diisi, yaa", Toast.LENGTH_SHORT).show()

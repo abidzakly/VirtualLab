@@ -1,6 +1,5 @@
 package org.d3ifcool.virtualab.ui.screen.guru.latihan
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -9,10 +8,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.data.model.Latihan
 import org.d3ifcool.virtualab.data.network.ApiStatus
-import org.d3ifcool.virtualab.data.network.ApiService
-import retrofit2.HttpException
+import org.d3ifcool.virtualab.repository.ExerciseRepository
+import org.d3ifcool.virtualab.utils.Resource
 
-class LatihanListViewModel(userId: Int) : ViewModel() {
+class LatihanListViewModel(private val exerciseRepository: ExerciseRepository) : ViewModel() {
 
     private val _latihanList = MutableStateFlow<List<Latihan>?>(emptyList())
     val latihanList: StateFlow<List<Latihan>?> = _latihanList
@@ -28,31 +27,31 @@ class LatihanListViewModel(userId: Int) : ViewModel() {
     val errorMsg: StateFlow<String?> = _errorMsg
 
     init {
-        getLatihanByUser(userId)
+        getMyLatihan()
     }
 
-    private fun getLatihanByUser(userId: Int) {
+    fun getMyLatihan() {
         _apiStatus.value = ApiStatus.LOADING
-        Log.d("HomeLatihanVM", "userId: $userId")
+//        Log.d("HomeLatihanVM", "userId: $userId")
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                _latihanList.value = ApiService.latihanService.getLatihanByAuthor(userId)
-                _apiStatus.value = ApiStatus.SUCCESS
-                Log.d("HomeLatihanVM", "latihan list: ${_latihanList.value}")
-            } catch (e: HttpException) {
-                _apiStatus.value = ApiStatus.FAILED
-                _errorMsg.value =
-                    e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
-                        ?.replace("detail", "")
+            when (val response = exerciseRepository.getMyLatihan()) {
+                is Resource.Success -> {
+                    _latihanList.value = response.data
+                    _apiStatus.value = ApiStatus.SUCCESS
+                }
+
+                is Resource.Error -> {
+                    _errorMsg.value = response.message
+                    _apiStatus.value = ApiStatus.FAILED
+                }
             }
         }
     }
 
 
-
-    fun refreshData(userId: Int) {
+    fun refreshData() {
         _isRefreshing.value = true
-        getLatihanByUser(userId)
+        getMyLatihan()
         _isRefreshing.value = false
     }
 

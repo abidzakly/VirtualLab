@@ -10,9 +10,10 @@ import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.data.model.ExerciseCreate
 import org.d3ifcool.virtualab.data.model.Latihan
 import org.d3ifcool.virtualab.data.network.ApiService
+import org.d3ifcool.virtualab.repository.ExerciseRepository
 import retrofit2.HttpException
 
-class AddLatihanViewModel() : ViewModel() {
+class AddLatihanViewModel(private val exerciseRepository: ExerciseRepository) : ViewModel() {
 
     private val _latihanData = MutableStateFlow<Latihan?>(null)
     val latihanData: StateFlow<Latihan?> = _latihanData
@@ -27,21 +28,22 @@ class AddLatihanViewModel() : ViewModel() {
         authorId: Int,
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                _latihanData.value = ApiService.latihanService.addLatihan(
-                    ExerciseCreate(
-                        title,
-                        difficulty,
-                        questionCount,
-                        authorId
-                    )
-                )
-            } catch (e: HttpException) {
-                _errorMsg.value =
-                    e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
-                        ?.replace("detail", "")
-                Log.d("AddLatihanVM", "error: ${_errorMsg.value}")
-            }
+//            when (val response = exerciseRepository)
+//            try {
+//                _latihanData.value = ApiService.latihanService.addLatihan(
+//                    ExerciseCreate(
+//                        title,
+//                        difficulty,
+//                        questionCount,
+//                        authorId
+//                    )
+//                )
+//            } catch (e: HttpException) {
+//                _errorMsg.value =
+//                    e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
+//                        ?.replace("detail", "")
+//                Log.d("AddLatihanVM", "error: ${_errorMsg.value}")
+//            }
         }
     }
 
