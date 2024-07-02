@@ -2,6 +2,9 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="VirtualabTest">
+        <State />
+      </entry>
       <entry key="app">
         <State>
           <targetsSelectedWithDialog>
@@ -15,6 +18,57 @@
               </deviceKey>
             </Target>
           </targetsSelectedWithDialog>
+        </State>
+      </entry>
+      <entry key="testLandingScreenUIComponents()">
+        <State>
+          <targetSelectedWithDropDown>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="C:\Users\USER\.android\avd\Pixel_4_API_30.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-06-11T04:03:30.202380300Z" />
+        </State>
+      </entry>
+      <entry key="testLandingUIComponent()">
+        <State>
+          <runningDeviceTargetSelectedWithDropDown>
+            <Target>
+              <type value="RUNNING_DEVICE_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="C:\Users\USER\.android\avd\Pixel_4_API_30.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </runningDeviceTargetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-06-11T06:53:52.854515100Z" />
+        </State>
+      </entry>
+      <entry key="testRegisterScreenUIComponents()">
+        <State />
+      </entry>
+      <entry key="testUI()">
+        <State>
+          <targetSelectedWithDropDown>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="C:\Users\USER\.android\avd\Pixel_4_API_30.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-06-11T08:39:30.411557900Z" />
         </State>
       </entry>
     </value>
