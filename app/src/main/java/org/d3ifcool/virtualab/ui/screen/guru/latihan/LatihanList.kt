@@ -21,12 +21,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
@@ -36,9 +33,7 @@ import org.d3ifcool.virtualab.ui.component.GuruEmptyState
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
-import org.d3ifcool.virtualab.utils.ErrorMessage
-import org.d3ifcool.virtualab.utils.UserDataStore
-import org.d3ifcool.virtualab.utils.ViewModelFactory
+import org.d3ifcool.virtualab.utils.GenericMessage
 
 @Composable
 fun GuruLatihanScreen(navController: NavHostController, viewModel: LatihanListViewModel) {
@@ -86,13 +81,14 @@ private fun ScreenContent(
                     .padding(12.dp),
                 verticalArrangement = Arrangement.Center
             ) {
-                if (errorMessage == ErrorMessage.applicationError) {
-                    GuruEmptyState(text = "Terjadi kesalahan, Harap Coba Lagi")
-                    Button(onClick = { viewModel.getMyLatihan() }) {
-                        RegularText(text = "Coba Lagi")
+                if (errorMessage == GenericMessage.applicationError) {
+                    GuruEmptyState(text = "Terjadi kesalahan, Harap Coba Lagi") {
+                        viewModel.getMyLatihan()
                     }
                 } else {
-                    GuruEmptyState(text = "Belum ada latihan yang ditambahkan")
+                    GuruEmptyState(text = "Belum ada latihan yang ditambahkan") {
+                        viewModel.getMyLatihan()
+                    }
                 }
             }
         }
@@ -113,11 +109,10 @@ private fun ScreenContent(
                         modifier = Modifier
                             .padding(16.dp)
                     ) {
-                        nomorSoal = 0
                         items(latihanList!!) {
                             ContentList(
-                                title = "Latihan ${nomorSoal + 1}",
-                                desc = it.title,
+                                title = it.title,
+                                desc = "Tingkat Kesulitan: ${it.difficulty}",
                                 status = it.approvalStatus
                             ) {
                                 if (it.approvalStatus != "DRAFT")
@@ -126,7 +121,6 @@ private fun ScreenContent(
                                     navController.navigate(Screen.AddSoal.withId(it.exerciseId))
 
                             }
-                            nomorSoal++
                         }
                     }
                 }

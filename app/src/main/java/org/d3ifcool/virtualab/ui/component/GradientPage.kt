@@ -2,6 +2,7 @@ package org.d3ifcool.virtualab.ui.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,7 +21,15 @@ import org.d3ifcool.virtualab.ui.theme.BlueGradient
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 
 @Composable
-fun GradientPage(modifier: Modifier, emptyText: String = "", image: Int, isCenter: Boolean? = true, isDiffSize: Boolean = false, content: @Composable () -> Unit) {
+fun GradientPage(
+    modifier: Modifier,
+    emptyText: String = "",
+    image: Int,
+    isCenter: Boolean = true,
+    isDiffSize: Boolean = false,
+    isAllCenter: Boolean = false,
+    content: @Composable () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -45,12 +54,12 @@ fun GradientPage(modifier: Modifier, emptyText: String = "", image: Int, isCente
                     Color.White,
                     shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp)
                 )
-                .padding(horizontal = 28.dp)
-            ,
+                .padding(horizontal = 28.dp),
 
-            horizontalAlignment = if (isCenter!!) Alignment.CenterHorizontally else Alignment.Start,
+            horizontalAlignment = if (isCenter) Alignment.CenterHorizontally else Alignment.Start,
+            verticalArrangement = if (isAllCenter) Arrangement.Center else Arrangement.Top
         ) {
-                content()
+            content()
         }
     }
 }

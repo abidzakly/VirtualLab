@@ -25,8 +25,8 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
     val errorMsg: StateFlow<String?> = _errorMsg
 
     fun login(username: String, password: String) {
-        _apiStatus.value = ApiStatus.LOADING
         viewModelScope.launch(Dispatchers.IO) {
+            _apiStatus.value = ApiStatus.LOADING
             when (val response = authRepository.login(username, password)) {
                 is Resource.Success -> {
                     Log.d(
@@ -37,6 +37,7 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
                     _currentUser.value = response.data
                     _apiStatus.value = ApiStatus.SUCCESS
                 }
+
                 is Resource.Error -> {
                     _errorMsg.value = response.message
                     _apiStatus.value = ApiStatus.FAILED
@@ -49,10 +50,11 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
     fun register(uniqueId: String, user: UserCreate) {
         _apiStatus.value = ApiStatus.LOADING
         viewModelScope.launch(Dispatchers.IO) {
-            when ( val response = authRepository.register(uniqueId, user)) {
+            when (val response = authRepository.register(uniqueId, user)) {
                 is Resource.Success -> {
                     _apiStatus.value = ApiStatus.SUCCESS
                 }
+
                 is Resource.Error -> {
                     _errorMsg.value = response.message
                     _apiStatus.value = ApiStatus.FAILED
@@ -69,9 +71,6 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
 
     fun clearStatus() {
         _apiStatus.value = ApiStatus.IDLE
-    }
-
-    fun clearErrorMsg() {
         _errorMsg.value = ""
     }
 

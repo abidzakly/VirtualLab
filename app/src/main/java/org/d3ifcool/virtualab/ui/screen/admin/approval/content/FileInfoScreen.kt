@@ -1,8 +1,6 @@
 package org.d3ifcool.virtualab.ui.screen.admin.approval.content
 
-import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -45,7 +43,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import org.d3ifcool.virtualab.R
@@ -57,7 +54,6 @@ import org.d3ifcool.virtualab.data.network.ApiService
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
-import org.d3ifcool.virtualab.ui.component.LargeText
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.SemiLargeText
@@ -114,7 +110,7 @@ private fun ScreenContent(modifier: Modifier, postType: String, viewModel: FileI
     val data by viewModel.data.collectAsState()
     var materiData: Materi? = null
     var latihanData: LatihanDetail? = null
-    var dataId: Int? = null
+    var dataId: Int?
 
 
     when (status) {
@@ -219,7 +215,7 @@ private fun MaterialContent(data: MateriReview) {
             Column(modifier = Modifier.fillMaxWidth()) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(ApiService.getContent(data.materialId))
+                        .data(ApiService.getMateriContent(data.materialId))
                         .crossfade(true)
                         .build(),
                     contentDescription = null,

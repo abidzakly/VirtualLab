@@ -86,7 +86,7 @@ fun AddLatihanScreen(navController: NavHostController) {
             TopNav(title = R.string.add_materi_title, navController = navController)
         },
         bottomBar = {
-            BottomNav(currentRoute = Screen.GuruDashboard.route, navController = navController)
+            BottomNav(navController = navController)
         }
     ) {
         ScreenContent(

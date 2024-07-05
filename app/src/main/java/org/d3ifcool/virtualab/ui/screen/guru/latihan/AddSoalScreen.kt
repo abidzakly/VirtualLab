@@ -91,7 +91,7 @@ fun AddSoalScreen(navController: NavHostController, exerciseId: Int) {
             TopNav(title = R.string.add_soal_title, navController = navController)
         },
         bottomBar = {
-            BottomNav(currentRoute = Screen.GuruDashboard.route, navController = navController)
+            BottomNav(navController = navController)
         }
     ) {
         ScreenContent(

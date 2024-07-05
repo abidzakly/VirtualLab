@@ -5,14 +5,16 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import org.d3ifcool.virtualab.data.network.apis.AuthorizedIntroductionApi
 import org.d3ifcool.virtualab.data.network.apis.AuthorizedUserApi
 import org.d3ifcool.virtualab.data.network.apis.AuthorizedLatihanApi
 import org.d3ifcool.virtualab.data.network.apis.AuthorizedMateriApi
+import org.d3ifcool.virtualab.data.network.apis.AuthorizedStudentApi
 import org.d3ifcool.virtualab.data.network.apis.UnauthedApi
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
-private const val BASE_URL = "https://347d-139-228-112-175.ngrok-free.app"
+private const val BASE_URL = "https://test-app-sandy-zeta.vercel.app"
 
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
@@ -36,18 +38,22 @@ object ApiService {
     var materiService: AuthorizedMateriApi? = null
         private set
 
+    var introductionService: AuthorizedIntroductionApi? = null
+        private set
+
+    var studentService: AuthorizedStudentApi? = null
+        private set
+
     fun createAuthorizedService(authorization: String) {
         val okHttpClient = OkHttpClient.Builder().apply {
             addInterceptor(Interceptor { chain ->
                 val original = chain.request()
                 val requestWithAuthorization = original.newBuilder()
-
                     .header("Authorization", "Bearer $authorization")
                     .build()
                 chain.proceed(requestWithAuthorization)
             })
         }.build()
-        Log.d("ApiService Create", "Bearer $authorization")
 
         val retrofitWithAuth = Retrofit.Builder()
             .client(okHttpClient)
@@ -57,11 +63,16 @@ object ApiService {
         userService = retrofitWithAuth.create(AuthorizedUserApi::class.java)
         latihanService = retrofitWithAuth.create(AuthorizedLatihanApi::class.java)
         materiService = retrofitWithAuth.create(AuthorizedMateriApi::class.java)
+        introductionService = retrofitWithAuth.create(AuthorizedIntroductionApi::class.java)
+        studentService = retrofitWithAuth.create(AuthorizedStudentApi::class.java)
         Log.d("ApiService create", "retrofit with auth created!")
     }
 
-    fun getContent(materialId: Int): String{
+    fun getMateriContent(materialId: Int): String {
         return "$BASE_URL/v1/materials/$materialId/content"
+    }
+    fun getIntroductionContent(): String {
+        return "$BASE_URL/v1/introduction/content"
     }
 }
 

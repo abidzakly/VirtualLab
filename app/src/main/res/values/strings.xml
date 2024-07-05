@@ -27,7 +27,7 @@
     <string name="nip_label">Nomor Induk Pegawai (NIP)</string>
     <string name="school_label">Asal Sekolah</string>
     <string name="password_label">Password</string>
-    <string name="edit_password_label">Ubah Password</string>
+    <string name="edit_password_label">Password Baru</string>
 <!--  Buttons -->
     <string name="signup_button">Daftar dan Verifikasi</string>
     <string name="signup_clickable">Daftar</string>
@@ -66,8 +66,8 @@
 <!--    Profile   -->
     <string name="profile_header">Kelola Profil</string>
 <!--    Nilai   -->
-    <string name="nilai">Nilai                       : 80/100</string>
-    <string name="tingkat_kesulitan">Tingkat kesulitan: Mudah</string>
+    <string name="nilai">Nilai                       : </string>
+    <string name="tingkat_kesulitan">Tingkat kesulitan: </string>
     <string name="latihan_title">Latihan 1</string>
 <!--   About   -->
     <string name="about_app">Virtual Lab adalah sebuah platform pembelajaran yang menyediakan materi dan visualisasi interaktif tentang pengenalan reaksi kimia, contoh reaksi kimia, materi reaksi, dan latihan penyetaraan reaksi kimia. Platform ini merupakan platform kolaborasi antara mahasiswa Universitas Telkom dan Guru MGMP Kimia Kota Bandung.\n</string>
@@ -224,6 +224,6 @@ Reaksi kimia melibatkan partikel terkecil penyusun zat, yaitu molekul. Molekul-m
 
     <!--    Konten Pengenalan Admin   -->
     <string name="update_icon">Ubah data konten</string>
-    <string name="video_pengenalan_title">Video pengenalan</string>
+    <string name="video_pengenalan_title">Video Pengenalan</string>
     <string name="judul_pengenalan">Judul Pengenalan Materi</string>
 </resources>

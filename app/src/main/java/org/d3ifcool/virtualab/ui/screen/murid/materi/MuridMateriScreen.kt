@@ -3,18 +3,25 @@ package org.d3ifcool.virtualab.ui.screen.murid.materi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,6 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
+import org.d3ifcool.virtualab.data.model.ApprovedMateri
+import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.ExtraLargeText
@@ -39,75 +48,81 @@ import org.d3ifcool.virtualab.ui.component.MediumLargeText
 import org.d3ifcool.virtualab.ui.component.MuridEmptyState
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
+import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.ui.theme.GrayTitle
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 
 
 @Composable
-fun MuridMateriScreen(navController: NavHostController) {
+fun MuridMateriScreen(navController: NavHostController, viewModel: MuridMateriViewModel) {
     Scaffold(
         topBar = {
             TopNav(title = R.string.materi_title, navController = navController)
         },
         bottomBar = {
-            BottomNav(currentRoute = Screen.MuridDashboard.route, navController = navController)
+            BottomNav(navController = navController)
         },
         containerColor = Color.White
     ) {
         ScreenContent(
             modifier = Modifier.padding(bottom = it.calculateBottomPadding()),
-            navController = navController
+            navController = navController,
+            viewModel
         )
     }
 }
 
 @Composable
-private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
-    var isEmpty by remember { mutableStateOf(true) }
+private fun ScreenContent(
+    modifier: Modifier,
+    navController: NavHostController,
+    viewModel: MuridMateriViewModel
+) {
+    val materis by viewModel.materis.collectAsState()
+    val status by viewModel.apiStatus.collectAsState()
 
     GradientPage(
         modifier = modifier,
         isCenter = false,
         image = R.drawable.materi_header
     ) {
-        if (!isEmpty) {
-            Spacer(modifier = Modifier.height(24.dp))
-            Column(
-                modifier = Modifier.verticalScroll(
-                    rememberScrollState()
-                )
-            ) {
-                MediumLargeText(
-                    text = "Materi Ajar",
-                    modifier = Modifier.padding(bottom = 16.dp),
-                    fontWeight = FontWeight.Medium
-                )
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    CardList {
-                        navController.navigate(Screen.MuridDetailMateri.route)
+        when (status) {
+            ApiStatus.IDLE -> null
+            ApiStatus.LOADING -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(color = DarkBlueDarker)
+                }
+            }
+
+            ApiStatus.SUCCESS -> {
+                Spacer(modifier = Modifier.height(24.dp))
+                LazyColumn {
+                    item {
+                        MediumLargeText(
+                            text = "Materi Ajar",
+                            modifier = Modifier.padding(bottom = 16.dp),
+                            fontWeight = FontWeight.Medium
+                        )
                     }
-                    CardList {
-                    }
-                    CardList {
-                    }
-                    CardList {
-                    }
-                    CardList {
-                    }
-                    CardList {
+                    itemsIndexed(materis) { index, it ->
+                        CardList(index = index, materi = it) {
+                            navController.navigate(Screen.MuridDetailMateri.withId(it.materialId))
+                        }
                     }
                 }
             }
-        } else {
-            MuridEmptyState(text = stringResource(id = R.string.empty_materi))
+
+            ApiStatus.FAILED -> {
+                MuridEmptyState(text = stringResource(id = R.string.empty_materi)) {
+                    viewModel.getApprovedMateris()
+                }
+            }
         }
     }
 }
 
 @Composable
-private fun CardList(onClick: () -> Unit) {
+private fun CardList(index: Int, materi: ApprovedMateri, onClick: () -> Unit) {
     Row(
         Modifier
             .clickable {
@@ -120,12 +135,12 @@ private fun CardList(onClick: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        ExtraLargeText(text = "01", color = GrayTitle)
+        ExtraLargeText(text = "${index + 1}", color = GrayTitle)
         Spacer(modifier = Modifier.width(20.dp))
         Column {
-            MediumLargeText(text = "Materi 1", fontWeight = FontWeight.SemiBold)
+            MediumLargeText(text = materi.title, fontWeight = FontWeight.SemiBold)
             RegularText(
-                text = "Materi ini berisi pembelajaran tentang Materi ini berisi pembelajaran tentang ",
+                text = materi.description,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
                 modifier = Modifier.width(280.dp)
@@ -138,5 +153,5 @@ private fun CardList(onClick: () -> Unit) {
 @Preview
 @Composable
 private fun MateriScreenPrev() {
-    MuridMateriScreen(navController = rememberNavController())
+//    MuridMateriScreen(navController = rememberNavController())
 }

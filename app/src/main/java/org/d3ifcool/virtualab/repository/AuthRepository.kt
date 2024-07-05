@@ -13,7 +13,7 @@ import org.d3ifcool.virtualab.data.model.UserLogin
 import org.d3ifcool.virtualab.data.model.UserRegistration
 import org.d3ifcool.virtualab.data.network.ApiService
 import org.d3ifcool.virtualab.data.network.apis.UnauthedApi
-import org.d3ifcool.virtualab.utils.ErrorMessage
+import org.d3ifcool.virtualab.utils.GenericMessage
 import org.d3ifcool.virtualab.utils.Resource
 import org.d3ifcool.virtualab.utils.UserDataStore
 import retrofit2.HttpException
@@ -34,7 +34,7 @@ class AuthRepository(
         } catch (e: HttpException) {
             val errorMessage =
                 when (e.code()) {
-                    500 -> ErrorMessage.applicationError
+                    500 -> GenericMessage.applicationError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
@@ -80,7 +80,7 @@ class AuthRepository(
         } catch (e: HttpException) {
             val errorMessage =
                 when (e.code()) {
-                    500 -> ErrorMessage.applicationError
+                    500 -> GenericMessage.applicationError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")

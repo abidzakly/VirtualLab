@@ -17,17 +17,26 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
+import org.d3ifcool.virtualab.ui.theme.Poppins
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopNav(
     title: Int,
     navController: NavHostController,
+    isCustomBack: Boolean = false,
+    customBack: () -> Unit = { },
     actions: @Composable() (RowScope.() -> Unit) = {},
 ) {
     TopAppBar(
         navigationIcon = {
-            IconButton(onClick = { navController.popBackStack() }) {
+            IconButton(onClick = {
+                if (!isCustomBack)
+                    navController.popBackStack()
+                else
+                    customBack()
+            }
+            ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(
@@ -38,7 +47,7 @@ fun TopNav(
             }
         },
         title = {
-            Text(text = stringResource(id = title))
+            Text(text = stringResource(id = title), fontFamily = Poppins)
         },
         colors = topAppBarColors(
             containerColor = Color.Transparent,

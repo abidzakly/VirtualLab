@@ -6,9 +6,8 @@ import org.d3ifcool.virtualab.data.model.ExerciseCreate
 import org.d3ifcool.virtualab.data.model.Latihan
 import org.d3ifcool.virtualab.data.model.MessageResponse
 import org.d3ifcool.virtualab.data.model.QuestionCreate
-import org.d3ifcool.virtualab.data.model.Soal
 import org.d3ifcool.virtualab.data.network.apis.AuthorizedLatihanApi
-import org.d3ifcool.virtualab.utils.ErrorMessage
+import org.d3ifcool.virtualab.utils.GenericMessage
 import org.d3ifcool.virtualab.utils.Resource
 import retrofit2.HttpException
 
@@ -22,30 +21,36 @@ class ExerciseRepository(
         } catch (e: HttpException) {
             val errorMessage =
                 when (e.code()) {
-                    500 -> ErrorMessage.applicationError
+                    500 -> GenericMessage.applicationError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
                     }
                 }
             Resource.Error(errorMessage!!)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(GenericMessage.noInternetError)
         }
     }
 
-    suspend fun getMyLatihan(): Resource<List<Latihan>> {
+    suspend fun getMyMateri(): Resource<List<Latihan>> {
         return try {
-            val response = latihanApi.getMyLatihan()
+            val response = latihanApi.getMyMateri()
             Resource.Success(response)
         } catch (e: HttpException) {
             val errorMessage =
                 when (e.code()) {
-                    500 -> ErrorMessage.applicationError
+                    500 -> GenericMessage.applicationError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
                     }
                 }
             Resource.Error(errorMessage!!)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(GenericMessage.noInternetError)
         }
     }
 
@@ -56,13 +61,16 @@ class ExerciseRepository(
         } catch (e: HttpException) {
             val errorMessage =
                 when (e.code()) {
-                    500 -> ErrorMessage.applicationError
+                    500 -> GenericMessage.applicationError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
                     }
                 }
             Resource.Error(errorMessage!!)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(GenericMessage.noInternetError)
         }
     }
 
@@ -73,13 +81,16 @@ class ExerciseRepository(
         } catch (e: HttpException) {
             val errorMessage =
                 when (e.code()) {
-                    500 -> ErrorMessage.applicationError
+                    500 -> GenericMessage.applicationError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
                     }
                 }
             Resource.Error(errorMessage!!)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(GenericMessage.noInternetError)
         }
     }
 
@@ -90,13 +101,16 @@ class ExerciseRepository(
         } catch (e: HttpException) {
             val errorMessage =
                 when (e.code()) {
-                    500 -> ErrorMessage.applicationError
+                    500 -> GenericMessage.applicationError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
                     }
                 }
             Resource.Error(errorMessage!!)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(GenericMessage.noInternetError)
         }
     }
 
@@ -107,13 +121,16 @@ class ExerciseRepository(
         } catch (e: HttpException) {
             val errorMessage =
                 when (e.code()) {
-                    500 -> ErrorMessage.applicationError
+                    500 -> GenericMessage.applicationError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
                     }
                 }
             Resource.Error(errorMessage!!)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(GenericMessage.noInternetError)
         }
     }
 
@@ -124,13 +141,16 @@ class ExerciseRepository(
         } catch (e: HttpException) {
             val errorMessage =
                 when (e.code()) {
-                    500 -> ErrorMessage.applicationError
+                    500 -> GenericMessage.applicationError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
                     }
                 }
             Resource.Error(errorMessage!!)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(GenericMessage.noInternetError)
         }
     }
 }

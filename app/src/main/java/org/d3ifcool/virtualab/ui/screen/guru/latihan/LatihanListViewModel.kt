@@ -34,7 +34,7 @@ class LatihanListViewModel(private val exerciseRepository: ExerciseRepository) :
         _apiStatus.value = ApiStatus.LOADING
 //        Log.d("HomeLatihanVM", "userId: $userId")
         viewModelScope.launch(Dispatchers.IO) {
-            when (val response = exerciseRepository.getMyLatihan()) {
+            when (val response = exerciseRepository.getMyMateri()) {
                 is Resource.Success -> {
                     _latihanList.value = response.data
                     _apiStatus.value = ApiStatus.SUCCESS

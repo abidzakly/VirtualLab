@@ -28,6 +28,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults.cardColors
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -53,14 +55,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
-import org.d3ifcool.virtualab.data.model.OpsiJawaban
-import org.d3ifcool.virtualab.data.model.SoalDummy
+import org.d3ifcool.virtualab.data.model.SoalMurid
+import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
 import org.d3ifcool.virtualab.ui.component.MediumText
+import org.d3ifcool.virtualab.ui.component.MuridEmptyState
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.BlueIndicator
@@ -74,32 +76,50 @@ import org.d3ifcool.virtualab.ui.theme.RedIndicator
 import org.d3ifcool.virtualab.ui.theme.YellowIndicator
 
 @Composable
-fun MuridDetailLatihanScreen(navController: NavHostController) {
+fun MuridDetailLatihanScreen(
+    navController: NavHostController,
+    viewModel: MuridDetailLatihanViewModel
+) {
     Scaffold(
         topBar = {
             TopNav(title = R.string.latihan_x, navController = navController)
         },
         bottomBar = {
-            BottomNav(currentRoute = Screen.MuridDashboard.route, navController = navController)
+            BottomNav(navController = navController)
         },
         containerColor = Color.White
     ) {
-        Column(modifier = Modifier.padding(it)) {
-
-        }
-//        ScreenContent(modifier = Modifier.padding(it), navController)
+//        Column(modifier = Modifier.padding(it)) {
+//
+//        }
+        ScreenContent(modifier = Modifier.padding(it), navController, viewModel)
     }
 }
 
 @Composable
-private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
-    val viewModel: DetailLatihanVM = viewModel()
+private fun ScreenContent(
+    modifier: Modifier,
+    navController: NavHostController,
+    viewModel: MuridDetailLatihanViewModel
+) {
+    val soal by viewModel.soal.collectAsState()
+    val answer by viewModel.answers.collectAsState()
+    val status by viewModel.apiStatus.collectAsState()
+    val resultId by viewModel.resultId.collectAsState()
+
+    LaunchedEffect(Unit) {
+        Log.d("Murid Detail Latihan Screen", "answer: ${answer.values}")
+    }
+
+    val viewModel2: DetailLatihanVM = viewModel()
     var showDialog by remember { mutableStateOf(false) }
     var showConfirmDialog by remember { mutableStateOf(false) }
-    val answers by viewModel.answers.collectAsState()
-    Log.d("Itemlist @Murid Detail Latihan", "answers: ${answers.size}")
+    val answers by viewModel2.answers.collectAsState()
+    Log.d("Itemlist @Murid Detail Latihan", "answers: ${answers.values}")
+    Log.d("Result ID @Murid Detail Latihan", "resultId: $resultId")
 
     val context = LocalContext.current
+
 
     Column(
         modifier = modifier
@@ -116,32 +136,50 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                 .padding(top = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ItemList(noSoal = "1", exerciseId = 1, viewModel)
-            ItemList(noSoal = "2", exerciseId = 1, viewModel)
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(
-                onClick = {
-                    if (answers.values.all { it.size == 2 }) {
-                        showConfirmDialog = true
-                    } else {
-                        Toast.makeText(
-                            context,
-                            "Harus memilih 2 jawaban untuk tiap soal",
-                            Toast.LENGTH_SHORT
-                        ).show()
+            when (status) {
+                ApiStatus.IDLE -> null
+                ApiStatus.LOADING -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = DarkBlueDarker)
                     }
-                },
-                colors = buttonColors(DarkBlueDarker),
-                contentPadding = PaddingValues(vertical = 9.dp, horizontal = 47.dp),
-                shape = RoundedCornerShape(5.dp)
-            ) {
-                RegularText(
-                    text = "Kumpulkan Jawaban",
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.White
-                )
+                }
+                ApiStatus.SUCCESS -> {
+                    soal.forEachIndexed { index, soalMurid ->
+                        ItemListAbid(noSoal = index + 1, soal = soalMurid, viewModel!!)
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(
+                        onClick = {
+                            if (answer.values.withIndex()
+                                    .all { (index, value) -> value.size == soal[index].answerKeyCount }
+                            ) {
+                                showConfirmDialog = true
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Pastikan jumlah jawaban terisi sesuai pada setiap soal",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        },
+                        colors = buttonColors(DarkBlueDarker),
+                        contentPadding = PaddingValues(vertical = 9.dp, horizontal = 47.dp),
+                        shape = RoundedCornerShape(5.dp)
+                    ) {
+                        RegularText(
+                            text = "Kumpulkan Jawaban",
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.White
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(30.dp))
+                }
+                ApiStatus.FAILED -> {
+                    MuridEmptyState(text = "Gagal memuat data.") {
+                        viewModel.getSoal()
+                    }
+                }
             }
-            Spacer(modifier = Modifier.height(30.dp))
         }
     }
     if (showConfirmDialog) {
@@ -162,20 +200,6 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                     fontWeight = FontWeight.SemiBold
                 )
             },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        showConfirmDialog = false
-                        showDialog = true
-                    },
-                    colors = buttonColors(
-                        containerColor = LightBlue
-                    ),
-                    shape = RoundedCornerShape(10.dp)
-                ) {
-                    RegularText(text = "Ya", fontWeight = FontWeight.SemiBold)
-                }
-            },
             dismissButton = {
                 Button(
                     onClick = { showConfirmDialog = false },
@@ -190,39 +214,73 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
                         fontWeight = FontWeight.SemiBold
                     )
                 }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        viewModel.submitAnswers()
+                        showDialog = true
+                        showConfirmDialog = false
+                    },
+                    colors = buttonColors(
+                        containerColor = LightBlue
+                    ),
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    RegularText(text = "Ya", fontWeight = FontWeight.SemiBold)
+                }
             }
         )
     }
     if (showDialog) {
-        ExerciseDonePopup(
-            onDismiss = { showDialog = false },
-            navController = navController
-        )
+        when (status) {
+            ApiStatus.IDLE -> null
+            ApiStatus.LOADING -> {
+                Dialog(onDismissRequest = { showDialog = false }) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = Color.White)
+                    }
+                }
+            }
+
+            ApiStatus.SUCCESS -> {
+                ExerciseDonePopup(
+                    onDismiss = { showDialog = false }) {
+                    if (resultId != null) {
+                        navController.navigate(Screen.CekJawaban.withId(resultId!!))
+                    }
+                    showDialog = false
+                }
+            }
+
+            ApiStatus.FAILED -> {
+                Dialog(onDismissRequest = { showDialog = false }) {
+                    Card(
+                        modifier = Modifier.padding(64.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = cardColors(
+                            containerColor = Color.White
+                        )
+                    ) {
+                        Box(
+                            contentAlignment = Alignment.Center
+                        ) {
+                            RegularText(text = "Jawaban gagal di submit.")
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
 @Composable
-private fun ItemList(noSoal: String, exerciseId: Int, viewModel: DetailLatihanVM) {
-    val questions = listOf(
-        SoalDummy(1, 1, "C4H10 + O2 = ... CO2 + O...", "2;4"),
-        SoalDummy(2, 1, "H2 + O2 = ... H2O", "2;1")
-    )
-    val options = listOf(
-        OpsiJawaban(1, 1, "2"),
-        OpsiJawaban(2, 1, "3"),
-        OpsiJawaban(3, 1, "4"),
-        OpsiJawaban(4, 1, "5"),
-        OpsiJawaban(5, 2, "1"),
-        OpsiJawaban(6, 2, "2"),
-        OpsiJawaban(7, 2, "3"),
-        OpsiJawaban(8, 2, "4")
-    )
-
-    val answers = remember { mutableStateListOf<OpsiJawaban>() }
+private fun ItemListAbid(noSoal: Int, soal: SoalMurid, viewModel: MuridDetailLatihanViewModel) {
+    val answers = remember { mutableStateListOf<String>() }
 
     LaunchedEffect(answers.size) {
-        if (answers.size <= 2) {
-            viewModel.setAnswers(noSoal.toInt(), answers)
+        if (answers.size < soal.answerKeyCount) {
+            viewModel.setAnswers(soal.questionId, answers)
         }
     }
 
@@ -233,7 +291,10 @@ private fun ItemList(noSoal: String, exerciseId: Int, viewModel: DetailLatihanVM
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             RegularText(text = "Soal $noSoal")
-            Image(painter = painterResource(id = R.drawable.indikator_soal), contentDescription = stringResource(id = R.string.indicator_soal) )
+            Image(
+                painter = painterResource(id = R.drawable.indikator_soal),
+                contentDescription = stringResource(id = R.string.indicator_soal)
+            )
         }
         Spacer(modifier = Modifier.height(14.dp))
         Box(
@@ -245,25 +306,23 @@ private fun ItemList(noSoal: String, exerciseId: Int, viewModel: DetailLatihanVM
                 .padding(horizontal = 8.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                questions.filter { it.exerciseId == exerciseId && it.questionId == noSoal.toInt() }
-                    .forEachIndexed { index, question ->
-                        val questionOptions =
-                            options.filter { it.questionId == question.questionId }
-                        QuestionItem(
-                            question = question,
-                            options = questionOptions,
-                            selectedAnswers = answers,
-                            onOptionSelected = { option, isSelected ->
-                                if (isSelected) {
-                                    if (answers.size < 2) {
-                                        answers.add(option)
-                                    }
-                                } else {
-                                    answers.remove(option)
-                                }
+                QuestionItemAbid(
+                    title = soal.questionTitle,
+                    options = soal.optionText,
+                    selectedAnswers = answers,
+                    answerKeyCount = soal.answerKeyCount,
+                    onOptionSelected = { option, isSelected ->
+                        Log.d("MuridDetailLatihanScreen", "Answers Before: ${answers.toList()}")
+                        if (isSelected) {
+                            if (answers.size < soal.answerKeyCount) {
+                                answers.add(option)
                             }
-                        )
+                        } else {
+                            answers.remove(option)
+                        }
+                        Log.d("MuridDetailLatihanScreen", "Answers After:  ${answers.toList()}")
                     }
+                )
             }
         }
     }
@@ -271,23 +330,25 @@ private fun ItemList(noSoal: String, exerciseId: Int, viewModel: DetailLatihanVM
 }
 
 @Composable
-private fun QuestionItem(
-    question: SoalDummy,
-    options: List<OpsiJawaban>,
-    selectedAnswers: List<OpsiJawaban>? = null,
-    onOptionSelected: (OpsiJawaban, Boolean) -> Unit
+private fun QuestionItemAbid(
+    title: String,
+    options: List<String>,
+    answerKeyCount: Int,
+    selectedAnswers: List<String>? = null,
+    onOptionSelected: (String, Boolean) -> Unit
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        var clickedOptions by remember { mutableStateOf<List<OpsiJawaban>>(emptyList()) }
+        var clickedOptions by remember { mutableStateOf<List<String>>(emptyList()) }
         val borderColors = listOf(RedIndicator, YellowIndicator, GreenIndicator, BlueIndicator)
 
-        MediumLargeText(text = question.questionText)
+        MediumLargeText(text = title)
         RegularText(
-            text = stringResource(id = R.string.instructions),
+            text = "Pilih $answerKeyCount jawaban:",
             fontWeight = FontWeight.SemiBold
         )
         options.forEach { option ->
             val isSelected = selectedAnswers?.contains(option) == true
+            Log.d("Murid Detail Latihan Screen", "isSelected: $isSelected")
             val borderColor = if (isSelected) {
 //                DarkBlueDarker
                 val index = clickedOptions.indexOf(option)
@@ -295,6 +356,7 @@ private fun QuestionItem(
             } else {
                 Color.Transparent
             }
+            Log.d("MuridDetailLatihanScreen", "Clicked Opt Size:  ${clickedOptions.size}")
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -303,17 +365,17 @@ private fun QuestionItem(
                     .border(4.dp, borderColor, shape = RoundedCornerShape(5.dp))
                     .padding(8.dp)
                     .padding(horizontal = 16.dp)
-                    .clickable {
-                        if (isSelected) {
-                            clickedOptions = clickedOptions - option
+                    .clickable{
+                        clickedOptions = if (isSelected) {
+                            clickedOptions - option
                         } else {
-                            clickedOptions = (clickedOptions + option).take(4)
+                            (clickedOptions + option).take(4)
                         }
                         onOptionSelected(option, !isSelected)
                     }
             ) {
                 MediumText(
-                    text = option.optionText,
+                    text = option,
                     textAlign = TextAlign.Start,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -323,7 +385,7 @@ private fun QuestionItem(
 }
 
 @Composable
-private fun ExerciseDonePopup(onDismiss: () -> Unit, navController: NavHostController) {
+private fun ExerciseDonePopup(onDismiss: () -> Unit, onClick: () -> Unit) {
     Dialog(onDismissRequest = { onDismiss() }) {
         Card(
             modifier = Modifier.padding(16.dp),
@@ -360,7 +422,7 @@ private fun ExerciseDonePopup(onDismiss: () -> Unit, navController: NavHostContr
                     Button(
                         onClick = {
                             onDismiss()
-                            navController.navigate(Screen.CekJawaban.route)
+                            onClick()
                         },
                         colors = buttonColors(
                             containerColor = LightBlue,
@@ -379,25 +441,38 @@ private fun ExerciseDonePopup(onDismiss: () -> Unit, navController: NavHostContr
         }
     }
 }
+
 @Composable
 private fun IndicatorHeader() {
     Row(modifier = Modifier.padding(vertical = 4.dp)) {
-        Image(painter = painterResource(id = R.drawable.indicator_merah), contentDescription = stringResource(R.string.indicator_merah))
+        Image(
+            painter = painterResource(id = R.drawable.indicator_merah),
+            contentDescription = stringResource(R.string.indicator_merah)
+        )
         Spacer(modifier = Modifier.width(8.dp))
         RegularText(text = stringResource(id = R.string.indicator_pertama))
     }
     Row(modifier = Modifier.padding(vertical = 4.dp)) {
-        Image(painter = painterResource(id = R.drawable.indicator_kuning), contentDescription = stringResource(R.string.indicator_merah))
+        Image(
+            painter = painterResource(id = R.drawable.indicator_kuning),
+            contentDescription = stringResource(R.string.indicator_merah)
+        )
         Spacer(modifier = Modifier.width(8.dp))
         RegularText(text = stringResource(id = R.string.indicator_kedua))
     }
     Row(modifier = Modifier.padding(vertical = 4.dp)) {
-        Image(painter = painterResource(id = R.drawable.indicator_hijau), contentDescription = stringResource(R.string.indicator_merah))
+        Image(
+            painter = painterResource(id = R.drawable.indicator_hijau),
+            contentDescription = stringResource(R.string.indicator_merah)
+        )
         Spacer(modifier = Modifier.width(8.dp))
         RegularText(text = stringResource(id = R.string.indicator_ketiga))
     }
     Row(modifier = Modifier.padding(vertical = 4.dp)) {
-        Image(painter = painterResource(id = R.drawable.indicator_biru), contentDescription = stringResource(R.string.indicator_merah))
+        Image(
+            painter = painterResource(id = R.drawable.indicator_biru),
+            contentDescription = stringResource(R.string.indicator_merah)
+        )
         Spacer(modifier = Modifier.width(8.dp))
         RegularText(text = stringResource(id = R.string.indicator_keempat))
     }
@@ -406,5 +481,5 @@ private fun IndicatorHeader() {
 @Preview
 @Composable
 private fun Prev() {
-    MuridDetailLatihanScreen(rememberNavController())
+//    MuridDetailLatihanScreen(rememberNavController())
 }

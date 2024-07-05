@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,6 +29,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -65,10 +67,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.data.model.UserCreate
 import org.d3ifcool.virtualab.data.network.ApiStatus
@@ -82,7 +82,6 @@ import org.d3ifcool.virtualab.ui.theme.GrayText
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.Poppins
 import org.d3ifcool.virtualab.utils.UserDataStore
-import org.d3ifcool.virtualab.utils.ViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -94,24 +93,26 @@ fun RegisterScreen(navController: NavHostController, id: Int, viewModel: AuthVie
 
     var showDialog by remember { mutableStateOf(false) }
 
-    LaunchedEffect(apiStatus) {
-        when (apiStatus) {
-            ApiStatus.LOADING -> {
-                Toast.makeText(context, "Loading..", Toast.LENGTH_SHORT).show()
+    when (apiStatus) {
+        ApiStatus.LOADING -> {
+            Dialog(onDismissRequest = { showDialog = false }) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(color = Color.White)
+                }
             }
-
-            ApiStatus.SUCCESS -> {
-                showDialog = true
-            }
-
-            ApiStatus.FAILED -> {
-                Log.d("RegisterScreen", "Register Error: $errorMsg")
-                Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show()
-                viewModel.clearErrorMsg()
-            }
-
-            ApiStatus.IDLE -> null
         }
+
+        ApiStatus.SUCCESS -> {
+            showDialog = true
+        }
+
+        ApiStatus.FAILED -> {
+            Log.d("RegisterScreen", "Register Error: $errorMsg")
+            Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show()
+            viewModel.clearStatus()
+        }
+
+        ApiStatus.IDLE -> null
     }
 
     if (showDialog) {
@@ -130,7 +131,7 @@ fun RegisterScreen(navController: NavHostController, id: Int, viewModel: AuthVie
                 errorMsg,
                 Toast.LENGTH_SHORT
             ).show()
-            viewModel.clearErrorMsg()
+            viewModel.clearStatus()
         }
     }
 

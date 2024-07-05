@@ -57,7 +57,7 @@ fun AddMateriScreen(navController: NavHostController) {
             TopNav(title = R.string.buat_materi, navController = navController)
         },
         bottomBar = {
-            BottomNav(currentRoute = Screen.GuruMateri.route, navController)
+            BottomNav(navController = navController)
         }
     ) {
         ScreenContent(modifier = Modifier.padding(it))

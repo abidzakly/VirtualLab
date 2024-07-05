@@ -72,6 +72,24 @@ fun BottomNav(
     ) {
         when (userType) {
             0 -> {
+                var showDialog by remember { mutableStateOf(false) }
+                var quitApp by remember { mutableStateOf(false) }
+
+                if (currentRoute == Screen.MuridDashboard.route || currentRoute == Screen.Profile.route || currentRoute == Screen.Nilai.route) {
+                    BackHandler {
+                        showDialog = true
+                    }
+                }
+                if (showDialog) {
+                    PopUpDialog(
+                        onDismiss = { showDialog = false; quitApp = false },
+                        icon = R.drawable.log_out_blue,
+                        title = "Anda yakin ingin menutup aplikasi?"
+                    ) {
+                        quitApp = false
+                        (context as? Activity)?.finish()
+                    }
+                }
                 Row(
                     modifier = Modifier.fillMaxSize(),
                     horizontalArrangement = Arrangement.SpaceEvenly
@@ -107,6 +125,24 @@ fun BottomNav(
             }
 
             1 -> {
+                var showDialog by remember { mutableStateOf(false) }
+                var quitApp by remember { mutableStateOf(false) }
+
+                if (currentRoute == Screen.GuruDashboard.route || currentRoute == Screen.GuruLatihan.route || currentRoute == Screen.GuruMateri.route || currentRoute == Screen.Profile.route) {
+                    BackHandler {
+                        showDialog = true
+                    }
+                }
+                if (showDialog) {
+                    PopUpDialog(
+                        onDismiss = { showDialog = false; quitApp = false },
+                        icon = R.drawable.log_out_blue,
+                        title = "Anda yakin ingin menutup aplikasi?"
+                    ) {
+                        quitApp = false
+                        (context as? Activity)?.finish()
+                    }
+                }
                 Row(
                     modifier = Modifier.fillMaxSize(),
                     horizontalArrangement = Arrangement.SpaceEvenly

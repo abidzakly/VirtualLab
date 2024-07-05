@@ -47,6 +47,7 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
     }
 
     fun clearErrorMsg() {
+        _apiStatus.value = ApiStatus.IDLE
         _errorMsg.value = ""
     }
 }

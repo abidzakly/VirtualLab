@@ -36,6 +36,7 @@ import androidx.compose.material3.TextFieldDefaults.colors
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -69,6 +70,7 @@ import org.d3ifcool.virtualab.ui.theme.BlueLink
 import org.d3ifcool.virtualab.ui.theme.GrayText
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.Poppins
+import org.d3ifcool.virtualab.utils.GenericMessage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,12 +83,12 @@ fun LoginScreen(navController: NavHostController, viewModel: AuthViewModel) {
 
     when (apiStatus) {
         ApiStatus.LOADING -> {
-            Toast.makeText(context, "Loading..", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, GenericMessage.loadingMessage, Toast.LENGTH_SHORT).show()
+            viewModel.clearStatus()
         }
 
         ApiStatus.SUCCESS -> {
             if (currentUser != null) {
-                Toast.makeText(context, "Login Berhasil!", Toast.LENGTH_SHORT).show()
                 when (currentUser!!.user!!.userType) {
                     0 -> navController.navigate(Screen.MuridDashboard.route)
 
@@ -95,13 +97,15 @@ fun LoginScreen(navController: NavHostController, viewModel: AuthViewModel) {
                     2 -> navController.navigate(Screen.AdminDashboard.route)
                     else -> Toast.makeText(context, "ID tidak valid", Toast.LENGTH_SHORT).show()
                 }
+                Toast.makeText(context, "Login Berhasil!", Toast.LENGTH_SHORT).show()
+                viewModel.clearStatus()
             }
         }
 
         ApiStatus.FAILED -> {
             Log.d("LoginScreen", "Login Error: $errorMsg")
             Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show()
-            viewModel.clearErrorMsg()
+            viewModel.clearStatus()
         }
 
         ApiStatus.IDLE -> null

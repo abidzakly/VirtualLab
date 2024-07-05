@@ -14,6 +14,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -43,10 +44,12 @@ import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.R
+import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.BottomSheet
 import org.d3ifcool.virtualab.ui.component.ContentList
+import org.d3ifcool.virtualab.ui.component.GuruEmptyState
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNavDashboard
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
@@ -184,55 +187,53 @@ private fun ScreenContent(
     viewModel: GuruDashboardViewModel
 ) {
     val combinedPosts by viewModel.combinedPosts.collectAsState()
+    val status by viewModel.apiStatus.collectAsState()
     Column(modifier = modifier) {
         TopNavDashboard(name = "Guru", navController = navController)
-        LazyColumn(
-            modifier = Modifier
-                .padding(horizontal = 40.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            item {
-                RegularText(
-                    text = stringResource(id = R.string.dashboard_guru_sub_header),
-                    modifier = Modifier
-                        .padding(vertical = 24.dp)
-                        .fillMaxWidth()
-                )
+        when (status) {
+            ApiStatus.IDLE -> null
+            ApiStatus.LOADING -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(color = DarkBlueDarker)
+                }
             }
-            items(combinedPosts) {
-                Log.d("GuruDashboard", "CombinedPost: $it")
-                ContentList(
-                    title = it.title,
-                    desc = if (it.postType == "Materi") it.description else "Tingkat Kesulitan: ${it.description}",
-                    status = it.approvalStatus
+
+            ApiStatus.SUCCESS -> {
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(horizontal = 40.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    if (it.postType == "Materi") {
-                        Log.d("GuruDashboard", "material ID: ${it.postId}")
-                        navController.navigate(Screen.GuruDetailMateri.withId(it.postId))
+                    item {
+                        RegularText(
+                            text = stringResource(id = R.string.dashboard_guru_sub_header),
+                            modifier = Modifier
+                                .padding(vertical = 24.dp)
+                                .fillMaxWidth()
+                        )
+                    }
+                    items(combinedPosts) {
+                        Log.d("GuruDashboard", "CombinedPost: $it")
+                        ContentList(
+                            title = it.title,
+                            desc = if (it.postType == "Materi") it.description else "Tingkat Kesulitan: ${it.description}",
+                            status = it.approvalStatus
+                        ) {
+                            if (it.postType == "Materi") {
+                                navController.navigate(Screen.GuruDetailMateri.withId(it.postId))
+                            } else {
+                                navController.navigate(Screen.GuruDetailLatihan.withId(it.postId))
+                            }
+                        }
                     }
                 }
             }
-//            ContentList(
-//                title = "Pengenalan Reaksi Kimiaadasdasd",
-//                desc = "Lorem ipsum dolor sit amet, cacasdasd",
-//                status = "APPROVED"
-//            ) {
-////                navController.navigate()
-//            }
-//            ContentList(
-//                title = "Persamaan Reaksi 2",
-//                desc = "Lorem ipsum dolor sit amet, cacasdasd",
-//                "DRAFT"
-//            ) {
-////                navController.navigate()
-//            }
-//            ContentList(
-//                title = "Reaksi Kimia pada...",
-//                desc = "Lorem ipsum dolor sit amet, cacasdasd",
-//                "PENDING"
-//            ) {
-////                navController.navigate()
-//            }
+
+            ApiStatus.FAILED -> {
+                GuruEmptyState(text = "Gagal Memuat Data") {
+                    viewModel.getPosts()
+                }
+            }
         }
     }
 }

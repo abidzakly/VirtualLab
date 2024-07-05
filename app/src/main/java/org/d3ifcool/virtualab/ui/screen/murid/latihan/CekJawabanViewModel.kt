@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.ui.screen.guru.materi
+package org.d3ifcool.virtualab.ui.screen.murid.latihan
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -6,16 +6,17 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import org.d3ifcool.virtualab.data.model.Materi
+import org.d3ifcool.virtualab.data.model.NilaiDetail
 import org.d3ifcool.virtualab.data.network.ApiStatus
-import org.d3ifcool.virtualab.repository.MaterialRepository
+import org.d3ifcool.virtualab.repository.StudentRepository
 import org.d3ifcool.virtualab.utils.Resource
 
-class DetailMateriViewModel(
-    private val materialId: Int,
-    private val materialRepository: MaterialRepository
+class CekJawabanViewModel(
+    private val resultId: Int,
+    private val studentRepository: StudentRepository
 ) : ViewModel() {
-    var materiData = MutableStateFlow<Materi?>(null)
+
+    var data = MutableStateFlow<NilaiDetail?>(null)
         private set
 
     var apiStatus = MutableStateFlow(ApiStatus.LOADING)
@@ -25,23 +26,24 @@ class DetailMateriViewModel(
         private set
 
     init {
-        Log.d("DetailMateriVM", "material ID: $materialId")
-        getMateriDetail()
+        getNilaiDetail()
     }
 
-    fun getMateriDetail() {
+    fun getNilaiDetail() {
         viewModelScope.launch(Dispatchers.IO) {
             apiStatus.value = ApiStatus.LOADING
-            when (val response = materialRepository.getDetailMateri(materialId)) {
+                    Log.d("CekJawabanVM", "Response: $resultId")
+            when (val response = studentRepository.getResultDetail(resultId)) {
                 is Resource.Success -> {
-                    materiData.value = response.data!!
+                    Log.d("CekJawabanVM", "Response: ${response.data}")
+                    data.value = response.data
                     apiStatus.value = ApiStatus.SUCCESS
-                    Log.d("DetailMateriVM", "Response: ${materiData.value}")
                 }
 
                 is Resource.Error -> {
                     errorMessage.value = response.message
-                    Log.d("DetailMateriVM", "Response: ${errorMessage.value}")
+                    Log.d("CekJawabanVM", "Error: ${response.message}")
+                    Log.d("CekJawabanVM", "Error: ${errorMessage.value}")
                     apiStatus.value = ApiStatus.FAILED
                 }
             }

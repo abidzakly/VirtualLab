@@ -2,6 +2,7 @@ package org.d3ifcool.virtualab.data.network.apis
 
 import okhttp3.MultipartBody
 import org.d3ifcool.virtualab.data.model.Materi
+import org.d3ifcool.virtualab.data.model.MateriItem
 import org.d3ifcool.virtualab.data.model.MessageResponse
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -19,20 +20,25 @@ interface AuthorizedMateriApi {
         @Part("title") title: String,
         @Part("media_type") mediaType: String,
         @Part("description") desc: String,
-        @Part("file") file: MultipartBody.Part,
+        @Part file: MultipartBody.Part
     ): MessageResponse
 
     @GET("/v1/materials")
-    suspend fun getMyMateri(): List<Materi>
+    suspend fun getMyMateri(): List<MateriItem>
 
     @GET("/v1/materials/{materialId}")
     suspend fun getDetailmateri(
         @Path("materialId") id: Int
     ): Materi
 
+    @Multipart
     @PUT("/v1/materials/{materialId}")
     suspend fun updateMateri(
-        @Path("materialId") id: Int
+        @Path("materialId") id: Int,
+        @Part("title") title: String? = null,
+        @Part("media_type") mediaType: String? = null,
+        @Part("description") desc: String? = null,
+        @Part file: MultipartBody.Part? = null
     ): MessageResponse
 
     @DELETE("/v1/materials/{materialId}")
@@ -43,8 +49,6 @@ interface AuthorizedMateriApi {
     @PUT("/v1/materials/{materialId}/status")
     suspend fun modifyMateriStatus(
         @Path("materialId") id: Int,
-        @Query("status") status: String,
+        @Query("status") status: String
     ): MessageResponse
-
-
 }

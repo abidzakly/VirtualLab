@@ -66,7 +66,7 @@ fun DetailMateriScreen(navController: NavHostController, viewModel: DetailMateri
             }
         }
     }, bottomBar = {
-        BottomNav(currentRoute = Screen.GuruMateri.route, navController)
+        BottomNav(navController = navController)
     }) {
         ScreenContent(modifier = Modifier.padding(it), viewModel)
     }
@@ -75,7 +75,6 @@ fun DetailMateriScreen(navController: NavHostController, viewModel: DetailMateri
 @Composable
 private fun ScreenContent(modifier: Modifier, viewModel: DetailMateriViewModel) {
     val data by viewModel.materiData.collectAsState()
-    val materiItem = data!!.materiItem!!
     val status by viewModel.apiStatus.collectAsState()
 
     when (status) {
@@ -87,6 +86,7 @@ private fun ScreenContent(modifier: Modifier, viewModel: DetailMateriViewModel) 
         }
 
         ApiStatus.SUCCESS -> {
+            val materiItem = data!!.materiItem!!
             Column(
                 modifier = modifier
                     .fillMaxSize()
@@ -112,7 +112,7 @@ private fun ScreenContent(modifier: Modifier, viewModel: DetailMateriViewModel) 
                         Column(modifier = Modifier.fillMaxWidth()) {
                             AsyncImage(
                                 model = ImageRequest.Builder(LocalContext.current)
-                                    .data(ApiService.getContent(materiItem.materialId))
+                                    .data(ApiService.getMateriContent(materiItem.materialId))
                                     .crossfade(true)
                                     .build(),
                                 contentDescription = null,
@@ -157,7 +157,7 @@ private fun ScreenContent(modifier: Modifier, viewModel: DetailMateriViewModel) 
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 LargeText(text = "Data tidak ditemukan :(")
-                Button(onClick = { viewModel.getMateri() }) {
+                Button(onClick = { viewModel.getMateriDetail() }) {
                     RegularText(text = "Coba Lagi")
                 }
             }

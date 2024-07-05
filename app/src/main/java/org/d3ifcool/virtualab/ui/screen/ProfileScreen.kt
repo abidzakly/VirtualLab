@@ -77,7 +77,9 @@ import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.Poppins
 import org.d3ifcool.virtualab.ui.theme.RedButton
+import org.d3ifcool.virtualab.utils.GenericMessage
 import org.d3ifcool.virtualab.utils.UserDataStore
+import org.d3ifcool.virtualab.utils.isInternetAvailable
 
 @Composable
 fun ProfileScreen(
@@ -155,7 +157,7 @@ private fun ScreenContent(
 
     when (apiStatus) {
         ApiStatus.LOADING -> {
-            Toast.makeText(context, "Loading..", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, GenericMessage.loadingMessage, Toast.LENGTH_SHORT).show()
         }
 
         ApiStatus.SUCCESS -> {
@@ -251,7 +253,7 @@ private fun ScreenContent(
             )
             if (!readOnly) {
                 RegularText(
-                    text = stringResource(id = R.string.password_label),
+                    text = "${stringResource(id = R.string.password_label)} Lama",
                     fontWeight = FontWeight.SemiBold
                 )
                 TextField(
@@ -261,7 +263,7 @@ private fun ScreenContent(
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Password,
-                        capitalization = KeyboardCapitalization.Words,
+                        capitalization = KeyboardCapitalization.None,
                         imeAction = ImeAction.Next,
                     ),
                     visualTransformation =
@@ -313,7 +315,7 @@ private fun ScreenContent(
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Password,
-                        capitalization = KeyboardCapitalization.Words,
+                        capitalization = KeyboardCapitalization.None,
                         imeAction = ImeAction.Done,
                     ),
                     visualTransformation =
@@ -436,11 +438,15 @@ private fun ScreenContent(
                                 return@Button
 
                             }
-                            profileViewModel.update(
-                                user.userId,
-                                oldPassword,
-                                UserUpdate(email, newPassword)
-                            )
+                            if (isInternetAvailable(context)) {
+                                profileViewModel.update(
+                                    user.userId,
+                                    oldPassword,
+                                    UserUpdate(email, newPassword)
+                                )
+                            } else {
+                                Toast.makeText(context, GenericMessage.noInternetError, Toast.LENGTH_SHORT).show()
+                            }
                         },
                         shape = RoundedCornerShape(10.dp),
                         colors = ButtonDefaults.buttonColors(

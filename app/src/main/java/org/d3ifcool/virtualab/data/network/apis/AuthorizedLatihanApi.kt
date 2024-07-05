@@ -4,7 +4,6 @@ import org.d3ifcool.virtualab.data.model.CombinedLatihan
 import org.d3ifcool.virtualab.data.model.ExerciseCreate
 import org.d3ifcool.virtualab.data.model.Latihan
 import org.d3ifcool.virtualab.data.model.QuestionCreate
-import org.d3ifcool.virtualab.data.model.Soal
 import org.d3ifcool.virtualab.data.model.LatihanDetail
 import org.d3ifcool.virtualab.data.model.MessageResponse
 import retrofit2.http.Body
@@ -24,7 +23,7 @@ interface AuthorizedLatihanApi {
 
     //    Get Latihan by Author
     @GET("/v1/exercises")
-    suspend fun getMyLatihan(): List<Latihan>
+    suspend fun getMyMateri(): List<Latihan>
 
 
     //    Get Detail Latihan

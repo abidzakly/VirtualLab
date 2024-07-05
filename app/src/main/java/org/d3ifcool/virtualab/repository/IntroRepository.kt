@@ -1,20 +1,24 @@
 package org.d3ifcool.virtualab.repository
 
 import okhttp3.MultipartBody
-import org.d3ifcool.virtualab.data.model.Materi
-import org.d3ifcool.virtualab.data.model.MateriItem
+import okhttp3.RequestBody
+import org.d3ifcool.virtualab.data.model.Introduction
 import org.d3ifcool.virtualab.data.model.MessageResponse
-import org.d3ifcool.virtualab.data.network.apis.AuthorizedMateriApi
+import org.d3ifcool.virtualab.data.network.apis.AuthorizedIntroductionApi
 import org.d3ifcool.virtualab.utils.GenericMessage
 import org.d3ifcool.virtualab.utils.Resource
 import retrofit2.HttpException
 
-class MaterialRepository(
-    private val materialApi: AuthorizedMateriApi
+class IntroRepository(
+    private val introApi: AuthorizedIntroductionApi
 ) {
-    suspend fun addMateri(title: String, mediaType: String, description: String, file: MultipartBody.Part): Resource<MessageResponse> {
+    suspend fun addData(
+        title: RequestBody,
+        description: RequestBody,
+        file: MultipartBody.Part
+    ): Resource<MessageResponse> {
         return try {
-            val response = materialApi.addMateri(title, mediaType, description, file)
+            val response = introApi.addIntroduction(title, description, file)
             Resource.Success(response)
         } catch (e: HttpException) {
             val errorMessage =
@@ -32,9 +36,10 @@ class MaterialRepository(
         }
     }
 
-    suspend fun getMyMateri(): Resource<List<MateriItem>> {
+
+    suspend fun getData(): Resource<Introduction> {
         return try {
-            val response = materialApi.getMyMateri()
+            val response = introApi.getIntroduction()
             Resource.Success(response)
         } catch (e: HttpException) {
             val errorMessage =
@@ -52,9 +57,13 @@ class MaterialRepository(
         }
     }
 
-    suspend fun getDetailMateri(materialId: Int): Resource<Materi> {
+    suspend fun updateData(
+        title: RequestBody? = null,
+        description: RequestBody? = null,
+        file: MultipartBody.Part? = null
+    ): Resource<MessageResponse> {
         return try {
-            val response = materialApi.getDetailmateri(materialId)
+            val response = introApi.updateIntroduction(title, description, file)
             Resource.Success(response)
         } catch (e: HttpException) {
             val errorMessage =
@@ -72,49 +81,9 @@ class MaterialRepository(
         }
     }
 
-    suspend fun updateMateri(materialId: Int): Resource<MessageResponse> {
+    suspend fun deleteData(): Resource<MessageResponse> {
         return try {
-            val response = materialApi.updateMateri(materialId)
-            Resource.Success(response)
-        } catch (e: HttpException) {
-            val errorMessage =
-                when (e.code()) {
-                    500 -> GenericMessage.applicationError
-                    else -> {
-                        e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
-                            ?.replace("detail", "")
-                    }
-                }
-            Resource.Error(errorMessage!!)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Resource.Error(GenericMessage.noInternetError)
-        }
-    }
-
-    suspend fun approveOrReject(materialId: Int, status: String): Resource<MessageResponse> {
-        return try {
-            val response = materialApi.modifyMateriStatus(materialId, status)
-            Resource.Success(response)
-        } catch (e: HttpException) {
-            val errorMessage =
-                when (e.code()) {
-                    500 -> GenericMessage.applicationError
-                    else -> {
-                        e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
-                            ?.replace("detail", "")
-                    }
-                }
-            Resource.Error(errorMessage!!)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Resource.Error(GenericMessage.noInternetError)
-        }
-    }
-
-    suspend fun deleteMateri(materialId: Int): Resource<MessageResponse> {
-        return try {
-            val response = materialApi.deleteMateri(materialId)
+            val response = introApi.deleteIntroduction()
             Resource.Success(response)
         } catch (e: HttpException) {
             val errorMessage =

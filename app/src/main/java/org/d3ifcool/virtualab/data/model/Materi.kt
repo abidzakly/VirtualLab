@@ -13,11 +13,11 @@ data class MateriItem(
     @Json(name = "material_id")
     val materialId: Int,
     @Json(name = "author_id")
-    val authorId: Int,
+    val authorId: Int = -1,
     @Json(name = "media_type")
-    val mediaType: String,
+    val mediaType: String = "",
     val title: String,
-    val filename: String,
+    val filename: String = "",
     val description: String,
     @Json(name = "approval_status")
     val approvalStatus: String
@@ -35,4 +35,11 @@ data class MateriReview(
     val title: String,
     val filename: String,
     val description: String,
+)
+
+data class ApprovedMateri(
+    @Json(name = "material_id")
+    val materialId: Int,
+    val title: String,
+    val description: String
 )

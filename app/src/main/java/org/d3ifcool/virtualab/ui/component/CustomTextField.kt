@@ -24,7 +24,8 @@ fun CustomTextField(
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: Int,
-    isPhone: Boolean? = false
+    isPhone: Boolean? = false,
+    isTitle: Boolean = false
 ) {
     TextField(
         modifier = modifier?.fillMaxWidth()
@@ -42,7 +43,7 @@ fun CustomTextField(
         ),
         keyboardOptions = KeyboardOptions(
             keyboardType = if (isPhone!!) KeyboardType.Phone else if (isNumber == true) KeyboardType.Number else KeyboardType.Text,
-            capitalization = KeyboardCapitalization.Sentences
+            capitalization = if (isTitle) KeyboardCapitalization.Words else KeyboardCapitalization.Sentences,
         )
     )
     Spacer(modifier = Modifier.height(8.dp))

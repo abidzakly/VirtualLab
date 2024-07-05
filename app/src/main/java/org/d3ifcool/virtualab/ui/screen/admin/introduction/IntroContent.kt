@@ -2,10 +2,13 @@ package org.d3ifcool.virtualab.ui.screen.admin.introduction
 
 import android.content.res.Configuration
 import android.net.Uri
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +19,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -30,6 +34,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,11 +43,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
@@ -51,17 +60,22 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import org.d3ifcool.virtualab.R
+import org.d3ifcool.virtualab.data.model.Introduction
 import org.d3ifcool.virtualab.navigation.Screen
+import org.d3ifcool.virtualab.ui.component.AdminEmptyState
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
+import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.SmallText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.DarkBlueText
 import org.d3ifcool.virtualab.ui.theme.LightBlue
+import org.d3ifcool.virtualab.ui.theme.Poppins
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ManageContentScreen(navController: NavHostController) {
+fun IntroContent(navController: NavHostController, viewModel: IntroContentViewModel) {
+    val data by viewModel.data.collectAsState()
     var isVideoPlaying by remember { mutableStateOf(false) }
     var currentVideoSource by remember { mutableStateOf("") }
     val context = LocalContext.current
@@ -92,7 +106,8 @@ fun ManageContentScreen(navController: NavHostController) {
                 }
                 ScreenContent(
                     modifier = Modifier.padding(bottom = it.calculateBottomPadding()),
-                    navController = navController
+                    navController = navController,
+                    data
                 )
             }
         }
@@ -149,7 +164,10 @@ fun ManageContentScreen(navController: NavHostController) {
                     }
                 },
                 title = {
-                    Text(text = stringResource(id = R.string.introduction_title))
+                    Text(
+                        text = stringResource(id = R.string.introduction_title),
+                        fontFamily = Poppins
+                    )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent,
@@ -169,7 +187,7 @@ fun ManageContentScreen(navController: NavHostController) {
             )
         },
             bottomBar = {
-                BottomNav(currentRoute = Screen.AdminDashboard.route, navController = navController)
+                BottomNav(navController = navController)
             }
         ) {
             Column(
@@ -185,13 +203,14 @@ fun ManageContentScreen(navController: NavHostController) {
                     items(videoList) {
                         VideoListItem(item = it, onClick = {
                             isVideoPlaying = true
-                            currentVideoSource = it.source.toString()
+//                            currentVideoSource = it.source.toString()
                         })
                     }
                 }
                 ScreenContent(
                     modifier = Modifier.padding(bottom = it.calculateBottomPadding()),
-                    navController = navController
+                    navController = navController,
+                    data
                 )
             }
         }
@@ -199,7 +218,11 @@ fun ManageContentScreen(navController: NavHostController) {
 }
 
 @Composable
-private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
+private fun ScreenContent(
+    modifier: Modifier,
+    navController: NavHostController,
+    data: Introduction? = null
+) {
     Column(
         modifier = Modifier
             .padding(top = 32.dp)
@@ -210,35 +233,69 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController) 
             ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Spacer(modifier = Modifier.height(24.dp))
-        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            MediumLargeText(
-                text = stringResource(R.string.introduction_header),
-                fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(
-                    start = 30.dp,
-                    top = 0.dp,
-                    end = 30.dp,
-                    bottom = 24.dp
-                ),
-                color = DarkBlueText
-            )
-            Column(modifier = Modifier.padding(horizontal = 50.dp)) {
-                SmallText(
-                    text = stringResource(R.string.introduction_desc),
-                    textAlign = TextAlign.Justify,
+        if (data != null) {
+            Spacer(modifier = Modifier.height(24.dp))
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                MediumLargeText(
+                    text = data.title,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            start = 30.dp,
+                            top = 0.dp,
+                            end = 30.dp,
+                            bottom = 24.dp
+                        ),
+                    color = DarkBlueText
                 )
-                Spacer(modifier = Modifier.height(12.dp))
-                SmallText(
-                    text = stringResource(R.string.introduction_desc2_title),
-                    fontWeight = FontWeight.Bold,
-                )
-                SmallText(
-                    text = stringResource(R.string.introduction_desc2),
-                    textAlign = TextAlign.Justify,
-                    modifier = modifier.padding(bottom = 24.dp)
-                )
+                Column(modifier = modifier.padding(horizontal = 50.dp)) {
+                    SmallText(
+                        text = data.description,
+                        textAlign = TextAlign.Justify,
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+//                SmallText(
+//                    text = stringResource(R.string.introduction_desc2_title),
+//                    fontWeight = FontWeight.Bold,
+//                )
+//                SmallText(
+//                    text = stringResource(R.string.introduction_desc2),
+//                    textAlign = TextAlign.Justify,
+//                    modifier = modifier.padding(bottom = 24.dp)
+//                )
+                }
+            }
+        } else {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.empty_state_admin),
+                        contentDescription = "Gambar Empty State"
+                    )
+                    Spacer(modifier = Modifier.height(28.dp))
+                    RegularText(
+                        text = "Belum ada data. ",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                    ClickableText(
+                        text = AnnotatedString("Tambahkan sekarang"),
+                        style = TextStyle(
+                            fontFamily = Poppins,
+                            fontSize = 16.sp,
+                            color = DarkBlueText
+                        )
+                    ) {
+                        navController.navigate(Screen.UpdateIntroContent.route)
+                    }
+
+                }
             }
         }
     }
@@ -262,5 +319,5 @@ fun VideoListItem(item: VideoItem, onClick: () -> Unit) {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun Prev() {
-    ManageContentScreen(navController = rememberNavController())
+//    IntroContent(navController = rememberNavController())
 }

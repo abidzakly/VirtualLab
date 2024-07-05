@@ -43,7 +43,7 @@ fun IntroductionScreen(navController: NavHostController) {
         TopNav(title = R.string.introduction_title, navController = navController)
     },
         bottomBar = {
-            BottomNav(currentRoute = Screen.MuridDashboard.route, navController = navController)
+            BottomNav(navController = navController)
         }) {
         ScreenContent(
             modifier = Modifier.padding(bottom = it.calculateBottomPadding()),

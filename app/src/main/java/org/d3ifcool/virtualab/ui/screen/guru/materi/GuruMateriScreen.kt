@@ -1,5 +1,6 @@
 package org.d3ifcool.virtualab.ui.screen.guru.materi
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,7 +38,7 @@ import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.ui.theme.Poppins
-import org.d3ifcool.virtualab.utils.ErrorMessage
+import org.d3ifcool.virtualab.utils.GenericMessage
 
 @Composable
 fun GuruMateriScreen(navController: NavHostController, viewModel: GuruMateriViewModel) {
@@ -97,11 +98,11 @@ private fun ScreenContent(
                     ) {
                         items(data) {
                             ContentList(
-                                title = it.materiItem!!.title,
-                                desc = it.materiItem.description,
-                                status = it.materiItem.approvalStatus
+                                title = it.title,
+                                desc = it.description,
+                                status = it.approvalStatus
                             ) {
-                                navController.navigate(Screen.GuruDetailMateri.withId(it.materiItem.materialId))
+                                navController.navigate(Screen.GuruDetailMateri.withId(it.materialId))
                             }
                         }
                     }
@@ -123,13 +124,14 @@ private fun ScreenContent(
                     .padding(12.dp),
                 verticalArrangement = Arrangement.Center
             ) {
-                if (errorMessage == ErrorMessage.applicationError) {
-                    GuruEmptyState(text = "Terjadi kesalahan, Harap Coba Lagi")
-                    Button(onClick = { viewModel.getMyMateri() }) {
-                        RegularText(text = "Coba Lagi")
+                if (errorMessage == GenericMessage.applicationError) {
+                    GuruEmptyState(text = "Terjadi kesalahan, Harap Coba Lagi") {
+                        viewModel.getMyMateri()
                     }
                 } else {
-                    GuruEmptyState(text = stringResource(id = R.string.list_latihan_kosong))
+                    GuruEmptyState(text = stringResource(id = R.string.list_latihan_kosong)) {
+                        viewModel.getMyMateri()
+                    }
                 }
             }
         }

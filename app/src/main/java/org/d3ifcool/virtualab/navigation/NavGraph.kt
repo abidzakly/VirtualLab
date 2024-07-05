@@ -14,25 +14,29 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import org.d3ifcool.virtualab.data.network.ApiService
+import org.d3ifcool.virtualab.data.network.apis.AuthorizedIntroductionApi
 import org.d3ifcool.virtualab.data.network.apis.AuthorizedLatihanApi
 import org.d3ifcool.virtualab.data.network.apis.AuthorizedMateriApi
+import org.d3ifcool.virtualab.data.network.apis.AuthorizedStudentApi
 import org.d3ifcool.virtualab.data.network.apis.AuthorizedUserApi
 import org.d3ifcool.virtualab.repository.AuthRepository
 import org.d3ifcool.virtualab.repository.ExerciseRepository
+import org.d3ifcool.virtualab.repository.IntroRepository
 import org.d3ifcool.virtualab.repository.MaterialRepository
+import org.d3ifcool.virtualab.repository.StudentRepository
 import org.d3ifcool.virtualab.ui.screen.AboutScreen
 import org.d3ifcool.virtualab.ui.screen.AuthViewModel
 import org.d3ifcool.virtualab.ui.screen.admin.dashboard.AdminDashboardScreen
 import org.d3ifcool.virtualab.ui.screen.admin.approval.content.CheckFileScreen
 import org.d3ifcool.virtualab.ui.screen.admin.approval.account.CheckUserScreen
 import org.d3ifcool.virtualab.ui.screen.admin.approval.content.FileInfoScreen
-import org.d3ifcool.virtualab.ui.screen.admin.introduction.ManageContentScreen
+import org.d3ifcool.virtualab.ui.screen.admin.introduction.IntroContent
 import org.d3ifcool.virtualab.ui.screen.admin.introduction.UpdateIntroContentScreen
 import org.d3ifcool.virtualab.ui.screen.admin.approval.account.UsersInfoScreen
 import org.d3ifcool.virtualab.ui.screen.murid.dashboard.MuridDashboardScreen
 import org.d3ifcool.virtualab.ui.screen.murid.introduction.IntroductionScreen
 import org.d3ifcool.virtualab.ui.screen.LandingScreen
-import org.d3ifcool.virtualab.ui.screen.murid.latihan.MuridLatihanScreen
+import org.d3ifcool.virtualab.ui.screen.murid.latihan.MuridListLatihanScreen
 import org.d3ifcool.virtualab.ui.screen.RegisterScreen
 import org.d3ifcool.virtualab.ui.screen.LoginScreen
 import org.d3ifcool.virtualab.ui.screen.guru.dashboard.GuruDashboardScreen
@@ -57,37 +61,55 @@ import org.d3ifcool.virtualab.ui.screen.admin.approval.account.CheckUsersViewMod
 import org.d3ifcool.virtualab.ui.screen.admin.approval.account.UserInfoViewModel
 import org.d3ifcool.virtualab.ui.screen.admin.approval.content.CheckFileViewModel
 import org.d3ifcool.virtualab.ui.screen.admin.approval.content.FileInfoViewModel
+import org.d3ifcool.virtualab.ui.screen.admin.introduction.IntroContentViewModel
+import org.d3ifcool.virtualab.ui.screen.admin.introduction.UpdateIntroViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.dashboard.GuruDashboardViewModel
+import org.d3ifcool.virtualab.ui.screen.guru.latihan.DetailLatihanViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.LatihanListViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.materi.DetailMateriViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.materi.GuruMateriViewModel
+import org.d3ifcool.virtualab.ui.screen.murid.latihan.CekJawabanViewModel
+import org.d3ifcool.virtualab.ui.screen.murid.latihan.MuridDetailLatihanViewModel
+import org.d3ifcool.virtualab.ui.screen.murid.latihan.MuridListLatihanViewModel
+import org.d3ifcool.virtualab.ui.screen.murid.materi.MuridDetailMateriViewModel
+import org.d3ifcool.virtualab.ui.screen.murid.materi.MuridMateriViewModel
+import org.d3ifcool.virtualab.ui.screen.murid.nilai.NilaiViewModel
 import org.d3ifcool.virtualab.utils.UserDataStore
 import org.d3ifcool.virtualab.utils.ViewModelFactory
 
 @Composable
 fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
-    val userDataStore = UserDataStore(LocalContext.current)
+    val context = LocalContext.current
+    val userDataStore = UserDataStore(context)
     val userType by userDataStore.userTypeFlow.collectAsState(-1)
     val accessToken by userDataStore.accessTokenFlow.collectAsState("")
     val id by userDataStore.userIdFlow.collectAsState(-1)
 
     val unauthedApi = ApiService.unauthedService
     val userApi: AuthorizedUserApi?
-    var latihanApi: AuthorizedLatihanApi?
+    var latihanApi: AuthorizedLatihanApi? = null
     var materiApi: AuthorizedMateriApi?
+    var introApi: AuthorizedIntroductionApi?
+    var studentApi: AuthorizedStudentApi?
     val authRepository = AuthRepository(userDataStore, unauthedApi)
     var userRepository: UserRepository? = null
     var exerciseRepository: ExerciseRepository? = null
     var materialRepository: MaterialRepository? = null
+    var introRepository: IntroRepository? = null
+    var studentRepository: StudentRepository? = null
 
     if (accessToken != "") {
         ApiService.createAuthorizedService(accessToken)
         userApi = ApiService.userService!!
         latihanApi = ApiService.latihanService!!
         materiApi = ApiService.materiService!!
+        introApi = ApiService.introductionService!!
+        studentApi = ApiService.studentService!!
         userRepository = UserRepository(userDataStore, userApi)
         exerciseRepository = ExerciseRepository(latihanApi)
         materialRepository = MaterialRepository(materiApi)
+        introRepository = IntroRepository(introApi)
+        studentRepository = StudentRepository(studentApi)
     }
     val isLoggedIn by userDataStore.loginStatusFlow.collectAsState(false)
 
@@ -97,7 +119,7 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
     Log.d("NavGraph", "accessToken: $accessToken")
     NavHost(
         navController = navController, startDestination =
-        if (isLoggedIn) {
+        if (isLoggedIn && latihanApi != null) {
             when (userType) {
                 0 -> Screen.MuridDashboard.route
                 1 -> Screen.GuruDashboard.route
@@ -155,25 +177,58 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
             IntroductionScreen(navController)
         }
         composable(route = Screen.MuridMateri.route) {
-            MuridMateriScreen(navController)
+            val factory = ViewModelFactory(studentRepository = studentRepository)
+            val viewModel: MuridMateriViewModel = viewModel(factory = factory)
+            MuridMateriScreen(navController, viewModel)
         }
-        composable(route = Screen.MuridDetailMateri.route) {
-            MuridDetailMateriScreen(navController)
+        composable(route = Screen.MuridDetailMateri.route,
+            arguments = listOf(
+                navArgument(KEY_ID_TYPE) {
+                    type = NavType.IntType
+                }
+            )
+        ) {
+            val materialId = it.arguments!!.getInt(KEY_ID_TYPE)
+            val factory = ViewModelFactory(id = materialId, materialRepository = materialRepository)
+            val viewModel: MuridDetailMateriViewModel = viewModel(factory = factory)
+            MuridDetailMateriScreen(navController, viewModel)
         }
         composable(route = Screen.MuridLatihan.route) {
-            MuridLatihanScreen(navController)
+            val factory = ViewModelFactory(studentRepository = studentRepository)
+            val viewModel: MuridListLatihanViewModel = viewModel(factory = factory)
+            MuridListLatihanScreen(navController, viewModel)
         }
-        composable(route = Screen.MuridDetailLatihan.route) {
-            MuridDetailLatihanScreen(navController)
+        composable(route = Screen.MuridDetailLatihan.route,
+            arguments = listOf(
+                navArgument(KEY_ID_TYPE) {
+                    type = NavType.IntType
+                }
+            )
+        ) {
+            val exerciseId = it.arguments!!.getInt(KEY_ID_TYPE)
+            val factory = ViewModelFactory(id = exerciseId, studentRepository = studentRepository)
+            val viewModel: MuridDetailLatihanViewModel = viewModel(factory = factory)
+            MuridDetailLatihanScreen(navController, viewModel)
         }
         composable(route = Screen.Reaksi.route) {
             ReaksiScreen(navController)
         }
         composable(route = Screen.Nilai.route) {
-            NilaiScreen(navController)
+            val factory = ViewModelFactory(studentRepository = studentRepository)
+            val viewModel: NilaiViewModel = viewModel(factory = factory)
+            NilaiScreen(navController, viewModel)
         }
-        composable(route = Screen.CekJawaban.route) {
-            CekJawabanScreen(navController)
+        composable(route = Screen.CekJawaban.route,
+            arguments = listOf(
+                navArgument(KEY_ID_TYPE) {
+                    type = NavType.IntType
+                }
+            )
+        ) {
+            val resultId = it.arguments!!.getInt(KEY_ID_TYPE)
+            val factory = ViewModelFactory(id = resultId, studentRepository = studentRepository)
+            val viewModel: CekJawabanViewModel = viewModel(factory = factory)
+            CekJawabanScreen(navController, viewModel)
         }
 
         //  Guru
@@ -206,7 +261,6 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
             )
         ) {
             val materiId = it.arguments!!.getInt(KEY_ID_TYPE)
-            Log.d("NavGraph", "material ID: $materiId")
             val factory = ViewModelFactory(id = materiId, materialRepository = materialRepository)
             val viewModel: DetailMateriViewModel = viewModel(factory = factory)
             DetailMateriScreen(navController, viewModel)
@@ -218,7 +272,9 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
                 }
             )) {
             val exerciseId = it.arguments!!.getInt(KEY_EXERCISE_ID)
-            DetailLatihanScreen(navController, exerciseId)
+            val factory = ViewModelFactory(id = exerciseId, exerciseRepository = exerciseRepository)
+            val viewModel: DetailLatihanViewModel = viewModel(factory = factory)
+            DetailLatihanScreen(navController, viewModel)
         }
 
         // Admin
@@ -267,10 +323,14 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
             FileInfoScreen(navController, postType!!, viewModel)
         }
         composable(route = Screen.ManageIntroContent.route) {
-            ManageContentScreen(navController)
+            val factory = ViewModelFactory(introRepository = introRepository)
+            val viewModel: IntroContentViewModel = viewModel(factory = factory)
+            IntroContent(navController, viewModel)
         }
         composable(route = Screen.UpdateIntroContent.route) {
-            UpdateIntroContentScreen(navController)
+            val factory = ViewModelFactory(introRepository = introRepository)
+            val viewModel: UpdateIntroViewModel = viewModel(factory = factory)
+            UpdateIntroContentScreen(navController, viewModel)
         }
         composable(route = Screen.AddSoal.route,
             arguments = listOf(

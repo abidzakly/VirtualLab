@@ -44,7 +44,7 @@ fun ReaksiScreen(navController: NavHostController) {
         TopNav(title = R.string.contoh_reaksi_title, navController = navController)
     },
         bottomBar = {
-            BottomNav(currentRoute = Screen.MuridDashboard.route, navController = navController)
+            BottomNav(navController = navController)
         }) {
         ScreenContent(modifier = Modifier.padding(bottom = it.calculateBottomPadding()))
     }
@@ -52,7 +52,7 @@ fun ReaksiScreen(navController: NavHostController) {
 
 @Composable
 private fun ScreenContent(modifier: Modifier) {
-    var isEmpty by remember { mutableStateOf(true) }
+    var isEmpty by remember { mutableStateOf(false) }
 
     GradientPage(
         modifier = modifier,

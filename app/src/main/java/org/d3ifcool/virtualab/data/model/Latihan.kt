@@ -8,11 +8,11 @@ data class Latihan(
     val title: String,
     val difficulty: String,
     @Json(name = "question_count")
-    val questionCount: Int,
+    val questionCount: Int = 0,
     @Json(name = "approval_status")
     val approvalStatus: String = "DRAFT",
     @Json(name = "author_id")
-    val authorId: Int,
+    val authorId: Int = -1,
 )
 
 data class LatihanReview(
@@ -28,6 +28,7 @@ data class LatihanReview(
     val authorNip: String,
 )
 
+
 data class ExerciseCreate(
     val title: String,
     val difficulty: String,
@@ -37,4 +38,11 @@ data class ExerciseCreate(
     val authorId: Int,
     @Json(name = "approval_status")
     val approvalStatus: String = "DRAFT",
+)
+
+data class ApprovedLatihan(
+    @Json(name = "exercise_id")
+    val exerciseId: Int,
+    val title: String,
+    val difficulty: String
 )

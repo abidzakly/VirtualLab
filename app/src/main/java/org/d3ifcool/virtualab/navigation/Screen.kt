@@ -42,12 +42,18 @@ sealed class Screen(val route: String) {
     data object MuridDashboard : Screen("muridDashboardScreen")
     data object Introduction : Screen("introductionScreen")
     data object MuridMateri : Screen("muridMateriScreen")
-    data object MuridDetailMateri : Screen("muridDetailMateriScreen")
+    data object MuridDetailMateri : Screen("muridDetailMateriScreen/{$KEY_ID_TYPE}") {
+        fun withId(id: Int) = "muridDetailMateriScreen/$id"
+    }
     data object MuridLatihan : Screen("muridLatihanScreen")
-    data object MuridDetailLatihan : Screen("muridDetailLatihanScreen")
+    data object MuridDetailLatihan : Screen("muridDetailLatihanScreen/{$KEY_ID_TYPE}") {
+        fun withId(id: Int) = "muridDetailLatihanScreen/$id"
+    }
     data object Reaksi : Screen("reaksiScreen")
     data object Nilai : Screen("nilaiScreen")
-    data object CekJawaban : Screen("cekJawabanScreen")
+    data object CekJawaban : Screen("cekJawabanScreen/{$KEY_ID_TYPE}") {
+        fun withId(id: Int) = "cekJawabanScreen/$id"
+    }
 
     // Admin
     data object AdminDashboard : Screen("adminDashboardScreen")
