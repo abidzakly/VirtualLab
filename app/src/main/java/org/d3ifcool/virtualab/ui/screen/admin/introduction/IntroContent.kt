@@ -105,15 +105,17 @@ fun IntroContent(navController: NavHostController, viewModel: IntroContentViewMo
             BackHandler {
                 isVideoPlaying = false
             }
-            Scaffold(topBar = {
-                TopNav(
-                    title = R.string.introduction_title,
-                    navController = navController
-                )
-            },
+            Scaffold(
+                topBar = {
+                    TopNav(
+                        title = R.string.introduction_title,
+                        navController = navController
+                    )
+                },
                 bottomBar = {
                     BottomNav(navController = navController)
-                }) {
+                }, containerColor = Color.White
+            ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -361,6 +363,7 @@ private fun ScreenContent(
         }
     }
 }
+
 @Composable
 fun VideoListItem(context: Context, onClick: () -> Unit) {
     Box(
@@ -393,6 +396,7 @@ fun VideoListItem(context: Context, onClick: () -> Unit) {
         )
     }
 }
+
 @Preview(showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable

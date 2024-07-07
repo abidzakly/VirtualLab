@@ -99,7 +99,8 @@ fun FileInfoScreen(
             TopNav(title = R.string.category_check_file, navController = navController)
         }, bottomBar = {
             BottomNav(navController = navController)
-        }) {
+        }, containerColor = Color.White
+    ) {
         ScreenContent(modifier = Modifier.padding(it), postType, viewModel)
     }
 }
@@ -257,7 +258,7 @@ private fun ExerciseContent(data: LatihanReview) {
         text = data.title,
         fontWeight = FontWeight.Normal
     )
-    SmallText(
+    RegularText(
         text = "Jumlah Soal: ${data.questionCount}",
         fontWeight = FontWeight.SemiBold
     )
@@ -278,27 +279,27 @@ private fun InfoAuthor(nip: String, username: String) {
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            SmallText(
+            RegularText(
                 text = stringResource(id = R.string.nip_author),
                 fontWeight = FontWeight.SemiBold
             )
             Column(
                 modifier = Modifier
                     .background(color = Color(0xFFDAE8EB), shape = RoundedCornerShape(5.dp))
-                    .padding(4.dp)
+                    .padding(6.dp)
             ) {
                 RegularText(text = nip)
             }
         }
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            SmallText(
+            RegularText(
                 text = stringResource(id = R.string.username_label),
                 fontWeight = FontWeight.SemiBold
             )
             Column(
                 modifier = Modifier
                     .background(color = Color(0xFFDAE8EB), shape = RoundedCornerShape(5.dp))
-                    .padding(4.dp)
+                    .padding(6.dp)
             ) {
                 RegularText(text = username)
             }

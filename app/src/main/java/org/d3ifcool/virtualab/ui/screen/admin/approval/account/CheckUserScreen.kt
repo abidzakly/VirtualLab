@@ -86,8 +86,11 @@ fun CheckUserScreen(navController: NavHostController, viewModel: CheckUsersViewM
         )
     }, bottomBar = {
         BottomNav(navController = navController)
-    }) {
-        Box(modifier = Modifier.pullRefresh(refreshState).padding(it)) {
+    }, containerColor = Color.White
+    ) {
+        Box(modifier = Modifier
+            .pullRefresh(refreshState)
+            .padding(it)) {
             ScreenContent(modifier = Modifier, navController, viewModel)
             PullRefreshIndicator(
                 refreshing = isRefreshing,
