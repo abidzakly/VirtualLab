@@ -27,6 +27,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.PlayCircleFilled
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -94,7 +95,6 @@ fun IntroContent(navController: NavHostController, viewModel: IntroContentViewMo
     var isVideoPlaying by remember { mutableStateOf(false) }
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val context = LocalContext.current
-
 
     val refreshState = rememberPullRefreshState(
         refreshing = isRefreshing,
@@ -317,8 +317,8 @@ private fun ScreenContent(
                             ),
                         color = DarkBlueText
                     )
-                    Column(modifier = modifier.padding(horizontal = 50.dp)) {
-                        SmallText(
+                    Column(modifier = modifier.padding(horizontal = 32.dp)) {
+                        RegularText(
                             text = data.description,
                             textAlign = TextAlign.Justify,
                         )
@@ -361,14 +361,12 @@ private fun ScreenContent(
         }
     }
 }
-
-
 @Composable
 fun VideoListItem(context: Context, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.Black.copy(alpha = 0.8f))
+            .padding(horizontal = 32.dp)
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
@@ -389,13 +387,12 @@ fun VideoListItem(context: Context, onClick: () -> Unit) {
                 .padding(horizontal = 16.dp)
         )
         Icon(
-            painter = painterResource(id = R.drawable.play_button),
+            imageVector = Icons.Outlined.PlayCircleFilled,
             contentDescription = "Play Button",
             tint = Color.White
         )
     }
 }
-
 @Preview(showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
