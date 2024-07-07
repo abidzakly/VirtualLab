@@ -67,7 +67,9 @@ fun MuridDetailMateriScreen(
     },
         bottomBar = {
             BottomNav(navController = navController)
-        }) {
+        },
+        containerColor = Color.White
+        ) {
         ScreenContent(modifier = Modifier.padding(it), viewModel)
     }
 }
