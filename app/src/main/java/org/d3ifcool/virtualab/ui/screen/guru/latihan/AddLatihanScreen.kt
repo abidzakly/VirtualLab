@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -38,20 +40,21 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.navigation.Screen
-import org.d3ifcool.virtualab.ui.component.BottomNav
-import org.d3ifcool.virtualab.ui.component.ExtraSmallText
 import org.d3ifcool.virtualab.ui.component.RegularText
+import org.d3ifcool.virtualab.ui.component.SmallText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.GrayIco
 import org.d3ifcool.virtualab.ui.theme.GrayText
@@ -83,9 +86,7 @@ fun AddLatihanScreen(navController: NavHostController, viewModel: AddLatihanView
         topBar = {
             TopNav(title = R.string.add_materi_title, navController = navController)
         },
-        bottomBar = {
-            BottomNav(navController = navController)
-        }
+        containerColor = Color.White
     ) {
         ScreenContent(
             modifier = Modifier.padding(it),
@@ -110,7 +111,8 @@ private fun ScreenContent(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 48.dp, vertical = 24.dp)
+            .padding(horizontal = 32.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         RegularText(
             modifier = Modifier.testTag("Judul Latihan Title"),
@@ -123,9 +125,10 @@ private fun ScreenContent(
             onValueChange = { judulLatihan = it },
             placeholder = R.string.title_latihan
         )
-        RegularText(text = stringResource(R.string.difficulty_latihan))
         Spacer(modifier = Modifier.height(20.dp))
+        RegularText(text = stringResource(R.string.difficulty_latihan))
         DropdownForm(selectedOptionText, options) { selectedOptionText = it }
+        Spacer(modifier = Modifier.height(20.dp))
         RegularText(text = stringResource(R.string.question_count))
         Spacer(modifier = Modifier.height(20.dp))
         CustomTextField(
@@ -135,7 +138,7 @@ private fun ScreenContent(
             placeholder = R.string.question_count,
             isPhone = true
         )
-        ExtraSmallText(
+        SmallText(
             text = stringResource(R.string.limit_latihan),
             color = GrayText
         )
@@ -181,10 +184,9 @@ fun DropdownForm(selectedText: String, options: List<String>, onChange: (String)
 
     var isClicked by remember { mutableIntStateOf(0) }
 
-
     Box(
         modifier = Modifier
-            .padding(10.dp)
+            .padding(vertical = 10.dp)
     ) {
         ExposedDropdownMenuBox(
             modifier = Modifier.testTag("Dropdown Menu"), expanded = expanded,
@@ -200,7 +202,7 @@ fun DropdownForm(selectedText: String, options: List<String>, onChange: (String)
                 readOnly = true,
                 value = if (isClicked != 0) selectedText else "",
                 onValueChange = {},
-                label = { ExtraSmallText(text = stringResource(R.string.dropdown_list)) },
+                label = { RegularText(text = stringResource(R.string.dropdown_list)) },
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                 },
@@ -214,7 +216,7 @@ fun DropdownForm(selectedText: String, options: List<String>, onChange: (String)
                 options.forEach { selectedOption ->
                     DropdownMenuItem(
                         modifier = Modifier.testTag("Pilihan Menu $nomor"),
-                        text = { Text(text = selectedOption) },
+                        text = { RegularText(text = selectedOption) },
                         onClick = {
                             onChange(selectedOption)
                             isClicked++
@@ -237,7 +239,8 @@ fun CustomTextField(
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: Int,
-    isPhone: Boolean = false
+    isPhone: Boolean = false,
+    textFontSize: TextUnit = 18.sp
 ) {
     TextField(
         modifier = modifier?.fillMaxWidth()
@@ -255,8 +258,10 @@ fun CustomTextField(
         ),
         keyboardOptions = KeyboardOptions(
             keyboardType = if (isPhone) KeyboardType.Number else if (isNumber == true) KeyboardType.Text else KeyboardType.Text,
-            capitalization = KeyboardCapitalization.Sentences
-        )
+            capitalization = KeyboardCapitalization.Sentences,
+            imeAction = ImeAction.Done
+        ),
+        textStyle = TextStyle(fontSize = textFontSize)
     )
     Spacer(modifier = Modifier.height(8.dp))
 }

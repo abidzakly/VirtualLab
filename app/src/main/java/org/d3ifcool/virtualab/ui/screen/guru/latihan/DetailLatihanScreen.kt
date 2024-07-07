@@ -47,6 +47,7 @@ import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.GuruEmptyState
 import org.d3ifcool.virtualab.ui.component.LoadingState
+import org.d3ifcool.virtualab.ui.component.MediumText
 import org.d3ifcool.virtualab.ui.component.PopUpDialog
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
@@ -89,7 +90,9 @@ fun DetailLatihanScreen(navController: NavHostController, viewModel: DetailLatih
         }
     }, bottomBar = {
         BottomNav(navController = navController)
-    }) {
+    },
+        containerColor = Color.White
+    ) {
         ScreenContent(modifier = Modifier.padding(it), viewModel)
 
         if (showDialog) {
@@ -120,30 +123,31 @@ private fun ScreenContent(modifier: Modifier, viewModel: DetailLatihanViewModel)
             LazyColumn(
                 modifier = modifier
                     .fillMaxSize()
-                    .background(Color.White)
-                    .padding(24.dp),
+                    .padding(horizontal = 24.dp)
+                    .background(Color.White),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 item {
-                    RegularText(
+                    Spacer(modifier = Modifier.height(16.dp))
+                    MediumText(
                         text = stringResource(R.string.judul_latihan_guru),
                         fontWeight = FontWeight.SemiBold
                     )
-                    RegularText(text = latihan.title, fontWeight = FontWeight.Normal)
+                    MediumText(text = latihan.title, fontWeight = FontWeight.Normal)
                     Spacer(modifier = Modifier.height(16.dp))
-                    RegularText(
+                    MediumText(
                         text = stringResource(R.string.tingkat_kesulitan_title),
                         fontWeight = FontWeight.SemiBold
                     )
-                    RegularText(text = latihan.difficulty, fontWeight = FontWeight.Normal)
+                    MediumText(text = latihan.difficulty, fontWeight = FontWeight.Normal)
                     Spacer(modifier = Modifier.height(16.dp))
-                    RegularText(
+                    MediumText(
                         text = stringResource(R.string.jumlah_soal_title),
                         fontWeight = FontWeight.SemiBold
                     )
-                    RegularText(text = "${latihan.questionCount}", fontWeight = FontWeight.Normal)
+                    MediumText(text = "${latihan.questionCount}", fontWeight = FontWeight.Normal)
                     Spacer(modifier = Modifier.height(16.dp))
-                    RegularText(
+                    MediumText(
                         text = stringResource(R.string.perintah_soal),
                         fontWeight = FontWeight.Normal
                     )
@@ -180,14 +184,14 @@ fun ListSoal(
             .padding(vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        RegularText(text = title, fontWeight = FontWeight.SemiBold)
-        RegularText(
+        MediumText(text = title, fontWeight = FontWeight.SemiBold)
+        MediumText(
             text = question,
             fontWeight = FontWeight.Normal,
             textAlign = TextAlign.Justify
         )
         Spacer(modifier = Modifier.height(16.dp))
-        RegularText(text = stringResource(R.string.kunci_jawaban), fontWeight = FontWeight.SemiBold)
+        MediumText(text = stringResource(R.string.kunci_jawaban), fontWeight = FontWeight.SemiBold)
         answersKey.forEach {
             Column(
                 modifier = Modifier
@@ -197,7 +201,7 @@ fun ListSoal(
                     .padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                RegularText(text = it)
+                MediumText(text = it)
             }
         }
     }

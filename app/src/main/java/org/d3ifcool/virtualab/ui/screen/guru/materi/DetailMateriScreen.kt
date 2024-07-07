@@ -108,7 +108,8 @@ fun DetailMateriScreen(navController: NavHostController, viewModel: DetailMateri
         }
     }, bottomBar = {
         BottomNav(navController = navController)
-    }) { padding ->
+    }, containerColor = Color.White
+    ) { padding ->
         ScreenContent(
             modifier = Modifier.padding(padding),
             viewModel = viewModel,
