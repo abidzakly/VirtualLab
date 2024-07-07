@@ -13,8 +13,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -44,13 +46,17 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.data.model.QuestionCreate
+import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
+import org.d3ifcool.virtualab.ui.component.GuruEmptyState
+import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.GrayIco
@@ -59,32 +65,43 @@ import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.utils.ViewModelFactory
 
 @Composable
-fun AddSoalScreen(navController: NavHostController, exerciseId: Int) {
+fun AddSoalScreen(navController: NavHostController, viewModel: AddSoalViewModel) {
 
-    Log.d("AddSoalScreen", "exercise ID: $exerciseId")
-    val factory = ViewModelFactory(id = exerciseId)
-    val viewModel: AddSoalViewModel = viewModel(factory = factory)
+    val successMessage by viewModel.successMessage.collectAsState()
     val uploadStatus by viewModel.uploadStatus.collectAsState()
-    val errorMsg by viewModel.errorMsg.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
+    var isUploading by remember { mutableStateOf(false) }
+
     val context = LocalContext.current
-    LaunchedEffect(uploadStatus) {
-        if (uploadStatus) {
+
+    when (uploadStatus) {
+        ApiStatus.IDLE -> null
+        ApiStatus.LOADING -> {
+            isUploading = true
+        }
+
+        ApiStatus.SUCCESS -> {
+            isUploading = false
             Toast.makeText(
                 context,
-                "Soal berhasil disimpan.",
+                successMessage,
                 Toast.LENGTH_SHORT
             ).show()
-            navController.navigate(Screen.GuruLatihan.route)
-        } else if (errorMsg != null) {
+            navController.navigate(Screen.GuruLatihan.route) {
+                popUpTo(Screen.GuruLatihan.route)
+            }
+            viewModel.clearStatus()
+        }
+
+        ApiStatus.FAILED -> {
             Toast.makeText(
                 context,
-                errorMsg,
+                errorMessage,
                 Toast.LENGTH_SHORT
             ).show()
-            viewModel.clearErrorMsg()
+            viewModel.clearStatus()
         }
     }
-
 
     Scaffold(
         topBar = {
@@ -97,8 +114,12 @@ fun AddSoalScreen(navController: NavHostController, exerciseId: Int) {
         ScreenContent(
             modifier = Modifier.padding(it),
             viewModel,
-            exerciseId
         )
+        if (isUploading) {
+            Dialog(onDismissRequest = { }) {
+                LoadingState()
+            }
+        }
     }
 }
 
@@ -106,46 +127,53 @@ fun AddSoalScreen(navController: NavHostController, exerciseId: Int) {
 private fun ScreenContent(
     modifier: Modifier,
     viewModel: AddSoalViewModel,
-    exerciseId: Int
 ) {
     val context = LocalContext.current
+    val fetchStatus by viewModel.fetchStatus.collectAsState()
     val latihanData by viewModel.latihanData.collectAsState()
-    val latihan = latihanData!!.latihan!!
-    val soal = latihanData!!.soal!!
     var isClicked by remember { mutableStateOf(false) }
     Log.d("AddSoalScreen", "Latihan Data: $latihanData")
-    if (latihanData != null) {
-        var soal = remember {
-            mutableStateListOf(*Array(latihan.questionCount) {
-                QuestionCreate(
-                    -1,
-                    "",
-                    emptyList(),
-                    emptyList()
-                )
-            })
+    when (fetchStatus) {
+        ApiStatus.IDLE -> null
+        ApiStatus.LOADING -> {
+            LoadingState()
         }
 
-        Box(
-            modifier = modifier
-                .padding(24.dp)
-                .fillMaxSize()
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 60.dp) // Menambah ruang di bagian bawah untuk tombol
+        ApiStatus.FAILED -> {
+            GuruEmptyState(text = "Gagal Memuat Data") {
+                viewModel.getCurrentLatihan()
+            }
+        }
+
+        ApiStatus.SUCCESS -> {
+            val latihan = latihanData!!.latihan!!
+//            val soal2 = latihanData!!.soal!!
+
+            var soal = remember {
+                mutableStateListOf(*Array(latihan.questionCount) {
+                    QuestionCreate(
+                        "",
+                        emptyList(),
+                        emptyList()
+                    )
+                })
+            }
+            Box(
+                modifier = modifier
+                    .padding(24.dp)
+                    .fillMaxSize()
             ) {
-                RegularText(text = "${stringResource(R.string.title_soal)} ${latihan.title}")
-                RegularText(text = "${stringResource(R.string.difficulty_soal)} ${latihan.difficulty}")
-                LazyColumn(
+                Column(
                     modifier = Modifier
-                        .padding(20.dp)
-                        .weight(1f) // Memberi bobot agar LazyColumn menggunakan sisa ruang yang tersedia
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
+                        .padding(bottom = 60.dp) // Menambah ruang di bagian bawah untuk tombol
                 ) {
-                    items(latihan.questionCount) { count ->
-                        // Semua konten soal
-                        var isChecked = remember { mutableStateListOf(false, false, false, false) }
+                    RegularText(text = "${stringResource(R.string.title_soal)} ${latihan.title}")
+                    RegularText(text = "${stringResource(R.string.difficulty_soal)} ${latihan.difficulty}")
+                    for (index in 0 until latihan.questionCount) {
+                        var isChecked =
+                            remember { mutableStateListOf(false, false, false, false) }
                         var answerOption = remember {
                             mutableStateListOf(
                                 "",
@@ -154,18 +182,25 @@ private fun ScreenContent(
                                 ""
                             )
                         }
-                        var answerKey = remember { mutableStateListOf("", "") }
+                        var answerKey = remember { mutableStateListOf<String>() }
                         var selectedAnswersCount = remember { mutableStateOf(0) }
                         var questionText =
                             remember { mutableStateListOf(*Array(latihan.questionCount) { "" }) }
+                        var answerPositions = remember {
+                            mutableStateListOf(
+                                -1,
+                                -1,
+                                -1
+                            )
+                        } // to track positions of selected answers
                         RegularText(
-                            text = "Soal ${count + 1}",
+                            text = "Soal ${index + 1}",
                             fontWeight = FontWeight.SemiBold
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         CustomTextField2(
-                            value = questionText[count],
-                            onValueChange = { questionText[count] = (it) },
+                            value = questionText[index],
+                            onValueChange = { questionText[index] = (it) },
                             placeholder = R.string.soal
                         )
                         Spacer(modifier = Modifier.height(16.dp))
@@ -177,39 +212,69 @@ private fun ScreenContent(
                                 isChecked = isChecked[i],
                                 onClick = {
                                     if (isChecked[i]) {
-                                        // Uncheck the answer
                                         isChecked[i] = false
                                         selectedAnswersCount.value--
-                                        // Remove from answerKey
-                                        if (answerKey[0] == answerOption[i]) {
-                                            answerKey[0] = ""
-                                        } else if (answerKey[1] == answerOption[i]) {
-                                            answerKey[1] = ""
+                                        val pos = answerPositions.indexOf(i)
+                                        if (pos != -1) {
+                                            answerKey.removeAt(pos)
+                                            answerPositions[pos] = -1
+                                            // Shift positions left to maintain order
+                                            for (j in pos until answerPositions.size - 1) {
+                                                answerPositions[j] = answerPositions[j + 1]
+                                            }
+                                            answerPositions[answerPositions.size - 1] = -1
                                         }
                                     } else {
-                                        // Check if maximum selected answers reached
-                                        if (selectedAnswersCount.value < 2) {
-                                            // Check the answer
-                                            isChecked[i] = true
-                                            selectedAnswersCount.value++
-                                            // Add to answerKey
-                                            if (answerKey[0].isEmpty()) {
-                                                answerKey[0] = answerOption[i]
+                                        if (answerOption[i].isNotEmpty()) {
+                                            if (selectedAnswersCount.value < 3) {
+                                                isChecked[i] = true
+                                                selectedAnswersCount.value++
+                                                answerKey.add(answerOption[i])
+                                                val pos = answerPositions.indexOf(-1)
+                                                if (pos != -1) {
+                                                    answerPositions[pos] = i
+                                                }
                                             } else {
-                                                answerKey[1] = answerOption[i]
+                                                Toast.makeText(
+                                                    context,
+                                                    "Pilih maksimal 3 kunci jawaban, yaa.",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
                                             }
                                         } else {
-                                            // Show toast
                                             Toast.makeText(
                                                 context,
-                                                "Harap pilih maksimal 2 kunci jawaban.",
+                                                "Wah, teksnya masih kosong nih!",
                                                 Toast.LENGTH_SHORT
                                             ).show()
                                         }
                                     }
+                                    Log.d("AddSoalScreen", "answer Key: ${answerKey.toList()}")
                                 },
                                 jawaban = answerOption[i],
-                                onJawabanChange = { answerOption[i] = it }
+                                onJawabanChange = {
+                                    answerOption[i] = it
+                                    if (it.isEmpty() && isChecked[i]) {
+                                        isChecked[i] = false
+                                        selectedAnswersCount.value--
+                                        val pos = answerPositions.indexOf(i)
+                                        if (pos != -1) {
+                                            answerKey.removeAt(pos)
+                                            answerPositions[pos] = -1
+                                            // Shift positions left to maintain order
+                                            for (j in pos until answerPositions.size - 1) {
+                                                answerPositions[j] = answerPositions[j + 1]
+                                            }
+                                            answerPositions[answerPositions.size - 1] = -1
+                                        }
+                                    } else if (isChecked[i]) {
+                                        // Update the answerKey with new value
+                                        val pos = answerPositions.indexOf(i)
+                                        if (pos != -1) {
+                                            answerKey[pos] = it
+                                        }
+                                    }
+                                }
                             )
                         }
                         Spacer(modifier = Modifier.height(12.dp))
@@ -218,59 +283,69 @@ private fun ScreenContent(
                             thickness = 2.dp
                         )
                         Spacer(modifier = Modifier.height(12.dp))
-                        if (answerOption.all { it.isNotEmpty() } && answerKey.all { it.isNotEmpty() }
-                            && questionText[count].isNotEmpty()
+                        if (answerOption.isNotEmpty() &&
+                            answerOption.all { it.isNotEmpty() } &&
+                            answerKey.isNotEmpty() &&
+                            answerKey.all { it.isNotEmpty() } &&
+                            questionText[index].isNotEmpty()
                         ) {
-                            soal[count] = QuestionCreate(
-                                exerciseId,
-                                questionText[count],
+                            soal[index] = QuestionCreate(
+                                questionText[index],
                                 answerOption.toList(),
                                 answerKey.toList()
                             )
-                            Log.d("AddSoalScreen", "soal $count added.\n soal: ${soal[count]}")
+                            Log.d(
+                                "AddSoalScreen",
+                                "soal ${index + 1} added.\n soal: ${soal[index]}"
+                            )
                         } else {
-                            soal[count] = QuestionCreate(-1, "", emptyList(), emptyList())
+                            soal[index] = QuestionCreate()
                         }
                     }
+
                 }
-            }
-            Button(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(12.dp),
-                onClick = {
-                    if (soal.all {
-                            it.questionText == "" || it.questionText.isEmpty()
-                                    || it.optionText.isEmpty() || it.optionText.size < 4
-                                    || it.exerciseId == -1
-                                    || it.answerKeys.isEmpty() || it.answerKeys.size < 2
+                Button(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(12.dp),
+                    onClick = {
+                        if (soal.all {
+                                it.questionText == "" || it.questionText.isEmpty()
+                                        || it.optionText.isEmpty() || it.optionText.size < 4
+                                        || it.answerKeys.isEmpty() || it.answerKeys.size < 2
+                            }
+                        ) {
+                            Toast.makeText(
+                                context,
+                                "Semua data harus diisi, yaa",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            Log.d("AddSoalScreen", "IF IS TRUE")
+                        } else {
+                            Log.d("AddSoalScreen", "FALSE IS TRUE")
+                            viewModel.submitSoal(soal.toList())
+                            Log.d("AddSoalScreen", "Soal: ${soal.toList()}")
                         }
-                    ) {
-                        Toast.makeText(context, "Semua data harus diisi, yaa", Toast.LENGTH_SHORT).show()
-                        Log.d("AddSoalScreen", "IF IS TRUE")
-                    } else {
-                        Log.d("AddSoalScreen", "FALSE IS TRUE")
-                        viewModel.addSoal(exerciseId, soal.toList())
-                        Log.d("AddSoalScreen", "Soal: ${soal.toList()}")
-                    }
-                },
-                shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = LightBlue,
-                    contentColor = Color.Black
-                )
-            ) {
-                RegularText(
-                    text = stringResource(R.string.button_unggah),
-                    fontWeight = FontWeight.SemiBold
-                )
+                    },
+                    shape = RoundedCornerShape(10.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = LightBlue,
+                        contentColor = Color.Black
+                    )
+                ) {
+                    RegularText(
+                        text = stringResource(R.string.button_unggah),
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
             }
         }
     }
 }
 
+
 @Composable
-fun CustomTextField2(
+private fun CustomTextField2(
     modifier: Modifier? = Modifier,
     isNumber: Boolean? = false,
     value: String,
@@ -301,7 +376,7 @@ fun CustomTextField2(
 }
 
 @Composable
-fun ListJawaban(
+private fun ListJawaban(
     modifier: Modifier = Modifier,
     modifier2: Modifier = Modifier,
     isChecked: Boolean,
@@ -335,5 +410,5 @@ fun ListJawaban(
 @Preview
 @Composable
 private fun Prev() {
-    AddSoalScreen(navController = rememberNavController(), 0)
+//    AddSoalScreen(navController = rememberNavController(), 0)
 }

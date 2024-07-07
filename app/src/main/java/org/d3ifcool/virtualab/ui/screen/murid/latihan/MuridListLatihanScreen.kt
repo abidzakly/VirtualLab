@@ -5,19 +5,19 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults.buttonColors
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults.cardColors
 import androidx.compose.material3.CardDefaults.cardElevation
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -40,6 +40,7 @@ import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.GradientPage
+import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.MuridEmptyState
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.SmallText
@@ -47,8 +48,16 @@ import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.utils.isInternetAvailable
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MuridListLatihanScreen(navController: NavHostController, viewModel: MuridListLatihanViewModel) {
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
+
+
+    val refreshState = rememberPullRefreshState(
+        refreshing = isRefreshing,
+        onRefresh = { viewModel.refreshData() }
+    )
 
     Scaffold(
         topBar = {
@@ -59,11 +68,22 @@ fun MuridListLatihanScreen(navController: NavHostController, viewModel: MuridLis
         },
         containerColor = Color.White
     ) {
-        ScreenContent(
-            modifier = Modifier.padding(bottom = it.calculateBottomPadding()),
-            navController,
-            viewModel
-        )
+        Box(modifier = Modifier
+            .pullRefresh(refreshState)
+            .padding(bottom = it.calculateBottomPadding())) {
+            ScreenContent(
+                modifier = Modifier,
+                navController,
+                viewModel
+            )
+            PullRefreshIndicator(
+                refreshing = isRefreshing,
+                state = refreshState,
+                modifier = Modifier.align(Alignment.TopCenter),
+                contentColor = Color.White,
+                backgroundColor = DarkBlueDarker
+            )
+        }
     }
 }
 
@@ -81,7 +101,6 @@ private fun ScreenContent(
     GradientPage(
         modifier,
         image = R.drawable.latihan_header,
-        isAllCenter = status == ApiStatus.FAILED || status == ApiStatus.LOADING
     ) {
         if (!isEmpty) {
             Spacer(modifier = Modifier.height(24.dp))
@@ -89,12 +108,7 @@ private fun ScreenContent(
             when (status) {
                 ApiStatus.IDLE -> null
                 ApiStatus.LOADING -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator(color = DarkBlueDarker)
-                    }
+                    LoadingState()
                 }
 
                 ApiStatus.SUCCESS -> {
@@ -104,11 +118,17 @@ private fun ScreenContent(
                         textAlign = TextAlign.Justify
                     )
                     Spacer(modifier = Modifier.height(30.dp))
-                    LazyColumn {
-                        items(data) {
-                            CardList(it.title, it.difficulty) {
-                                navController.navigate(Screen.MuridDetailLatihan.withId(it.exerciseId))
+                    if (data.isNotEmpty()) {
+                        LazyColumn {
+                            items(data) {
+                                CardList(it.title, it.difficulty) {
+                                    navController.navigate(Screen.MuridDetailLatihan.withId(it.exerciseId))
+                                }
                             }
+                        }
+                    } else {
+                        MuridEmptyState(text = "Anda telah mengerjakan semua latihan.") {
+                            viewModel.getApprovedLatihan()
                         }
                     }
                 }

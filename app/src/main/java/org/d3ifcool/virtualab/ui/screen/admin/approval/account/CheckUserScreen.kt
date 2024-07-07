@@ -49,13 +49,22 @@ import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.ui.component.AdminEmptyState
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.LargeText
+import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun CheckUserScreen(navController: NavHostController, viewModel: CheckUsersViewModel) {
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
+
+
+    val refreshState = rememberPullRefreshState(
+        refreshing = isRefreshing,
+        onRefresh = { viewModel.getAllPendingUser() }
+    )
+
     Scaffold(topBar = {
         TopAppBar(
             navigationIcon = {
@@ -78,11 +87,19 @@ fun CheckUserScreen(navController: NavHostController, viewModel: CheckUsersViewM
     }, bottomBar = {
         BottomNav(navController = navController)
     }) {
-        ScreenContent(modifier = Modifier.padding(it), navController, viewModel)
+        Box(modifier = Modifier.pullRefresh(refreshState).padding(it)) {
+            ScreenContent(modifier = Modifier, navController, viewModel)
+            PullRefreshIndicator(
+                refreshing = isRefreshing,
+                state = refreshState,
+                modifier = Modifier.align(Alignment.TopCenter),
+                contentColor = Color.White,
+                backgroundColor = DarkBlueDarker
+            )
+        }
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun ScreenContent(
     modifier: Modifier,
@@ -92,76 +109,62 @@ private fun ScreenContent(
     val userList by viewModel.userList.collectAsState()
     val errorMsg by viewModel.errorMsg.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
-    val isRefreshing by viewModel.isRefreshing.collectAsState()
-
-
-    val refreshState = rememberPullRefreshState(
-        refreshing = isRefreshing,
-        onRefresh = { viewModel.getAllPendingUser() }
-    )
 
     Log.d("GET ALL USER Error", "Get User Error: $errorMsg")
     Log.d("GET ALL USER", "Get USER: $userList")
 
-    Box(modifier = modifier.pullRefresh(refreshState)) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White)
-                .padding(12.dp),
-            verticalArrangement = if (userList.isNotEmpty()) Arrangement.Top else Arrangement.Center,
-        ) {
-            when (isLoading) {
-                ApiStatus.LOADING -> {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator(color = DarkBlueDarker)
-                    }
-                }
-                ApiStatus.SUCCESS -> {
-                    RegularText(
-                        text = stringResource(R.string.check_users_title),
-                        modifier = Modifier.padding(start = 16.dp)
-                    )
-                    LazyColumn(
-                        modifier = Modifier
-                            .padding(16.dp)
-                    ) {
-                        var nomorUrut = 1
-                        items(userList) {
-                            AccountList(
-                                modifier = Modifier.testTag("Akun user ke $nomorUrut"),
-                                username = it!!.username,
-                                number = it.nip ?: it.nisn ?: ""
-                            ) {
-                                navController.navigate(Screen.UsersInfo.withId(it.userId))
-                            }
-                            Log.d(
-                                "CheckUserScreen",
-                                "nama:${it.username}, akun user ke: $nomorUrut"
-                            )
-                            nomorUrut++
-                            Log.d("CheckUserScreen", "ukuran list:${userList.size}")
-                            if (nomorUrut > userList.size) {
-                                nomorUrut = 1
-                            }
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(Color.White)
+            .padding(12.dp),
+        verticalArrangement = if (userList.isNotEmpty()) Arrangement.Top else Arrangement.Center,
+    ) {
+        when (isLoading) {
+            ApiStatus.LOADING -> {
+                LoadingState()
+            }
+
+            ApiStatus.SUCCESS -> {
+                RegularText(
+                    text = stringResource(R.string.check_users_title),
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(16.dp)
+                ) {
+                    var nomorUrut = 1
+                    items(userList) {
+                        AccountList(
+                            modifier = Modifier.testTag("Akun user ke $nomorUrut"),
+                            username = it!!.username,
+                            number = it.nip ?: it.nisn ?: ""
+                        ) {
+                            navController.navigate(Screen.UsersInfo.withId(it.userId))
+                        }
+                        Log.d(
+                            "CheckUserScreen",
+                            "nama:${it.username}, akun user ke: $nomorUrut"
+                        )
+                        nomorUrut++
+                        Log.d("CheckUserScreen", "ukuran list:${userList.size}")
+                        if (nomorUrut > userList.size) {
+                            nomorUrut = 1
                         }
                     }
                 }
-
-                ApiStatus.FAILED -> {
-                    AdminEmptyState(text = "Belum ada akun yang perlu diperiksa")
-                }
-
-                ApiStatus.IDLE -> null
             }
+
+            ApiStatus.FAILED -> {
+                AdminEmptyState(text = "Belum ada akun yang perlu diperiksa") {
+                    viewModel.getAllPendingUser()
+                }
+            }
+
+            ApiStatus.IDLE -> null
         }
-        PullRefreshIndicator(
-            refreshing = isRefreshing,
-            state = refreshState,
-            modifier = Modifier.align(Alignment.TopCenter),
-            contentColor = Color.White,
-            backgroundColor = DarkBlueDarker
-        )
+
     }
 }
 

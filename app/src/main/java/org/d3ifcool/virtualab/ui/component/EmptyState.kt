@@ -21,7 +21,7 @@ import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 
 @Composable
-fun MuridEmptyState(text: String, onClick: () -> Unit = {}) {
+fun MuridEmptyState(text: String, isNotError: Boolean = false, onClick: () -> Unit = {}) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -38,8 +38,13 @@ fun MuridEmptyState(text: String, onClick: () -> Unit = {}) {
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = { onClick() }, colors = ButtonDefaults.buttonColors(containerColor = DarkBlueDarker)) {
-            SmallText(text = "Muat Ulang", color = Color.White)
+        if (!isNotError) {
+            Button(
+                onClick = { onClick() },
+                colors = ButtonDefaults.buttonColors(containerColor = DarkBlueDarker)
+            ) {
+                SmallText(text = "Muat Ulang", color = Color.White)
+            }
         }
     }
 }
@@ -55,7 +60,7 @@ fun GuruEmptyState(text: String, onClick: () -> Unit) {
             painter = painterResource(id = R.drawable.empty_state_guru),
             contentDescription = "Gambar Empty State"
         )
-        Spacer(modifier = Modifier.height(28.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         RegularText(
             text = text,
             modifier = Modifier.fillMaxWidth(),
@@ -68,7 +73,7 @@ fun GuruEmptyState(text: String, onClick: () -> Unit) {
     }
 }
 @Composable
-fun AdminEmptyState(text: String) {
+fun AdminEmptyState(text: String, onClick: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -84,6 +89,13 @@ fun AdminEmptyState(text: String) {
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
+        Spacer(modifier = Modifier.height(8.dp))
+            Button(
+                onClick = { onClick() },
+                colors = ButtonDefaults.buttonColors(containerColor = DarkBlueDarker)
+            ) {
+                SmallText(text = "Muat Ulang", color = Color.White)
+            }
     }
 }
 

@@ -16,6 +16,9 @@ class MuridMateriViewModel(private val studentRepository: StudentRepository): Vi
     var materis = MutableStateFlow(emptyList<ApprovedMateri>())
         private set
 
+    var isRefreshing = MutableStateFlow(false)
+        private set
+
     var apiStatus = MutableStateFlow(ApiStatus.LOADING)
         private set
 
@@ -40,6 +43,12 @@ class MuridMateriViewModel(private val studentRepository: StudentRepository): Vi
                 }
             }
         }
+    }
+
+    fun refreshData() {
+        isRefreshing.value = true
+        getApprovedMateris()
+        isRefreshing.value = false
     }
 
     fun clearStatus() {

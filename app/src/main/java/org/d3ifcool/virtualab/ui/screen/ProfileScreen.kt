@@ -67,6 +67,7 @@ import org.d3ifcool.virtualab.data.model.UserUpdate
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
+import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
 import org.d3ifcool.virtualab.ui.component.PopUpDialog
 import org.d3ifcool.virtualab.ui.component.RegularText
@@ -114,13 +115,7 @@ fun ProfileScreen(
                 authViewModel,
             )
         } else {
-            Box(
-                modifier = Modifier
-                    .padding(it)
-                    .fillMaxSize(), contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(color = DarkBlueDarker)
-            }
+            LoadingState()
         }
     }
 }

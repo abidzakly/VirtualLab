@@ -147,7 +147,6 @@ private fun ScreenContent(
         }
     }
 
-
     Column(
         modifier = modifier
             .fillMaxSize()

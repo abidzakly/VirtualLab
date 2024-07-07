@@ -22,6 +22,9 @@ class MuridDetailLatihanViewModel(private val exerciseId: Int, private val stude
     var apiStatus = MutableStateFlow(ApiStatus.LOADING)
         private set
 
+    var isUploading = MutableStateFlow(ApiStatus.IDLE)
+        private set
+
     var answers = MutableStateFlow<Map<Int, List<String>>>(emptyMap())
         private set
 
@@ -37,6 +40,7 @@ class MuridDetailLatihanViewModel(private val exerciseId: Int, private val stude
 
     fun getSoal() {
         viewModelScope.launch(Dispatchers.IO) {
+            apiStatus.value = ApiStatus.LOADING
             when (val response = studentRepository.getSoal(exerciseId)) {
                 is Resource.Success -> {
                     soal.value = response.data!!
@@ -52,7 +56,7 @@ class MuridDetailLatihanViewModel(private val exerciseId: Int, private val stude
 
     fun submitAnswers() {
         viewModelScope.launch(Dispatchers.IO) {
-            apiStatus.value = ApiStatus.LOADING
+            isUploading.value = ApiStatus.LOADING
             val submitJawaban = SubmitJawaban(
                 answers = answers.value.map { (questionId, selectedOption) ->
                     JawabanItem(
@@ -64,14 +68,12 @@ class MuridDetailLatihanViewModel(private val exerciseId: Int, private val stude
 
             when (val response = studentRepository.submitAnswers(exerciseId, submitJawaban)) {
                 is Resource.Success -> {
-                    Log.d("Murid Detail Latihan VM", "Response: ${response.data}")
                     resultId.value = (response.data!!.data as Double).toInt()
-                    apiStatus.value = ApiStatus.SUCCESS
-                    Log.d("Murid Detail Latihan VM", "Response after cast: ${resultId.value}")
+                    isUploading.value = ApiStatus.SUCCESS
                 }
                 is Resource.Error -> {
                     errorMessage.value = response.message
-                    apiStatus.value = ApiStatus.FAILED
+                    isUploading.value = ApiStatus.FAILED
                 }
             }
         }

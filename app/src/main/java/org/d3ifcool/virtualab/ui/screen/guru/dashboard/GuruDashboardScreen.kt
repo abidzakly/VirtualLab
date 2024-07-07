@@ -1,7 +1,9 @@
 package org.d3ifcool.virtualab.ui.screen.guru.dashboard
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,8 +14,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -37,6 +43,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -50,11 +57,12 @@ import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.BottomSheet
 import org.d3ifcool.virtualab.ui.component.ContentList
 import org.d3ifcool.virtualab.ui.component.GuruEmptyState
+import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNavDashboard
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun GuruDashboardScreen(navController: NavHostController, viewModel: GuruDashboardViewModel) {
     val sheetStateBuat = rememberBottomSheetScaffoldState()
@@ -68,6 +76,13 @@ fun GuruDashboardScreen(navController: NavHostController, viewModel: GuruDashboa
     var isPressed by remember { mutableStateOf(false) }
     var fabPressed by remember { mutableStateOf(true) }
     var backgroundColor by remember { mutableStateOf(if (!isPressed) Transparent else Black) }
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
+
+
+    val refreshState = rememberPullRefreshState(
+        refreshing = isRefreshing,
+        onRefresh = { viewModel.refreshData() }
+    )
     Log.d("isPressedB4", "$isPressed")
 
     LaunchedEffect(fabPressed) {
@@ -116,13 +131,21 @@ fun GuruDashboardScreen(navController: NavHostController, viewModel: GuruDashboa
         },
         containerColor = White
     ) { padding ->
-        ScreenContent(
-            modifier = Modifier
-                .padding(padding)
-                .zIndex(-2f),
-            navController,
-            viewModel
-        )
+        Box(modifier = Modifier.zIndex(-2f).pullRefresh(refreshState)) {
+            ScreenContent(
+                modifier = Modifier
+                    .padding(padding),
+                navController,
+                viewModel
+            )
+            PullRefreshIndicator(
+                refreshing = isRefreshing,
+                state = refreshState,
+                modifier = Modifier.align(Alignment.TopCenter),
+                contentColor = White,
+                backgroundColor = DarkBlueDarker
+            )
+        }
         LaunchedEffect(sheetStateBuat.bottomSheetState) {
             snapshotFlow { sheetStateBuat.bottomSheetState.currentValue }
                 .collect { bottomSheetValue ->
@@ -180,22 +203,29 @@ fun GuruDashboardScreen(navController: NavHostController, viewModel: GuruDashboa
     }
 }
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 private fun ScreenContent(
     modifier: Modifier,
     navController: NavHostController,
     viewModel: GuruDashboardViewModel
 ) {
+    val context = LocalContext.current
     val combinedPosts by viewModel.combinedPosts.collectAsState()
     val status by viewModel.apiStatus.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
+
+    LaunchedEffect(errorMessage) {
+        if (errorMessage != null) {
+            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+        }
+    }
     Column(modifier = modifier) {
         TopNavDashboard(name = "Guru", navController = navController)
         when (status) {
             ApiStatus.IDLE -> null
             ApiStatus.LOADING -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = DarkBlueDarker)
-                }
+                LoadingState()
             }
 
             ApiStatus.SUCCESS -> {
@@ -219,19 +249,27 @@ private fun ScreenContent(
                             desc = if (it.postType == "Materi") it.description else "Tingkat Kesulitan: ${it.description}",
                             status = it.approvalStatus
                         ) {
-                            if (it.postType == "Materi") {
-                                navController.navigate(Screen.GuruDetailMateri.withId(it.postId))
+                            val route = if (it.postType == "Materi") {
+                                Screen.GuruDetailMateri.withId(it.postId)
                             } else {
-                                navController.navigate(Screen.GuruDetailLatihan.withId(it.postId))
+                                if (it.approvalStatus == "DRAFT") {
+                                    Screen.AddSoal.withId(it.postId)
+                                } else {
+                                    Screen.GuruDetailLatihan.withId(it.postId)
+                                }
                             }
+                            viewModel.clearMessage()
+                            navController.navigate(route)
                         }
                     }
                 }
             }
 
             ApiStatus.FAILED -> {
-                GuruEmptyState(text = "Gagal Memuat Data") {
-                    viewModel.getPosts()
+                Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    GuruEmptyState(text = "Gagal Memuat Data") {
+                        viewModel.getPosts()
+                    }
                 }
             }
         }

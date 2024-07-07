@@ -21,6 +21,9 @@ class GuruDashboardViewModel(
     var apiStatus = MutableStateFlow(ApiStatus.LOADING)
         private set
 
+    var isRefreshing = MutableStateFlow(false)
+        private set
+
     var errorMessage = MutableStateFlow<String?>(null)
         private set
 
@@ -43,6 +46,16 @@ class GuruDashboardViewModel(
                 }
             }
         }
+    }
+
+    fun refreshData() {
+        isRefreshing.value = true
+        getPosts()
+        isRefreshing.value = false
+    }
+
+    fun clearMessage() {
+        errorMessage.value = null
     }
 
 }

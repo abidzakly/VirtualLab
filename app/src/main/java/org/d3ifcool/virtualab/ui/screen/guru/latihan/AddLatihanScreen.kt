@@ -57,18 +57,16 @@ import org.d3ifcool.virtualab.ui.theme.GrayIco
 import org.d3ifcool.virtualab.ui.theme.GrayText
 import org.d3ifcool.virtualab.ui.theme.GrayTextField
 import org.d3ifcool.virtualab.ui.theme.LightBlue
-import org.d3ifcool.virtualab.utils.UserDataStore
 
 @Composable
-fun AddLatihanScreen(navController: NavHostController) {
-    val viewModel: AddLatihanViewModel = viewModel()
-    val latihan by viewModel.latihanData.collectAsState()
-    val errorMsg by viewModel.errorMsg.collectAsState()
+fun AddLatihanScreen(navController: NavHostController, viewModel: AddLatihanViewModel) {
+    val exerciseId by viewModel.exerciseId.collectAsState()
+    val errorMsg by viewModel.errorMessage.collectAsState()
     val context = LocalContext.current
 
-    LaunchedEffect(latihan) {
-        if (latihan != null) {
-            navController.navigate(Screen.AddSoal.withId(latihan!!.exerciseId)) {
+    LaunchedEffect(exerciseId) {
+        if (exerciseId != null) {
+            navController.navigate(Screen.AddSoal.withId(exerciseId!!)) {
                 popUpTo(Screen.GuruDashboard.route)
             }
         }
@@ -106,12 +104,8 @@ private fun ScreenContent(
     val options = listOf("Mudah", "Sedang", "Sulit")
     var judulLatihan by remember { mutableStateOf("") }
     var jumlahSoal by remember { mutableStateOf("") }
-//    var jmlSoalError by remember { mutableStateOf(false) }
     var onClicked by remember { mutableStateOf(false) }
     var selectedOptionText by remember { mutableStateOf("") }
-
-    val dataStore = UserDataStore(LocalContext.current)
-    val userId by dataStore.userIdFlow.collectAsState(-1)
 
     Column(
         modifier = modifier
@@ -152,8 +146,7 @@ private fun ScreenContent(
         ) {
             Button(
                 onClick = {
-                    onClicked = true
-                    if (onClicked && jumlahSoal.isEmpty() || onClicked && judulLatihan.isEmpty() || onClicked && selectedOptionText.isEmpty()) {
+                    if ( jumlahSoal.isEmpty() || judulLatihan.isEmpty() || selectedOptionText.isEmpty()) {
                         Toast.makeText(context, "Semua data harus diisi, yaa", Toast.LENGTH_SHORT)
                             .show()
                         onClicked = false
@@ -162,7 +155,6 @@ private fun ScreenContent(
                             judulLatihan,
                             selectedOptionText,
                             jumlahSoal.toInt(),
-                            userId
                         )
                     }
                 },
@@ -272,5 +264,5 @@ fun CustomTextField(
 @Preview
 @Composable
 private fun Prev() {
-    AddLatihanScreen(navController = rememberNavController())
+//    AddLatihanScreen(navController = rememberNavController())
 }

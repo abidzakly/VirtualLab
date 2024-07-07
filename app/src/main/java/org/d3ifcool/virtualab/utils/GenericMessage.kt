@@ -4,4 +4,5 @@ object GenericMessage {
     const val applicationError = "Terjadi Kesalahan. Harap coba lagi."
     const val noInternetError = "Wah, sinyalnya lagi lemah nih"
     const val loadingMessage = "Sedang diproses. Tunggu, yaa"
+    const val successMessage = "Berhasil!"
 }

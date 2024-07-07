@@ -18,6 +18,10 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -44,6 +48,7 @@ import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.ExtraLargeText
 import org.d3ifcool.virtualab.ui.component.GradientPage
+import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
 import org.d3ifcool.virtualab.ui.component.MuridEmptyState
 import org.d3ifcool.virtualab.ui.component.RegularText
@@ -53,8 +58,17 @@ import org.d3ifcool.virtualab.ui.theme.GrayTitle
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MuridMateriScreen(navController: NavHostController, viewModel: MuridMateriViewModel) {
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
+
+
+    val refreshState = rememberPullRefreshState(
+        refreshing = isRefreshing,
+        onRefresh = { viewModel.refreshData() }
+    )
+
     Scaffold(
         topBar = {
             TopNav(title = R.string.materi_title, navController = navController)
@@ -64,11 +78,20 @@ fun MuridMateriScreen(navController: NavHostController, viewModel: MuridMateriVi
         },
         containerColor = Color.White
     ) {
-        ScreenContent(
-            modifier = Modifier.padding(bottom = it.calculateBottomPadding()),
-            navController = navController,
-            viewModel
-        )
+        Box(modifier = Modifier.pullRefresh(refreshState).padding(bottom = it.calculateBottomPadding())) {
+            ScreenContent(
+                modifier = Modifier,
+                navController = navController,
+                viewModel
+            )
+            PullRefreshIndicator(
+                refreshing = isRefreshing,
+                state = refreshState,
+                modifier = Modifier.align(Alignment.TopCenter),
+                contentColor = Color.White,
+                backgroundColor = DarkBlueDarker
+            )
+        }
     }
 }
 
@@ -89,9 +112,7 @@ private fun ScreenContent(
         when (status) {
             ApiStatus.IDLE -> null
             ApiStatus.LOADING -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = DarkBlueDarker)
-                }
+                LoadingState()
             }
 
             ApiStatus.SUCCESS -> {

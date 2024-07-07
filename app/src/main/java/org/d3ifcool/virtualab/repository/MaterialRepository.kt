@@ -1,6 +1,7 @@
 package org.d3ifcool.virtualab.repository
 
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import org.d3ifcool.virtualab.data.model.Materi
 import org.d3ifcool.virtualab.data.model.MateriItem
 import org.d3ifcool.virtualab.data.model.MessageResponse
@@ -12,11 +13,17 @@ import retrofit2.HttpException
 class MaterialRepository(
     private val materialApi: AuthorizedMateriApi
 ) {
-    suspend fun addMateri(title: String, mediaType: String, description: String, file: MultipartBody.Part): Resource<MessageResponse> {
+    suspend fun addMateri(
+        title: RequestBody,
+        mediaType: RequestBody,
+        description: RequestBody,
+        file: MultipartBody.Part
+    ): Resource<MessageResponse> {
         return try {
             val response = materialApi.addMateri(title, mediaType, description, file)
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -37,6 +44,7 @@ class MaterialRepository(
             val response = materialApi.getMyMateri()
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -57,6 +65,7 @@ class MaterialRepository(
             val response = materialApi.getDetailmateri(materialId)
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -72,11 +81,18 @@ class MaterialRepository(
         }
     }
 
-    suspend fun updateMateri(materialId: Int): Resource<MessageResponse> {
+    suspend fun updateMateri(
+        materialId: Int,
+        title: RequestBody? = null,
+        mediaType: RequestBody? = null,
+        description: RequestBody? = null,
+        file: MultipartBody.Part? = null
+        ): Resource<MessageResponse> {
         return try {
-            val response = materialApi.updateMateri(materialId)
+            val response = materialApi.updateMateri(materialId, title, mediaType, description, file)
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -97,6 +113,7 @@ class MaterialRepository(
             val response = materialApi.modifyMateriStatus(materialId, status)
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -117,6 +134,7 @@ class MaterialRepository(
             val response = materialApi.deleteMateri(materialId)
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError

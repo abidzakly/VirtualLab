@@ -19,7 +19,7 @@ interface AuthorizedLatihanApi {
     @POST("/v1/exercises")
     suspend fun addLatihan(
         @Body content: ExerciseCreate
-    ): Latihan
+    ): MessageResponse
 
     //    Get Latihan by Author
     @GET("/v1/exercises")

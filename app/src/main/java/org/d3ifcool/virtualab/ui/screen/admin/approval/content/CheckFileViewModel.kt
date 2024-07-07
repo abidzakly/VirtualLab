@@ -17,6 +17,9 @@ class CheckFileViewModel(private val userRepository: UserRepository): ViewModel(
     var postData = MutableStateFlow(emptyList<PendingPosts>())
         private set
 
+    var isRefreshing = MutableStateFlow(false)
+        private set
+
     var apiStatus = MutableStateFlow(ApiStatus.LOADING)
         private set
 
@@ -40,5 +43,11 @@ class CheckFileViewModel(private val userRepository: UserRepository): ViewModel(
                 }
             }
         }
+    }
+
+    fun refreshData() {
+        isRefreshing.value = true
+        getPendingPosts()
+        isRefreshing.value = false
     }
 }

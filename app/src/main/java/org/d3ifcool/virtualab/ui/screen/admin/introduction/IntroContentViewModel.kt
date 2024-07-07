@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.data.model.Introduction
+import org.d3ifcool.virtualab.data.network.ApiService
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.repository.IntroRepository
 import org.d3ifcool.virtualab.utils.Resource
@@ -18,6 +19,12 @@ class IntroContentViewModel(private val introRepository: IntroRepository) : View
     var apiStatus = MutableStateFlow(ApiStatus.LOADING)
         private set
 
+    var videoUri = MutableStateFlow<String?>(null)
+        private set
+
+    var isRefreshing = MutableStateFlow(false)
+        private set
+
     var errorMessage = MutableStateFlow<String?>(null)
         private set
 
@@ -27,9 +34,11 @@ class IntroContentViewModel(private val introRepository: IntroRepository) : View
 
     fun getData() {
         viewModelScope.launch(Dispatchers.IO) {
+            apiStatus.value = ApiStatus.LOADING
             when (val response = introRepository.getData()) {
                 is Resource.Success -> {
                     data.value = response.data
+                    videoUri.value = ApiService.getIntroductionMedia()
                     apiStatus.value = ApiStatus.SUCCESS
                 }
 
@@ -39,6 +48,12 @@ class IntroContentViewModel(private val introRepository: IntroRepository) : View
                 }
             }
         }
+    }
+
+    fun refreshData() {
+        isRefreshing.value = true
+        getData()
+        isRefreshing.value = false
     }
 
     fun clearMessage() {
