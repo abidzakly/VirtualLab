@@ -1,6 +1,7 @@
 package org.d3ifcool.virtualab.data.network.apis
 
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import org.d3ifcool.virtualab.data.model.Materi
 import org.d3ifcool.virtualab.data.model.MateriItem
 import org.d3ifcool.virtualab.data.model.MessageResponse
@@ -17,9 +18,9 @@ interface AuthorizedMateriApi {
     @Multipart
     @POST("/v1/materials")
     suspend fun addMateri(
-        @Part("title") title: String,
-        @Part("media_type") mediaType: String,
-        @Part("description") desc: String,
+        @Part("title") title: RequestBody,
+        @Part("media_type") mediaType: RequestBody,
+        @Part("description") desc: RequestBody,
         @Part file: MultipartBody.Part
     ): MessageResponse
 
@@ -35,9 +36,9 @@ interface AuthorizedMateriApi {
     @PUT("/v1/materials/{materialId}")
     suspend fun updateMateri(
         @Path("materialId") id: Int,
-        @Part("title") title: String? = null,
-        @Part("media_type") mediaType: String? = null,
-        @Part("description") desc: String? = null,
+        @Part("title") title: RequestBody? = null,
+        @Part("media_type") mediaType: RequestBody? = null,
+        @Part("description") desc: RequestBody? = null,
         @Part file: MultipartBody.Part? = null
     ): MessageResponse
 

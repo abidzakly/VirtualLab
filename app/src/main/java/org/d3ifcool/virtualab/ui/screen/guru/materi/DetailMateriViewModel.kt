@@ -21,6 +21,12 @@ class DetailMateriViewModel(
     var apiStatus = MutableStateFlow(ApiStatus.LOADING)
         private set
 
+    var isDeleting = MutableStateFlow(ApiStatus.IDLE)
+        private set
+
+    var successMessage = MutableStateFlow<String?>(null)
+        private set
+
     var errorMessage = MutableStateFlow<String?>(null)
         private set
 
@@ -46,5 +52,26 @@ class DetailMateriViewModel(
                 }
             }
         }
+    }
+
+    fun deleteMateri() {
+        viewModelScope.launch(Dispatchers.IO) {
+            isDeleting.value = ApiStatus.LOADING
+            when (val response = materialRepository.deleteMateri(materialId)) {
+                is Resource.Success -> {
+                    successMessage.value = response.data!!.message
+                    isDeleting.value = ApiStatus.SUCCESS
+                }
+                is Resource.Error -> {
+                    errorMessage.value = response.message
+                    isDeleting.value = ApiStatus.FAILED
+                }
+            }
+        }
+    }
+
+    fun clearStatus() {
+        isDeleting.value = ApiStatus.IDLE
+        errorMessage.value = null
     }
 }

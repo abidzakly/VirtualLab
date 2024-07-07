@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -40,7 +41,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import org.d3ifcool.virtualab.R
+import org.d3ifcool.virtualab.data.network.ApiService
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.RegularText
@@ -59,13 +64,14 @@ fun MuridDashboardScreen(navController: NavHostController) {
         },
         containerColor = Color.White
     ) {
-        ScreenContent(modifier = Modifier.padding(it), navController, dataStore)
+        ScreenContent(modifier = Modifier.padding(it), navController, dataStore, context)
     }
 }
 
 @Composable
-private fun ScreenContent(modifier: Modifier, navController: NavHostController, dataStore: UserDataStore) {
+private fun ScreenContent(modifier: Modifier, navController: NavHostController, dataStore: UserDataStore, context: Context) {
     val userFullname by dataStore.userFullNameFlow.collectAsState("")
+    val introTitle by dataStore.introTitleFlow.collectAsState("")
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
         TopNavDashboard(name = userFullname, navController = navController)
         Column(
@@ -85,16 +91,26 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Card(
-                        onClick = { /*TODO*/ },
+                        onClick = {navController.navigate(Screen.Introduction.route) },
                         colors = cardColors(containerColor = Color(0xFFE8F8FF))
                     ) {
-                        Image(
-                            modifier = Modifier.padding(15.dp),
-                            painter = painterResource(id = R.drawable.video_thumbnail),
-                            contentDescription = "Video Thumbnail"
+                        AsyncImage(
+                            model = ImageRequest.Builder(context)
+                                .data(ApiService.getIntroductionThumbnail())
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = "video thumbnail",
+                            placeholder = painterResource(id = R.drawable.loading_img),
+                            error = painterResource(id = R.drawable.broken_image),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .aspectRatio(2f)
+                                .background(color = Color.Black, shape = RoundedCornerShape(20.dp))
+                                .padding(horizontal = 16.dp)
                         )
+                        Spacer(modifier = Modifier.height(8.dp))
                         RegularText(
-                            text = stringResource(id = R.string.dashboard_h2),
+                            text = introTitle,
                             fontWeight = FontWeight.Medium,
                             textAlign = TextAlign.Center,
                             modifier = Modifier
@@ -204,5 +220,5 @@ fun GridItem(title: Int, image: Int, onClick: () -> Unit) {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun DashboardScreenPrev() {
-    MuridDashboardScreen(navController = rememberNavController())
+//    MuridDashboardScreen(navController = rememberNavController())
 }

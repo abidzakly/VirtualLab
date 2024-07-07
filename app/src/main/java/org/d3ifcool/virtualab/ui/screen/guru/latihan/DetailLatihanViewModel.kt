@@ -20,6 +20,13 @@ class DetailLatihanViewModel(
         private set
 
     var apiStatus = MutableStateFlow(ApiStatus.LOADING)
+        private set
+
+    var deleteStatus = MutableStateFlow(ApiStatus.IDLE)
+        private set
+
+    var successMessage = MutableStateFlow<String?>(null)
+        private set
 
     var errorMessage = MutableStateFlow<String?>(null)
         private set
@@ -37,8 +44,23 @@ class DetailLatihanViewModel(
                     apiStatus.value = ApiStatus.SUCCESS
                 }
                 is Resource.Error -> {
-                    errorMessage.value = response.message
                     apiStatus.value = ApiStatus.FAILED
+                }
+            }
+        }
+    }
+
+    fun deleteLatihan() {
+        viewModelScope.launch(Dispatchers.IO) {
+            deleteStatus.value = ApiStatus.LOADING
+            when (val response = exerciseRepository.deleteLatihan(exerciseId)) {
+                is Resource.Success -> {
+                    successMessage.value = response.data!!.message
+                    deleteStatus.value = ApiStatus.SUCCESS
+                }
+                is Resource.Error -> {
+                    errorMessage.value = response.message
+                    deleteStatus.value = ApiStatus.FAILED
                 }
             }
         }

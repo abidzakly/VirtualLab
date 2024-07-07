@@ -41,7 +41,6 @@ import org.d3ifcool.virtualab.ui.screen.RegisterScreen
 import org.d3ifcool.virtualab.ui.screen.LoginScreen
 import org.d3ifcool.virtualab.ui.screen.guru.dashboard.GuruDashboardScreen
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddLatihanScreen
-import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddSoalScreen
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.DetailLatihanScreen
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.GuruLatihanScreen
 import org.d3ifcool.virtualab.ui.screen.guru.materi.AddMateriScreen
@@ -64,10 +63,15 @@ import org.d3ifcool.virtualab.ui.screen.admin.approval.content.FileInfoViewModel
 import org.d3ifcool.virtualab.ui.screen.admin.introduction.IntroContentViewModel
 import org.d3ifcool.virtualab.ui.screen.admin.introduction.UpdateIntroViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.dashboard.GuruDashboardViewModel
+import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddLatihanViewModel
+import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddSoalScreen
+import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddSoalViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.DetailLatihanViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.LatihanListViewModel
+import org.d3ifcool.virtualab.ui.screen.guru.materi.AddMateriViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.materi.DetailMateriViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.materi.GuruMateriViewModel
+import org.d3ifcool.virtualab.ui.screen.murid.introduction.IntroductionViewModel
 import org.d3ifcool.virtualab.ui.screen.murid.latihan.CekJawabanViewModel
 import org.d3ifcool.virtualab.ui.screen.murid.latihan.MuridDetailLatihanViewModel
 import org.d3ifcool.virtualab.ui.screen.murid.latihan.MuridListLatihanViewModel
@@ -174,7 +178,9 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
             MuridDashboardScreen(navController)
         }
         composable(route = Screen.Introduction.route) {
-            IntroductionScreen(navController)
+            val factory = ViewModelFactory(introRepository = introRepository)
+            val viewModel: IntroductionViewModel = viewModel(factory = factory)
+            IntroductionScreen(navController, viewModel)
         }
         composable(route = Screen.MuridMateri.route) {
             val factory = ViewModelFactory(studentRepository = studentRepository)
@@ -238,10 +244,26 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
             GuruDashboardScreen(navController, viewModel)
         }
         composable(route = Screen.AddMateri.route) {
-            AddMateriScreen(navController)
+            val factory = ViewModelFactory(materialRepository = materialRepository)
+            val viewModel: AddMateriViewModel = viewModel(factory = factory)
+            AddMateriScreen(navController, viewModel = viewModel)
+        }
+        composable(route = Screen.UpdateMateri.route,
+            arguments = listOf(
+            navArgument(KEY_ID_TYPE) {
+                type = NavType.IntType
+            }
+        )
+        ) {
+            val materialId = it.arguments!!.getInt(KEY_ID_TYPE)
+            val factory = ViewModelFactory(id = materialId, materialRepository = materialRepository)
+            val viewModel: AddMateriViewModel = viewModel(factory = factory)
+            AddMateriScreen(navController, viewModel)
         }
         composable(route = Screen.AddLatihan.route) {
-            AddLatihanScreen(navController)
+            val factory = ViewModelFactory(exerciseRepository = exerciseRepository)
+            val viewModel: AddLatihanViewModel = viewModel(factory = factory)
+            AddLatihanScreen(navController, viewModel)
         }
         composable(route = Screen.GuruMateri.route) {
             val factory = ViewModelFactory(materialRepository = materialRepository)
@@ -339,7 +361,9 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
                 }
             )) {
             val exerciseId = it.arguments!!.getInt(KEY_EXERCISE_ID)
-            AddSoalScreen(navController, exerciseId = exerciseId)
+            val factory = ViewModelFactory(id = exerciseId, exerciseRepository = exerciseRepository)
+            val viewModel: AddSoalViewModel = viewModel(factory = factory)
+            AddSoalScreen(navController, viewModel)
         }
     }
 }

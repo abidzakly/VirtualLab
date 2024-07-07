@@ -25,6 +25,9 @@ sealed class Screen(val route: String) {
     //    Guru
     data object GuruDashboard : Screen("guruDashboardScreen")
     data object AddMateri : Screen("addMateriScreen")
+    data object UpdateMateri : Screen("addMateriScreen/{$KEY_ID_TYPE}") {
+        fun withId(id: Int) = "addMateriScreen/$id"
+    }
     data object AddSoal : Screen("addSoalScreen/{$KEY_EXERCISE_ID}") {
         fun withId(id: Int) = "addSoalScreen/$id"
     }

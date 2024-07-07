@@ -22,6 +22,7 @@ class UserRepository(
             val response = userApi.getPendingPosts()
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -42,6 +43,7 @@ class UserRepository(
             val response = userApi.getRecentPosts(teacherId)
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -61,6 +63,7 @@ class UserRepository(
             val response = userApi.getAllPendingUser()
             return Resource.Success(data = response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -84,6 +87,7 @@ class UserRepository(
             }
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -106,6 +110,7 @@ class UserRepository(
             this.getUserById(userId, false)
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -147,6 +152,7 @@ class UserRepository(
             val response = userApi.approveUser(userId, password)
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -167,6 +173,7 @@ class UserRepository(
             val response = userApi.rejectUser(userId)
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError

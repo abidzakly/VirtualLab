@@ -21,6 +21,7 @@ class IntroRepository(
             val response = introApi.addIntroduction(title, description, file)
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -42,6 +43,7 @@ class IntroRepository(
             val response = introApi.getIntroduction()
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -66,6 +68,7 @@ class IntroRepository(
             val response = introApi.updateIntroduction(title, description, file)
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -86,6 +89,7 @@ class IntroRepository(
             val response = introApi.deleteIntroduction()
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -96,6 +100,7 @@ class IntroRepository(
                 }
             Resource.Error(errorMessage!!)
         } catch (e: Exception) {
+            e.printStackTrace()
             e.printStackTrace()
             Resource.Error(GenericMessage.noInternetError)
         }

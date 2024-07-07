@@ -1,19 +1,18 @@
-package org.d3ifcool.virtualab.ui.screen.murid.nilai
+package org.d3ifcool.virtualab.ui.screen.murid.introduction
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.d3ifcool.virtualab.data.model.Nilai
+import org.d3ifcool.virtualab.data.model.Introduction
 import org.d3ifcool.virtualab.data.network.ApiStatus
-import org.d3ifcool.virtualab.repository.StudentRepository
+import org.d3ifcool.virtualab.repository.IntroRepository
 import org.d3ifcool.virtualab.utils.Resource
 
-class NilaiViewModel(private val studentRepository: StudentRepository) : ViewModel() {
+class IntroductionViewModel(private val introRepository: IntroRepository) : ViewModel() {
 
-    var nilaiData = MutableStateFlow(emptyList<Nilai>())
+    var introData = MutableStateFlow<Introduction?>(null)
         private set
 
     var isRefreshing = MutableStateFlow(false)
@@ -26,15 +25,15 @@ class NilaiViewModel(private val studentRepository: StudentRepository) : ViewMod
         private set
 
     init {
-        getMyNilai()
+        getIntroData()
     }
 
-    fun getMyNilai() {
+    fun getIntroData() {
         viewModelScope.launch(Dispatchers.IO) {
             apiStatus.value = ApiStatus.LOADING
-            when (val response = studentRepository.getMyResults()) {
+            when (val response = introRepository.getData()) {
                 is Resource.Success -> {
-                    nilaiData.value = response.data!!
+                    introData.value = response.data
                     apiStatus.value = ApiStatus.SUCCESS
                 }
 
@@ -48,8 +47,7 @@ class NilaiViewModel(private val studentRepository: StudentRepository) : ViewMod
 
     fun refreshData() {
         isRefreshing.value = true
-        getMyNilai()
+        getIntroData()
         isRefreshing.value = false
     }
-
 }

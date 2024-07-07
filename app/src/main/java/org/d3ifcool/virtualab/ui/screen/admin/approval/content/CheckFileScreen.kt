@@ -18,8 +18,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -46,13 +50,22 @@ import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.AdminEmptyState
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.LargeText
+import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun CheckFileScreen(navController: NavHostController, viewModel: CheckFileViewModel) {
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
+
+
+    val refreshState = rememberPullRefreshState(
+        refreshing = isRefreshing,
+        onRefresh = { viewModel.refreshData() }
+    )
+
     Scaffold(topBar = {
         TopAppBar(
             navigationIcon = {
@@ -75,7 +88,16 @@ fun CheckFileScreen(navController: NavHostController, viewModel: CheckFileViewMo
     }, bottomBar = {
         BottomNav(navController = navController)
     }) {
-        ScreenContent(modifier = Modifier.padding(it), navController, viewModel)
+        Box(modifier = Modifier.pullRefresh(refreshState).padding(it)) {
+            ScreenContent(modifier = Modifier, navController, viewModel)
+            PullRefreshIndicator(
+                refreshing = isRefreshing,
+                state = refreshState,
+                modifier = Modifier.align(Alignment.TopCenter),
+                contentColor = Color.White,
+                backgroundColor = DarkBlueDarker
+            )
+        }
     }
 }
 
@@ -91,9 +113,7 @@ private fun ScreenContent(
     when (status) {
         ApiStatus.IDLE -> null
         ApiStatus.LOADING -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(color = DarkBlueDarker)
-            }
+            LoadingState()
         }
 
         ApiStatus.SUCCESS -> {
@@ -120,6 +140,7 @@ private fun ScreenContent(
                 }
             }
         }
+
         ApiStatus.FAILED -> {
             Column(
                 modifier = modifier
@@ -128,7 +149,9 @@ private fun ScreenContent(
                     .padding(12.dp),
                 verticalArrangement = Arrangement.Center
             ) {
-                AdminEmptyState(text = "Belum ada berkas yang perlu diperiksa")
+                AdminEmptyState(text = "Belum ada berkas yang perlu diperiksa") {
+                    viewModel.getPendingPosts()
+                }
             }
         }
     }

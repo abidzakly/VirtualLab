@@ -30,34 +30,15 @@ import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.ContentList
 import org.d3ifcool.virtualab.ui.component.GuruEmptyState
+import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.utils.GenericMessage
 
-@Composable
-fun GuruLatihanScreen(navController: NavHostController, viewModel: LatihanListViewModel) {
-    Scaffold(topBar = {
-        TopNav(title = R.string.lihat_latihan_title, navController = navController)
-    }, bottomBar = {
-        BottomNav(currentRoute = Screen.GuruLatihan.route, navController = navController)
-    }) {
-            ScreenContent(modifier = Modifier.padding(it), navController, viewModel)
-    }
-}
-
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun ScreenContent(
-    modifier: Modifier,
-    navController: NavHostController,
-    viewModel: LatihanListViewModel
-) {
-    val latihanList by viewModel.latihanList.collectAsState()
-    var nomorSoal: Int
-
-    val apiStatus by viewModel.apiStatus.collectAsState()
-    val errorMessage by viewModel.errorMsg.collectAsState()
+fun GuruLatihanScreen(navController: NavHostController, viewModel: LatihanListViewModel) {
     val isRefreshing by viewModel.isRefreshing.collectAsState()
 
 
@@ -66,11 +47,39 @@ private fun ScreenContent(
         onRefresh = { viewModel.refreshData() }
     )
 
+    Scaffold(topBar = {
+        TopNav(title = R.string.lihat_latihan_title, navController = navController)
+    }, bottomBar = {
+        BottomNav(currentRoute = Screen.GuruLatihan.route, navController = navController)
+    }) {
+        Box(modifier = Modifier.pullRefresh(refreshState).padding(it)) {
+            ScreenContent(modifier = Modifier, navController, viewModel)
+            PullRefreshIndicator(
+                refreshing = isRefreshing,
+                state = refreshState,
+                modifier = Modifier.align(Alignment.TopCenter),
+                contentColor = Color.White,
+                backgroundColor = DarkBlueDarker
+            )
+        }
+    }
+}
+
+@Composable
+private fun ScreenContent(
+    modifier: Modifier,
+    navController: NavHostController,
+    viewModel: LatihanListViewModel
+) {
+    val latihanList by viewModel.latihanList.collectAsState()
+
+    val apiStatus by viewModel.apiStatus.collectAsState()
+    val errorMessage by viewModel.errorMsg.collectAsState()
+
+
     when (apiStatus) {
         ApiStatus.LOADING -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(color = DarkBlueDarker)
-            }
+            LoadingState()
         }
 
         ApiStatus.FAILED -> {
@@ -94,43 +103,34 @@ private fun ScreenContent(
         }
 
         ApiStatus.SUCCESS -> {
-            Box(modifier = modifier.pullRefresh(refreshState)) {
-                Column(
+            Column(
+                modifier = Modifier
+                    .background(Color.White)
+                    .padding(12.dp),
+                verticalArrangement = Arrangement.Top
+            ) {
+                RegularText(
+                    text = "Latihan yang pernah ditambahkan: ",
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+                LazyColumn(
                     modifier = Modifier
-                        .background(Color.White)
-                        .padding(12.dp),
-                    verticalArrangement = Arrangement.Top
+                        .padding(16.dp)
                 ) {
-                    RegularText(
-                        text = "Latihan yang pernah ditambahkan: ",
-                        modifier = Modifier.padding(start = 16.dp)
-                    )
-                    LazyColumn(
-                        modifier = Modifier
-                            .padding(16.dp)
-                    ) {
-                        items(latihanList!!) {
-                            ContentList(
-                                title = it.title,
-                                desc = "Tingkat Kesulitan: ${it.difficulty}",
-                                status = it.approvalStatus
-                            ) {
-                                if (it.approvalStatus != "DRAFT")
-                                    navController.navigate(Screen.GuruDetailLatihan.withId(it.exerciseId))
-                                else
-                                    navController.navigate(Screen.AddSoal.withId(it.exerciseId))
+                    items(latihanList!!) {
+                        ContentList(
+                            title = it.title,
+                            desc = "Tingkat Kesulitan: ${it.difficulty}",
+                            status = it.approvalStatus
+                        ) {
+                            if (it.approvalStatus != "DRAFT")
+                                navController.navigate(Screen.GuruDetailLatihan.withId(it.exerciseId))
+                            else
+                                navController.navigate(Screen.AddSoal.withId(it.exerciseId))
 
-                            }
                         }
                     }
                 }
-                PullRefreshIndicator(
-                    refreshing = isRefreshing,
-                    state = refreshState,
-                    modifier = Modifier.align(Alignment.TopCenter),
-                    contentColor = Color.White,
-                    backgroundColor = DarkBlueDarker
-                )
             }
         }
 

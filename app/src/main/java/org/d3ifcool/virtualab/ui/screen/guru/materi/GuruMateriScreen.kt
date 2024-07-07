@@ -34,24 +34,42 @@ import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.ContentList
 import org.d3ifcool.virtualab.ui.component.GuruEmptyState
+import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.ui.theme.Poppins
 import org.d3ifcool.virtualab.utils.GenericMessage
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun GuruMateriScreen(navController: NavHostController, viewModel: GuruMateriViewModel) {
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
+
+
+    val refreshState = rememberPullRefreshState(
+        refreshing = isRefreshing,
+        onRefresh = { viewModel.refreshData() }
+    )
+
     Scaffold(topBar = {
         TopNav(title = R.string.lihat_materi_title, navController = navController)
     }, bottomBar = {
         BottomNav(currentRoute = Screen.GuruMateri.route, navController)
     }) {
-        ScreenContent(modifier = Modifier.padding(it), navController, viewModel)
+        Box(modifier = Modifier.pullRefresh(refreshState).padding(it)) {
+            ScreenContent(modifier = Modifier, navController, viewModel)
+            PullRefreshIndicator(
+                refreshing = isRefreshing,
+                state = refreshState,
+                modifier = Modifier.align(Alignment.TopCenter),
+                contentColor = Color.White,
+                backgroundColor = DarkBlueDarker
+            )
+        }
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun ScreenContent(
     modifier: Modifier,
@@ -61,59 +79,41 @@ private fun ScreenContent(
     val data by viewModel.materials.collectAsState()
     val status by viewModel.apiStatus.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
-    val isRefreshing by viewModel.isRefreshing.collectAsState()
-
-
-    val refreshState = rememberPullRefreshState(
-        refreshing = isRefreshing,
-        onRefresh = { viewModel.refreshData() }
-    )
 
     when (status) {
         ApiStatus.IDLE -> null
         ApiStatus.LOADING -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(color = DarkBlueDarker)
-            }
+            LoadingState()
         }
 
         ApiStatus.SUCCESS -> {
-            Box(modifier = modifier.pullRefresh(refreshState)) {
-                Column(
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White)
+                    .padding(12.dp),
+                verticalArrangement = Arrangement.Top,
+            ) {
+                Text(
+                    text = "Materi yang pernah ditambahkan :",
+                    Modifier.padding(start = 16.dp),
+                    fontSize = 16.sp,
+                    fontFamily = Poppins
+                )
+                LazyColumn(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.White)
-                        .padding(12.dp),
-                    verticalArrangement = Arrangement.Top,
+                        .padding(16.dp)
                 ) {
-                    Text(
-                        text = "Materi yang pernah ditambahkan :",
-                        Modifier.padding(start = 16.dp),
-                        fontSize = 16.sp,
-                        fontFamily = Poppins
-                    )
-                    LazyColumn(
-                        modifier = Modifier
-                            .padding(16.dp)
-                    ) {
-                        items(data) {
-                            ContentList(
-                                title = it.title,
-                                desc = it.description,
-                                status = it.approvalStatus
-                            ) {
-                                navController.navigate(Screen.GuruDetailMateri.withId(it.materialId))
-                            }
+                    items(data) {
+                        ContentList(
+                            title = it.title,
+                            desc = it.description,
+                            status = it.approvalStatus
+                        ) {
+                            navController.navigate(Screen.GuruDetailMateri.withId(it.materialId))
                         }
                     }
                 }
-                PullRefreshIndicator(
-                    refreshing = isRefreshing,
-                    state = refreshState,
-                    modifier = Modifier.align(Alignment.TopCenter),
-                    contentColor = Color.White,
-                    backgroundColor = DarkBlueDarker
-                )
             }
         }
 

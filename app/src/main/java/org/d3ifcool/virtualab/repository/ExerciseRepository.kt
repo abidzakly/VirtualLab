@@ -14,11 +14,12 @@ import retrofit2.HttpException
 class ExerciseRepository(
     private val latihanApi: AuthorizedLatihanApi
 ) {
-    suspend fun addLatihan(content: ExerciseCreate): Resource<Latihan> {
+    suspend fun addLatihan(content: ExerciseCreate): Resource<MessageResponse> {
         return try {
             val response = latihanApi.addLatihan(content)
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -39,6 +40,7 @@ class ExerciseRepository(
             val response = latihanApi.getMyMateri()
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -59,6 +61,7 @@ class ExerciseRepository(
             val response = latihanApi.getDetailLatihan(latihanId)
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -79,6 +82,7 @@ class ExerciseRepository(
             val response = latihanApi.deleteLatihan(latihanId)
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -99,6 +103,7 @@ class ExerciseRepository(
             val response = latihanApi.addSoal(latihanId, soal)
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -119,6 +124,7 @@ class ExerciseRepository(
             val response = latihanApi.getSoalbyExerciseId(latihanId)
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -139,6 +145,7 @@ class ExerciseRepository(
             val response = latihanApi.modifyLatihanStatus(latihanId, status)
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError

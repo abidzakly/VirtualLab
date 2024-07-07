@@ -73,6 +73,7 @@ import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.data.model.UserCreate
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
+import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.SmallText
@@ -96,9 +97,7 @@ fun RegisterScreen(navController: NavHostController, id: Int, viewModel: AuthVie
     when (apiStatus) {
         ApiStatus.LOADING -> {
             Dialog(onDismissRequest = { showDialog = false }) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = Color.White)
-                }
+                LoadingState()
             }
         }
 

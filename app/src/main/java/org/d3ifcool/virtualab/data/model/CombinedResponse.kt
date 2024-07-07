@@ -29,6 +29,8 @@ data class CombinedLatihan(
 data class CombinedUser(
     @Json(name = "access_token")
     val accessToken: String? = null,
+    @Json(name = "intro_title")
+    val introTitle: String? = null,
     val user: User? = null,
     val student: Murid? = null,
     val teacher: Guru? = null,

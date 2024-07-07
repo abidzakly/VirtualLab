@@ -34,8 +34,8 @@ data class ExerciseCreate(
     val difficulty: String,
     @Json(name = "question_count")
     val questionCount: Int,
-    @Json(name = "author_id")
-    val authorId: Int,
+//    @Json(name = "author_id")
+//    val authorId: Int,
     @Json(name = "approval_status")
     val approvalStatus: String = "DRAFT",
 )

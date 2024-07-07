@@ -51,6 +51,7 @@ import org.d3ifcool.virtualab.data.model.SoalDummy
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
+import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
 import org.d3ifcool.virtualab.ui.component.MuridEmptyState
 import org.d3ifcool.virtualab.ui.component.RegularText
@@ -115,9 +116,7 @@ private fun ScreenContent(
     when (status) {
         ApiStatus.IDLE -> null
         ApiStatus.LOADING -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(color = DarkBlueDarker)
-            }
+                LoadingState()
         }
 
         ApiStatus.SUCCESS -> {
@@ -163,15 +162,15 @@ private fun ScreenContent(
                         RegularText(
                             text = when (data!!.score) {
                                 in 85.00..100.00 -> {
-                                    "Selamat, yaa!"
+                                    "Keren banget! Selamat yaa🤩"
                                 }
 
                                 in 70.00..84.00 -> {
-                                    "Not bad, semangat yaa!"
+                                    "Not baaad 😁"
                                 }
 
                                 else -> {
-                                    "Nice try. Tetap semangat, yaa!"
+                                    "Nice try. Tetap semangaat! 🔥"
                                 }
                             }
                         )

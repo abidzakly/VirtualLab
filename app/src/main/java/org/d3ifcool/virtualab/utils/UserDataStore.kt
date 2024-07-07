@@ -28,7 +28,7 @@ class UserDataStore(private val context: Context) {
         private val USER_EMAIL = stringPreferencesKey("user_email")
         private val USER_TYPE = intPreferencesKey("user_type")
         private val USER_SCHOOL = stringPreferencesKey("user_school")
-        private val USER_PASSWORD = stringPreferencesKey("user_password")
+        private val INTRO_TITLE = stringPreferencesKey("intro_title")
         private val MURID_NISN = stringPreferencesKey("murid_nisn")
         private val GURU_NIP = stringPreferencesKey("guru_nip")
         private val ACCESS_TOKEN = stringPreferencesKey("access_token")
@@ -68,6 +68,9 @@ class UserDataStore(private val context: Context) {
     val userFullNameFlow: Flow<String> = context.dataStore.data.map { preferences ->
         preferences[USER_FULLNAME] ?: ""
     }
+    val introTitleFlow: Flow<String> = context.dataStore.data.map { preferences ->
+        preferences[INTRO_TITLE] ?: ""
+    }
 
     val userTypeFlow: Flow<Int> = context.dataStore.data.map { preferences ->
         preferences[USER_TYPE] ?: -1
@@ -89,6 +92,11 @@ class UserDataStore(private val context: Context) {
         }
     }
 
+    suspend fun saveIntroDesc(title: String) {
+        context.dataStore.edit {
+            it[INTRO_TITLE] = title
+        }
+    }
 
     suspend fun saveData(user: User, murid: Murid? = null, guru: Guru? = null) {
         context.dataStore.edit {

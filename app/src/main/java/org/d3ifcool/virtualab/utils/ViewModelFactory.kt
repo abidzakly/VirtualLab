@@ -17,11 +17,14 @@ import org.d3ifcool.virtualab.ui.screen.admin.approval.content.FileInfoViewModel
 import org.d3ifcool.virtualab.ui.screen.admin.introduction.IntroContentViewModel
 import org.d3ifcool.virtualab.ui.screen.admin.introduction.UpdateIntroViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.dashboard.GuruDashboardViewModel
+import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddLatihanViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddSoalViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.DetailLatihanViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.LatihanListViewModel
+import org.d3ifcool.virtualab.ui.screen.guru.materi.AddMateriViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.materi.DetailMateriViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.materi.GuruMateriViewModel
+import org.d3ifcool.virtualab.ui.screen.murid.introduction.IntroductionViewModel
 import org.d3ifcool.virtualab.ui.screen.murid.latihan.CekJawabanViewModel
 import org.d3ifcool.virtualab.ui.screen.murid.latihan.MuridDetailLatihanViewModel
 import org.d3ifcool.virtualab.ui.screen.murid.latihan.MuridListLatihanViewModel
@@ -49,8 +52,6 @@ class ViewModelFactory(
             return CheckUsersViewModel(userRepository!!) as T
         } else if (modelClass.isAssignableFrom(UserInfoViewModel::class.java)) {
             return UserInfoViewModel(id!!, userRepository!!) as T
-        } else if (modelClass.isAssignableFrom(AddSoalViewModel::class.java)) {
-            return AddSoalViewModel(id!!) as T
         } else if (modelClass.isAssignableFrom(DetailLatihanViewModel::class.java)) {
             return DetailLatihanViewModel(id!!, exerciseRepository!!) as T
         } else if (modelClass.isAssignableFrom(LatihanListViewModel::class.java)) {
@@ -81,8 +82,16 @@ class ViewModelFactory(
             return NilaiViewModel(studentRepository!!) as T
         } else if (modelClass.isAssignableFrom(MuridMateriViewModel::class.java)) {
             return MuridMateriViewModel(studentRepository!!) as T
-        }  else if (modelClass.isAssignableFrom(MuridDetailMateriViewModel::class.java)) {
+        } else if (modelClass.isAssignableFrom(MuridDetailMateriViewModel::class.java)) {
             return MuridDetailMateriViewModel(id!!, materialRepository!!) as T
+        } else if (modelClass.isAssignableFrom(AddLatihanViewModel::class.java)) {
+            return AddLatihanViewModel(exerciseRepository!!) as T
+        } else if (modelClass.isAssignableFrom(AddSoalViewModel::class.java)) {
+            return AddSoalViewModel(id!!, exerciseRepository!!) as T
+        } else if (modelClass.isAssignableFrom(IntroductionViewModel::class.java)) {
+            return IntroductionViewModel(introRepository!!) as T
+        } else if (modelClass.isAssignableFrom(AddMateriViewModel::class.java)) {
+            return AddMateriViewModel(id, materialRepository!!) as T
         } else {
             throw IllegalArgumentException("Unknown ViewModel class")
         }

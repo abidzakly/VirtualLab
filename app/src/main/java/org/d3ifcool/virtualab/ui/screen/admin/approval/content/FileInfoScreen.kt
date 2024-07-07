@@ -54,6 +54,7 @@ import org.d3ifcool.virtualab.data.network.ApiService
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
+import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.SemiLargeText
@@ -116,9 +117,7 @@ private fun ScreenContent(modifier: Modifier, postType: String, viewModel: FileI
     when (status) {
         ApiStatus.IDLE -> null
         ApiStatus.LOADING -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(color = DarkBlueDarker)
-            }
+                LoadingState()
         }
 
         ApiStatus.SUCCESS -> {
@@ -215,7 +214,7 @@ private fun MaterialContent(data: MateriReview) {
             Column(modifier = Modifier.fillMaxWidth()) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(ApiService.getMateriContent(data.materialId))
+                        .data(ApiService.getMateriMedia(data.materialId))
                         .crossfade(true)
                         .build(),
                     contentDescription = null,

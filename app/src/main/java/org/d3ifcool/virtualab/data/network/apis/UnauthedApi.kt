@@ -20,10 +20,4 @@ interface UnauthedApi {
 
     @POST("/v1/auth/login")
     suspend fun login(@Body user: UserLogin): CombinedUser
-
-    @Multipart
-    @POST("/v1/test")
-    suspend fun uploadVideo(
-        @Part file: MultipartBody.Part
-    ): Response<MessageResponse>
 }

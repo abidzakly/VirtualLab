@@ -1,5 +1,6 @@
 package org.d3ifcool.virtualab.ui.screen.guru.latihan
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,15 +24,20 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -40,6 +46,8 @@ import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.GuruEmptyState
+import org.d3ifcool.virtualab.ui.component.LoadingState
+import org.d3ifcool.virtualab.ui.component.PopUpDialog
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
@@ -48,9 +56,34 @@ import org.d3ifcool.virtualab.utils.ViewModelFactory
 
 @Composable
 fun DetailLatihanScreen(navController: NavHostController, viewModel: DetailLatihanViewModel) {
+    val context = LocalContext.current
+    val deleteStatus by viewModel.deleteStatus.collectAsState()
+    val successMessage by viewModel.successMessage.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
+    var showDialog by remember { mutableStateOf(false) }
+    var isUploading by remember { mutableStateOf(false) }
+    when (deleteStatus) {
+        ApiStatus.IDLE -> null
+        ApiStatus.LOADING -> {
+            Dialog(onDismissRequest = { }) {
+                LoadingState()
+            }
+        }
+
+        ApiStatus.SUCCESS -> {
+            isUploading = false
+            Toast.makeText(context, successMessage, Toast.LENGTH_SHORT).show()
+            navController.navigate(Screen.GuruLatihan.route)
+        }
+
+        ApiStatus.FAILED -> {
+            isUploading = false
+            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+        }
+    }
     Scaffold(topBar = {
         TopNav(title = R.string.guru_detail_latihan_title, navController = navController) {
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = { showDialog = true }) {
                 Icon(imageVector = Icons.Filled.Delete, contentDescription = "Delete Icon")
             }
         }
@@ -58,6 +91,17 @@ fun DetailLatihanScreen(navController: NavHostController, viewModel: DetailLatih
         BottomNav(navController = navController)
     }) {
         ScreenContent(modifier = Modifier.padding(it), viewModel)
+
+        if (showDialog) {
+            PopUpDialog(
+                onDismiss = { showDialog = false },
+                icon = R.drawable.baseline_warning_amber,
+                title = "Anda yakin ingin menghapus latihan ini?"
+            ) {
+                isUploading = true
+                viewModel.deleteLatihan()
+            }
+        }
     }
 }
 
@@ -68,10 +112,9 @@ private fun ScreenContent(modifier: Modifier, viewModel: DetailLatihanViewModel)
     when (status) {
         ApiStatus.IDLE -> null
         ApiStatus.LOADING -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(color = DarkBlueDarker)
-            }
+            LoadingState()
         }
+
         ApiStatus.SUCCESS -> {
             val latihan = latihanData!!.latihan!!
             LazyColumn(
@@ -83,7 +126,7 @@ private fun ScreenContent(modifier: Modifier, viewModel: DetailLatihanViewModel)
             ) {
                 item {
                     RegularText(
-                        text = stringResource(R.string.judul_materi_guru),
+                        text = stringResource(R.string.judul_latihan_guru),
                         fontWeight = FontWeight.SemiBold
                     )
                     RegularText(text = latihan.title, fontWeight = FontWeight.Normal)
@@ -93,6 +136,12 @@ private fun ScreenContent(modifier: Modifier, viewModel: DetailLatihanViewModel)
                         fontWeight = FontWeight.SemiBold
                     )
                     RegularText(text = latihan.difficulty, fontWeight = FontWeight.Normal)
+                    Spacer(modifier = Modifier.height(16.dp))
+                    RegularText(
+                        text = stringResource(R.string.jumlah_soal_title),
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    RegularText(text = "${latihan.questionCount}", fontWeight = FontWeight.Normal)
                     Spacer(modifier = Modifier.height(16.dp))
                     RegularText(
                         text = stringResource(R.string.perintah_soal),
@@ -109,6 +158,7 @@ private fun ScreenContent(modifier: Modifier, viewModel: DetailLatihanViewModel)
                 }
             }
         }
+
         ApiStatus.FAILED -> {
             GuruEmptyState(text = "Gagal memuat data.") {
                 viewModel.getLatihanDetail()

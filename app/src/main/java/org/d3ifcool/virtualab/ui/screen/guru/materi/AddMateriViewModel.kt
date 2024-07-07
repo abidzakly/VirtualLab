@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.ui.screen.admin.introduction
+package org.d3ifcool.virtualab.ui.screen.guru.materi
 
 import android.content.ContentResolver
 import android.net.Uri
@@ -12,50 +12,69 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.d3ifcool.virtualab.data.model.Introduction
+import org.d3ifcool.virtualab.data.model.MateriItem
 import org.d3ifcool.virtualab.data.model.MessageResponse
 import org.d3ifcool.virtualab.data.network.ApiStatus
-import org.d3ifcool.virtualab.repository.IntroRepository
+import org.d3ifcool.virtualab.repository.MaterialRepository
 import org.d3ifcool.virtualab.utils.Resource
 import org.d3ifcool.virtualab.utils.getFileExtension
 import java.io.File
 import java.io.FileOutputStream
 
-class UpdateIntroViewModel(private val introRepository: IntroRepository) : ViewModel() {
+class AddMateriViewModel(
+    private val materialId: Int? = null,
+    private val materialRepository: MaterialRepository
+) : ViewModel() {
 
-    var data = MutableStateFlow<Introduction?>(null)
+
+    var materiData = MutableStateFlow<MateriItem?>(null)
+        private set
+
+    var materiId = MutableStateFlow<Int?>(null)
         private set
 
     var apiStatus = MutableStateFlow(ApiStatus.IDLE)
         private set
 
+    var isUploading = MutableStateFlow(ApiStatus.IDLE)
+        private set
+
     var successMessage = MutableStateFlow<String?>(null)
         private set
+
     var errorMessage = MutableStateFlow<String?>(null)
         private set
 
     init {
-        getData()
+        if (materialId != null) {
+            materiId.value = materialId
+            getMateriData()
+        }
     }
 
-    fun getData() {
+    fun getMateriData() {
         viewModelScope.launch(Dispatchers.IO) {
-            when (val response = introRepository.getData()) {
+            apiStatus.value = ApiStatus.LOADING
+            when (val response = materialRepository.getDetailMateri(materialId!!)) {
                 is Resource.Success -> {
-                    data.value = response.data
+                    materiData.value = response.data!!.materiItem
+                    apiStatus.value = ApiStatus.SUCCESS
                 }
 
                 is Resource.Error -> {
                     errorMessage.value = response.message
+                    apiStatus.value = ApiStatus.FAILED
                 }
             }
         }
     }
 
-    fun addOrUpdateData(
+    fun addOrUpdateMateri(
+        materialId: Int? = null,
         title: String? = null,
         description: String? = null,
         uri: Uri? = null,
+        mediaType: String? = null,
         isUpdate: Boolean,
         contentResolver: ContentResolver
     ) {
@@ -68,60 +87,62 @@ class UpdateIntroViewModel(private val introRepository: IntroRepository) : ViewM
 
             val titlePart = title!!.toRequestBody("text/plain".toMediaTypeOrNull())
             val descPart = description!!.toRequestBody("text/plain".toMediaTypeOrNull())
-            val requestBody = file.asRequestBody("video/*".toMediaTypeOrNull())
+            val mediaTypePart = mediaType!!.toRequestBody("text/plain".toMediaTypeOrNull())
+            val requestBody = file.asRequestBody("*/*".toMediaTypeOrNull())
             val body = MultipartBody.Part.createFormData("file", file.name, requestBody)
 
-            apiStatus.value = ApiStatus.LOADING
+            isUploading.value = ApiStatus.LOADING
 
             var response: Resource<MessageResponse>? = null
 
             if (!isUpdate) {
                 if (inputStream != null) {
-                    response = introRepository.addData(titlePart, descPart, body)
+                    response =
+                        materialRepository.addMateri(titlePart, mediaTypePart, descPart, body)
                 }
             } else {
-                Log.d("UpdateIntroVM", "Judul Materi: $title")
+                Log.d("AddMateriVM", "URI: $uri")
 
                 var bodyUpdate: MultipartBody.Part? = null
                 if (inputStream != null) {
                     bodyUpdate = body
                 }
-                    response = introRepository.updateData(titlePart, descPart, bodyUpdate)
+                if (bodyUpdate != null) {
+                    response = materialRepository.updateMateri(
+                        materialId!!,
+                        titlePart,
+                        mediaTypePart,
+                        descPart,
+                        bodyUpdate
+                    )
+                } else {
+                    response = materialRepository.updateMateri(
+                        materialId!!,
+                        titlePart,
+                        null,
+                        descPart,
+                        null
+                    )
+                }
             }
             when (response!!) {
                 is Resource.Success -> {
                     successMessage.value = response.data!!.message
-                    apiStatus.value = ApiStatus.SUCCESS
+                    isUploading.value = ApiStatus.SUCCESS
                 }
 
                 is Resource.Error -> {
                     errorMessage.value = response.message
-                    apiStatus.value = ApiStatus.FAILED
+                    isUploading.value = ApiStatus.FAILED
                 }
             }
         }
     }
-
-    fun deleteData() {
-        viewModelScope.launch(Dispatchers.IO) {
-            apiStatus.value = ApiStatus.LOADING
-            when (val response = introRepository.deleteData()) {
-                is Resource.Success -> {
-                    successMessage.value = response.data!!.message
-                    apiStatus.value = ApiStatus.SUCCESS
-                }
-                is Resource.Error -> {
-                    errorMessage.value = response.message
-                    apiStatus.value = ApiStatus.FAILED
-                }
-            }
-        }
-    }
-
 
     fun clearStatus() {
+        isUploading.value = ApiStatus.IDLE
         apiStatus.value = ApiStatus.IDLE
-        successMessage.value = null
         errorMessage.value = null
+        successMessage.value = null
     }
 }

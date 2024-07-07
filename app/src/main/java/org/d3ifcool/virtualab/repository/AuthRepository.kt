@@ -32,6 +32,7 @@ class AuthRepository(
             saveToDataStore(result.accessToken, result)
             Resource.Success(result)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -41,6 +42,9 @@ class AuthRepository(
                     }
                 }
             Resource.Error(errorMessage!!)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(GenericMessage.noInternetError)
         }
     }
 
@@ -59,6 +63,7 @@ class AuthRepository(
             )
         }
         dataStore.saveToken(accessToken)
+        dataStore.saveIntroDesc(data.introTitle!!)
         dataStore.saveData(
             user,
             student,
@@ -78,6 +83,7 @@ class AuthRepository(
             )
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -87,10 +93,14 @@ class AuthRepository(
                     }
                 }
             Resource.Error(errorMessage!!)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(GenericMessage.noInternetError)
         }
     }
 
     suspend fun logout() {
+        dataStore.saveIntroDesc("")
         dataStore.setLoginStatus(false)
         dataStore.saveToken("")
         dataStore.saveData(User())

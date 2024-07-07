@@ -27,7 +27,6 @@ fun GradientPage(
     image: Int,
     isCenter: Boolean = true,
     isDiffSize: Boolean = false,
-    isAllCenter: Boolean = false,
     content: @Composable () -> Unit
 ) {
     Box(
@@ -56,8 +55,7 @@ fun GradientPage(
                 )
                 .padding(horizontal = 28.dp),
 
-            horizontalAlignment = if (isCenter) Alignment.CenterHorizontally else Alignment.Start,
-            verticalArrangement = if (isAllCenter) Arrangement.Center else Arrangement.Top
+            horizontalAlignment = if (isCenter) Alignment.CenterHorizontally else Alignment.Start
         ) {
             content()
         }

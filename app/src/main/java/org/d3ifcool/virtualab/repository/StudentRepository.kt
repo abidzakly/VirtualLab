@@ -20,6 +20,7 @@ class StudentRepository(private val studentApi: AuthorizedStudentApi) {
             val response = studentApi.submitAnswers(exerciseId, answers)
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -40,6 +41,7 @@ class StudentRepository(private val studentApi: AuthorizedStudentApi) {
             val response = studentApi.getSoalForPractice(exerciseId)
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -60,6 +62,7 @@ class StudentRepository(private val studentApi: AuthorizedStudentApi) {
             val response = studentApi.getMyResults()
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -80,6 +83,7 @@ class StudentRepository(private val studentApi: AuthorizedStudentApi) {
             val response = studentApi.getResultDetail(resultId)
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -100,6 +104,7 @@ class StudentRepository(private val studentApi: AuthorizedStudentApi) {
             val response = studentApi.getMateris()
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
@@ -120,6 +125,7 @@ class StudentRepository(private val studentApi: AuthorizedStudentApi) {
             val response = studentApi.getLatihans()
             Resource.Success(response)
         } catch (e: HttpException) {
+            e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError

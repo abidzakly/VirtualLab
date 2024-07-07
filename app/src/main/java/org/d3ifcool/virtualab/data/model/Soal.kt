@@ -28,12 +28,10 @@ data class SoalMurid(
     val optionText: List<String>,
 )
 data class QuestionCreate(
-    @Json(name = "exercise_id")
-    val exerciseId: Int = 0,
     @Json(name = "question_text")
-    val questionText: String,
+    val questionText: String = "",
     @Json(name = "option_text")
-    val optionText: List<String>,
+    val optionText: List<String> = emptyList(),
     @Json(name = "answer_keys")
-    val answerKeys: List<String>
+    val answerKeys: List<String> = emptyList()
 )

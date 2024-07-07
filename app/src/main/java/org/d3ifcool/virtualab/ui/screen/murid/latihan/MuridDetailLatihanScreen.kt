@@ -60,6 +60,7 @@ import org.d3ifcool.virtualab.data.model.SoalMurid
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
+import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
 import org.d3ifcool.virtualab.ui.component.MediumText
 import org.d3ifcool.virtualab.ui.component.MuridEmptyState
@@ -105,6 +106,7 @@ private fun ScreenContent(
     val soal by viewModel.soal.collectAsState()
     val answer by viewModel.answers.collectAsState()
     val status by viewModel.apiStatus.collectAsState()
+    val isUploading by viewModel.isUploading.collectAsState()
     val resultId by viewModel.resultId.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -139,13 +141,11 @@ private fun ScreenContent(
             when (status) {
                 ApiStatus.IDLE -> null
                 ApiStatus.LOADING -> {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator(color = DarkBlueDarker)
-                    }
+                   LoadingState()
                 }
                 ApiStatus.SUCCESS -> {
                     soal.forEachIndexed { index, soalMurid ->
-                        ItemListAbid(noSoal = index + 1, soal = soalMurid, viewModel!!)
+                        ItemListAbid(noSoal = index + 1, soal = soalMurid, viewModel)
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
@@ -233,13 +233,11 @@ private fun ScreenContent(
         )
     }
     if (showDialog) {
-        when (status) {
+        when (isUploading) {
             ApiStatus.IDLE -> null
             ApiStatus.LOADING -> {
                 Dialog(onDismissRequest = { showDialog = false }) {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator(color = Color.White)
-                    }
+                    LoadingState()
                 }
             }
 
@@ -365,7 +363,7 @@ private fun QuestionItemAbid(
                     .border(4.dp, borderColor, shape = RoundedCornerShape(5.dp))
                     .padding(8.dp)
                     .padding(horizontal = 16.dp)
-                    .clickable{
+                    .clickable {
                         clickedOptions = if (isSelected) {
                             clickedOptions - option
                         } else {

@@ -19,6 +19,9 @@ class MuridListLatihanViewModel(
     var approvedLatihan = MutableStateFlow(emptyList<ApprovedLatihan>())
         private set
 
+    var isRefreshing = MutableStateFlow(false)
+        private set
+
     var apiStatus = MutableStateFlow(ApiStatus.LOADING)
         private set
 
@@ -44,6 +47,12 @@ class MuridListLatihanViewModel(
                 }
             }
         }
+    }
+
+    fun refreshData() {
+        isRefreshing.value = true
+        getApprovedLatihan()
+        isRefreshing.value = false
     }
 
     fun clearStatus() {
