@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.PlayCircleFilled
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -47,6 +49,7 @@ import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.LargeText
 import org.d3ifcool.virtualab.ui.component.LoadingState
+import org.d3ifcool.virtualab.ui.component.MediumText
 import org.d3ifcool.virtualab.ui.component.MuridEmptyState
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
@@ -64,7 +67,9 @@ fun MuridDetailMateriScreen(
     },
         bottomBar = {
             BottomNav(navController = navController)
-        }) {
+        },
+        containerColor = Color.White
+        ) {
         ScreenContent(modifier = Modifier.padding(it), viewModel)
     }
 }
@@ -97,23 +102,13 @@ private fun ScreenContent(modifier: Modifier, viewModel: MuridDetailMateriViewMo
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.padding(top = 23.dp)
                     )
-                    Spacer(modifier = Modifier.height(18.dp))
-                    Image(
-                        painter = painterResource(id = R.drawable.rumus_kimia),
-                        contentDescription = "Rumus Kimia",
-                        modifier = Modifier.size(271.dp, 18.dp)
-                    )
                     Spacer(modifier = Modifier.height(36.dp))
                     DetailContent(
-                        content = it.filename,
                         materialId = it.materialId,
                         mediaType = it.mediaType,
                         context = context
                     )
-//                DetailContent(content = "Molekul O2", image = R.drawable.gambar_molekul)
-//                DetailContent(content = "Molekul CO2", image = R.drawable.gambar_molekul)
-
-                    RegularText(
+                    MediumText(
                         text = it.description,
                         fontWeight = FontWeight.Medium,
                         textAlign = TextAlign.Justify,
@@ -133,40 +128,27 @@ private fun ScreenContent(modifier: Modifier, viewModel: MuridDetailMateriViewMo
 }
 
 @Composable
-private fun DetailContent(content: String, materialId: Int, mediaType: String, context: Context) {
+private fun DetailContent(materialId: Int, mediaType: String, context: Context) {
     var isVideoPlaying by remember {
         mutableStateOf(false)
     }
     val stringUri = ApiService.getMateriMedia(materialId)
-    RegularText(
-        text = stringResource(id = R.string.detail_materi_sub_header),
-        fontWeight = FontWeight.Medium,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 22.dp)
-    )
-    Spacer(modifier = Modifier.height(18.dp))
-    RegularText(
-        text = content,
-        fontWeight = FontWeight.Medium,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 48.dp)
-    )
-    Spacer(modifier = Modifier.height(12.dp))
     if (mediaType == "image") {
-        Column(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(stringUri)
                     .crossfade(true)
                     .build(),
                 contentDescription = null,
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.Fit,
                 placeholder = painterResource(id = R.drawable.loading_img),
                 error = painterResource(id = R.drawable.broken_image),
                 modifier = Modifier
-                    .size(225.dp)
+                    .height(225.dp)
                     .aspectRatio(1f)
                     .clip(RoundedCornerShape(10.dp))
             )
@@ -195,7 +177,7 @@ private fun DetailContent(content: String, materialId: Int, mediaType: String, c
                         .padding(4.dp)
                 )
                 Icon(
-                    painter = painterResource(id = R.drawable.play_button),
+                    imageVector = Icons.Outlined.PlayCircleFilled,
                     contentDescription = "Play Button",
                     tint = Color.White
                 )

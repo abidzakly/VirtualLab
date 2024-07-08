@@ -1,6 +1,7 @@
-package org.d3ifcool.virtualab.ui.screen.guru.materi
+package org.d3ifcool.virtualab.ui.screen.guru.contohReaksi
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.util.Log
@@ -45,7 +46,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
@@ -63,6 +63,7 @@ import org.d3ifcool.virtualab.ui.component.MediumText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.component.VideoPlayer
+import org.d3ifcool.virtualab.ui.screen.guru.materi.AddMateriViewModel
 import org.d3ifcool.virtualab.ui.theme.DarkBlue
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.utils.GenericMessage
@@ -71,14 +72,14 @@ import org.d3ifcool.virtualab.utils.isImage
 import java.io.InputStream
 
 @Composable
-fun AddMateriScreen(navController: NavHostController, viewModel: AddMateriViewModel) {
+fun AddContohReaksi(navController: NavHostController, viewModel: AddMateriViewModel) {
     val context = LocalContext.current
     val status by viewModel.apiStatus.collectAsState()
-    val uploadStatus by viewModel.uploadStatus.collectAsState()
+    val isUploading by viewModel.isUploading.collectAsState()
     val successMessage by viewModel.successMessage.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
 
-    when (uploadStatus) {
+    when (isUploading) {
         ApiStatus.IDLE -> null
         ApiStatus.LOADING -> {
             Toast.makeText(context, GenericMessage.loadingMessage, Toast.LENGTH_SHORT).show()
@@ -102,7 +103,7 @@ fun AddMateriScreen(navController: NavHostController, viewModel: AddMateriViewMo
     Scaffold(
         topBar = {
             TopNav(
-                title = if (status != ApiStatus.IDLE) R.string.edit_materi else R.string.buat_materi,
+                title = if (status != ApiStatus.IDLE) R.string.edit_contoh_reaksi else R.string.buat_contoh_reaksi,
                 navController = navController
             )
         },
@@ -122,12 +123,12 @@ private fun ScreenContent(
     val materiData by viewModel.materiData.collectAsState()
     val materialId by viewModel.materiId.collectAsState()
 
-    var judulMateri by remember { mutableStateOf("") }
+    var judulKonten by remember { mutableStateOf("") }
     var isUri by remember { mutableStateOf(true) }
     var file by remember { mutableStateOf<Any?>(null) }
     var isFileChanged by remember { mutableStateOf(false) }
     var mediaType by remember { mutableStateOf("") }
-    var descMateri by remember { mutableStateOf("") }
+    var descKonten by remember { mutableStateOf("") }
 
 //    var newFile by remember { mutableStateOf<Uri?>(null) }
     Column(
@@ -157,19 +158,19 @@ private fun ScreenContent(
                     file = ApiService.getMateriMedia(materialId!!)
                     mediaType = materiData!!.mediaType
                     isUri = false
-                    judulMateri = materiData!!.title
-                    descMateri = materiData!!.description
+                    judulKonten = materiData!!.title
+                    descKonten = materiData!!.description
                 }
                 viewModel.clearStatus()
             }
         }
-        MediumText(text = stringResource(R.string.judul_materi_guru))
+        MediumText(text = stringResource(R.string.judul_konten_contoh_reaksi))
         CustomTextField(
-            value = judulMateri,
-            onValueChange = { judulMateri = it },
-            placeholder = R.string.judul_materi_placholder
+            value = judulKonten,
+            onValueChange = { judulKonten = it },
+            placeholder = R.string.judul_konten_placeholder
         )
-        MediumText(text = stringResource(R.string.media_pembelajaran))
+        MediumText(text = stringResource(R.string.media_konten_contoh_reaksi))
         PickVideo(
             file = file,
             fileType = mediaType,
@@ -179,10 +180,10 @@ private fun ScreenContent(
             isUri = isUri,
             onUriDetected = { isUri = it },
         )
-        MediumText(text = stringResource(R.string.desc_materi))
+        MediumText(text = stringResource(R.string.desc_konten_contoh_materi))
         CustomTextField(
-            value = descMateri,
-            onValueChange = { descMateri = it },
+            value = descKonten,
+            onValueChange = { descKonten = it },
             placeholder = R.string.desc_materi_placeholder,
             modifier = Modifier.fillMaxWidth()
         )
@@ -196,7 +197,7 @@ private fun ScreenContent(
                 modifier = Modifier
                     .padding(horizontal = 31.dp),
                 onClick = {
-                    if (judulMateri.isEmpty() || descMateri.isEmpty() || file == null) {
+                    if (judulKonten.isEmpty() || descKonten.isEmpty() || file == null) {
                         Toast.makeText(context, "Isi semua data dulu, yaa", Toast.LENGTH_SHORT)
                             .show()
                     } else {
@@ -207,8 +208,8 @@ private fun ScreenContent(
                         if (materiData == null) {
                             viewModel.addOrUpdateMateri(
                                 materialId = materialId,
-                                title = judulMateri,
-                                description = descMateri,
+                                title = judulKonten,
+                                description = descKonten,
                                 uri = newFile,
                                 mediaType = mediaType,
                                 isUpdate = false,
@@ -217,8 +218,8 @@ private fun ScreenContent(
                         } else {
                             viewModel.addOrUpdateMateri(
                                 materialId = materialId,
-                                title = judulMateri,
-                                description = descMateri,
+                                title = judulKonten,
+                                description = descKonten,
                                 uri = newFile,
                                 mediaType = mediaType,
                                 isUpdate = true,
@@ -234,7 +235,7 @@ private fun ScreenContent(
                 )
             ) {
                 RegularText(
-                    text = if (materialId == null) stringResource(id = R.string.buat_materi) else "Edit Materi",
+                    text = if (materialId == null) stringResource(id = R.string.buat_contoh_reaksi) else "Edit Konten",
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Center
                 )
@@ -311,7 +312,7 @@ fun PickVideo(
                         val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
                         val bitmap =
                             inputStream?.let { stream ->
-                                android.graphics.BitmapFactory.decodeStream(
+                                BitmapFactory.decodeStream(
                                     stream
                                 )
                             }
@@ -437,10 +438,4 @@ fun PickVideo(
             }
         }
     }
-}
-
-@Preview
-@Composable
-private fun Prev() {
-//    AddMateriScreen(navController = rememberNavController())
 }

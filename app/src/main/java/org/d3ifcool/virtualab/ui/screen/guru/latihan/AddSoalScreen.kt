@@ -2,6 +2,9 @@ package org.d3ifcool.virtualab.ui.screen.guru.latihan
 
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,10 +13,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -32,21 +40,29 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
+import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.data.model.QuestionCreateOrUpdate
 import org.d3ifcool.virtualab.data.network.ApiStatus
@@ -55,6 +71,7 @@ import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.GuruEmptyState
 import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.PopUpDialog
+import org.d3ifcool.virtualab.ui.component.MediumText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.GrayIco
@@ -110,9 +127,7 @@ fun AddSoalScreen(navController: NavHostController, viewModel: AddSoalViewModel)
                 }
             }
         },
-        bottomBar = {
-            BottomNav(navController = navController)
-        }
+        containerColor = Color.White
     ) {
         ScreenContent(
             modifier = Modifier.padding(it),
@@ -136,6 +151,7 @@ fun AddSoalScreen(navController: NavHostController, viewModel: AddSoalViewModel)
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ScreenContent(
     modifier: Modifier,
@@ -166,17 +182,23 @@ private fun ScreenContent(
             val soalData = latihanData!!.soal!!
             Log.d("AddSoalScreen", "soalData: $soalData")
             Box(
-                modifier = modifier
-                    .padding(24.dp)
+                Modifier
                     .fillMaxSize()
             ) {
                 LazyColumn(
                     modifier = Modifier
+                        .padding(horizontal = 24.dp)
+                        .padding(top = 64.dp)
                         .fillMaxWidth()
+                        .imePadding()
+                        .navigationBarsPadding()
+                        .padding(bottom = 16.dp)
                 ) {
                     item {
                         RegularText(text = "${stringResource(R.string.title_soal)} ${latihan.title}")
+                        Spacer(modifier = Modifier.height(8.dp))
                         RegularText(text = "${stringResource(R.string.difficulty_soal)} ${latihan.difficulty}")
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
                     itemsIndexed(state.soal) { index, it ->
                         RegularText(
@@ -364,12 +386,13 @@ private fun ScreenContent(
                         }
                     }
                 }
+
             }
         }
     }
 }
 
-
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun CustomTextField2(
     modifier: Modifier? = Modifier,
@@ -377,11 +400,13 @@ private fun CustomTextField2(
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: Int,
-    isPhone: Boolean = false
+    isPhone: Boolean = false,
+    textFontSize: TextUnit = 18.sp
 ) {
     TextField(
         modifier = modifier?.fillMaxWidth()
-            ?: Modifier.fillMaxWidth(),
+            ?: Modifier
+                .fillMaxWidth(),
         value = value,
         onValueChange = { onValueChange(it) },
         placeholder = { Text(text = stringResource(id = placeholder), color = GrayIco) },
@@ -396,7 +421,8 @@ private fun CustomTextField2(
         keyboardOptions = KeyboardOptions(
             keyboardType = if (isPhone) KeyboardType.Number else if (isNumber == true) KeyboardType.Text else KeyboardType.Text,
             capitalization = KeyboardCapitalization.Sentences
-        )
+        ),
+        textStyle = TextStyle(fontSize = textFontSize)
     )
     Spacer(modifier = Modifier.height(8.dp))
 }

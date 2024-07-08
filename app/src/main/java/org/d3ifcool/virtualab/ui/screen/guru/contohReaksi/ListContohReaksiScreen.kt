@@ -1,28 +1,19 @@
-package org.d3ifcool.virtualab.ui.screen.guru.materi
+package org.d3ifcool.virtualab.ui.screen.guru.contohReaksi
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -30,10 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.data.network.ApiStatus
@@ -43,15 +31,14 @@ import org.d3ifcool.virtualab.ui.component.ContentList
 import org.d3ifcool.virtualab.ui.component.GuruEmptyState
 import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.MediumText
-import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
+import org.d3ifcool.virtualab.ui.screen.guru.materi.GuruMateriViewModel
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
-import org.d3ifcool.virtualab.ui.theme.Poppins
 import org.d3ifcool.virtualab.utils.GenericMessage
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun GuruMateriScreen(navController: NavHostController, viewModel: GuruMateriViewModel) {
+fun ListContohReaksiScreen(navController: NavHostController, viewModel: GuruMateriViewModel) {
     val isRefreshing by viewModel.isRefreshing.collectAsState()
 
 
@@ -61,21 +48,8 @@ fun GuruMateriScreen(navController: NavHostController, viewModel: GuruMateriView
     )
 
     Scaffold(topBar = {
-        TopNav(title = R.string.lihat_materi_title, navController = navController)
-    },  floatingActionButton = {
-        FloatingActionButton(
-            containerColor = DarkBlueDarker,
-            onClick = {
-                navController.navigate(Screen.AddMateri.route)
-            }) {
-            Icon(
-                imageVector = Icons.Filled.Add,
-                contentDescription = stringResource(R.string.menu_buat_button),
-                tint = Color.White
-            )
-        }
-    },
-        bottomBar = {
+        TopNav(title = R.string.riwayat_konten, navController = navController)
+    }, bottomBar = {
         BottomNav(currentRoute = Screen.GuruMateri.route, navController)
     },
         containerColor = Color.White
@@ -118,7 +92,7 @@ private fun ScreenContent(
                     .padding(horizontal = 32.dp),
                 verticalArrangement = Arrangement.Top
             ) {
-                MediumText(text = "Materi yang pernah ditambahkan: ")
+                MediumText(text = "Konten yang pernah ditambahkan: ")
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyColumn() {
                     items(data) {
@@ -128,7 +102,7 @@ private fun ScreenContent(
                             desc = it.description,
                             status = it.approvalStatus
                         ) {
-                            navController.navigate(Screen.GuruDetailMateri.withId(it.materialId))
+                            navController.navigate(Screen.DetailContohReaksi.withId(it.materialId))
                         }
                     }
                 }
@@ -154,11 +128,4 @@ private fun ScreenContent(
             }
         }
     }
-
-}
-
-@Preview(showSystemUi = true, showBackground = true)
-@Composable
-private fun LihatMateriPrev() {
-//    GuruMateriScreen(rememberNavController())
 }

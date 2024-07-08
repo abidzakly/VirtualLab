@@ -1,47 +1,37 @@
-package org.d3ifcool.virtualab.ui.screen.murid.introduction
+package org.d3ifcool.virtualab.ui.screen.guru.contohReaksi
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import org.d3ifcool.virtualab.data.model.Introduction
-import org.d3ifcool.virtualab.data.network.ApiService
+import org.d3ifcool.virtualab.data.model.MateriItem
 import org.d3ifcool.virtualab.data.network.ApiStatus
-import org.d3ifcool.virtualab.repository.IntroRepository
+import org.d3ifcool.virtualab.repository.MaterialRepository
 import org.d3ifcool.virtualab.utils.Resource
 
-class IntroductionViewModel(private val introRepository: IntroRepository) : ViewModel() {
+class ListContohReaksiViewModel(private val materialRepository: MaterialRepository) : ViewModel() {
 
-    var introData = MutableStateFlow<Introduction?>(null)
-        private set
-
+    var materials = MutableStateFlow(emptyList<MateriItem>())
     var apiStatus = MutableStateFlow(ApiStatus.LOADING)
         private set
-
-    var videoUri = MutableStateFlow<String?>(null)
-        private set
-
     var isRefreshing = MutableStateFlow(false)
         private set
-
     var errorMessage = MutableStateFlow<String?>(null)
         private set
 
     init {
-        getIntroData()
+        getMyMateri()
     }
 
-    fun getIntroData() {
+    fun getMyMateri() {
         viewModelScope.launch(Dispatchers.IO) {
             apiStatus.value = ApiStatus.LOADING
-            when (val response = introRepository.getData()) {
+            when (val response = materialRepository.getMyMateri()){
                 is Resource.Success -> {
-                    introData.value = response.data
-                    videoUri.value = ApiService.getIntroductionMedia()
+                    materials.value = response.data!!
                     apiStatus.value = ApiStatus.SUCCESS
                 }
-
                 is Resource.Error -> {
                     errorMessage.value = response.message
                     apiStatus.value = ApiStatus.FAILED
@@ -49,10 +39,9 @@ class IntroductionViewModel(private val introRepository: IntroRepository) : View
             }
         }
     }
-
     fun refreshData() {
         isRefreshing.value = true
-        getIntroData()
+        getMyMateri()
         isRefreshing.value = false
     }
 }

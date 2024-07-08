@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -36,6 +38,7 @@ import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.ContentList
 import org.d3ifcool.virtualab.ui.component.GuruEmptyState
 import org.d3ifcool.virtualab.ui.component.LoadingState
+import org.d3ifcool.virtualab.ui.component.MediumText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
@@ -69,7 +72,9 @@ fun GuruLatihanScreen(navController: NavHostController, viewModel: LatihanListVi
             }
         }, bottomBar = {
             BottomNav(currentRoute = Screen.GuruLatihan.route, navController = navController)
-        }) {
+        },
+        containerColor = Color.White
+    ) {
         Box(modifier = Modifier
             .pullRefresh(refreshState)
             .padding(it)) {
@@ -126,18 +131,14 @@ private fun ScreenContent(
             Column(
                 modifier = Modifier
                     .background(Color.White)
-                    .padding(12.dp),
+                    .padding(horizontal = 32.dp),
                 verticalArrangement = Arrangement.Top
             ) {
-                RegularText(
-                    text = "Latihan yang pernah ditambahkan: ",
-                    modifier = Modifier.padding(start = 16.dp)
-                )
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(16.dp)
-                ) {
+                MediumText(text = "Latihan yang pernah ditambahkan: ")
+                Spacer(modifier = Modifier.height(8.dp))
+                LazyColumn() {
                     items(latihanList!!) {
+                        Spacer(modifier = Modifier.height(8.dp))
                         ContentList(
                             title = it.title,
                             desc = "Tingkat Kesulitan: ${it.difficulty}",

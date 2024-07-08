@@ -1,9 +1,7 @@
-package org.d3ifcool.virtualab.ui.screen.guru.materi
+package org.d3ifcool.virtualab.ui.screen.guru.contohReaksi
 
 import android.content.Context
-import android.media.MediaMetadataRetriever
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,21 +33,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
@@ -65,9 +58,10 @@ import org.d3ifcool.virtualab.ui.component.PopUpDialog
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.component.VideoPlayer
+import org.d3ifcool.virtualab.ui.screen.guru.materi.DetailMateriViewModel
 
 @Composable
-fun DetailMateriScreen(navController: NavHostController, viewModel: DetailMateriViewModel) {
+fun DetailContohReaksi(navController: NavHostController, viewModel: DetailMateriViewModel) {
     val context = LocalContext.current
     val isDeleting by viewModel.isDeleting.collectAsState()
     val successMessage by viewModel.successMessage.collectAsState()
@@ -96,7 +90,7 @@ fun DetailMateriScreen(navController: NavHostController, viewModel: DetailMateri
 
     var materialId by remember { mutableIntStateOf(0) }
     Scaffold(topBar = {
-        TopNav(title = R.string.guru_detail_materi_title, navController = navController) {
+        TopNav(title = R.string.detail_konten, navController = navController) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = { navController.navigate(Screen.UpdateMateri.withId(materialId)) }) {
                     Icon(imageVector = Icons.Default.Edit, contentDescription = "Ikon Edit")
@@ -120,7 +114,7 @@ fun DetailMateriScreen(navController: NavHostController, viewModel: DetailMateri
             PopUpDialog(
                 onDismiss = { showDialog = false; },
                 icon = R.drawable.baseline_warning_amber,
-                title = "Anda yakin ingin menghapus materi ini?"
+                title = "Anda yakin ingin menghapus konten ini?"
             ) {
                 showDialog = false
                 isLoading = true
@@ -161,13 +155,13 @@ private fun ScreenContent(
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                RegularText(text = stringResource(id = R.string.judul_materi_guru), fontWeight = FontWeight.SemiBold)
+                RegularText(text = stringResource(id = R.string.judul_konten_contoh_reaksi), fontWeight = FontWeight.SemiBold)
                 RegularText(
                     text = materiItem.title,
                     fontWeight = FontWeight.Normal
                 )
                 RegularText(
-                    text = stringResource(R.string.media_pembelajaran),
+                    text = stringResource(R.string.media_konten_contoh_reaksi),
                     fontWeight = FontWeight.SemiBold
                 )
                 Column(
@@ -266,10 +260,4 @@ private fun ScreenContent(
             }
         }
     }
-}
-
-@Preview(showSystemUi = true, showBackground = true)
-@Composable
-private fun Prev() {
-    DetailMateriScreen(rememberNavController(), viewModel())
 }
