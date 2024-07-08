@@ -57,10 +57,9 @@ import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.BottomSheet
 import org.d3ifcool.virtualab.ui.component.ContentList
 import org.d3ifcool.virtualab.ui.component.GuruEmptyState
-import org.d3ifcool.virtualab.ui.component.LihatSheet
+import org.d3ifcool.virtualab.ui.component.RiwayatSheet
 import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.MediumText
-import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNavDashboard
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.utils.UserDataStore
@@ -194,7 +193,7 @@ fun GuruDashboardScreen(navController: NavHostController, viewModel: GuruDashboa
             action3 = R.string.contoh_reaksi_icon_bottomsheet,
             onClickAct3 = { navController.navigate(Screen.AddContohReaksi.route)}
         )
-        LihatSheet(state = sheetStateLihat, navController = navController)
+        RiwayatSheet(state = sheetStateLihat, navController = navController)
     }
 }
 

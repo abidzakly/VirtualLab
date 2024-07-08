@@ -70,7 +70,7 @@ import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddLatihanViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddSoalScreen
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddSoalViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.DetailLatihanViewModel
-import org.d3ifcool.virtualab.ui.screen.guru.latihan.LatihanListViewModel
+import org.d3ifcool.virtualab.ui.screen.guru.latihan.GuruLatihanViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.materi.AddMateriViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.materi.DetailMateriViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.materi.GuruMateriViewModel
@@ -300,7 +300,7 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
         }
         composable(route = Screen.GuruLatihan.route) {
             val factory = ViewModelFactory(exerciseRepository = exerciseRepository)
-            val viewModel: LatihanListViewModel = viewModel(factory = factory)
+            val viewModel: GuruLatihanViewModel = viewModel(factory = factory)
             GuruLatihanScreen(navController, viewModel)
         }
         composable(route = Screen.GuruDetailMateri.route,

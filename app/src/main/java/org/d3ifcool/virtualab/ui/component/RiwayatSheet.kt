@@ -9,7 +9,7 @@ import org.d3ifcool.virtualab.navigation.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LihatSheet(state: BottomSheetScaffoldState, navController: NavHostController) {
+fun RiwayatSheet(state: BottomSheetScaffoldState, navController: NavHostController) {
     BottomSheet(
         scaffoldSheetState = state,
         title = R.string.lihat_slide_up_title,

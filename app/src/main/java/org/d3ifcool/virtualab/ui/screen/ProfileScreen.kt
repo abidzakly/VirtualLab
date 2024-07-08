@@ -1,21 +1,32 @@
 package org.d3ifcool.virtualab.ui.screen
 
+import android.content.ContentResolver
 import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -24,6 +35,7 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CircularProgressIndicator
@@ -49,7 +61,10 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -67,12 +82,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
+import com.canhub.cropper.CropImageContract
+import com.canhub.cropper.CropImageContractOptions
+import com.canhub.cropper.CropImageOptions
+import com.canhub.cropper.CropImageView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.data.model.User
 import org.d3ifcool.virtualab.data.model.UserUpdate
+import org.d3ifcool.virtualab.data.network.ApiService
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
@@ -81,10 +104,13 @@ import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
 import org.d3ifcool.virtualab.ui.component.PopUpDialog
 import org.d3ifcool.virtualab.ui.component.RegularText
+import org.d3ifcool.virtualab.ui.component.RiwayatSheet
 import org.d3ifcool.virtualab.ui.component.SemiLargeText
+import org.d3ifcool.virtualab.ui.component.SmallText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.DarkBlue
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
+import org.d3ifcool.virtualab.ui.theme.GrayTextField
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.Poppins
 import org.d3ifcool.virtualab.ui.theme.RedButton
@@ -162,22 +188,7 @@ fun ProfileScreen(
                     .fillMaxSize()
                     .background(backgroundColor)
             )
-            BottomSheet(
-                scaffoldSheetState = sheetStateLihat,
-                title = R.string.lihat_slide_up_title,
-                action1 = R.string.lihat_materi_title,
-                onClickAct1 = {
-                    navController.navigate(Screen.GuruMateri.route) {
-                        popUpTo(Screen.GuruDashboard.route)
-                    }
-                },
-                action2 = R.string.lihat_latihan_title,
-                onClickAct2 = {
-                    navController.navigate(Screen.GuruLatihan.route) {
-                        popUpTo(Screen.GuruDashboard.route)
-                    }
-                }
-            )
+            RiwayatSheet(state = sheetStateLihat, navController = navController)
         } else {
             LoadingState()
         }
@@ -210,6 +221,15 @@ private fun ScreenContent(
     var passwordVisibility by remember { mutableStateOf(false) }
     var passwordVisibility2 by remember { mutableStateOf(false) }
 
+    var profilePicture by remember { mutableStateOf(user.profilePicture ?: "") }
+
+    var showImgDialog by remember { mutableStateOf(false) }
+    var bitmap: Bitmap? by remember { mutableStateOf(null) }
+    val launcher = rememberLauncherForActivityResult(CropImageContract()) {
+        bitmap = getCroppedImage(context.contentResolver, it)
+        if (bitmap != null) showImgDialog = true
+    }
+
     val apiStatus by profileViewModel.apiStatus.collectAsState()
     Log.d("ProfileScreen", "Api Status: $apiStatus")
     val errorMsg by profileViewModel.errorMsg.collectAsState()
@@ -241,10 +261,48 @@ private fun ScreenContent(
         verticalArrangement = Arrangement.Center
     ) {
         Spacer(modifier = Modifier.height(18.dp))
-        Image(
-            painter = painterResource(id = R.drawable.profile_big),
-            contentDescription = "Profile Picture"
-        )
+        Box(modifier = Modifier
+            .fillMaxWidth(), contentAlignment = Alignment.Center
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                if (bitmap != null) {
+                    bitmap?.let { bmp ->
+                        Image(
+                            modifier = Modifier.clip(CircleShape).size(108.dp),
+                            bitmap = bmp.asImageBitmap(),
+                            contentScale = ContentScale.Crop,
+                            contentDescription = "Profile Picture"
+                        )
+                        EditPfp(readOnly = readOnly, launcher = launcher)
+                    }
+                } else if (profilePicture.isNotEmpty()) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(ApiService.getMyPfp(user.userId))
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        placeholder = painterResource(id = R.drawable.loading_img),
+                        error = painterResource(id = R.drawable.broken_image),
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(108.dp)
+                    )
+                    EditPfp(readOnly = readOnly, launcher = launcher)
+                } else {
+                    Image(
+                        painter = painterResource(id = R.drawable.profile_big),
+                        contentDescription = "Profile Picture"
+                    )
+                    EditPfp(readOnly = readOnly, launcher = launcher)
+                }
+            }
+        }
         Spacer(modifier = Modifier.height(24.dp))
         Column(modifier = Modifier.padding(horizontal = 48.dp)) {
             UserTextFields(
@@ -501,10 +559,16 @@ private fun ScreenContent(
                                 profileViewModel.update(
                                     user.userId,
                                     oldPassword,
-                                    UserUpdate(email, newPassword)
+                                    newPassword,
+                                    email,
+                                    bitmap
                                 )
                             } else {
-                                Toast.makeText(context, GenericMessage.noInternetError, Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    context,
+                                    GenericMessage.noInternetError,
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         },
                         shape = RoundedCornerShape(10.dp),
@@ -537,6 +601,25 @@ private fun ScreenContent(
                     newPassword = ""
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun EditPfp(modifier: Modifier = Modifier, readOnly: Boolean, launcher: ManagedActivityResultLauncher<CropImageContractOptions, CropImageView.CropResult>) {
+    Spacer(modifier = Modifier.height(8.dp))
+    if (!readOnly) {
+        Button(colors = buttonColors(containerColor = GrayTextField), shape = RoundedCornerShape(50.dp), onClick = {
+            val options = CropImageContractOptions(
+                null, CropImageOptions(
+                    imageSourceIncludeGallery = true,
+                    imageSourceIncludeCamera = true,
+                    fixAspectRatio = true
+                )
+            )
+            launcher.launch(options)
+        }) {
+            SmallText(text = "Edit Foto", color = Color(0xFF313131))
         }
     }
 }
@@ -644,6 +727,24 @@ private fun SaveUpdatePopup(
                 }
             }
         }
+    }
+}
+
+private fun getCroppedImage(
+    resolver: ContentResolver,
+    result: CropImageView.CropResult
+): Bitmap? {
+    if (!result.isSuccessful) {
+        Log.e("IMAGE", "Error: ${result.error}")
+        return null
+    }
+    val uri = result.uriContent ?: return null
+
+    return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+        MediaStore.Images.Media.getBitmap(resolver, uri)
+    } else {
+        val source = ImageDecoder.createSource(resolver, uri)
+        ImageDecoder.decodeBitmap(source)
     }
 }
 

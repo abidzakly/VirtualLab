@@ -11,7 +11,7 @@ import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.repository.ExerciseRepository
 import org.d3ifcool.virtualab.utils.Resource
 
-class LatihanListViewModel(private val exerciseRepository: ExerciseRepository) : ViewModel() {
+class GuruLatihanViewModel(private val exerciseRepository: ExerciseRepository) : ViewModel() {
 
     private val _latihanDetailList = MutableStateFlow<List<LatihanDetail>?>(emptyList())
     val latihanDetailList: StateFlow<List<LatihanDetail>?> = _latihanDetailList

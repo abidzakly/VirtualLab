@@ -40,12 +40,10 @@ fun TopNavDashboard(name: String, navController: NavHostController) {
                 contentDescription = "Virtual Lab logo Mini"
             )
             Column(modifier = Modifier.padding(start = 16.dp, top = 8.dp)) {
-                Text(
+                RegularText(
                     text = "Halo,\n$name!",
-                    fontSize = 16.sp,
                     lineHeight = 18.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.Black
+                    fontWeight = FontWeight.SemiBold
                 )
             }
         }

@@ -78,6 +78,7 @@ dependencies {
     implementation(libs.androidx.material)
     implementation(libs.coil.compose)
     implementation(libs.androidx.navigation.testing)
+    implementation("com.vanniktech:android-image-cropper:4.5.0")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     testImplementation(libs.junit)

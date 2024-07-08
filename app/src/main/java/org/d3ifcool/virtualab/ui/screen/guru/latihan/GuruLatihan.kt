@@ -28,9 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
-import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
@@ -39,14 +37,13 @@ import org.d3ifcool.virtualab.ui.component.ContentList
 import org.d3ifcool.virtualab.ui.component.GuruEmptyState
 import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.MediumText
-import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.utils.GenericMessage
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun GuruLatihanScreen(navController: NavHostController, viewModel: LatihanListViewModel) {
+fun GuruLatihanScreen(navController: NavHostController, viewModel: GuruLatihanViewModel) {
     val isRefreshing by viewModel.isRefreshing.collectAsState()
 
 
@@ -94,7 +91,7 @@ fun GuruLatihanScreen(navController: NavHostController, viewModel: LatihanListVi
 private fun ScreenContent(
     modifier: Modifier,
     navController: NavHostController,
-    viewModel: LatihanListViewModel
+    viewModel: GuruLatihanViewModel
 ) {
     val latihanList by viewModel.latihanDetailList.collectAsState()
 

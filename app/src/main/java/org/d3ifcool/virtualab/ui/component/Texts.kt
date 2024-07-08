@@ -8,6 +8,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import org.d3ifcool.virtualab.ui.theme.Poppins
 
@@ -145,9 +146,11 @@ fun RegularText(
     textAlign: TextAlign = TextAlign.Start,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Clip,
-    fontStyle: FontStyle? = null
+    fontStyle: FontStyle? = null,
+    lineHeight: TextUnit = TextUnit.Unspecified
 ) {
     Text(
+        lineHeight = lineHeight,
         fontStyle = fontStyle,
         text = text,
         fontSize = 16.sp,

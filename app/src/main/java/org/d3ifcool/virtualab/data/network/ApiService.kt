@@ -93,6 +93,9 @@ object ApiService {
     fun getIntroductionThumbnail(): String {
         return "$BASE_URL/v1/introduction/content/thumbnail"
     }
+    fun getMyPfp(userId: Int): String {
+        return "$BASE_URL/v1/users/$userId/pfp"
+    }
 }
 
 enum class ApiStatus { IDLE, LOADING, SUCCESS, FAILED }
