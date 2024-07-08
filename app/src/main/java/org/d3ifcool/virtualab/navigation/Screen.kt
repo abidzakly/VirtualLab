@@ -40,6 +40,11 @@ sealed class Screen(val route: String) {
     data object GuruDetailLatihan : Screen("guruDetailLatihanScreen/{$KEY_EXERCISE_ID}") {
         fun withId(id: Int) = "guruDetailLatihanScreen/$id"
     }
+    data object ListContohReaksiScreen : Screen("listContohReaksiScreen")
+    data object DetailContohReaksi : Screen("detailContohReaksi/{$KEY_ID_TYPE}") {
+        fun withId(id: Int) = "detailContohReaksi/$id"
+    }
+    data object AddContohReaksi : Screen("addContohReaksi")
 
     //    Murid
     data object MuridDashboard : Screen("muridDashboardScreen")

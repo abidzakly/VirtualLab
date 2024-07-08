@@ -59,6 +59,7 @@ import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.BottomSheet
 import org.d3ifcool.virtualab.ui.component.ContentList
 import org.d3ifcool.virtualab.ui.component.GuruEmptyState
+import org.d3ifcool.virtualab.ui.component.LihatSheet
 import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.MediumText
 import org.d3ifcool.virtualab.ui.component.RegularText
@@ -134,7 +135,9 @@ fun GuruDashboardScreen(navController: NavHostController, viewModel: GuruDashboa
         },
         containerColor = White
     ) { padding ->
-        Box(modifier = Modifier.zIndex(-2f).pullRefresh(refreshState)) {
+        Box(modifier = Modifier
+            .zIndex(-2f)
+            .pullRefresh(refreshState)) {
             ScreenContent(
                 modifier = Modifier
                     .padding(padding),
@@ -180,29 +183,14 @@ fun GuruDashboardScreen(navController: NavHostController, viewModel: GuruDashboa
         BottomSheet(
             scaffoldSheetState = sheetStateBuat,
             title = R.string.fab_slide_up_title,
-            action1 = R.string.buat_materi_button,
+            action1 = R.string.materi_title,
             onClickAct1 = { navController.navigate(Screen.AddMateri.route) },
-            action2 = R.string.buat_latihan_button,
-            onClickAct2 = {
-                navController.navigate(Screen.AddLatihan.route)
-            }
+            action2 = R.string.latihan,
+            onClickAct2 = { navController.navigate(Screen.AddLatihan.route) },
+            action3 = R.string.contoh_reaksi_icon_bottomsheet,
+            onClickAct3 = { navController.navigate(Screen.AddContohReaksi.route)}
         )
-        BottomSheet(
-            scaffoldSheetState = sheetStateLihat,
-            title = R.string.lihat_slide_up_title,
-            action1 = R.string.lihat_materi_title,
-            onClickAct1 = {
-                navController.navigate(Screen.GuruMateri.route) {
-                    popUpTo(Screen.GuruDashboard.route)
-                }
-            },
-            action2 = R.string.lihat_latihan_title,
-            onClickAct2 = {
-                navController.navigate(Screen.GuruLatihan.route) {
-                    popUpTo(Screen.GuruDashboard.route)
-                }
-            }
-        )
+        LihatSheet(state = sheetStateLihat, navController = navController)
     }
 }
 
