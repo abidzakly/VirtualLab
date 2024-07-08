@@ -283,6 +283,8 @@ private fun ScreenContent(
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(ApiService.getMyPfp(user.userId))
+                            .diskCachePolicy(CachePolicy.DISABLED)
+                            .memoryCachePolicy(CachePolicy.DISABLED)
                             .crossfade(true)
                             .build(),
                         contentDescription = null,
