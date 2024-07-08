@@ -7,18 +7,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.d3ifcool.virtualab.data.model.LatihanDetail
-import org.d3ifcool.virtualab.data.model.QuestionCreate
+import org.d3ifcool.virtualab.data.model.Latihan
+import org.d3ifcool.virtualab.data.model.QuestionCreateOrUpdate
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.repository.ExerciseRepository
 import org.d3ifcool.virtualab.utils.Resource
 
-data class AddSoalScreenState(
-    val questionText: List<String> = emptyList(),
-    val answersOptions: List<List<String>> = emptyList(),
-    val answersKeys: List<List<String>> = emptyList(),
-    val selectedAnswers: List<Int> = emptyList(),
-    val isChecked: List<List<Boolean>> = emptyList()
+data class AddSoalState(
+    val soal: MutableList<QuestionCreateOrUpdate> = mutableListOf(),
+    val selectedAnswers: MutableList<Int> = mutableListOf(),
+    val isChecked: MutableList<MutableList<Boolean>> = mutableListOf(),
+    val answerPositions: MutableList<MutableList<Int>> = mutableListOf()
 )
 
 class AddSoalViewModel(
@@ -26,10 +25,10 @@ class AddSoalViewModel(
     private val exerciseRepository: ExerciseRepository
 ) : ViewModel() {
 
-    var state = MutableStateFlow(AddSoalScreenState())
+    var state = MutableStateFlow(AddSoalState())
         private set
 
-    var latihanData = MutableStateFlow<LatihanDetail?>(null)
+    var latihanData = MutableStateFlow<Latihan?>(null)
         private set
 
     var uploadStatus = MutableStateFlow(ApiStatus.IDLE)
@@ -44,8 +43,12 @@ class AddSoalViewModel(
     var errorMessage = MutableStateFlow<String?>(null)
         private set
 
-    var listSoal = MutableStateFlow(emptyList<QuestionCreate>())
+    var listSoal = MutableStateFlow(emptyList<QuestionCreateOrUpdate>())
         private set
+
+
+//    var listSoal = MutableStateFlow(emptyList<QuestionCreate>())
+//        private set
 
     init {
         getCurrentLatihan()
@@ -58,24 +61,70 @@ class AddSoalViewModel(
                 is Resource.Success -> {
                     latihanData.value = response.data
                     fetchStatus.value = ApiStatus.SUCCESS
-                    val questionCount = response.data!!.latihan!!.questionCount
+                    val questionCount = response.data!!.latihanDetail!!.questionCount
 
+                    val listOfQuestion: MutableList<QuestionCreateOrUpdate> =
+                        MutableList(questionCount) {
+                            QuestionCreateOrUpdate(
+                                "",
+                                MutableList(4) { "" },
+                                mutableListOf()
+                            )
+                        }
+                    val newSelectedAnswers = MutableList(questionCount) { 0 }
+                    val newIsChecked = MutableList(questionCount) { MutableList(4) { false } }
+                    val newAnswerPositions = MutableList(questionCount) { MutableList(3) { -1 } }
 
-//                    state.update {
-//                        val newQuestionText = MutableList(questionCount) { "" }
-//                        val newAnswersOptions = MutableList(questionCount) { List(4) { "" } }
-//                        val newIsChecked = MutableList(questionCount) { List(4) { false } }
-//                        val newSelectedAnswers = MutableList(questionCount) { 0 }
-//                        listSoal.value = MutableList(questionCount) { QuestionCreate() }
-//
-//                        it.copy(
-//                            questionText = newQuestionText,
-//                            answersOptions = newAnswersOptions,
-//                            isChecked = newIsChecked,
-//                            selectedAnswers = newSelectedAnswers
-//                        )
-//
-//                    }
+                    if (response.data.soal!!.isNotEmpty()) {
+                            Log.d("AddSoalVM", "list soal @ fetch: ${response.data.soal}")
+                        response.data.soal.forEachIndexed { index, soal ->
+                            listOfQuestion[index] =
+                                QuestionCreateOrUpdate(
+                                    soal.questionText,
+                                    soal.optionText,
+                                    soal.answerKeys,
+                                    soal.questionId
+                                )
+                            soal.optionText.forEachIndexed { optionIndex, s ->
+                                soal.answerKeys.forEachIndexed { answerIndex, answer ->
+                                    if (s == answer) {
+                                        newIsChecked[index][optionIndex] = true
+                                        newAnswerPositions[index][answerIndex] = optionIndex
+                                        Log.d(
+                                            "AddSoalVM",
+                                            "soal ${index + 1} answer ${answerIndex + 1} isCheck ${optionIndex + 1}: ${newIsChecked[index][optionIndex]}"
+                                        )
+                                        Log.d(
+                                            "AddSoalVM",
+                                            "soal ${index + 1} answer ${answerIndex + 1} position: ${newAnswerPositions[index][answerIndex]}"
+                                        )
+                                    }
+                                }
+                            }
+                            newSelectedAnswers[index] = soal.answerKeys.size
+                        }
+                    state.update {
+                        it.copy(
+                            soal = listOfQuestion,
+                            selectedAnswers = newSelectedAnswers,
+                            isChecked = newIsChecked,
+                            answerPositions = newAnswerPositions
+                        )
+                    }
+                    } else {
+                        state.update {
+                            it.copy(
+                                soal = listOfQuestion,
+                                selectedAnswers = newSelectedAnswers,
+                                isChecked = newIsChecked,
+                                answerPositions = newAnswerPositions
+                            )
+                        }
+
+                    }
+                    listSoal.value = MutableList(questionCount) { QuestionCreateOrUpdate() }
+                        Log.d("AddSoalVM", "list soal: ${listSoal.value}")
+                    Log.d("AddSoalVM", "list of question: ${state.value.soal}")
                 }
 
                 is Resource.Error -> {
@@ -86,26 +135,11 @@ class AddSoalViewModel(
         }
     }
 
-    fun submitSoal(soal: List<QuestionCreate>) {
+    fun addSoal() {
         viewModelScope.launch(Dispatchers.IO) {
-//            listSoal.value.withIndex().forEach { (i, it) ->
-//                it.answerKeys.withIndex().forEach { (y, value) ->
-//                    if (value.isEmpty()) {
-//                        state.update {
-//                            val newAnswersKeys = it.answersKeys.toMutableList()
-//                            val answerKeys = it.answersKeys[i].toMutableList().apply {
-//                                removeAt(y)
-//                            }
-//                            newAnswersKeys[i] = answerKeys
-//                            it.copy(
-//                                answersKeys = newAnswersKeys
-//                            )
-//                        }
-//                    }
-//                }
-//            }
+            Log.d("AddSoalVM", "list soal @ add: ${listSoal.value}")
             uploadStatus.value = ApiStatus.LOADING
-            when (val response = exerciseRepository.addSoal(exerciseId, soal)) {
+            when (val response = exerciseRepository.addSoal(exerciseId, listSoal.value)) {
                 is Resource.Success -> {
                     successMessage.value = response.data!!.message
                     uploadStatus.value = ApiStatus.SUCCESS
@@ -119,60 +153,97 @@ class AddSoalViewModel(
         }
     }
 
+    fun updateSoal() {
+        Log.d("AddSoalVM", "list soal @ update: ${listSoal.value}")
+        viewModelScope.launch(Dispatchers.IO) {
+            uploadStatus.value = ApiStatus.LOADING
+            when (val response = exerciseRepository.updateSoal(exerciseId, listSoal.value)) {
+                is Resource.Success -> {
+                    successMessage.value = response.data!!.message
+                    uploadStatus.value = ApiStatus.SUCCESS
+                }
+                is Resource.Error -> {
+                    errorMessage.value = response.message
+                    uploadStatus.value = ApiStatus.FAILED
+                }
+            }
+        }
+    }
+
+    fun deleteLatihan() {
+        viewModelScope.launch(Dispatchers.IO) {
+            uploadStatus.value = ApiStatus.LOADING
+            when (val response = exerciseRepository.deleteLatihan(exerciseId)) {
+                is Resource.Success -> {
+                    successMessage.value = response.data!!.message
+                    uploadStatus.value = ApiStatus.SUCCESS
+                }
+
+                is Resource.Error -> {
+                    errorMessage.value = response.message
+                    uploadStatus.value = ApiStatus.FAILED
+                }
+            }
+        }
+    }
 
     fun setQuestionText(index: Int, text: String) {
         state.update { currentState ->
-            val newQuestionText = currentState.questionText.toMutableList().apply {
-                set(index, text)
+            val updatedSoal = currentState.soal.toMutableList().apply {
+                this[index] = this[index].copy(questionText = text)
             }
-            Log.d("AddSoalVM", "question: $newQuestionText")
+            Log.d("AddSoalVM", "question: $updatedSoal")
             currentState.copy(
-                questionText = newQuestionText,
+                soal = updatedSoal
             )
         }
     }
 
-    fun setSelectedAnswers(index: Int, answer: Int) {
+    fun setSelectedAnswers(index: Int, answerCount: Int) {
         state.update { currentState ->
             val newSelectedAnswers = currentState.selectedAnswers.toMutableList().apply {
-                set(index, answer)
+                set(index, answerCount)
             }
             Log.d("AddSoalVM", "selectedAnsw: $newSelectedAnswers")
             currentState.copy(selectedAnswers = newSelectedAnswers)
         }
     }
 
-    fun setAnswerKeys(index: Int, answerIndex: Int, key: String) {
+    fun setAnswerKeys(
+        index: Int,
+        answer: String = "",
+        isRemove: Boolean = false,
+        isUpdate: Boolean = false,
+        position: Int = 0
+    ) {
         state.update { currentState ->
-            val newAnswersKeys = currentState.answersKeys.toMutableList()
-            while (newAnswersKeys.size <= index) {
-                newAnswersKeys.add(mutableListOf())
+            val updatedSoal = currentState.soal.toMutableList().apply {
+                val keys = this[index].answerKeys.toMutableList()
+                if (isRemove) {
+                    keys.removeAt(position)
+                } else if (isUpdate) {
+                    keys[position] = answer
+                } else {
+                    keys.add(answer)
+                }
+                this[index] = this[index].copy(answerKeys = keys)
+                Log.d("AddSoalVM", "soal $index answers keys: $keys")
             }
-            val questionAnswerKeys = newAnswersKeys[index].toMutableList()
-            if (answerIndex >= questionAnswerKeys.size) {
-                questionAnswerKeys.addAll(List(answerIndex - questionAnswerKeys.size + 1) { "" })
-            }
-//            if (key.isNotEmpty()) {
-            questionAnswerKeys[answerIndex] = key
-            newAnswersKeys[index] = questionAnswerKeys
-            Log.d("AddSoalVM", "answers keys: $newAnswersKeys")
-            currentState.copy(
-                answersKeys = newAnswersKeys
-            )
+            currentState.copy(soal = updatedSoal)
         }
     }
 
     fun setAnswerOptions(index: Int, optionIndex: Int, text: String) {
         state.update { currentState ->
-            val newAnswersOptions = currentState.answersOptions.toMutableList()
-            val answers = newAnswersOptions[index].toMutableList().apply {
-                set(optionIndex, text)
+            val updatedSoal = currentState.soal.toMutableList().apply {
+                val options = this[index].optionText.toMutableList()
+                if (optionIndex in options.indices) {
+                    options[optionIndex] = text
+                    this[index] = this[index].copy(optionText = options)
+                }
+                Log.d("AddSoalVM", "options: $options")
             }
-            newAnswersOptions.apply {
-                set(index, answers)
-            }
-            Log.d("AddSoalVM", "options: $newAnswersOptions")
-            currentState.copy(answersOptions = newAnswersOptions)
+            currentState.copy(soal = updatedSoal)
         }
     }
 
@@ -190,72 +261,14 @@ class AddSoalViewModel(
         }
     }
 
-//    fun setAnswerOptions(index: Int, optionIndex: Int, text: String) {
-//        state.update { currentState ->
-//            val newAnswersOptions = currentState.answersOptions.toMutableList()
-//            while (newAnswersOptions.size <= index) {
-//                newAnswersOptions.add(List(4) { "" })
-//            }
-//            if (index < newAnswersOptions.size) {
-//                val options = newAnswersOptions[index].toMutableList()
-//                if (optionIndex < options.size) {
-//                    options[optionIndex] = text
-//                } else {
-//                    options.add(text)
-//                }
-//                newAnswersOptions[index] = options.toList()
-//            } else {
-//                // Handle case where index is out of bounds or new index needs to be added
-//                newAnswersOptions.add(listOf(text))
-//            }
-//            currentState.copy(answersOptions = newAnswersOptions)
-//        }
-//    }
-
-//    fun setAnswerKeys(index: Int, answerIndex: Int, text: String) {
-//        state.update { currentState ->
-//            val newAnswerKeys = currentState.answersKeys.toMutableList()
-//            if (index < newAnswerKeys.size) {
-//                val answers = newAnswerKeys[index].toMutableList()
-//                if (answerIndex < answers.size) {
-//                    answers[answerIndex] = text
-//                } else {
-//                    answers.add(text)
-//                }
-//                newAnswerKeys[index] = answers.toList()
-//            } else {
-//                newAnswerKeys.add(listOf(text))
-//            }
-//            currentState.copy(answersKeys = newAnswerKeys)
-//        }
-//    }
-
-
-//    fun setIsChecked(index: Int, checkedIndex: Int, checked: Boolean) {
-//        state.update { currentState ->
-//            val newIsChecked = currentState.isChecked.toMutableList()
-//            if (index < newIsChecked.size) {
-//                val answers = newIsChecked[index].toMutableList()
-//                if (checkedIndex < answers.size) {
-//                    answers[checkedIndex] = checked
-//                } else {
-//                    answers.add(checked)
-//                }
-//                newIsChecked[index] = answers.toList()
-//            } else {
-//                newIsChecked.add(listOf(checked))
-//            }
-//            currentState.copy(isChecked = newIsChecked)
-//        }
-//    }
-
-    fun setSoal(index: Int, soal: QuestionCreate) {
-        listSoal.update {
-            it.toMutableList().apply {
-                set(index, soal)
-            }
-        }
-        Log.d("AddSoalScreen", "soal $index added.\n soal: $soal")
+    fun setSoal(index: Int, soal: QuestionCreateOrUpdate) {
+        val currentList = listSoal.value.toMutableList()
+        currentList[index] = soal
+        listSoal.value = currentList
+        Log.d(
+            "AddSoalVM",
+            "soal ${index + 1} di edit.\n soal: ${listSoal.value[index]}"
+        )
     }
 
     fun clearStatus() {

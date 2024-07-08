@@ -1,6 +1,5 @@
 package org.d3ifcool.virtualab.ui.screen.murid.latihan
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +21,7 @@ class MuridDetailLatihanViewModel(private val exerciseId: Int, private val stude
     var apiStatus = MutableStateFlow(ApiStatus.LOADING)
         private set
 
-    var isUploading = MutableStateFlow(ApiStatus.IDLE)
+    var uploadStatus = MutableStateFlow(ApiStatus.IDLE)
         private set
 
     var answers = MutableStateFlow<Map<Int, List<String>>>(emptyMap())
@@ -56,7 +55,7 @@ class MuridDetailLatihanViewModel(private val exerciseId: Int, private val stude
 
     fun submitAnswers() {
         viewModelScope.launch(Dispatchers.IO) {
-            isUploading.value = ApiStatus.LOADING
+            uploadStatus.value = ApiStatus.LOADING
             val submitJawaban = SubmitJawaban(
                 answers = answers.value.map { (questionId, selectedOption) ->
                     JawabanItem(
@@ -69,11 +68,11 @@ class MuridDetailLatihanViewModel(private val exerciseId: Int, private val stude
             when (val response = studentRepository.submitAnswers(exerciseId, submitJawaban)) {
                 is Resource.Success -> {
                     resultId.value = (response.data!!.data as Double).toInt()
-                    isUploading.value = ApiStatus.SUCCESS
+                    uploadStatus.value = ApiStatus.SUCCESS
                 }
                 is Resource.Error -> {
                     errorMessage.value = response.message
-                    isUploading.value = ApiStatus.FAILED
+                    uploadStatus.value = ApiStatus.FAILED
                 }
             }
         }

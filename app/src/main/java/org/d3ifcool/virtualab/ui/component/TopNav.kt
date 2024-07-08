@@ -22,10 +22,11 @@ import org.d3ifcool.virtualab.ui.theme.Poppins
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopNav(
-    title: Int,
+    title: Any,
     navController: NavHostController,
     isCustomBack: Boolean = false,
     customBack: () -> Unit = { },
+    isStrResource: Boolean = true,
     actions: @Composable() (RowScope.() -> Unit) = {},
 ) {
     TopAppBar(
@@ -47,7 +48,7 @@ fun TopNav(
             }
         },
         title = {
-            Text(text = stringResource(id = title), fontFamily = Poppins)
+            Text(text = if (isStrResource) stringResource(id = title as Int) else title as String, fontFamily = Poppins)
         },
         colors = topAppBarColors(
             containerColor = Color.Transparent,
@@ -61,5 +62,5 @@ fun TopNav(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun TopNavPrev() {
-    TopNav(R.string.register_title, rememberNavController())
+//    TopNav(R.string.register_title, rememberNavController())
 }

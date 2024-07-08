@@ -85,7 +85,7 @@ class ViewModelFactory(
         } else if (modelClass.isAssignableFrom(MuridDetailMateriViewModel::class.java)) {
             return MuridDetailMateriViewModel(id!!, materialRepository!!) as T
         } else if (modelClass.isAssignableFrom(AddLatihanViewModel::class.java)) {
-            return AddLatihanViewModel(exerciseRepository!!) as T
+            return AddLatihanViewModel(id, exerciseRepository!!) as T
         } else if (modelClass.isAssignableFrom(AddSoalViewModel::class.java)) {
             return AddSoalViewModel(id!!, exerciseRepository!!) as T
         } else if (modelClass.isAssignableFrom(IntroductionViewModel::class.java)) {

@@ -105,13 +105,6 @@ private fun ScreenContent(
 ) {
     val data by viewModel.data.collectAsState()
     val status by viewModel.apiStatus.collectAsState()
-//    val viewModel2: DetailLatihanVM = viewModel()
-
-//    val answers by viewModel2.answers.collectAsState()
-//    Log.d("Itemlist @Cek Jawaban", "answers: ${answers.size}")
-
-//    val question1 = SoalDummy(1, 1, "C4H10 + O2 = ... CO2 + O...", "2;4")
-//    val jawabanMurid1 = JawabanMuridDummy(1, 1, 1, 2)
 
     when (status) {
         ApiStatus.IDLE -> null
@@ -162,11 +155,11 @@ private fun ScreenContent(
                         RegularText(
                             text = when (data!!.score) {
                                 in 85.00..100.00 -> {
-                                    "Keren banget! Selamat yaa🤩"
+                                    "Keren banget! Selamat yaa🥳🌟✨"
                                 }
 
                                 in 70.00..84.00 -> {
-                                    "Not baaad 😁"
+                                    "Not baaad. Tingkatin lagi yaa🤩"
                                 }
 
                                 else -> {

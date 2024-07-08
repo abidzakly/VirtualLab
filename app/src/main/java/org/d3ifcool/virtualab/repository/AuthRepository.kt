@@ -36,6 +36,8 @@ class AuthRepository(
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
+                    413 -> GenericMessage.applicationError
+                    422 -> GenericMessage.inputError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
@@ -87,6 +89,8 @@ class AuthRepository(
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
+                    413 -> GenericMessage.applicationError
+                    422 -> GenericMessage.inputError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")

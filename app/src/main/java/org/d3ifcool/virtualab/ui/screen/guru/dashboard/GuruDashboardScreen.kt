@@ -12,15 +12,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -40,6 +37,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.Color.Companion.White
@@ -61,10 +59,12 @@ import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNavDashboard
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
+import org.d3ifcool.virtualab.utils.UserDataStore
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun GuruDashboardScreen(navController: NavHostController, viewModel: GuruDashboardViewModel) {
+    val context = LocalContext.current
     val sheetStateBuat = rememberBottomSheetScaffoldState()
     val sheetStateLihat = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberStandardBottomSheetState(
@@ -73,6 +73,7 @@ fun GuruDashboardScreen(navController: NavHostController, viewModel: GuruDashboa
         )
     )
     val scope = rememberCoroutineScope()
+    val dataStore = UserDataStore(context)
     var isPressed by remember { mutableStateOf(false) }
     var fabPressed by remember { mutableStateOf(true) }
     var backgroundColor by remember { mutableStateOf(if (!isPressed) Transparent else Black) }
@@ -100,6 +101,7 @@ fun GuruDashboardScreen(navController: NavHostController, viewModel: GuruDashboa
                 navController,
                 isClicked = isPressed
             ) {
+                backgroundColor = Color.Black
                 if (isPressed) {
                     scope.launch {
                         sheetStateLihat.bottomSheetState.hide()
@@ -118,6 +120,7 @@ fun GuruDashboardScreen(navController: NavHostController, viewModel: GuruDashboa
                 containerColor = DarkBlueDarker,
                 onClick = {
                     fabPressed = true
+                    backgroundColor = Color.Black
                     scope.launch {
                         sheetStateBuat.bottomSheetState.expand()
                     }
@@ -136,6 +139,7 @@ fun GuruDashboardScreen(navController: NavHostController, viewModel: GuruDashboa
                 modifier = Modifier
                     .padding(padding),
                 navController,
+                dataStore,
                 viewModel
             )
             PullRefreshIndicator(
@@ -208,8 +212,10 @@ fun GuruDashboardScreen(navController: NavHostController, viewModel: GuruDashboa
 private fun ScreenContent(
     modifier: Modifier,
     navController: NavHostController,
+    dataStore: UserDataStore,
     viewModel: GuruDashboardViewModel
 ) {
+    val userFullname by dataStore.userFullNameFlow.collectAsState("")
     val context = LocalContext.current
     val combinedPosts by viewModel.combinedPosts.collectAsState()
     val status by viewModel.apiStatus.collectAsState()
@@ -221,7 +227,7 @@ private fun ScreenContent(
         }
     }
     Column(modifier = modifier) {
-        TopNavDashboard(name = "Guru", navController = navController)
+        TopNavDashboard(name = userFullname, navController = navController)
         when (status) {
             ApiStatus.IDLE -> null
             ApiStatus.LOADING -> {

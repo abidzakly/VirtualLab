@@ -6,11 +6,9 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import org.d3ifcool.virtualab.data.model.Latihan
 import org.d3ifcool.virtualab.data.model.PendingPosts
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.utils.Resource
-import retrofit2.http.POST
 
 class CheckFileViewModel(private val userRepository: UserRepository): ViewModel() {
 

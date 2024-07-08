@@ -10,11 +10,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.data.network.ApiStatus
@@ -54,7 +59,20 @@ fun GuruMateriScreen(navController: NavHostController, viewModel: GuruMateriView
 
     Scaffold(topBar = {
         TopNav(title = R.string.lihat_materi_title, navController = navController)
-    }, bottomBar = {
+    },  floatingActionButton = {
+        FloatingActionButton(
+            containerColor = DarkBlueDarker,
+            onClick = {
+                navController.navigate(Screen.AddMateri.route)
+            }) {
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = stringResource(R.string.menu_buat_button),
+                tint = Color.White
+            )
+        }
+    },
+        bottomBar = {
         BottomNav(currentRoute = Screen.GuruMateri.route, navController)
     }) {
         Box(modifier = Modifier.pullRefresh(refreshState).padding(it)) {

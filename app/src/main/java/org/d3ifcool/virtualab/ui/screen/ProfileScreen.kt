@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,20 +27,28 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -67,6 +76,7 @@ import org.d3ifcool.virtualab.data.model.UserUpdate
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
+import org.d3ifcool.virtualab.ui.component.BottomSheet
 import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
 import org.d3ifcool.virtualab.ui.component.PopUpDialog
@@ -82,6 +92,7 @@ import org.d3ifcool.virtualab.utils.GenericMessage
 import org.d3ifcool.virtualab.utils.UserDataStore
 import org.d3ifcool.virtualab.utils.isInternetAvailable
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     navController: NavHostController,
@@ -94,14 +105,33 @@ fun ProfileScreen(
         0 -> dataStore.nisnFlow.collectAsState("")
         else -> dataStore.nipFlow.collectAsState("")
     }.value
-    Log.d("ProfileScreen", "user: $currentUser")
-    Log.d("ProfileScreen", "nipOrNisn: $uniqueId")
+
+    val sheetStateLihat = rememberBottomSheetScaffoldState(
+        bottomSheetState = rememberStandardBottomSheetState(
+            initialValue = SheetValue.Hidden,
+            skipHiddenState = false
+        )
+    )
+    val scope = rememberCoroutineScope()
+    var isPressed by remember { mutableStateOf(false) }
+    var backgroundColor by remember { mutableStateOf(if (!isPressed) Color.Transparent else Color.Black) }
 
     Scaffold(
         topBar = {
             TopNav(R.string.profile_title, navController = navController)
         }, bottomBar = {
-            BottomNav(Screen.Profile.route, navController)
+            BottomNav(Screen.Profile.route, navController) {
+                backgroundColor = Color.Black
+                if (isPressed) {
+                    scope.launch {
+                        sheetStateLihat.bottomSheetState.hide()
+                    }
+                } else {
+                    scope.launch {
+                        sheetStateLihat.bottomSheetState.expand()
+                    }
+                }
+            }
         },
         containerColor = Color.White
     ) {
@@ -113,6 +143,40 @@ fun ProfileScreen(
                 uniqueId,
                 profileViewModel,
                 authViewModel,
+            )
+            LaunchedEffect(sheetStateLihat.bottomSheetState) {
+                snapshotFlow { sheetStateLihat.bottomSheetState.currentValue }
+                    .collect { bottomSheetValue ->
+                        if (bottomSheetValue == SheetValue.Expanded) {
+                            backgroundColor = Color.Black
+                            isPressed = true
+                        } else {
+                            backgroundColor = Color.Transparent
+                            isPressed = false
+                        }
+                    }
+            }
+            Box(
+                modifier = Modifier
+                    .alpha(0.22f)
+                    .fillMaxSize()
+                    .background(backgroundColor)
+            )
+            BottomSheet(
+                scaffoldSheetState = sheetStateLihat,
+                title = R.string.lihat_slide_up_title,
+                action1 = R.string.lihat_materi_title,
+                onClickAct1 = {
+                    navController.navigate(Screen.GuruMateri.route) {
+                        popUpTo(Screen.GuruDashboard.route)
+                    }
+                },
+                action2 = R.string.lihat_latihan_title,
+                onClickAct2 = {
+                    navController.navigate(Screen.GuruLatihan.route) {
+                        popUpTo(Screen.GuruDashboard.route)
+                    }
+                }
             )
         } else {
             LoadingState()

@@ -25,6 +25,8 @@ class IntroRepository(
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
+                    413 -> GenericMessage.applicationError
+                    422 -> GenericMessage.inputError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
@@ -47,6 +49,8 @@ class IntroRepository(
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
+                    413 -> GenericMessage.applicationError
+                    422 -> GenericMessage.inputError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
@@ -72,6 +76,8 @@ class IntroRepository(
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
+                    413 -> GenericMessage.applicationError
+                    422 -> GenericMessage.inputError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
@@ -93,6 +99,8 @@ class IntroRepository(
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
+                    413 -> GenericMessage.applicationError
+                    422 -> GenericMessage.inputError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
@@ -100,7 +108,6 @@ class IntroRepository(
                 }
             Resource.Error(errorMessage!!)
         } catch (e: Exception) {
-            e.printStackTrace()
             e.printStackTrace()
             Resource.Error(GenericMessage.noInternetError)
         }

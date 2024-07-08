@@ -36,7 +36,7 @@ class AddMateriViewModel(
     var apiStatus = MutableStateFlow(ApiStatus.IDLE)
         private set
 
-    var isUploading = MutableStateFlow(ApiStatus.IDLE)
+    var uploadStatus = MutableStateFlow(ApiStatus.IDLE)
         private set
 
     var successMessage = MutableStateFlow<String?>(null)
@@ -91,7 +91,7 @@ class AddMateriViewModel(
             val requestBody = file.asRequestBody("*/*".toMediaTypeOrNull())
             val body = MultipartBody.Part.createFormData("file", file.name, requestBody)
 
-            isUploading.value = ApiStatus.LOADING
+            uploadStatus.value = ApiStatus.LOADING
 
             var response: Resource<MessageResponse>? = null
 
@@ -128,19 +128,19 @@ class AddMateriViewModel(
             when (response!!) {
                 is Resource.Success -> {
                     successMessage.value = response.data!!.message
-                    isUploading.value = ApiStatus.SUCCESS
+                    uploadStatus.value = ApiStatus.SUCCESS
                 }
 
                 is Resource.Error -> {
                     errorMessage.value = response.message
-                    isUploading.value = ApiStatus.FAILED
+                    uploadStatus.value = ApiStatus.FAILED
                 }
             }
         }
     }
 
     fun clearStatus() {
-        isUploading.value = ApiStatus.IDLE
+        uploadStatus.value = ApiStatus.IDLE
         apiStatus.value = ApiStatus.IDLE
         errorMessage.value = null
         successMessage.value = null

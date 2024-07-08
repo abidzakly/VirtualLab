@@ -28,10 +28,14 @@ sealed class Screen(val route: String) {
     data object UpdateMateri : Screen("addMateriScreen/{$KEY_ID_TYPE}") {
         fun withId(id: Int) = "addMateriScreen/$id"
     }
+//    Update or Add Soal
     data object AddSoal : Screen("addSoalScreen/{$KEY_EXERCISE_ID}") {
         fun withId(id: Int) = "addSoalScreen/$id"
     }
     data object AddLatihan : Screen("addLatihanScreen")
+    data object UpdateLatihan : Screen("addLatihanScreen/{$KEY_ID_TYPE}") {
+        fun withId(id: Int) = "addLatihanScreen/$id"
+    }
     data object GuruMateri : Screen("guruMateriScreen")
     data object GuruLatihan : Screen("guruLatihanScreen")
     data object GuruDetailMateri : Screen("guruDetailMateriScreen/{$KEY_ID_TYPE}") {
@@ -49,8 +53,8 @@ sealed class Screen(val route: String) {
         fun withId(id: Int) = "muridDetailMateriScreen/$id"
     }
     data object MuridLatihan : Screen("muridLatihanScreen")
-    data object MuridDetailLatihan : Screen("muridDetailLatihanScreen/{$KEY_ID_TYPE}") {
-        fun withId(id: Int) = "muridDetailLatihanScreen/$id"
+    data object MuridDetailLatihan : Screen("muridDetailLatihanScreen/{$KEY_ID_TYPE}/{$KEY_STR_TYPE}") {
+        fun withId(id: Int, title: String) = "muridDetailLatihanScreen/$id/$title"
     }
     data object Reaksi : Screen("reaksiScreen")
     data object Nilai : Screen("nilaiScreen")

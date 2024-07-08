@@ -2,11 +2,14 @@ package org.d3ifcool.virtualab.data.model
 
 import com.squareup.moshi.Json
 
-data class LatihanDetail(
+data class Latihan(
     @Json(name = "latihan_review")
     val latihanReview: LatihanReview? = null,
-    val latihan: Latihan? = null,
-    val soal: List<Soal>? = null
+    @Json(name = "latihan")
+    val latihanDetail: LatihanDetail? = null,
+    val soal: List<Soal>? = null,
+    @Json(name = "is_results_exist")
+    val isResultsExist: Boolean? = null
 )
 
 data class CombinedLatihan(
@@ -56,7 +59,7 @@ data class CombinedPost(
     val description: String,
 
     @Json(name = "created_at")
-    val createdAt: String,
+    val updatedAt: String,
 
     @Json(name = "post_type")
     val postType: String,

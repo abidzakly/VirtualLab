@@ -1,22 +1,22 @@
 package org.d3ifcool.virtualab.ui.screen.guru.latihan
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -38,9 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
@@ -50,9 +49,7 @@ import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.PopUpDialog
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
-import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.ui.theme.LightBlue
-import org.d3ifcool.virtualab.utils.ViewModelFactory
 
 @Composable
 fun DetailLatihanScreen(navController: NavHostController, viewModel: DetailLatihanViewModel) {
@@ -62,6 +59,7 @@ fun DetailLatihanScreen(navController: NavHostController, viewModel: DetailLatih
     val errorMessage by viewModel.errorMessage.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
     var isUploading by remember { mutableStateOf(false) }
+    var exerciseId by remember { mutableIntStateOf(0) }
     when (deleteStatus) {
         ApiStatus.IDLE -> null
         ApiStatus.LOADING -> {
@@ -81,16 +79,31 @@ fun DetailLatihanScreen(navController: NavHostController, viewModel: DetailLatih
             Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
         }
     }
+    Log.d("DetailLatihanScreen", "exerciseId: $exerciseId")
     Scaffold(topBar = {
         TopNav(title = R.string.guru_detail_latihan_title, navController = navController) {
-            IconButton(onClick = { showDialog = true }) {
-                Icon(imageVector = Icons.Filled.Delete, contentDescription = "Delete Icon")
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = {
+                    navController.navigate(
+                        Screen.UpdateLatihan.withId(
+                            exerciseId
+                        )
+                    )
+                }) {
+                    Icon(imageVector = Icons.Default.Edit, contentDescription = "Ikon Edit")
+                }
+                IconButton(onClick = { showDialog = true }) {
+                    Icon(imageVector = Icons.Default.Delete, contentDescription = "Ikon Delete")
+                }
             }
         }
     }, bottomBar = {
         BottomNav(navController = navController)
-    }) {
-        ScreenContent(modifier = Modifier.padding(it), viewModel)
+    }) { padding ->
+        ScreenContent(
+            modifier = Modifier.padding(padding),
+            viewModel,
+            onExerciseIdChange = { exerciseId = it })
 
         if (showDialog) {
             PopUpDialog(
@@ -106,7 +119,11 @@ fun DetailLatihanScreen(navController: NavHostController, viewModel: DetailLatih
 }
 
 @Composable
-private fun ScreenContent(modifier: Modifier, viewModel: DetailLatihanViewModel) {
+private fun ScreenContent(
+    modifier: Modifier,
+    viewModel: DetailLatihanViewModel,
+    onExerciseIdChange: (Int) -> Unit
+) {
     val latihanData by viewModel.latihanData.collectAsState()
     val status by viewModel.apiStatus.collectAsState()
     when (status) {
@@ -116,7 +133,8 @@ private fun ScreenContent(modifier: Modifier, viewModel: DetailLatihanViewModel)
         }
 
         ApiStatus.SUCCESS -> {
-            val latihan = latihanData!!.latihan!!
+            val latihan = latihanData!!.latihanDetail!!
+            onExerciseIdChange(latihan.exerciseId)
             LazyColumn(
                 modifier = modifier
                     .fillMaxSize()

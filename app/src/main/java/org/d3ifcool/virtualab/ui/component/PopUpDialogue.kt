@@ -42,7 +42,7 @@ fun PopUpDialog(
             Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 Icon(
                     painter = painterResource(icon),
-                    contentDescription = "Ikon penerimaan akun",
+                    contentDescription = "Some Icon",
                     tint = DarkBlue
                 )
 

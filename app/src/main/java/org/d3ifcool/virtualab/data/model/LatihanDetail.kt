@@ -2,7 +2,7 @@ package org.d3ifcool.virtualab.data.model
 
 import com.squareup.moshi.Json
 
-data class Latihan(
+data class LatihanDetail(
     @Json(name = "exercise_id")
     val exerciseId: Int,
     val title: String,
@@ -34,10 +34,13 @@ data class ExerciseCreate(
     val difficulty: String,
     @Json(name = "question_count")
     val questionCount: Int,
-//    @Json(name = "author_id")
-//    val authorId: Int,
     @Json(name = "approval_status")
     val approvalStatus: String = "DRAFT",
+)
+
+data class ExerciseUpdate(
+    val title: String,
+    val difficulty: String
 )
 
 data class ApprovedLatihan(

@@ -160,9 +160,9 @@ private fun ScreenContent(
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                RegularText(text = materiItem.title, fontWeight = FontWeight.SemiBold)
+                RegularText(text = stringResource(id = R.string.judul_materi_guru), fontWeight = FontWeight.SemiBold)
                 RegularText(
-                    text = stringResource(id = R.string.judul_materi_data),
+                    text = materiItem.title,
                     fontWeight = FontWeight.Normal
                 )
                 RegularText(

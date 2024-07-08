@@ -208,13 +208,16 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
             arguments = listOf(
                 navArgument(KEY_ID_TYPE) {
                     type = NavType.IntType
+                }, navArgument(KEY_STR_TYPE) {
+                    type = NavType.StringType
                 }
             )
         ) {
+            val exerciseTitle = it.arguments!!.getString(KEY_STR_TYPE)
             val exerciseId = it.arguments!!.getInt(KEY_ID_TYPE)
             val factory = ViewModelFactory(id = exerciseId, studentRepository = studentRepository)
             val viewModel: MuridDetailLatihanViewModel = viewModel(factory = factory)
-            MuridDetailLatihanScreen(navController, viewModel)
+            MuridDetailLatihanScreen(navController, viewModel, exerciseTitle)
         }
         composable(route = Screen.Reaksi.route) {
             ReaksiScreen(navController)
@@ -264,6 +267,28 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
             val factory = ViewModelFactory(exerciseRepository = exerciseRepository)
             val viewModel: AddLatihanViewModel = viewModel(factory = factory)
             AddLatihanScreen(navController, viewModel)
+        }
+        composable(route = Screen.UpdateLatihan.route,
+            arguments = listOf(
+                navArgument(KEY_ID_TYPE) {
+                    type = NavType.IntType
+                })
+            ) {
+            val exerciseId = it.arguments!!.getInt(KEY_ID_TYPE)
+            val factory = ViewModelFactory(id = exerciseId, exerciseRepository = exerciseRepository)
+            val viewModel: AddLatihanViewModel = viewModel(factory = factory)
+            AddLatihanScreen(navController, viewModel)
+        }
+        composable(route = Screen.AddSoal.route,
+            arguments = listOf(
+                navArgument(KEY_EXERCISE_ID) {
+                    type = NavType.IntType
+                }
+            )) {
+            val exerciseId = it.arguments!!.getInt(KEY_EXERCISE_ID)
+            val factory = ViewModelFactory(id = exerciseId, exerciseRepository = exerciseRepository)
+            val viewModel: AddSoalViewModel = viewModel(factory = factory)
+            AddSoalScreen(navController, viewModel)
         }
         composable(route = Screen.GuruMateri.route) {
             val factory = ViewModelFactory(materialRepository = materialRepository)
@@ -353,17 +378,6 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
             val factory = ViewModelFactory(introRepository = introRepository)
             val viewModel: UpdateIntroViewModel = viewModel(factory = factory)
             UpdateIntroContentScreen(navController, viewModel)
-        }
-        composable(route = Screen.AddSoal.route,
-            arguments = listOf(
-                navArgument(KEY_EXERCISE_ID) {
-                    type = NavType.IntType
-                }
-            )) {
-            val exerciseId = it.arguments!!.getInt(KEY_EXERCISE_ID)
-            val factory = ViewModelFactory(id = exerciseId, exerciseRepository = exerciseRepository)
-            val viewModel: AddSoalViewModel = viewModel(factory = factory)
-            AddSoalScreen(navController, viewModel)
         }
     }
 }
