@@ -122,7 +122,7 @@ private fun ScreenContent(
                         LazyColumn {
                             items(data) {
                                 CardList(it.title, it.difficulty) {
-                                    navController.navigate(Screen.MuridDetailLatihan.withId(it.exerciseId))
+                                    navController.navigate(Screen.MuridDetailLatihan.withId(it.exerciseId, it.title))
                                 }
                             }
                         }

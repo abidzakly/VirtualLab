@@ -2,8 +2,6 @@ package org.d3ifcool.virtualab.repository
 
 import org.d3ifcool.virtualab.data.model.ApprovedLatihan
 import org.d3ifcool.virtualab.data.model.ApprovedMateri
-import org.d3ifcool.virtualab.data.model.Latihan
-import org.d3ifcool.virtualab.data.model.Materi
 import org.d3ifcool.virtualab.data.model.MessageResponse
 import org.d3ifcool.virtualab.data.model.Nilai
 import org.d3ifcool.virtualab.data.model.NilaiDetail
@@ -24,6 +22,8 @@ class StudentRepository(private val studentApi: AuthorizedStudentApi) {
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
+                    413 -> GenericMessage.applicationError
+                    422 -> GenericMessage.inputError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
@@ -45,6 +45,8 @@ class StudentRepository(private val studentApi: AuthorizedStudentApi) {
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
+                    413 -> GenericMessage.applicationError
+                    422 -> GenericMessage.inputError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
@@ -66,6 +68,8 @@ class StudentRepository(private val studentApi: AuthorizedStudentApi) {
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
+                    413 -> GenericMessage.applicationError
+                    422 -> GenericMessage.inputError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
@@ -87,6 +91,8 @@ class StudentRepository(private val studentApi: AuthorizedStudentApi) {
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
+                    413 -> GenericMessage.applicationError
+                    422 -> GenericMessage.inputError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
@@ -108,6 +114,8 @@ class StudentRepository(private val studentApi: AuthorizedStudentApi) {
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
+                    413 -> GenericMessage.applicationError
+                    422 -> GenericMessage.inputError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
@@ -129,6 +137,8 @@ class StudentRepository(private val studentApi: AuthorizedStudentApi) {
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
+                    413 -> GenericMessage.applicationError
+                    422 -> GenericMessage.inputError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")

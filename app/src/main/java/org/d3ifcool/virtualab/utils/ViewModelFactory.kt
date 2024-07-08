@@ -20,7 +20,7 @@ import org.d3ifcool.virtualab.ui.screen.guru.dashboard.GuruDashboardViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddLatihanViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddSoalViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.DetailLatihanViewModel
-import org.d3ifcool.virtualab.ui.screen.guru.latihan.LatihanListViewModel
+import org.d3ifcool.virtualab.ui.screen.guru.latihan.GuruLatihanViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.materi.AddMateriViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.materi.DetailMateriViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.materi.GuruMateriViewModel
@@ -54,8 +54,8 @@ class ViewModelFactory(
             return UserInfoViewModel(id!!, userRepository!!) as T
         } else if (modelClass.isAssignableFrom(DetailLatihanViewModel::class.java)) {
             return DetailLatihanViewModel(id!!, exerciseRepository!!) as T
-        } else if (modelClass.isAssignableFrom(LatihanListViewModel::class.java)) {
-            return LatihanListViewModel(exerciseRepository!!) as T
+        } else if (modelClass.isAssignableFrom(GuruLatihanViewModel::class.java)) {
+            return GuruLatihanViewModel(exerciseRepository!!) as T
         } else if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
             return ProfileViewModel(userRepository!!) as T
         } else if (modelClass.isAssignableFrom(GuruDashboardViewModel::class.java)) {
@@ -85,7 +85,7 @@ class ViewModelFactory(
         } else if (modelClass.isAssignableFrom(MuridDetailMateriViewModel::class.java)) {
             return MuridDetailMateriViewModel(id!!, materialRepository!!) as T
         } else if (modelClass.isAssignableFrom(AddLatihanViewModel::class.java)) {
-            return AddLatihanViewModel(exerciseRepository!!) as T
+            return AddLatihanViewModel(id, exerciseRepository!!) as T
         } else if (modelClass.isAssignableFrom(AddSoalViewModel::class.java)) {
             return AddSoalViewModel(id!!, exerciseRepository!!) as T
         } else if (modelClass.isAssignableFrom(IntroductionViewModel::class.java)) {

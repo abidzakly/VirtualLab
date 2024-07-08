@@ -4,9 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import org.d3ifcool.virtualab.data.model.LatihanDetail
+import org.d3ifcool.virtualab.data.model.Latihan
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.repository.ExerciseRepository
 import org.d3ifcool.virtualab.utils.Resource
@@ -16,7 +15,7 @@ class DetailLatihanViewModel(
     private val exerciseRepository: ExerciseRepository
 ) : ViewModel() {
 
-    var latihanData = MutableStateFlow<LatihanDetail?>(null)
+    var latihanData = MutableStateFlow<Latihan?>(null)
         private set
 
     var apiStatus = MutableStateFlow(ApiStatus.LOADING)

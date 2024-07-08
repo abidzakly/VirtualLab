@@ -27,6 +27,7 @@ class MaterialRepository(
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
+                    413 -> GenericMessage.applicationError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
@@ -48,6 +49,7 @@ class MaterialRepository(
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
+                    413 -> GenericMessage.applicationError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
@@ -69,6 +71,7 @@ class MaterialRepository(
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
+                    413 -> GenericMessage.applicationError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
@@ -96,6 +99,7 @@ class MaterialRepository(
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
+                    413 -> GenericMessage.applicationError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
@@ -117,6 +121,7 @@ class MaterialRepository(
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
+                    413 -> GenericMessage.applicationError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
@@ -138,6 +143,7 @@ class MaterialRepository(
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
+                    413 -> GenericMessage.applicationError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")

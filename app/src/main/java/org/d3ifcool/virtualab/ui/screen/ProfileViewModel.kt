@@ -1,6 +1,8 @@
 package org.d3ifcool.virtualab.ui.screen
 
 import UserRepository
+import android.graphics.Bitmap
+import android.net.Uri
 import android.util.Log
 import androidx.datastore.dataStore
 import androidx.lifecycle.ViewModel
@@ -9,6 +11,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.d3ifcool.virtualab.data.model.CombinedUser
 import org.d3ifcool.virtualab.data.model.Guru
 import org.d3ifcool.virtualab.data.model.Murid
@@ -18,6 +23,7 @@ import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.utils.Resource
 import org.d3ifcool.virtualab.utils.UserDataStore
 import retrofit2.HttpException
+import java.io.ByteArrayOutputStream
 
 class ProfileViewModel(private val userRepository: UserRepository) : ViewModel() {
 
@@ -27,19 +33,55 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
     private val _errorMsg = MutableStateFlow<String?>("")
     val errorMsg: StateFlow<String?> = _errorMsg
 
-    fun update(userId: Int, oldPassword: String, update: UserUpdate) {
-        _apiStatus.value = ApiStatus.LOADING
+    fun update(
+        userId: Int,
+        oldPassword: String,
+        newPassword: String? = null,
+        newEmail: String? = null,
+        picture: Bitmap? = null
+    ) {
         viewModelScope.launch(Dispatchers.IO) {
-            when (val response = userRepository.update(userId, oldPassword, update)) {
+            _apiStatus.value = ApiStatus.LOADING
+            val oldPasswordPart = oldPassword.toRequestBody("text/plain".toMediaTypeOrNull())
+            val newPasswordPart = newPassword?.toRequestBody("text/plain".toMediaTypeOrNull())
+            val newEmailPart = newEmail?.toRequestBody("text/plain".toMediaTypeOrNull())
+            val response = if (picture != null) {
+                userRepository.update(
+                    userId,
+                    oldPasswordPart,
+                    newPasswordPart,
+                    newEmailPart,
+                    picture.toMultipartBody()
+                )
+            } else {
+                userRepository.update(
+                    userId,
+                    oldPasswordPart,
+                    newPasswordPart,
+                    newEmailPart
+                )
+            }
+            when (response) {
                 is Resource.Success -> {
                     _apiStatus.value = ApiStatus.SUCCESS
                 }
+
                 is Resource.Error -> {
                     _errorMsg.value = response.message
                     _apiStatus.value = ApiStatus.FAILED
                 }
             }
         }
+    }
+
+    private fun Bitmap.toMultipartBody(): MultipartBody.Part {
+        val stream = ByteArrayOutputStream()
+        compress(Bitmap.CompressFormat.JPEG, 30, stream)
+        val byteArray = stream.toByteArray()
+        val requestBody = byteArray.toRequestBody(
+            "image/jpg".toMediaTypeOrNull(), 0, byteArray.size
+        )
+        return MultipartBody.Part.createFormData("file", "image.jpg", requestBody)
     }
 
     fun clearStatus() {

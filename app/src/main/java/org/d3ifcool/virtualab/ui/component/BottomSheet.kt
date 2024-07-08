@@ -54,8 +54,8 @@ fun BottomSheet(
     onClickAct1: () -> Unit,
     action2: Int,
     onClickAct2: () -> Unit,
-    action3: Int,
-    onClickAct3: () -> Unit
+    action3: Int = R.string.profile_title,
+    onClickAct3: () -> Unit = {}
 ) {
     BottomSheetScaffold(
         modifier = Modifier.zIndex(99f),

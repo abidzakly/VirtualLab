@@ -75,7 +75,7 @@ import java.io.InputStream
 fun AddContohReaksi(navController: NavHostController, viewModel: AddMateriViewModel) {
     val context = LocalContext.current
     val status by viewModel.apiStatus.collectAsState()
-    val isUploading by viewModel.isUploading.collectAsState()
+    val isUploading by viewModel.uploadStatus.collectAsState()
     val successMessage by viewModel.successMessage.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
 

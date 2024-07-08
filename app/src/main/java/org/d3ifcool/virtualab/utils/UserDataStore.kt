@@ -28,6 +28,7 @@ class UserDataStore(private val context: Context) {
         private val USER_EMAIL = stringPreferencesKey("user_email")
         private val USER_TYPE = intPreferencesKey("user_type")
         private val USER_SCHOOL = stringPreferencesKey("user_school")
+        private val USER_PFP = stringPreferencesKey("user_pfp")
         private val INTRO_TITLE = stringPreferencesKey("intro_title")
         private val MURID_NISN = stringPreferencesKey("murid_nisn")
         private val GURU_NIP = stringPreferencesKey("guru_nip")
@@ -46,6 +47,7 @@ class UserDataStore(private val context: Context) {
             username = it[USER_USERNAME] ?: "",
             school = it[USER_SCHOOL] ?: "",
             userType = it[USER_TYPE] ?: -1,
+            profilePicture = it[USER_PFP] ?: "",
         )
     }
 
@@ -79,6 +81,9 @@ class UserDataStore(private val context: Context) {
     val userEmailFlow: Flow<String> = context.dataStore.data.map { preferences ->
         preferences[USER_EMAIL] ?: ""
     }
+    val userPfp: Flow<String> = context.dataStore.data.map { preferences ->
+        preferences[USER_PFP] ?: ""
+    }
 
     suspend fun setLoginStatus(isLoggedIn: Boolean) {
         context.dataStore.edit { preferences ->
@@ -104,6 +109,7 @@ class UserDataStore(private val context: Context) {
             it[USER_FULLNAME] = user.fullName
             it[USER_EMAIL] = user.email
             it[USER_SCHOOL] = user.school
+            it[USER_PFP] = user.profilePicture ?: ""
             it[USER_USERNAME] = user.username
             it[USER_TYPE] = user.userType
             if (murid != null) {

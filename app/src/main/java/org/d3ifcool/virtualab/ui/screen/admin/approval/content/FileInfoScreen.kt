@@ -3,7 +3,6 @@ package org.d3ifcool.virtualab.ui.screen.admin.approval.content
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,7 +17,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -46,7 +44,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import org.d3ifcool.virtualab.R
-import org.d3ifcool.virtualab.data.model.LatihanDetail
+import org.d3ifcool.virtualab.data.model.Latihan
 import org.d3ifcool.virtualab.data.model.LatihanReview
 import org.d3ifcool.virtualab.data.model.Materi
 import org.d3ifcool.virtualab.data.model.MateriReview
@@ -61,7 +59,6 @@ import org.d3ifcool.virtualab.ui.component.SemiLargeText
 import org.d3ifcool.virtualab.ui.component.SmallText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.DarkBlue
-import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.ui.theme.GreenButton
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.RedButton
@@ -111,7 +108,7 @@ private fun ScreenContent(modifier: Modifier, postType: String, viewModel: FileI
     val status by viewModel.apiStatus.collectAsState()
     val data by viewModel.data.collectAsState()
     var materiData: Materi? = null
-    var latihanData: LatihanDetail? = null
+    var latihanData: Latihan? = null
     var dataId: Int?
 
 
@@ -126,7 +123,7 @@ private fun ScreenContent(modifier: Modifier, postType: String, viewModel: FileI
                 materiData = data as Materi
                 dataId = materiData.materiReview!!.materialId
             } else {
-                latihanData = data as LatihanDetail
+                latihanData = data as Latihan
                 dataId = latihanData.latihanReview!!.exerciseId
             }
             Column(

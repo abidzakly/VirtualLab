@@ -29,7 +29,6 @@ import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults.cardColors
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -79,21 +78,27 @@ import org.d3ifcool.virtualab.ui.theme.YellowIndicator
 @Composable
 fun MuridDetailLatihanScreen(
     navController: NavHostController,
-    viewModel: MuridDetailLatihanViewModel
+    viewModel: MuridDetailLatihanViewModel,
+    exerciseTitle: String? = null
 ) {
     Scaffold(
         topBar = {
-            TopNav(title = R.string.latihan_x, navController = navController)
+            TopNav(
+                title = exerciseTitle ?: "Latihan",
+                navController = navController,
+                isStrResource = false
+            )
         },
         bottomBar = {
             BottomNav(navController = navController)
         },
         containerColor = Color.White
-    ) {
-//        Column(modifier = Modifier.padding(it)) {
-//
-//        }
-        ScreenContent(modifier = Modifier.padding(it), navController, viewModel)
+    ) { padding ->
+        ScreenContent(
+            modifier = Modifier.padding(padding),
+            navController,
+            viewModel
+        )
     }
 }
 
@@ -101,12 +106,12 @@ fun MuridDetailLatihanScreen(
 private fun ScreenContent(
     modifier: Modifier,
     navController: NavHostController,
-    viewModel: MuridDetailLatihanViewModel
+    viewModel: MuridDetailLatihanViewModel,
 ) {
     val soal by viewModel.soal.collectAsState()
     val answer by viewModel.answers.collectAsState()
     val status by viewModel.apiStatus.collectAsState()
-    val isUploading by viewModel.isUploading.collectAsState()
+    val uploadStatus by viewModel.uploadStatus.collectAsState()
     val resultId by viewModel.resultId.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -141,8 +146,9 @@ private fun ScreenContent(
             when (status) {
                 ApiStatus.IDLE -> null
                 ApiStatus.LOADING -> {
-                   LoadingState()
+                    LoadingState()
                 }
+
                 ApiStatus.SUCCESS -> {
                     soal.forEachIndexed { index, soalMurid ->
                         ItemListAbid(noSoal = index + 1, soal = soalMurid, viewModel)
@@ -174,6 +180,7 @@ private fun ScreenContent(
                     }
                     Spacer(modifier = Modifier.height(30.dp))
                 }
+
                 ApiStatus.FAILED -> {
                     MuridEmptyState(text = "Gagal memuat data.") {
                         viewModel.getSoal()
@@ -233,7 +240,7 @@ private fun ScreenContent(
         )
     }
     if (showDialog) {
-        when (isUploading) {
+        when (uploadStatus) {
             ApiStatus.IDLE -> null
             ApiStatus.LOADING -> {
                 Dialog(onDismissRequest = { showDialog = false }) {

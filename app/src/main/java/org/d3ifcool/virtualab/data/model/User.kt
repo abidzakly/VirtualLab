@@ -13,6 +13,8 @@ data class User(
     @Json(name = "user_id")
     val userId: Int = -1,
     val school: String = "",
+    @Json(name = "profile_picture")
+    val profilePicture: String? = null,
 )
 
 data class UserCreate(

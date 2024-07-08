@@ -1,11 +1,11 @@
 package org.d3ifcool.virtualab.repository
 
-import org.d3ifcool.virtualab.data.model.CombinedLatihan
-import org.d3ifcool.virtualab.data.model.LatihanDetail
-import org.d3ifcool.virtualab.data.model.ExerciseCreate
 import org.d3ifcool.virtualab.data.model.Latihan
+import org.d3ifcool.virtualab.data.model.ExerciseCreate
+import org.d3ifcool.virtualab.data.model.ExerciseUpdate
+import org.d3ifcool.virtualab.data.model.LatihanDetail
 import org.d3ifcool.virtualab.data.model.MessageResponse
-import org.d3ifcool.virtualab.data.model.QuestionCreate
+import org.d3ifcool.virtualab.data.model.QuestionCreateOrUpdate
 import org.d3ifcool.virtualab.data.network.apis.AuthorizedLatihanApi
 import org.d3ifcool.virtualab.utils.GenericMessage
 import org.d3ifcool.virtualab.utils.Resource
@@ -14,15 +14,17 @@ import retrofit2.HttpException
 class ExerciseRepository(
     private val latihanApi: AuthorizedLatihanApi
 ) {
-    suspend fun addLatihan(content: ExerciseCreate): Resource<MessageResponse> {
+    suspend fun addLatihan(latihan: ExerciseCreate): Resource<MessageResponse> {
         return try {
-            val response = latihanApi.addLatihan(content)
+            val response = latihanApi.addLatihan(latihan)
             Resource.Success(response)
         } catch (e: HttpException) {
             e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
+                    413 -> GenericMessage.applicationError
+                    422 -> GenericMessage.inputError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
@@ -35,15 +37,17 @@ class ExerciseRepository(
         }
     }
 
-    suspend fun getMyMateri(): Resource<List<Latihan>> {
+    suspend fun getMyLatihan(): Resource<List<LatihanDetail>> {
         return try {
-            val response = latihanApi.getMyMateri()
+            val response = latihanApi.getMyLatihan()
             Resource.Success(response)
         } catch (e: HttpException) {
             e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
+                    413 -> GenericMessage.applicationError
+                    422 -> GenericMessage.inputError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
@@ -56,15 +60,17 @@ class ExerciseRepository(
         }
     }
 
-    suspend fun getDetailLatihan(latihanId: Int): Resource<LatihanDetail> {
+    suspend fun getDetailLatihan(exerciseId: Int): Resource<Latihan> {
         return try {
-            val response = latihanApi.getDetailLatihan(latihanId)
+            val response = latihanApi.getDetailLatihan(exerciseId)
             Resource.Success(response)
         } catch (e: HttpException) {
             e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
+                    413 -> GenericMessage.applicationError
+                    422 -> GenericMessage.inputError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
@@ -77,15 +83,17 @@ class ExerciseRepository(
         }
     }
 
-    suspend fun deleteLatihan(latihanId: Int): Resource<MessageResponse> {
+    suspend fun updateLatihan(exerciseId: Int, isResettingResults: Boolean = false, isUpdatingSoal: Boolean, latihan: ExerciseUpdate): Resource<MessageResponse> {
         return try {
-            val response = latihanApi.deleteLatihan(latihanId)
+            val response = latihanApi.updateLatihan(exerciseId, isResettingResults, isUpdatingSoal, latihan)
             Resource.Success(response)
         } catch (e: HttpException) {
             e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
+                    413 -> GenericMessage.applicationError
+                    422 -> GenericMessage.inputError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
@@ -98,15 +106,17 @@ class ExerciseRepository(
         }
     }
 
-    suspend fun addSoal(latihanId: Int, soal: List<QuestionCreate>): Resource<MessageResponse> {
+    suspend fun deleteLatihan(exerciseId: Int): Resource<MessageResponse> {
         return try {
-            val response = latihanApi.addSoal(latihanId, soal)
+            val response = latihanApi.deleteLatihan(exerciseId)
             Resource.Success(response)
         } catch (e: HttpException) {
             e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
+                    413 -> GenericMessage.applicationError
+                    422 -> GenericMessage.inputError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
@@ -119,15 +129,40 @@ class ExerciseRepository(
         }
     }
 
-    suspend fun getSoalByExerciseId(latihanId: Int): Resource<List<CombinedLatihan>> {
+    suspend fun addSoal(exerciseId: Int, soal: List<QuestionCreateOrUpdate>): Resource<MessageResponse> {
         return try {
-            val response = latihanApi.getSoalbyExerciseId(latihanId)
+            val response = latihanApi.addSoal(exerciseId, soal)
             Resource.Success(response)
         } catch (e: HttpException) {
             e.printStackTrace()
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
+                    413 -> GenericMessage.applicationError
+                    422 -> GenericMessage.inputError
+                    else -> {
+                        e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
+                            ?.replace("detail", "")
+                    }
+                }
+            Resource.Error(errorMessage!!)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(GenericMessage.noInternetError)
+        }
+    }
+
+    suspend fun updateSoal(exerciseId: Int, soal: List<QuestionCreateOrUpdate>): Resource<MessageResponse> {
+        return try {
+            val response = latihanApi.updateSoal(exerciseId, soal)
+            Resource.Success(response)
+        }  catch (e: HttpException) {
+            e.printStackTrace()
+            val errorMessage =
+                when (e.code()) {
+                    500 -> GenericMessage.applicationError
+                    413 -> GenericMessage.applicationError
+                    422 -> GenericMessage.inputError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")
@@ -149,6 +184,8 @@ class ExerciseRepository(
             val errorMessage =
                 when (e.code()) {
                     500 -> GenericMessage.applicationError
+                    413 -> GenericMessage.applicationError
+                    422 -> GenericMessage.inputError
                     else -> {
                         e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
                             ?.replace("detail", "")

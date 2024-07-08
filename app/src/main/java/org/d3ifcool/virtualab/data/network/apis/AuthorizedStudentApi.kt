@@ -3,9 +3,7 @@ package org.d3ifcool.virtualab.data.network.apis
 import org.d3ifcool.virtualab.data.model.ApprovedLatihan
 import org.d3ifcool.virtualab.data.model.ApprovedMateri
 import org.d3ifcool.virtualab.data.model.NilaiDetail
-import org.d3ifcool.virtualab.data.model.Latihan
 import org.d3ifcool.virtualab.data.model.SoalMurid
-import org.d3ifcool.virtualab.data.model.Materi
 import org.d3ifcool.virtualab.data.model.MessageResponse
 import org.d3ifcool.virtualab.data.model.Nilai
 import org.d3ifcool.virtualab.data.model.SubmitJawaban

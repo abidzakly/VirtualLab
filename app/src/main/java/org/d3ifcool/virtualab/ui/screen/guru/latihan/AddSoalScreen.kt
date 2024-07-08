@@ -17,12 +17,15 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -35,7 +38,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -62,12 +64,13 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.R
-import org.d3ifcool.virtualab.data.model.QuestionCreate
+import org.d3ifcool.virtualab.data.model.QuestionCreateOrUpdate
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.GuruEmptyState
 import org.d3ifcool.virtualab.ui.component.LoadingState
+import org.d3ifcool.virtualab.ui.component.PopUpDialog
 import org.d3ifcool.virtualab.ui.component.MediumText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
@@ -82,6 +85,7 @@ fun AddSoalScreen(navController: NavHostController, viewModel: AddSoalViewModel)
     val uploadStatus by viewModel.uploadStatus.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
     var isUploading by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
 
@@ -105,6 +109,7 @@ fun AddSoalScreen(navController: NavHostController, viewModel: AddSoalViewModel)
         }
 
         ApiStatus.FAILED -> {
+            isUploading = false
             Toast.makeText(
                 context,
                 errorMessage,
@@ -116,7 +121,11 @@ fun AddSoalScreen(navController: NavHostController, viewModel: AddSoalViewModel)
 
     Scaffold(
         topBar = {
-            TopNav(title = R.string.add_soal_title, navController = navController)
+            TopNav(title = R.string.add_soal_title, navController = navController) {
+                IconButton(onClick = { showDeleteDialog = true }) {
+                    Icon(imageVector = Icons.Default.Delete, contentDescription = "Icon Delete")
+                }
+            }
         },
         containerColor = Color.White
     ) {
@@ -127,6 +136,16 @@ fun AddSoalScreen(navController: NavHostController, viewModel: AddSoalViewModel)
         if (isUploading) {
             Dialog(onDismissRequest = { }) {
                 LoadingState()
+            }
+        }
+        if (showDeleteDialog) {
+            PopUpDialog(
+                icon = R.drawable.baseline_warning_amber,
+                title = "Anda yakin ingin menghapus latihan ini?",
+                onDismiss = { showDeleteDialog = false }
+            ) {
+                showDeleteDialog = false
+                viewModel.deleteLatihan()
             }
         }
     }
@@ -140,8 +159,11 @@ private fun ScreenContent(
 ) {
     val context = LocalContext.current
     val fetchStatus by viewModel.fetchStatus.collectAsState()
+    val state by viewModel.state.collectAsState()
+    Log.d("AddSoalScreen", "list of question: ${state.soal}")
     val latihanData by viewModel.latihanData.collectAsState()
-    var isClicked by remember { mutableStateOf(false) }
+    val listSoal by viewModel.listSoal.collectAsState()
+
     Log.d("AddSoalScreen", "Latihan Data: $latihanData")
     when (fetchStatus) {
         ApiStatus.IDLE -> null
@@ -156,66 +178,37 @@ private fun ScreenContent(
         }
 
         ApiStatus.SUCCESS -> {
-            val latihan = latihanData!!.latihan!!
-//            val soal2 = latihanData!!.soal!!
-
-            var soal = remember {
-                mutableStateListOf(*Array(latihan.questionCount) {
-                    QuestionCreate(
-                        "",
-                        emptyList(),
-                        emptyList()
-                    )
-                })
-            }
+            val latihan = latihanData!!.latihanDetail!!
+            val soalData = latihanData!!.soal!!
+            Log.d("AddSoalScreen", "soalData: $soalData")
             Box(
                 Modifier
                     .fillMaxSize()
             ) {
-                Column(
+                LazyColumn(
                     modifier = Modifier
                         .padding(horizontal = 24.dp)
                         .padding(top = 64.dp)
                         .fillMaxWidth()
-                        .verticalScroll(state = rememberScrollState())
                         .imePadding()
                         .navigationBarsPadding()
                         .padding(bottom = 16.dp)
                 ) {
-                    MediumText(text = "${stringResource(R.string.title_soal)} ${latihan.title}")
-                    Spacer(modifier = Modifier.height(8.dp))
-                    MediumText(text = "${stringResource(R.string.difficulty_soal)} ${latihan.difficulty}")
-                    Spacer(modifier = Modifier.height(16.dp))
-                    for (index in 0 until latihan.questionCount) {
-                        var isChecked =
-                            remember { mutableStateListOf(false, false, false, false) }
-                        var answerOption = remember {
-                            mutableStateListOf(
-                                "",
-                                "",
-                                "",
-                                ""
-                            )
-                        }
-                        var answerKey = remember { mutableStateListOf<String>() }
-                        var selectedAnswersCount = remember { mutableStateOf(0) }
-                        var questionText =
-                            remember { mutableStateListOf(*Array(latihan.questionCount) { "" }) }
-                        var answerPositions = remember {
-                            mutableStateListOf(
-                                -1,
-                                -1,
-                                -1
-                            )
-                        } // to track positions of selected answers
+                    item {
+                        RegularText(text = "${stringResource(R.string.title_soal)} ${latihan.title}")
+                        Spacer(modifier = Modifier.height(8.dp))
+                        RegularText(text = "${stringResource(R.string.difficulty_soal)} ${latihan.difficulty}")
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+                    itemsIndexed(state.soal) { index, it ->
                         RegularText(
                             text = "Soal ${index + 1}",
                             fontWeight = FontWeight.SemiBold
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         CustomTextField2(
-                            value = questionText[index],
-                            onValueChange = { questionText[index] = (it) },
+                            value = it.questionText,
+                            onValueChange = { viewModel.setQuestionText(index, it) },
                             placeholder = R.string.soal
                         )
                         Spacer(modifier = Modifier.height(16.dp))
@@ -224,30 +217,45 @@ private fun ScreenContent(
                             ListJawaban(
                                 modifier = Modifier.testTag("Jawaban ${i + 1}"),
                                 modifier2 = Modifier.testTag("Checkbox ${i + 1}"),
-                                isChecked = isChecked[i],
+                                isChecked = state.isChecked[index][i],
                                 onClick = {
-                                    if (isChecked[i]) {
-                                        isChecked[i] = false
-                                        selectedAnswersCount.value--
-                                        val pos = answerPositions.indexOf(i)
+                                    if (state.isChecked[index][i]) {
+                                        viewModel.setIsChecked(index, i, false)
+                                        viewModel.setSelectedAnswers(
+                                            index,
+                                            state.selectedAnswers[index] - 1
+                                        )
+                                        val pos = state.answerPositions[index].indexOf(i)
                                         if (pos != -1) {
-                                            answerKey.removeAt(pos)
-                                            answerPositions[pos] = -1
+                                            viewModel.setAnswerKeys(
+                                                index = index,
+                                                position = pos,
+                                                isRemove = true
+                                            )
+                                            state.answerPositions[index][pos] = -1
                                             // Shift positions left to maintain order
-                                            for (j in pos until answerPositions.size - 1) {
-                                                answerPositions[j] = answerPositions[j + 1]
+                                            for (j in pos until state.answerPositions[index].size - 1) {
+                                                state.answerPositions[index][j] =
+                                                    state.answerPositions[index][j + 1]
                                             }
-                                            answerPositions[answerPositions.size - 1] = -1
+                                            state.answerPositions[index][state.answerPositions[index].size - 1] =
+                                                -1
                                         }
                                     } else {
-                                        if (answerOption[i].isNotEmpty()) {
-                                            if (selectedAnswersCount.value < 3) {
-                                                isChecked[i] = true
-                                                selectedAnswersCount.value++
-                                                answerKey.add(answerOption[i])
-                                                val pos = answerPositions.indexOf(-1)
+                                        if (state.soal[index].optionText[i].isNotEmpty()) {
+                                            if (state.selectedAnswers[index] < 3) {
+                                                viewModel.setIsChecked(index, i, true)
+                                                viewModel.setSelectedAnswers(
+                                                    index,
+                                                    state.selectedAnswers[index] + 1
+                                                )
+                                                viewModel.setAnswerKeys(
+                                                    index = index,
+                                                    answer = state.soal[index].optionText[i]
+                                                )
+                                                val pos = state.answerPositions[index].indexOf(-1)
                                                 if (pos != -1) {
-                                                    answerPositions[pos] = i
+                                                    state.answerPositions[index][pos] = i
                                                 }
                                             } else {
                                                 Toast.makeText(
@@ -264,29 +272,46 @@ private fun ScreenContent(
                                             ).show()
                                         }
                                     }
-                                    Log.d("AddSoalScreen", "answer Key: ${answerKey.toList()}")
+                                    Log.d(
+                                        "AddSoalScreen",
+                                        "answerPos soal${index + 1}: ${state.answerPositions[index]}"
+                                    )
                                 },
-                                jawaban = answerOption[i],
+                                jawaban = it.optionText[i],
                                 onJawabanChange = {
-                                    answerOption[i] = it
-                                    if (it.isEmpty() && isChecked[i]) {
-                                        isChecked[i] = false
-                                        selectedAnswersCount.value--
-                                        val pos = answerPositions.indexOf(i)
+                                    viewModel.setAnswerOptions(index, i, it)
+                                    if (it.isEmpty() && state.isChecked[index][i]) {
+                                        viewModel.setIsChecked(index, i, false)
+                                        viewModel.setSelectedAnswers(
+                                            index,
+                                            state.selectedAnswers[index] - 1
+                                        )
+                                        val pos = state.answerPositions[index].indexOf(i)
                                         if (pos != -1) {
-                                            answerKey.removeAt(pos)
-                                            answerPositions[pos] = -1
+                                            viewModel.setAnswerKeys(
+                                                index,
+                                                isRemove = true,
+                                                position = pos
+                                            )
+                                            state.answerPositions[index][pos] = -1
                                             // Shift positions left to maintain order
-                                            for (j in pos until answerPositions.size - 1) {
-                                                answerPositions[j] = answerPositions[j + 1]
+                                            for (j in pos until state.answerPositions[index].size - 1) {
+                                                state.answerPositions[index][j] =
+                                                    state.answerPositions[index][j + 1]
                                             }
-                                            answerPositions[answerPositions.size - 1] = -1
+                                            state.answerPositions[index][state.answerPositions[index].size - 1] =
+                                                -1
                                         }
-                                    } else if (isChecked[i]) {
+                                    } else if (state.isChecked[index][i]) {
                                         // Update the answerKey with new value
-                                        val pos = answerPositions.indexOf(i)
+                                        val pos = state.answerPositions[index].indexOf(i)
                                         if (pos != -1) {
-                                            answerKey[pos] = it
+                                            viewModel.setAnswerKeys(
+                                                index,
+                                                position = pos,
+                                                answer = it,
+                                                isUpdate = true
+                                            )
                                         }
                                     }
                                 }
@@ -298,61 +323,66 @@ private fun ScreenContent(
                             thickness = 2.dp
                         )
                         Spacer(modifier = Modifier.height(12.dp))
-                        if (answerOption.isNotEmpty() &&
-                            answerOption.all { it.isNotEmpty() } &&
-                            answerKey.isNotEmpty() &&
-                            answerKey.all { it.isNotEmpty() } &&
-                            questionText[index].isNotEmpty()
+                        if (state.soal[index].optionText.isNotEmpty() &&
+                            state.soal[index].optionText.all { it.isNotEmpty() } &&
+                            state.soal[index].answerKeys.isNotEmpty() &&
+                            state.soal[index].questionText.isNotEmpty()
                         ) {
-                            soal[index] = QuestionCreate(
-                                questionText[index],
-                                answerOption.toList(),
-                                answerKey.toList()
-                            )
-                            Log.d(
-                                "AddSoalScreen",
-                                "soal ${index + 1} added.\n soal: ${soal[index]}"
+                            viewModel.setSoal(
+                                index,
+                                QuestionCreateOrUpdate(
+                                    state.soal[index].questionText,
+                                    state.soal[index].optionText,
+                                    state.soal[index].answerKeys,
+                                    state.soal[index].questionId
+                                )
                             )
                         } else {
-                            soal[index] = QuestionCreate()
+                            viewModel.setSoal(
+                                index,
+                                QuestionCreateOrUpdate()
+                            )
                         }
                     }
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Button(
-                            modifier = Modifier
-                                .padding(12.dp),
-                            onClick = {
-                                if (soal.all {
-                                        it.questionText == "" || it.questionText.isEmpty()
-                                                || it.optionText.isEmpty() || it.optionText.size < 4
-                                                || it.answerKeys.isEmpty() || it.answerKeys.size < 2
-                                    }
-                                ) {
-                                    Toast.makeText(
-                                        context,
-                                        "Semua data harus diisi, yaa",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    Log.d("AddSoalScreen", "IF IS TRUE")
-                                } else {
-                                    Log.d("AddSoalScreen", "FALSE IS TRUE")
-                                    viewModel.submitSoal(soal.toList())
-                                    Log.d("AddSoalScreen", "Soal: ${soal.toList()}")
-                                }
-                            },
-                            shape = RoundedCornerShape(10.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = LightBlue,
-                                contentColor = Color.Black
-                            )
+                    item {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            RegularText(
-                                text = stringResource(R.string.button_unggah),
-                                fontWeight = FontWeight.SemiBold
-                            )
+                            Button(
+                                modifier = Modifier
+                                    .padding(12.dp),
+                                onClick = {
+                                    if (listSoal.all {
+                                            it.questionText == "" && it.questionText.isEmpty()
+                                                    && it.optionText.isEmpty()
+                                                    && it.answerKeys.isEmpty()
+                                        }
+                                    ) {
+                                        Toast.makeText(
+                                            context,
+                                            "Semua data harus diisi, yaa",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    } else {
+                                        if (soalData.isEmpty()) {
+                                            viewModel.addSoal()
+                                        } else {
+                                            viewModel.updateSoal()
+                                        }
+                                    }
+                                },
+                                shape = RoundedCornerShape(10.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = LightBlue,
+                                    contentColor = Color.Black
+                                )
+                            ) {
+                                RegularText(
+                                    text = if (soalData.isEmpty()) stringResource(R.string.button_unggah) else "Edit Soal",
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
                         }
                     }
                 }
@@ -402,7 +432,7 @@ private fun ListJawaban(
     modifier: Modifier = Modifier,
     modifier2: Modifier = Modifier,
     isChecked: Boolean,
-    onClick: (Boolean) -> Unit,
+    onClick: () -> Unit,
     jawaban: String,
     onJawabanChange: (String) -> Unit
 ) {
@@ -411,7 +441,7 @@ private fun ListJawaban(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
-        IconButton(modifier = modifier2, onClick = { onClick(!isChecked) }) {
+        IconButton(modifier = modifier2, onClick = { onClick() }) {
             Icon(
                 painterResource(if (!isChecked) R.drawable.check_box_outline_blank else R.drawable.check_box_filled),
                 contentDescription = null,

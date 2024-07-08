@@ -1,10 +1,10 @@
 package org.d3ifcool.virtualab.data.network.apis
 
-import org.d3ifcool.virtualab.data.model.CombinedLatihan
 import org.d3ifcool.virtualab.data.model.ExerciseCreate
-import org.d3ifcool.virtualab.data.model.Latihan
-import org.d3ifcool.virtualab.data.model.QuestionCreate
+import org.d3ifcool.virtualab.data.model.ExerciseUpdate
 import org.d3ifcool.virtualab.data.model.LatihanDetail
+import org.d3ifcool.virtualab.data.model.QuestionCreateOrUpdate
+import org.d3ifcool.virtualab.data.model.Latihan
 import org.d3ifcool.virtualab.data.model.MessageResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -15,7 +15,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface AuthorizedLatihanApi {
-//    Create Latihan
+    //    Create Latihan
     @POST("/v1/exercises")
     suspend fun addLatihan(
         @Body content: ExerciseCreate
@@ -23,15 +23,24 @@ interface AuthorizedLatihanApi {
 
     //    Get Latihan by Author
     @GET("/v1/exercises")
-    suspend fun getMyMateri(): List<Latihan>
+    suspend fun getMyLatihan(): List<LatihanDetail>
 
 
     //    Get Detail Latihan
     @GET("/v1/exercises/{exercise_id}")
     suspend fun getDetailLatihan(
         @Path("exercise_id") exerciseId: Int
-    ): LatihanDetail
+    ): Latihan
 
+
+    //    Update Latihan
+    @PUT("/v1/exercises/{exercise_id}")
+    suspend fun updateLatihan(
+        @Path("exercise_id") exerciseId: Int,
+        @Query("is_resetting_results") isResetting: Boolean = false,
+        @Query("is_updating_soal") isUpdating: Boolean,
+        @Body exerciseUpdate: ExerciseUpdate
+    ): MessageResponse
 
     //    deleteLatihan
     @DELETE("/v1/exercises/{exercise_id}")
@@ -39,22 +48,24 @@ interface AuthorizedLatihanApi {
         @Path("exercise_id") id: Int
     ): MessageResponse
 
+
     //    Create Soal
     @POST("/v1/exercises/{exercise_id}/questions")
     suspend fun addSoal(
         @Path("exercise_id") id: Int,
-        @Body soal: List<QuestionCreate>
+        @Body soal: List<QuestionCreateOrUpdate>
     ): MessageResponse
 
 
-    //    Get Soal by Exercise ID
-    @GET("/v1/exercises/{exercise_id}/questions")
-    suspend fun getSoalbyExerciseId(
-        @Path("exercise_id") id: Int
-    ): List<CombinedLatihan>
+    //    Update Soal by Exercise ID
+    @PUT("/v1/exercises/{exercise_id}/questions")
+    suspend fun updateSoal(
+        @Path("exercise_id") id: Int,
+        @Body soal: List<QuestionCreateOrUpdate>
+    ): MessageResponse
 
 
-//    Approve/Reject for Admin or submit Soal for Guru
+    //    Approve/Reject for Admin or submit Soal for Guru
     @PUT("/v1/exercises/{exercise_id}/status")
     suspend fun modifyLatihanStatus(
         @Path("exercise_id") exerciseId: Int,
