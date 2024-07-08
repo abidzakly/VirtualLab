@@ -7,8 +7,10 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -58,6 +60,7 @@ import org.d3ifcool.virtualab.ui.component.BottomSheet
 import org.d3ifcool.virtualab.ui.component.ContentList
 import org.d3ifcool.virtualab.ui.component.GuruEmptyState
 import org.d3ifcool.virtualab.ui.component.LoadingState
+import org.d3ifcool.virtualab.ui.component.MediumText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNavDashboard
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
@@ -231,19 +234,21 @@ private fun ScreenContent(
             ApiStatus.SUCCESS -> {
                 LazyColumn(
                     modifier = Modifier
-                        .padding(horizontal = 40.dp),
+                        .padding(horizontal = 32.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     item {
-                        RegularText(
+                        Spacer(modifier = Modifier.height(8.dp))
+                        MediumText(
                             text = stringResource(id = R.string.dashboard_guru_sub_header),
                             modifier = Modifier
-                                .padding(vertical = 24.dp)
+                                .padding(vertical = 16.dp)
                                 .fillMaxWidth()
                         )
                     }
                     items(combinedPosts) {
                         Log.d("GuruDashboard", "CombinedPost: $it")
+                        Spacer(modifier = Modifier.height(8.dp))
                         ContentList(
                             title = it.title,
                             desc = if (it.postType == "Materi") it.description else "Tingkat Kesulitan: ${it.description}",

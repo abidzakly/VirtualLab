@@ -5,7 +5,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -35,6 +37,7 @@ import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.ContentList
 import org.d3ifcool.virtualab.ui.component.GuruEmptyState
 import org.d3ifcool.virtualab.ui.component.LoadingState
+import org.d3ifcool.virtualab.ui.component.MediumText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
@@ -56,8 +59,12 @@ fun GuruMateriScreen(navController: NavHostController, viewModel: GuruMateriView
         TopNav(title = R.string.lihat_materi_title, navController = navController)
     }, bottomBar = {
         BottomNav(currentRoute = Screen.GuruMateri.route, navController)
-    }) {
-        Box(modifier = Modifier.pullRefresh(refreshState).padding(it)) {
+    },
+        containerColor = Color.White
+    ) {
+        Box(modifier = Modifier
+            .pullRefresh(refreshState)
+            .padding(it)) {
             ScreenContent(modifier = Modifier, navController, viewModel)
             PullRefreshIndicator(
                 refreshing = isRefreshing,
@@ -89,22 +96,15 @@ private fun ScreenContent(
         ApiStatus.SUCCESS -> {
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
                     .background(Color.White)
-                    .padding(12.dp),
-                verticalArrangement = Arrangement.Top,
+                    .padding(horizontal = 32.dp),
+                verticalArrangement = Arrangement.Top
             ) {
-                Text(
-                    text = "Materi yang pernah ditambahkan :",
-                    Modifier.padding(start = 16.dp),
-                    fontSize = 16.sp,
-                    fontFamily = Poppins
-                )
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(16.dp)
-                ) {
+                MediumText(text = "Materi yang pernah ditambahkan: ")
+                Spacer(modifier = Modifier.height(8.dp))
+                LazyColumn() {
                     items(data) {
+                        Spacer(modifier = Modifier.height(8.dp))
                         ContentList(
                             title = it.title,
                             desc = it.description,

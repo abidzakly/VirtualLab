@@ -94,32 +94,34 @@ private fun ScreenContent(modifier: Modifier, navController: NavHostController, 
                         onClick = {navController.navigate(Screen.Introduction.route) },
                         colors = cardColors(containerColor = Color(0xFFE8F8FF))
                     ) {
-                        AsyncImage(
-                            model = ImageRequest.Builder(context)
-                                .data(ApiService.getIntroductionThumbnail())
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = "video thumbnail",
-                            placeholder = painterResource(id = R.drawable.loading_img),
-                            error = painterResource(id = R.drawable.broken_image),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .aspectRatio(2f)
-                                .background(color = Color.Black, shape = RoundedCornerShape(20.dp))
-                                .padding(horizontal = 16.dp)
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        RegularText(
-                            text = introTitle,
-                            fontWeight = FontWeight.Medium,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 15.dp),
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1
-                        )
-                        Spacer(modifier = Modifier.height(15.dp))
+                        Column(Modifier.padding(10.dp)) {
+                            AsyncImage(
+                                model = ImageRequest.Builder(context)
+                                    .data(ApiService.getIntroductionThumbnail())
+                                    .crossfade(true)
+                                    .build(),
+                                contentDescription = "video thumbnail",
+                                placeholder = painterResource(id = R.drawable.loading_img),
+                                error = painterResource(id = R.drawable.broken_image),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .aspectRatio(2f)
+                                    .background(color = Color.Black, shape = RoundedCornerShape(20.dp))
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            RegularText(
+                                text = introTitle,
+                                fontWeight = FontWeight.Medium,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 15.dp),
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1
+                            )
+                            Spacer(modifier = Modifier.height(15.dp))
+                        }
+
                     }
                 }
             }

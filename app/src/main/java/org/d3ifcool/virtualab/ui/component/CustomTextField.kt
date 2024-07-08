@@ -12,9 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.d3ifcool.virtualab.ui.theme.GrayTextField
 
 @Composable
@@ -25,7 +28,8 @@ fun CustomTextField(
     onValueChange: (String) -> Unit,
     placeholder: Int,
     isPhone: Boolean? = false,
-    isTitle: Boolean = false
+    isTitle: Boolean = false,
+    textFontSize: TextUnit = 18.sp
 ) {
     TextField(
         modifier = modifier?.fillMaxWidth()
@@ -44,7 +48,8 @@ fun CustomTextField(
         keyboardOptions = KeyboardOptions(
             keyboardType = if (isPhone!!) KeyboardType.Phone else if (isNumber == true) KeyboardType.Number else KeyboardType.Text,
             capitalization = if (isTitle) KeyboardCapitalization.Words else KeyboardCapitalization.Sentences,
-        )
+        ),
+        textStyle = TextStyle(fontSize = textFontSize)
     )
     Spacer(modifier = Modifier.height(8.dp))
 }

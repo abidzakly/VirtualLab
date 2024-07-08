@@ -104,7 +104,8 @@ fun UsersInfoScreen(navController: NavHostController, viewModel: UserInfoViewMod
         )
     }, bottomBar = {
         BottomNav(navController = navController)
-    }) {
+    }, containerColor = Color.White
+    ) {
         ScreenContent(modifier = Modifier.padding(it), viewModel, context)
     }
 }

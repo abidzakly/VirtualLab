@@ -28,6 +28,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -53,6 +54,7 @@ import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
+import org.d3ifcool.virtualab.ui.component.MediumText
 import org.d3ifcool.virtualab.ui.component.MuridEmptyState
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
@@ -127,7 +129,8 @@ private fun ScreenContent(
             ) {
                 item {
                     Spacer(modifier = Modifier.height(12.dp))
-                    RegularText(text = stringResource(R.string.kerjakan_latihan_header))
+                    MediumText(text = "Judul Latihan disini")
+                    Spacer(modifier = Modifier.height(12.dp))
                 }
                 itemsIndexed(data!!.answersResults) { index, it ->
                     ItemListAbidd(index, it, viewModel)
@@ -234,9 +237,9 @@ private fun ItemListAbidd(
                 )
             }
         }
-        Spacer(modifier = Modifier.height(14.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         MediumLargeText(text = soal.questionTitle)
-        Spacer(modifier = Modifier.height(14.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         Box(
             modifier = Modifier
                 .shadow(elevation = 5.dp, shape = RoundedCornerShape(10.dp))
@@ -333,7 +336,7 @@ private fun ItemListAbidd(
             }
         }
     }
-    Spacer(modifier = Modifier.height(14.dp))
+    Spacer(modifier = Modifier.height(20.dp))
 }
 
 @Composable

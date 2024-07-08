@@ -149,7 +149,8 @@ fun UpdateIntroContentScreen(navController: NavHostController, viewModel: Update
         },
         bottomBar = {
             BottomNav(navController = navController)
-        }
+        },
+        containerColor = Color.White
     ) { padding ->
         ScreenContent(
             modifier = Modifier.padding(padding),
@@ -379,7 +380,6 @@ fun PickVideo(
         }
     }
 }
-
 
 @Preview
 @Composable

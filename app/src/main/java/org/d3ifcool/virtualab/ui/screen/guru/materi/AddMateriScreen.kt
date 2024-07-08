@@ -55,11 +55,11 @@ import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.data.network.ApiService
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
-import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.CustomTextField
 import org.d3ifcool.virtualab.ui.component.GuruEmptyState
 import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.LoadingStateDialog
+import org.d3ifcool.virtualab.ui.component.MediumText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.component.VideoPlayer
@@ -106,9 +106,7 @@ fun AddMateriScreen(navController: NavHostController, viewModel: AddMateriViewMo
                 navController = navController
             )
         },
-        bottomBar = {
-            BottomNav(navController = navController)
-        }
+        containerColor = Color.White
     ) {
         ScreenContent(modifier = Modifier.padding(it), viewModel, status, context)
     }
@@ -136,7 +134,7 @@ private fun ScreenContent(
         modifier = modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(24.dp)
+            .padding(horizontal = 24.dp)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -165,13 +163,13 @@ private fun ScreenContent(
                 viewModel.clearStatus()
             }
         }
-        RegularText(text = stringResource(R.string.judul_materi_guru))
+        MediumText(text = stringResource(R.string.judul_materi_guru))
         CustomTextField(
             value = judulMateri,
             onValueChange = { judulMateri = it },
             placeholder = R.string.judul_materi_placholder
         )
-        RegularText(text = stringResource(R.string.media_pembelajaran))
+        MediumText(text = stringResource(R.string.media_pembelajaran))
         PickVideo(
             file = file,
             fileType = mediaType,
@@ -181,7 +179,7 @@ private fun ScreenContent(
             isUri = isUri,
             onUriDetected = { isUri = it },
         )
-        RegularText(text = stringResource(R.string.desc_materi))
+        MediumText(text = stringResource(R.string.desc_materi))
         CustomTextField(
             value = descMateri,
             onValueChange = { descMateri = it },
@@ -189,7 +187,9 @@ private fun ScreenContent(
             modifier = Modifier.fillMaxWidth()
         )
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Button(
@@ -270,7 +270,6 @@ fun PickVideo(
         }
     }
     Column(
-        modifier = Modifier.padding(16.dp)
     ) {
         Button(
             onClick = {
@@ -300,7 +299,7 @@ fun PickVideo(
                 Column(
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
-                        .background(Color.Gray)
+                        .background(Color.LightGray)
                         .clickable {
                             if (!isImage) isVideoPlaying = true else null
                         }
@@ -321,8 +320,8 @@ fun PickVideo(
                                 bitmap = bmp.asImageBitmap(),
                                 contentDescription = null,
                                 modifier = Modifier
-                                    .clip(RoundedCornerShape(10.dp))
                                     .size(300.dp)
+                                    .clip(RoundedCornerShape(10.dp))
                             )
                         }
                     } else {
@@ -378,10 +377,12 @@ fun PickVideo(
                         .fillMaxWidth()
                         .background(if (!isImage) Color.Black.copy(alpha = 0.8f) else Color.Transparent)
                         .clickable {
-                                   if (!isImage) {
-                                       isVideoPlaying = true
-                                       Toast.makeText(context, "Loading Player...", Toast.LENGTH_SHORT).show()
-                                   }
+                            if (!isImage) {
+                                isVideoPlaying = true
+                                Toast
+                                    .makeText(context, "Loading Player...", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
                         },
                     contentAlignment = Alignment.Center
                 ) {

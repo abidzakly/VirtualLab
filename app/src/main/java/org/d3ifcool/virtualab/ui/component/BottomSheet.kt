@@ -84,9 +84,8 @@ private fun ModalContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
+        MediumText(
             text = stringResource(title),
-            fontSize = 15.sp,
             color = Color.Black,
             modifier = Modifier.padding(bottom = 34.dp),
         )
@@ -96,13 +95,10 @@ private fun ModalContent(
             shape = RoundedCornerShape(10.dp),
             colors = ButtonDefaults.buttonColors(DarkBlueDarker)
         ) {
-            Text(
+            RegularText(
                 text = stringResource(action1),
                 color = Color.White,
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 15.sp,
-                fontFamily = Poppins,
-
             )
         }
         Spacer(modifier = Modifier.height(22.dp))
@@ -112,13 +108,10 @@ private fun ModalContent(
             shape = RoundedCornerShape(10.dp),
             colors = ButtonDefaults.buttonColors(LightBlue)
         ) {
-            Text(
+            RegularText(
                 text = stringResource(action2),
                 color = Color.Black,
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 15.sp,
-                fontFamily = Poppins,
-
             )
         }
         Spacer(modifier = Modifier.height(60.dp))

@@ -79,7 +79,7 @@ fun CheckFileScreen(navController: NavHostController, viewModel: CheckFileViewMo
                     )
                 }
             },
-            title = { LargeText(text = stringResource(id = R.string.category_check_account)) },
+            title = { LargeText(text = stringResource(id = R.string.category_check_file)) },
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = Color.Transparent,
                 titleContentColor = Color.Black
@@ -87,8 +87,11 @@ fun CheckFileScreen(navController: NavHostController, viewModel: CheckFileViewMo
         )
     }, bottomBar = {
         BottomNav(navController = navController)
-    }) {
-        Box(modifier = Modifier.pullRefresh(refreshState).padding(it)) {
+    }, containerColor = Color.White
+    ) {
+        Box(modifier = Modifier
+            .pullRefresh(refreshState)
+            .padding(it)) {
             ScreenContent(modifier = Modifier, navController, viewModel)
             PullRefreshIndicator(
                 refreshing = isRefreshing,
@@ -121,16 +124,18 @@ private fun ScreenContent(
                 modifier = modifier
                     .fillMaxSize()
                     .background(Color.White)
-                    .padding(12.dp),
+                    .padding(horizontal = 12.dp),
                 verticalArrangement = Arrangement.Top
             ) {
+                Spacer(modifier = Modifier.height(8.dp))
                 RegularText(
                     text = "Berkas yang perlu diperiksa: ",
                     modifier = Modifier.padding(start = 16.dp)
                 )
+                Spacer(modifier = Modifier.height(8.dp))
                 LazyColumn(
                     modifier = Modifier
-                        .padding(16.dp)
+                        .padding(horizontal = 16.dp)
                 ) {
                     items(data) {
                         FileList(username = it.authorUserName, postType = it.postType) {
