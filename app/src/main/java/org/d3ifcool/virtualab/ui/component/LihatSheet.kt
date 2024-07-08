@@ -13,15 +13,21 @@ fun LihatSheet(state: BottomSheetScaffoldState, navController: NavHostController
     BottomSheet(
         scaffoldSheetState = state,
         title = R.string.lihat_slide_up_title,
-        action1 = R.string.lihat_materi_title,
+        action1 = R.string.materi_title,
         onClickAct1 = {
             navController.navigate(Screen.GuruMateri.route) {
                 popUpTo(Screen.GuruDashboard.route)
             }
         },
-        action2 = R.string.lihat_materi_title,
+        action2 = R.string.latihan,
         onClickAct2 = {
             navController.navigate(Screen.GuruLatihan.route) {
+                popUpTo(Screen.GuruDashboard.route)
+            }
+        },
+        action3 = R.string.contoh_reaksi_icon_bottomsheet,
+        onClickAct3 = {
+            navController.navigate(Screen.ListContohReaksiScreen.route) {
                 popUpTo(Screen.GuruDashboard.route)
             }
         }
