@@ -58,9 +58,6 @@ data class CombinedPost(
     @Json(name = "description")
     val description: String,
 
-    @Json(name = "created_at")
-    val updatedAt: String,
-
     @Json(name = "post_type")
     val postType: String,
 
@@ -75,6 +72,4 @@ data class PendingPosts(
     val authorUserName: String,
     @Json(name = "post_type")
     val postType: String,
-    @Json(name = "created_at")
-    val createdAt: String
 )
