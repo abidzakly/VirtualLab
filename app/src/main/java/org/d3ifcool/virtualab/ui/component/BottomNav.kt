@@ -156,16 +156,14 @@ fun BottomNav(
                             popUpTo(Screen.Login.route)
                         }
                     }
-                    if (currentRoute == Screen.GuruLatihan.route || currentRoute == Screen.GuruMateri.route) {
+                    if (currentRoute == Screen.GuruLatihan.route || currentRoute == Screen.GuruMateri.route || currentRoute == Screen.ListContohReaksiScreen.route) {
                         BottomNavButton(
                             icon = R.drawable.baseline_history_24,
                             title = R.string.bottom_app_riwayat,
                             isSelected = true,
-                            isSheet = isClicked
+                            isSheet = true
                         ) {
-                            navController.navigate(currentRoute) {
-                                popUpTo(Screen.GuruDashboard.route)
-                            }
+                            onClick()
                         }
                     } else {
                         BottomNavButton(

@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -227,37 +228,50 @@ private fun ScreenContent(
             ApiStatus.SUCCESS -> {
                 LazyColumn(
                     modifier = Modifier
-                        .padding(horizontal = 32.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .padding(horizontal = 32.dp).fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = if (combinedPosts.isNotEmpty()) Arrangement.Top else Arrangement.Center
                 ) {
                     item {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        MediumText(
-                            text = stringResource(id = R.string.dashboard_guru_sub_header),
-                            modifier = Modifier
-                                .padding(vertical = 16.dp)
-                                .fillMaxWidth()
-                        )
+                        if (combinedPosts.isNotEmpty()) {
+                            Spacer(modifier = Modifier.height(8.dp))
+                            MediumText(
+                                text = stringResource(id = R.string.dashboard_guru_sub_header),
+                                modifier = Modifier
+                                    .padding(vertical = 16.dp)
+                                    .fillMaxWidth()
+                            )
+                        }
                     }
-                    items(combinedPosts) {
-                        Log.d("GuruDashboard", "CombinedPost: $it")
-                        Spacer(modifier = Modifier.height(8.dp))
-                        ContentList(
-                            title = it.title,
-                            desc = if (it.postType == "Materi") it.description else "Tingkat Kesulitan: ${it.description}",
-                            status = it.approvalStatus
-                        ) {
-                            val route = if (it.postType == "Materi") {
-                                Screen.GuruDetailMateri.withId(it.postId)
-                            } else {
-                                if (it.approvalStatus == "DRAFT") {
-                                    Screen.AddSoal.withId(it.postId)
+                    if (combinedPosts.isNotEmpty()) {
+                        items(combinedPosts) {
+                            Log.d("GuruDashboard", "CombinedPost: $it")
+                            Spacer(modifier = Modifier.height(8.dp))
+                            ContentList(
+                                title = it.title,
+                                desc = if (it.postType == "Materi") it.description else "Tingkat Kesulitan: ${it.description}",
+                                status = it.approvalStatus
+                            ) {
+                                val route = if (it.postType == "Materi") {
+                                    Screen.GuruDetailMateri.withId(it.postId)
                                 } else {
-                                    Screen.GuruDetailLatihan.withId(it.postId)
+                                    if (it.approvalStatus == "DRAFT") {
+                                        Screen.AddSoal.withId(it.postId)
+                                    } else {
+                                        Screen.GuruDetailLatihan.withId(it.postId)
+                                    }
+                                }
+                                viewModel.clearMessage()
+                                navController.navigate(route)
+                            }
+                        }
+                    } else {
+                        item {
+                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                GuruEmptyState(text = "Anda belum menambahkan data.") {
+                                    viewModel.getPosts()
                                 }
                             }
-                            viewModel.clearMessage()
-                            navController.navigate(route)
                         }
                     }
                 }
