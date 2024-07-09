@@ -1,6 +1,5 @@
 package org.d3ifcool.virtualab.ui.screen.admin.approval.account
 
-import UserRepository
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -13,6 +12,7 @@ import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.data.model.CombinedUser
 import org.d3ifcool.virtualab.data.model.MessageResponse
 import org.d3ifcool.virtualab.data.network.ApiStatus
+import org.d3ifcool.virtualab.repository.UserRepository
 import org.d3ifcool.virtualab.utils.Resource
 
 class UserInfoViewModel(private val userId: Int, private val userRepository: UserRepository) : ViewModel() {

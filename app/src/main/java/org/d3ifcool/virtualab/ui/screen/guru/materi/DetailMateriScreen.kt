@@ -58,6 +58,7 @@ import org.d3ifcool.virtualab.data.network.ApiService
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
+import org.d3ifcool.virtualab.ui.component.ImageDialog
 import org.d3ifcool.virtualab.ui.component.LargeText
 import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.LoadingStateDialog
@@ -188,10 +189,11 @@ private fun ScreenContent(
                     verticalArrangement = Arrangement.Center
                 ) {
                     if (materiItem.mediaType == "image") {
+                        var showImgDialog by remember { mutableStateOf(false) }
                         Column(modifier = Modifier.fillMaxWidth()) {
                             AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(ApiService.getMateriMedia(materiItem.materialId))
+                                model = ImageRequest.Builder(context)
+                                    .data(stringUri)
                                     .diskCachePolicy(CachePolicy.DISABLED)
                                     .memoryCachePolicy(CachePolicy.DISABLED)
                                     .crossfade(true)
@@ -204,7 +206,15 @@ private fun ScreenContent(
                                     .size(225.dp)
                                     .aspectRatio(1f)
                                     .clip(RoundedCornerShape(10.dp))
+                                    .clickable {
+                                        showImgDialog = true
+                                    }
                             )
+                            if (showImgDialog) {
+                                ImageDialog(imageUrl = stringUri, context = context) {
+                                    showImgDialog = false
+                                }
+                            }
                         }
                     } else {
                         Box(

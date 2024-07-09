@@ -1,8 +1,9 @@
-package org.d3ifcool.virtualab.ui.screen.guru.contohReaksi
+package org.d3ifcool.virtualab.ui.screen.guru.contohreaksi
 
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -49,6 +50,7 @@ import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.GuruEmptyState
+import org.d3ifcool.virtualab.ui.component.ImageDialog
 import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.LoadingStateDialog
 import org.d3ifcool.virtualab.ui.component.PopUpDialog
@@ -128,6 +130,7 @@ private fun ScreenContent(
 ) {
     val data by viewModel.articleData.collectAsState()
     val status by viewModel.apiStatus.collectAsState()
+    var showImgDialog by remember { mutableStateOf(false) }
 
     when (status) {
         ApiStatus.IDLE -> null
@@ -136,7 +139,8 @@ private fun ScreenContent(
         }
 
         ApiStatus.SUCCESS -> {
-            val articleItem = data!!.artikelItem!!
+            val articleItem = data!!.articleItem!!
+            val imageUrl = ApiService.getArticleMedia(articleItem.articleId)
             onArticleId(articleItem.articleId)
             Column(
                 modifier = modifier
@@ -159,10 +163,12 @@ private fun ScreenContent(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                        Column(modifier = Modifier.fillMaxWidth()) {
+                        Column(modifier = Modifier.fillMaxWidth().clickable {
+                            showImgDialog = true
+                        }) {
                             AsyncImage(
                                 model = ImageRequest.Builder(context)
-                                    .data(ApiService.getArticleMedia(articleItem.articleId))
+                                    .data(imageUrl)
                                     .diskCachePolicy(CachePolicy.DISABLED)
                                     .memoryCachePolicy(CachePolicy.DISABLED)
                                     .crossfade(true)
@@ -193,6 +199,11 @@ private fun ScreenContent(
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Justify
                 )
+            }
+            if (showImgDialog) {
+                ImageDialog(imageUrl = imageUrl, context = context) {
+                    showImgDialog = false
+                }
             }
         }
 

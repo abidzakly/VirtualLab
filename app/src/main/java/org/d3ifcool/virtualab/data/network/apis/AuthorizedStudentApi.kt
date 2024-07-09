@@ -2,6 +2,7 @@ package org.d3ifcool.virtualab.data.network.apis
 
 import org.d3ifcool.virtualab.data.model.ApprovedLatihan
 import org.d3ifcool.virtualab.data.model.ApprovedMateri
+import org.d3ifcool.virtualab.data.model.ApprovedArticle
 import org.d3ifcool.virtualab.data.model.NilaiDetail
 import org.d3ifcool.virtualab.data.model.SoalMurid
 import org.d3ifcool.virtualab.data.model.MessageResponse
@@ -20,6 +21,10 @@ interface AuthorizedStudentApi {
 //    Get All Approved Latihans
     @GET("/v1/exercises/approved")
     suspend fun getLatihans(): List<ApprovedLatihan>
+
+//    Get All Approved Articles
+    @GET("/v1/articles/approved")
+    suspend fun getArticles(): List<ApprovedArticle>
 
 //    Submit Answer
     @POST("/v1/exercises/{exerciseId}/practice")

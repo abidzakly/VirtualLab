@@ -2,8 +2,8 @@ package org.d3ifcool.virtualab.data.network.apis
 
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import org.d3ifcool.virtualab.data.model.Artikel
-import org.d3ifcool.virtualab.data.model.ArtikelItem
+import org.d3ifcool.virtualab.data.model.Article
+import org.d3ifcool.virtualab.data.model.ArticleItem
 import org.d3ifcool.virtualab.data.model.MessageResponse
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -24,12 +24,12 @@ interface AuthorizedArticleApi {
     ): MessageResponse
 
     @GET("/v1/articles")
-    suspend fun getMyArticles(): List<ArtikelItem>
+    suspend fun getMyArticles(): List<ArticleItem>
 
     @GET("/v1/articles/{articleId}")
     suspend fun getDetailArticle(
         @Path("articleId") id: Int
-    ): Artikel
+    ): Article
 
     @Multipart
     @PUT("/v1/articles/{articleId}")

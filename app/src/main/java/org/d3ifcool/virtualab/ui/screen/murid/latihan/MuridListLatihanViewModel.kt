@@ -1,6 +1,5 @@
 package org.d3ifcool.virtualab.ui.screen.murid.latihan
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -10,7 +9,6 @@ import org.d3ifcool.virtualab.data.model.ApprovedLatihan
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.repository.StudentRepository
 import org.d3ifcool.virtualab.utils.Resource
-import org.d3ifcool.virtualab.utils.isInternetAvailable
 
 class MuridListLatihanViewModel(
     private val studentRepository: StudentRepository
@@ -55,8 +53,7 @@ class MuridListLatihanViewModel(
         isRefreshing.value = false
     }
 
-    fun clearStatus() {
-        apiStatus.value = ApiStatus.IDLE
+    fun clearMessage() {
         errorMessage.value = null
     }
 

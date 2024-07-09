@@ -7,29 +7,21 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,7 +32,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.data.model.ApprovedMateri
 import org.d3ifcool.virtualab.data.network.ApiStatus
@@ -56,6 +47,7 @@ import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.ui.theme.GrayTitle
 import org.d3ifcool.virtualab.ui.theme.LightBlue
+import org.d3ifcool.virtualab.utils.errorTextCheck
 
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -78,7 +70,9 @@ fun MuridMateriScreen(navController: NavHostController, viewModel: MuridMateriVi
         },
         containerColor = Color.White
     ) {
-        Box(modifier = Modifier.pullRefresh(refreshState).padding(bottom = it.calculateBottomPadding())) {
+        Box(modifier = Modifier
+            .pullRefresh(refreshState)
+            .padding(bottom = it.calculateBottomPadding())) {
             ScreenContent(
                 modifier = Modifier,
                 navController = navController,
@@ -103,6 +97,7 @@ private fun ScreenContent(
 ) {
     val materis by viewModel.materis.collectAsState()
     val status by viewModel.apiStatus.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
 
     GradientPage(
         modifier = modifier,
@@ -134,8 +129,9 @@ private fun ScreenContent(
             }
 
             ApiStatus.FAILED -> {
-                MuridEmptyState(text = stringResource(id = R.string.empty_materi)) {
+                MuridEmptyState(text = errorTextCheck(errorMessage, stringResource(id = R.string.empty_materi))) {
                     viewModel.getApprovedMateris()
+                    viewModel.clearMessage()
                 }
             }
         }

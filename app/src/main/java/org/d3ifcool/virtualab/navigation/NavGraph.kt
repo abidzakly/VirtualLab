@@ -1,6 +1,5 @@
 package org.d3ifcool.virtualab.navigation
 
-import UserRepository
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -26,6 +25,7 @@ import org.d3ifcool.virtualab.repository.ExerciseRepository
 import org.d3ifcool.virtualab.repository.IntroRepository
 import org.d3ifcool.virtualab.repository.MaterialRepository
 import org.d3ifcool.virtualab.repository.StudentRepository
+import org.d3ifcool.virtualab.repository.UserRepository
 import org.d3ifcool.virtualab.ui.screen.AboutScreen
 import org.d3ifcool.virtualab.ui.screen.AuthViewModel
 import org.d3ifcool.virtualab.ui.screen.admin.dashboard.AdminDashboardScreen
@@ -64,12 +64,12 @@ import org.d3ifcool.virtualab.ui.screen.admin.approval.content.CheckFileViewMode
 import org.d3ifcool.virtualab.ui.screen.admin.approval.content.FileInfoViewModel
 import org.d3ifcool.virtualab.ui.screen.admin.introduction.IntroContentViewModel
 import org.d3ifcool.virtualab.ui.screen.admin.introduction.UpdateIntroViewModel
-import org.d3ifcool.virtualab.ui.screen.guru.contohReaksi.AddContohReaksi
-import org.d3ifcool.virtualab.ui.screen.guru.contohReaksi.AddContohReaksiViewModel
-import org.d3ifcool.virtualab.ui.screen.guru.contohReaksi.DetailContohReaksi
-import org.d3ifcool.virtualab.ui.screen.guru.contohReaksi.DetailContohReaksiViewModel
-import org.d3ifcool.virtualab.ui.screen.guru.contohReaksi.GuruContohReaksiViewModel
-import org.d3ifcool.virtualab.ui.screen.guru.contohReaksi.ListContohReaksiScreen
+import org.d3ifcool.virtualab.ui.screen.guru.contohreaksi.AddContohReaksi
+import org.d3ifcool.virtualab.ui.screen.guru.contohreaksi.AddContohReaksiViewModel
+import org.d3ifcool.virtualab.ui.screen.guru.contohreaksi.DetailContohReaksi
+import org.d3ifcool.virtualab.ui.screen.guru.contohreaksi.DetailContohReaksiViewModel
+import org.d3ifcool.virtualab.ui.screen.guru.contohreaksi.GuruContohReaksiViewModel
+import org.d3ifcool.virtualab.ui.screen.guru.contohreaksi.ListContohReaksiScreen
 import org.d3ifcool.virtualab.ui.screen.guru.dashboard.GuruDashboardViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddLatihanViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddSoalScreen
@@ -86,6 +86,7 @@ import org.d3ifcool.virtualab.ui.screen.murid.latihan.MuridListLatihanViewModel
 import org.d3ifcool.virtualab.ui.screen.murid.materi.MuridDetailMateriViewModel
 import org.d3ifcool.virtualab.ui.screen.murid.materi.MuridMateriViewModel
 import org.d3ifcool.virtualab.ui.screen.murid.nilai.NilaiViewModel
+import org.d3ifcool.virtualab.ui.screen.murid.reaksi.ContohReaksiScreenViewModel
 import org.d3ifcool.virtualab.utils.UserDataStore
 import org.d3ifcool.virtualab.utils.ViewModelFactory
 
@@ -232,7 +233,9 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
             MuridDetailLatihanScreen(navController, viewModel, exerciseTitle)
         }
         composable(route = Screen.Reaksi.route) {
-            ReaksiScreen(navController)
+            val factory = ViewModelFactory(studentRepository = studentRepository)
+            val viewModel: ContohReaksiScreenViewModel = viewModel(factory = factory)
+            ReaksiScreen(navController, viewModel)
         }
         composable(route = Screen.Nilai.route) {
             val factory = ViewModelFactory(studentRepository = studentRepository)

@@ -2,8 +2,8 @@ package org.d3ifcool.virtualab.repository
 
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import org.d3ifcool.virtualab.data.model.Artikel
-import org.d3ifcool.virtualab.data.model.ArtikelItem
+import org.d3ifcool.virtualab.data.model.Article
+import org.d3ifcool.virtualab.data.model.ArticleItem
 import org.d3ifcool.virtualab.data.model.MessageResponse
 import org.d3ifcool.virtualab.data.network.apis.AuthorizedArticleApi
 import org.d3ifcool.virtualab.utils.GenericMessage
@@ -39,7 +39,7 @@ class ArticleRepository(
         }
     }
 
-    suspend fun getMyArticle(): Resource<List<ArtikelItem>> {
+    suspend fun getMyArticle(): Resource<List<ArticleItem>> {
         return try {
             val response = articleApi.getMyArticles()
             Resource.Success(response)
@@ -61,7 +61,7 @@ class ArticleRepository(
         }
     }
 
-    suspend fun getDetailArticle(articleId: Int): Resource<Artikel> {
+    suspend fun getDetailArticle(articleId: Int): Resource<Article> {
         return try {
             val response = articleApi.getDetailArticle(articleId)
             Resource.Success(response)

@@ -2,6 +2,7 @@ package org.d3ifcool.virtualab.repository
 
 import org.d3ifcool.virtualab.data.model.ApprovedLatihan
 import org.d3ifcool.virtualab.data.model.ApprovedMateri
+import org.d3ifcool.virtualab.data.model.ApprovedArticle
 import org.d3ifcool.virtualab.data.model.MessageResponse
 import org.d3ifcool.virtualab.data.model.Nilai
 import org.d3ifcool.virtualab.data.model.NilaiDetail
@@ -86,6 +87,29 @@ class StudentRepository(private val studentApi: AuthorizedStudentApi) {
         return try {
             val response = studentApi.getResultDetail(resultId)
             Resource.Success(response)
+        } catch (e: HttpException) {
+            e.printStackTrace()
+            val errorMessage =
+                when (e.code()) {
+                    500 -> GenericMessage.applicationError
+                    413 -> GenericMessage.applicationError
+                    422 -> GenericMessage.inputError
+                    else -> {
+                        e.response()?.errorBody()?.string()?.replace(Regex("""[{}":]+"""), "")
+                            ?.replace("detail", "")
+                    }
+                }
+            Resource.Error(errorMessage!!)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(GenericMessage.noInternetError)
+        }
+    }
+
+    suspend fun getApprovedArticles(): Resource<List<ApprovedArticle>> {
+        return try {
+         val response = studentApi.getArticles()
+         Resource.Success(response)
         } catch (e: HttpException) {
             e.printStackTrace()
             val errorMessage =

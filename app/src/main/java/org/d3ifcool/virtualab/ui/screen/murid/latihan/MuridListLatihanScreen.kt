@@ -46,6 +46,7 @@ import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.SmallText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
+import org.d3ifcool.virtualab.utils.errorTextCheck
 import org.d3ifcool.virtualab.utils.isInternetAvailable
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -93,10 +94,10 @@ private fun ScreenContent(
     navController: NavHostController,
     viewModel: MuridListLatihanViewModel
 ) {
-    val context = LocalContext.current
     var isEmpty by remember { mutableStateOf(false) }
     val data by viewModel.approvedLatihan.collectAsState()
     val status by viewModel.apiStatus.collectAsState()
+    val errorMesssage by viewModel.errorMessage.collectAsState()
 
     GradientPage(
         modifier,
@@ -134,14 +135,9 @@ private fun ScreenContent(
                 }
 
                 ApiStatus.FAILED -> {
-                    if (isInternetAvailable(context = context)) {
-                        MuridEmptyState(text = "Belum ada latihan yang dikerjakan.") {
-                            viewModel.getApprovedLatihan()
-                        }
-                    } else {
-                        MuridEmptyState(text = "Gagal memuat data.\nPastikan anda terhubung ke internet.") {
-                            viewModel.getApprovedLatihan()
-                        }
+                    MuridEmptyState(text = errorTextCheck(errorMesssage, stringResource(id = R.string.empty_latihan))) {
+                        viewModel.getApprovedLatihan()
+                        viewModel.clearMessage()
                     }
                 }
             }

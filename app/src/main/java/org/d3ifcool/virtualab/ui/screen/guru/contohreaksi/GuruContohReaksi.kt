@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.ui.screen.guru.contohReaksi
+package org.d3ifcool.virtualab.ui.screen.guru.contohreaksi
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -46,7 +46,6 @@ import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.MediumText
 import org.d3ifcool.virtualab.ui.component.RiwayatSheet
 import org.d3ifcool.virtualab.ui.component.TopNav
-import org.d3ifcool.virtualab.ui.screen.guru.materi.GuruMateriViewModel
 import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.utils.GenericMessage
 

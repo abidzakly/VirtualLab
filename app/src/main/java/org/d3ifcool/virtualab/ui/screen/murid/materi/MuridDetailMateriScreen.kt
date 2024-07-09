@@ -47,6 +47,7 @@ import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.data.network.ApiService
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.ui.component.BottomNav
+import org.d3ifcool.virtualab.ui.component.ImageDialog
 import org.d3ifcool.virtualab.ui.component.LargeText
 import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.MediumText
@@ -134,12 +135,13 @@ private fun DetailContent(materialId: Int, mediaType: String, context: Context) 
     }
     val stringUri = ApiService.getMateriMedia(materialId)
     if (mediaType == "image") {
+        var showImgDialog by remember { mutableStateOf(false) }
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
+                model = ImageRequest.Builder(context)
                     .data(stringUri)
                     .crossfade(true)
                     .build(),
@@ -151,7 +153,15 @@ private fun DetailContent(materialId: Int, mediaType: String, context: Context) 
                     .height(225.dp)
                     .aspectRatio(1f)
                     .clip(RoundedCornerShape(10.dp))
+                    .clickable {
+                        showImgDialog = true
+                    }
             )
+            if (showImgDialog) {
+                ImageDialog(imageUrl = stringUri, context = context) {
+                    showImgDialog = false
+                }
+            }
         }
     } else {
         Box(

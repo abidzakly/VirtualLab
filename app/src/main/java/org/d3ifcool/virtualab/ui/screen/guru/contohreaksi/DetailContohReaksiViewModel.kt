@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.ui.screen.guru.contohReaksi
+package org.d3ifcool.virtualab.ui.screen.guru.contohreaksi
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import org.d3ifcool.virtualab.data.model.Artikel
+import org.d3ifcool.virtualab.data.model.Article
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.repository.ArticleRepository
 import org.d3ifcool.virtualab.utils.Resource
@@ -15,7 +15,7 @@ class DetailContohReaksiViewModel(
     private val articleId: Int,
     private val articleRepository: ArticleRepository
 ) : ViewModel() {
-    var articleData = MutableStateFlow<Artikel?>(null)
+    var articleData = MutableStateFlow<Article?>(null)
         private set
 
     var apiStatus = MutableStateFlow(ApiStatus.LOADING)

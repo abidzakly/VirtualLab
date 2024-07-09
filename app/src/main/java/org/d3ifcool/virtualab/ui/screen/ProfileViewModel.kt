@@ -1,6 +1,5 @@
 package org.d3ifcool.virtualab.ui.screen
 
-import UserRepository
 import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
@@ -20,6 +19,7 @@ import org.d3ifcool.virtualab.data.model.Murid
 import org.d3ifcool.virtualab.data.model.UserUpdate
 import org.d3ifcool.virtualab.data.network.ApiService
 import org.d3ifcool.virtualab.data.network.ApiStatus
+import org.d3ifcool.virtualab.repository.UserRepository
 import org.d3ifcool.virtualab.utils.Resource
 import org.d3ifcool.virtualab.utils.UserDataStore
 import org.d3ifcool.virtualab.utils.toMultipartBody

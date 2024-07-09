@@ -1,6 +1,5 @@
 package org.d3ifcool.virtualab.ui.screen.murid.materi
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -51,8 +50,7 @@ class MuridMateriViewModel(private val studentRepository: StudentRepository): Vi
         isRefreshing.value = false
     }
 
-    fun clearStatus() {
-        apiStatus.value = ApiStatus.IDLE
+    fun clearMessage() {
         errorMessage.value = null
     }
 

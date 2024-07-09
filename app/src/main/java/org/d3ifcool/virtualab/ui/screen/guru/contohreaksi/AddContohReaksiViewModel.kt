@@ -1,6 +1,5 @@
-package org.d3ifcool.virtualab.ui.screen.guru.contohReaksi
+package org.d3ifcool.virtualab.ui.screen.guru.contohreaksi
 
-import android.content.ContentResolver
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.d3ifcool.virtualab.data.model.ArtikelItem
+import org.d3ifcool.virtualab.data.model.ArticleItem
 import org.d3ifcool.virtualab.data.model.MessageResponse
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.repository.ArticleRepository
@@ -20,7 +19,7 @@ class AddContohReaksiViewModel (
     private val existedArticleId: Int? = null,
     private val articleRepository: ArticleRepository
 ) : ViewModel() {
-    var articleData = MutableStateFlow<ArtikelItem?>(null)
+    var articleData = MutableStateFlow<ArticleItem?>(null)
         private set
 
     var articleId = MutableStateFlow<Int?>(null)
@@ -50,7 +49,7 @@ class AddContohReaksiViewModel (
             apiStatus.value = ApiStatus.LOADING
             when (val response = articleRepository.getDetailArticle(existedArticleId!!)) {
                 is Resource.Success -> {
-                    articleData.value = response.data!!.artikelItem
+                    articleData.value = response.data!!.articleItem
                     apiStatus.value = ApiStatus.SUCCESS
                 }
 

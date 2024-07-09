@@ -56,6 +56,7 @@ import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.ui.theme.GreenStatus
 import org.d3ifcool.virtualab.ui.theme.RedStatus
 import org.d3ifcool.virtualab.ui.theme.YellowStatus
+import org.d3ifcool.virtualab.utils.errorTextCheck
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -103,6 +104,7 @@ private fun ScreenContent(
 ) {
     val myNilai by viewModel.nilaiData.collectAsState()
     val status by viewModel.apiStatus.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
 
 
     GradientPage(modifier, image = R.drawable.nilai_illustration) {
@@ -128,8 +130,9 @@ private fun ScreenContent(
             }
 
             ApiStatus.FAILED -> {
-                MuridEmptyState(text = stringResource(id = R.string.empty_nilai)) {
+                MuridEmptyState(text = errorTextCheck(errorMessage, stringResource(id = R.string.empty_nilai))) {
                     viewModel.getMyNilai()
+                    viewModel.clearMessage()
                 }
             }
         }

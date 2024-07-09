@@ -1,6 +1,5 @@
 package org.d3ifcool.virtualab.utils
 
-import UserRepository
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import org.d3ifcool.virtualab.repository.ArticleRepository
@@ -9,6 +8,7 @@ import org.d3ifcool.virtualab.repository.ExerciseRepository
 import org.d3ifcool.virtualab.repository.IntroRepository
 import org.d3ifcool.virtualab.repository.MaterialRepository
 import org.d3ifcool.virtualab.repository.StudentRepository
+import org.d3ifcool.virtualab.repository.UserRepository
 import org.d3ifcool.virtualab.ui.screen.AuthViewModel
 import org.d3ifcool.virtualab.ui.screen.ProfileViewModel
 import org.d3ifcool.virtualab.ui.screen.admin.approval.account.CheckUsersViewModel
@@ -17,9 +17,9 @@ import org.d3ifcool.virtualab.ui.screen.admin.approval.content.CheckFileViewMode
 import org.d3ifcool.virtualab.ui.screen.admin.approval.content.FileInfoViewModel
 import org.d3ifcool.virtualab.ui.screen.admin.introduction.IntroContentViewModel
 import org.d3ifcool.virtualab.ui.screen.admin.introduction.UpdateIntroViewModel
-import org.d3ifcool.virtualab.ui.screen.guru.contohReaksi.AddContohReaksiViewModel
-import org.d3ifcool.virtualab.ui.screen.guru.contohReaksi.DetailContohReaksiViewModel
-import org.d3ifcool.virtualab.ui.screen.guru.contohReaksi.GuruContohReaksiViewModel
+import org.d3ifcool.virtualab.ui.screen.guru.contohreaksi.AddContohReaksiViewModel
+import org.d3ifcool.virtualab.ui.screen.guru.contohreaksi.DetailContohReaksiViewModel
+import org.d3ifcool.virtualab.ui.screen.guru.contohreaksi.GuruContohReaksiViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.dashboard.GuruDashboardViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddLatihanViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddSoalViewModel
@@ -35,6 +35,7 @@ import org.d3ifcool.virtualab.ui.screen.murid.latihan.MuridListLatihanViewModel
 import org.d3ifcool.virtualab.ui.screen.murid.materi.MuridDetailMateriViewModel
 import org.d3ifcool.virtualab.ui.screen.murid.materi.MuridMateriViewModel
 import org.d3ifcool.virtualab.ui.screen.murid.nilai.NilaiViewModel
+import org.d3ifcool.virtualab.ui.screen.murid.reaksi.ContohReaksiScreenViewModel
 
 class ViewModelFactory(
     private val id: Int? = null,
@@ -103,6 +104,8 @@ class ViewModelFactory(
             return DetailContohReaksiViewModel(id!!, articleRepository!!) as T
         } else if (modelClass.isAssignableFrom(GuruContohReaksiViewModel::class.java)) {
             return GuruContohReaksiViewModel(articleRepository!!) as T
+        } else if (modelClass.isAssignableFrom(ContohReaksiScreenViewModel::class.java)) {
+            return ContohReaksiScreenViewModel(studentRepository!!) as T
         } else {
             throw IllegalArgumentException("Unknown ViewModel class")
         }

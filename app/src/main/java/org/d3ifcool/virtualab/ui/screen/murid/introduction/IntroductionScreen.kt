@@ -88,6 +88,7 @@ import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.ui.theme.DarkBlueText
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.Poppins
+import org.d3ifcool.virtualab.utils.errorTextCheck
 import java.net.CookieHandler
 import java.net.CookieManager
 import java.net.CookiePolicy
@@ -97,6 +98,7 @@ import java.net.CookiePolicy
 fun IntroductionScreen(navController: NavHostController, viewModel: IntroductionViewModel) {
     val data by viewModel.introData.collectAsState()
     val status by viewModel.apiStatus.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
     val videoUri by viewModel.videoUri.collectAsState()
     var isVideoPlaying by remember { mutableStateOf(false) }
     val isRefreshing by viewModel.isRefreshing.collectAsState()
@@ -277,7 +279,8 @@ private fun ScreenContent(
     modifier: Modifier,
     navController: NavHostController,
     data: Introduction? = null,
-    status: ApiStatus = ApiStatus.LOADING
+    status: ApiStatus = ApiStatus.LOADING,
+    errorMessage: String? = null
 ) {
     Column(
         modifier = Modifier
@@ -335,7 +338,7 @@ private fun ScreenContent(
                         )
                         Spacer(modifier = Modifier.height(28.dp))
                         RegularText(
-                            text = "Belum ada data. ",
+                            text = errorTextCheck(errorMessage, "Belum ada data."),
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center
                         )

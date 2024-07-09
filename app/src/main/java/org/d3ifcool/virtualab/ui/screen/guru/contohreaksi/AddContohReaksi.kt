@@ -1,10 +1,8 @@
-package org.d3ifcool.virtualab.ui.screen.guru.contohReaksi
+package org.d3ifcool.virtualab.ui.screen.guru.contohreaksi
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -56,12 +54,12 @@ import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.CustomTextField
 import org.d3ifcool.virtualab.ui.component.GuruEmptyState
+import org.d3ifcool.virtualab.ui.component.ImageDialog
 import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.LoadingStateDialog
 import org.d3ifcool.virtualab.ui.component.MediumText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
-import org.d3ifcool.virtualab.ui.component.VideoPlayer
 import org.d3ifcool.virtualab.ui.theme.DarkBlue
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.utils.GenericMessage
@@ -236,6 +234,7 @@ fun PickImage(
     val context = LocalContext.current
     var fileName by remember { mutableStateOf("") }
     var bitmap: Bitmap? by remember { mutableStateOf(null) }
+    var showImgDialog by remember { mutableStateOf(false) }
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) {
         if (it != null) {
             if (isImage(it, context.contentResolver)) {
@@ -247,7 +246,11 @@ fun PickImage(
                 }
                 onNewImage(bitmap, false)
             } else {
-                Toast.makeText(context, "Media yang diunggah harus bertipe gambar, yaa", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    "Media yang diunggah harus bertipe gambar, yaa",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
         it?.let {
@@ -283,7 +286,10 @@ fun PickImage(
                         .clip(RoundedCornerShape(10.dp))
                         .background(Color.LightGray)
                         .padding(8.dp)
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .clickable {
+                            showImgDialog = true
+                        },
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Image(
@@ -293,6 +299,11 @@ fun PickImage(
                             .size(300.dp)
                             .clip(RoundedCornerShape(10.dp))
                     )
+                }
+                if (showImgDialog) {
+                    ImageDialog(bitmap = it, context = context) {
+                        showImgDialog = false
+                    }
                 }
             }
             RegularText(

@@ -1,3 +1,5 @@
+package org.d3ifcool.virtualab.repository
+
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.d3ifcool.virtualab.data.model.CombinedPost

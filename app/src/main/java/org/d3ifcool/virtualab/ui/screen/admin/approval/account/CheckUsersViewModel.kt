@@ -1,6 +1,5 @@
 package org.d3ifcool.virtualab.ui.screen.admin.approval.account
 
-import UserRepository
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,6 +10,7 @@ import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.data.network.ApiService
 import org.d3ifcool.virtualab.data.model.CombinedUsers
+import org.d3ifcool.virtualab.repository.UserRepository
 import org.d3ifcool.virtualab.utils.Resource
 
 import retrofit2.HttpException

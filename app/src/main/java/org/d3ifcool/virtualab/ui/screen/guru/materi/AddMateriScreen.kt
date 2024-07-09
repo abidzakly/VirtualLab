@@ -57,6 +57,7 @@ import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.CustomTextField
 import org.d3ifcool.virtualab.ui.component.GuruEmptyState
+import org.d3ifcool.virtualab.ui.component.ImageDialog
 import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.LoadingStateDialog
 import org.d3ifcool.virtualab.ui.component.MediumText
@@ -254,7 +255,7 @@ fun PickVideo(
     val context = LocalContext.current
     var fileName by remember { mutableStateOf("") }
     var isVideoPlaying by remember { mutableStateOf(false) }
-
+    var showImgDialog by remember { mutableStateOf(false) }
 
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) {
         if (it != null) {
@@ -321,10 +322,17 @@ fun PickVideo(
                                 modifier = Modifier
                                     .size(300.dp)
                                     .clip(RoundedCornerShape(10.dp))
+                                    .clickable {
+                                        showImgDialog = true
+                                    }
                             )
+                            if (showImgDialog) {
+                                ImageDialog(bitmap = bmp, context = context) {
+                                    showImgDialog = false
+                                }
+                            }
                         }
                     } else {
-
                         if (!isVideoPlaying) {
                             val retriever = MediaMetadataRetriever()
                             retriever.setDataSource(context, uri)

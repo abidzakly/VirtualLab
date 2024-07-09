@@ -2,14 +2,14 @@ package org.d3ifcool.virtualab.data.model
 
 import com.squareup.moshi.Json
 
-data class Artikel(
+data class Article(
     @Json(name = "article_review")
-    val artikelReview: ArtikelReview? = null,
+    val articleReview: ArticleReview? = null,
     @Json(name = "article_item")
-    val artikelItem: ArtikelItem? = null,
+    val articleItem: ArticleItem? = null,
 )
 
-data class ArtikelItem(
+data class ArticleItem(
     @Json(name = "article_id")
     val articleId: Int,
     @Json(name = "author_id")
@@ -21,7 +21,16 @@ data class ArtikelItem(
     val approvalStatus: String
 )
 
-data class ArtikelReview(
+data class ApprovedArticle(
+    @Json(name = "article_id")
+    val articleId: Int,
+    val title: String,
+    @Json(name = "author_name")
+    val authorName: String,
+    val description: String,
+)
+
+data class ArticleReview(
     @Json(name = "article_id")
     val articleId: Int,
     @Json(name = "author_username")
