@@ -116,6 +116,7 @@ import org.d3ifcool.virtualab.ui.theme.Poppins
 import org.d3ifcool.virtualab.ui.theme.RedButton
 import org.d3ifcool.virtualab.utils.GenericMessage
 import org.d3ifcool.virtualab.utils.UserDataStore
+import org.d3ifcool.virtualab.utils.getCroppedImage
 import org.d3ifcool.virtualab.utils.isInternetAvailable
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -729,24 +730,6 @@ private fun SaveUpdatePopup(
                 }
             }
         }
-    }
-}
-
-private fun getCroppedImage(
-    resolver: ContentResolver,
-    result: CropImageView.CropResult
-): Bitmap? {
-    if (!result.isSuccessful) {
-        Log.e("IMAGE", "Error: ${result.error}")
-        return null
-    }
-    val uri = result.uriContent ?: return null
-
-    return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-        MediaStore.Images.Media.getBitmap(resolver, uri)
-    } else {
-        val source = ImageDecoder.createSource(resolver, uri)
-        ImageDecoder.decodeBitmap(source)
     }
 }
 

@@ -2,25 +2,24 @@ package org.d3ifcool.virtualab.repository
 
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import org.d3ifcool.virtualab.data.model.Materi
-import org.d3ifcool.virtualab.data.model.MateriItem
+import org.d3ifcool.virtualab.data.model.Artikel
+import org.d3ifcool.virtualab.data.model.ArtikelItem
 import org.d3ifcool.virtualab.data.model.MessageResponse
-import org.d3ifcool.virtualab.data.network.apis.AuthorizedMateriApi
+import org.d3ifcool.virtualab.data.network.apis.AuthorizedArticleApi
 import org.d3ifcool.virtualab.utils.GenericMessage
 import org.d3ifcool.virtualab.utils.Resource
 import retrofit2.HttpException
 
 class ArticleRepository(
-    private val materialApi: AuthorizedMateriApi
+    private val articleApi: AuthorizedArticleApi
 ) {
-    suspend fun addMateri(
+    suspend fun addArticle(
         title: RequestBody,
-        mediaType: RequestBody,
         description: RequestBody,
         file: MultipartBody.Part
     ): Resource<MessageResponse> {
         return try {
-            val response = materialApi.addMateri(title, mediaType, description, file)
+            val response = articleApi.addArticle(title, description, file)
             Resource.Success(response)
         } catch (e: HttpException) {
             e.printStackTrace()
@@ -40,9 +39,9 @@ class ArticleRepository(
         }
     }
 
-    suspend fun getMyMateri(): Resource<List<MateriItem>> {
+    suspend fun getMyArticle(): Resource<List<ArtikelItem>> {
         return try {
-            val response = materialApi.getMyMateri()
+            val response = articleApi.getMyArticles()
             Resource.Success(response)
         } catch (e: HttpException) {
             e.printStackTrace()
@@ -62,9 +61,9 @@ class ArticleRepository(
         }
     }
 
-    suspend fun getDetailMateri(materialId: Int): Resource<Materi> {
+    suspend fun getDetailArticle(articleId: Int): Resource<Artikel> {
         return try {
-            val response = materialApi.getDetailMateri(materialId)
+            val response = articleApi.getDetailArticle(articleId)
             Resource.Success(response)
         } catch (e: HttpException) {
             e.printStackTrace()
@@ -84,15 +83,14 @@ class ArticleRepository(
         }
     }
 
-    suspend fun updateMateri(
-        materialId: Int,
+    suspend fun updateArticle(
+        articleId: Int,
         title: RequestBody? = null,
-        mediaType: RequestBody? = null,
         description: RequestBody? = null,
         file: MultipartBody.Part? = null
         ): Resource<MessageResponse> {
         return try {
-            val response = materialApi.updateMateri(materialId, title, mediaType, description, file)
+            val response = articleApi.updateArticle(articleId, title, description, file)
             Resource.Success(response)
         } catch (e: HttpException) {
             e.printStackTrace()
@@ -112,9 +110,9 @@ class ArticleRepository(
         }
     }
 
-    suspend fun approveOrReject(materialId: Int, status: String): Resource<MessageResponse> {
+    suspend fun approveOrReject(articleId: Int, status: String): Resource<MessageResponse> {
         return try {
-            val response = materialApi.modifyMateriStatus(materialId, status)
+            val response = articleApi.modifyArticleStatus(articleId, status)
             Resource.Success(response)
         } catch (e: HttpException) {
             e.printStackTrace()
@@ -134,9 +132,9 @@ class ArticleRepository(
         }
     }
 
-    suspend fun deleteMateri(materialId: Int): Resource<MessageResponse> {
+    suspend fun deleteArticle(articleId: Int): Resource<MessageResponse> {
         return try {
-            val response = materialApi.deleteMateri(materialId)
+            val response = articleApi.deleteArticle(articleId)
             Resource.Success(response)
         } catch (e: HttpException) {
             e.printStackTrace()

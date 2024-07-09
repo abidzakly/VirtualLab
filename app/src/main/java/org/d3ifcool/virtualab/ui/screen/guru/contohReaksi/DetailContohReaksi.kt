@@ -3,9 +3,7 @@ package org.d3ifcool.virtualab.ui.screen.guru.contohReaksi
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,7 +18,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -51,19 +48,17 @@ import org.d3ifcool.virtualab.data.network.ApiService
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
-import org.d3ifcool.virtualab.ui.component.LargeText
+import org.d3ifcool.virtualab.ui.component.GuruEmptyState
 import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.LoadingStateDialog
 import org.d3ifcool.virtualab.ui.component.PopUpDialog
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
-import org.d3ifcool.virtualab.ui.component.VideoPlayer
-import org.d3ifcool.virtualab.ui.screen.guru.materi.DetailMateriViewModel
 
 @Composable
-fun DetailContohReaksi(navController: NavHostController, viewModel: DetailMateriViewModel) {
+fun DetailContohReaksi(navController: NavHostController, viewModel: DetailContohReaksiViewModel) {
     val context = LocalContext.current
-    val isDeleting by viewModel.isDeleting.collectAsState()
+    val isDeleting by viewModel.deleteStatus.collectAsState()
     val successMessage by viewModel.successMessage.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
@@ -88,11 +83,11 @@ fun DetailContohReaksi(navController: NavHostController, viewModel: DetailMateri
         }
     }
 
-    var materialId by remember { mutableIntStateOf(0) }
+    var articleId by remember { mutableIntStateOf(0) }
     Scaffold(topBar = {
         TopNav(title = R.string.detail_konten, navController = navController) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = { navController.navigate(Screen.UpdateMateri.withId(materialId)) }) {
+                IconButton(onClick = { navController.navigate(Screen.UpdateContohReaksi.withId(articleId)) }) {
                     Icon(imageVector = Icons.Default.Edit, contentDescription = "Ikon Edit")
                 }
                 IconButton(onClick = { showDialog = true }) {
@@ -107,7 +102,7 @@ fun DetailContohReaksi(navController: NavHostController, viewModel: DetailMateri
         ScreenContent(
             modifier = Modifier.padding(padding),
             viewModel = viewModel,
-            onMaterialId = { materialId = it },
+            onArticleId = { articleId = it },
             context
         )
         if (showDialog) {
@@ -118,7 +113,7 @@ fun DetailContohReaksi(navController: NavHostController, viewModel: DetailMateri
             ) {
                 showDialog = false
                 isLoading = true
-                viewModel.deleteMateri()
+                viewModel.deleteArticle()
             }
         }
     }
@@ -127,15 +122,12 @@ fun DetailContohReaksi(navController: NavHostController, viewModel: DetailMateri
 @Composable
 private fun ScreenContent(
     modifier: Modifier,
-    viewModel: DetailMateriViewModel,
-    onMaterialId: (Int) -> Unit,
+    viewModel: DetailContohReaksiViewModel,
+    onArticleId: (Int) -> Unit,
     context: Context
 ) {
-    val data by viewModel.materiData.collectAsState()
+    val data by viewModel.articleData.collectAsState()
     val status by viewModel.apiStatus.collectAsState()
-    var isVideoPlaying by remember {
-        mutableStateOf(false)
-    }
 
     when (status) {
         ApiStatus.IDLE -> null
@@ -144,9 +136,8 @@ private fun ScreenContent(
         }
 
         ApiStatus.SUCCESS -> {
-            val materiItem = data!!.materiItem!!
-            val stringUri = ApiService.getMateriMedia(materiItem.materialId)
-            onMaterialId(materiItem.materialId)
+            val articleItem = data!!.artikelItem!!
+            onArticleId(articleItem.articleId)
             Column(
                 modifier = modifier
                     .fillMaxSize()
@@ -157,7 +148,7 @@ private fun ScreenContent(
             ) {
                 RegularText(text = stringResource(id = R.string.judul_konten_contoh_reaksi), fontWeight = FontWeight.SemiBold)
                 RegularText(
-                    text = materiItem.title,
+                    text = articleItem.title,
                     fontWeight = FontWeight.Normal
                 )
                 RegularText(
@@ -168,11 +159,10 @@ private fun ScreenContent(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    if (materiItem.mediaType == "image") {
                         Column(modifier = Modifier.fillMaxWidth()) {
                             AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(ApiService.getMateriMedia(materiItem.materialId))
+                                model = ImageRequest.Builder(context)
+                                    .data(ApiService.getArticleMedia(articleItem.articleId))
                                     .diskCachePolicy(CachePolicy.DISABLED)
                                     .memoryCachePolicy(CachePolicy.DISABLED)
                                     .crossfade(true)
@@ -187,50 +177,9 @@ private fun ScreenContent(
                                     .clip(RoundedCornerShape(10.dp))
                             )
                         }
-                    } else {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(if (isVideoPlaying) Color.Black.copy(alpha = 0.8f) else Color.Transparent)
-                                .clickable { isVideoPlaying = true },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            if (!isVideoPlaying) {
-                                AsyncImage(
-                                    model = ImageRequest.Builder(LocalContext.current)
-                                        .data("$stringUri/thumbnail")
-                                        .diskCachePolicy(CachePolicy.DISABLED)
-                                        .memoryCachePolicy(CachePolicy.DISABLED)
-                                        .crossfade(true)
-                                        .build(),
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
-                                    placeholder = painterResource(id = R.drawable.loading_img),
-                                    error = painterResource(id = R.drawable.broken_image),
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(10.dp))
-                                        .aspectRatio(1f)
-                                        .padding(4.dp)
-                                )
-                                Icon(
-                                    painter = painterResource(id = R.drawable.play_button),
-                                    contentDescription = "Play Button",
-                                    tint = Color.White
-                                )
-                            } else {
-                                VideoPlayer(
-                                    media = stringUri,
-                                    isUri = false,
-                                    appContext = context
-                                ) {
-                                    isVideoPlaying = it
-                                }
-                            }
-                        }
-                    }
                     Spacer(modifier = Modifier.padding(vertical = 6.dp))
                     RegularText(
-                        text = materiItem.filename,
+                        text = articleItem.filename,
                         fontWeight = FontWeight.Normal,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -240,7 +189,7 @@ private fun ScreenContent(
                     fontWeight = FontWeight.SemiBold
                 )
                 RegularText(
-                    text = materiItem.description,
+                    text = articleItem.description,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Justify
                 )
@@ -248,15 +197,8 @@ private fun ScreenContent(
         }
 
         ApiStatus.FAILED -> {
-            Column(
-                modifier = modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                LargeText(text = "Data tidak ditemukan :(")
-                Button(onClick = { viewModel.getMateriDetail() }) {
-                    RegularText(text = "Coba Lagi")
-                }
+            GuruEmptyState(text = "Gagal memuat data.") {
+                viewModel.getArticleDetail()
             }
         }
     }

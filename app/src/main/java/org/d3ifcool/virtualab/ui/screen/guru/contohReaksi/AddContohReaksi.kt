@@ -1,8 +1,8 @@
 package org.d3ifcool.virtualab.ui.screen.guru.contohReaksi
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
@@ -35,7 +35,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
@@ -63,7 +62,6 @@ import org.d3ifcool.virtualab.ui.component.MediumText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.component.VideoPlayer
-import org.d3ifcool.virtualab.ui.screen.guru.materi.AddMateriViewModel
 import org.d3ifcool.virtualab.ui.theme.DarkBlue
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.utils.GenericMessage
@@ -72,7 +70,7 @@ import org.d3ifcool.virtualab.utils.isImage
 import java.io.InputStream
 
 @Composable
-fun AddContohReaksi(navController: NavHostController, viewModel: AddMateriViewModel) {
+fun AddContohReaksi(navController: NavHostController, viewModel: AddContohReaksiViewModel) {
     val context = LocalContext.current
     val status by viewModel.apiStatus.collectAsState()
     val isUploading by viewModel.uploadStatus.collectAsState()
@@ -92,8 +90,8 @@ fun AddContohReaksi(navController: NavHostController, viewModel: AddMateriViewMo
         }
 
         ApiStatus.SUCCESS -> {
-            Toast.makeText(context, successMessage, Toast.LENGTH_LONG).show()
-            navController.navigate(Screen.GuruDashboard.route) {
+            Toast.makeText(context, successMessage, Toast.LENGTH_SHORT).show()
+            navController.navigate(Screen.GuruContohReaksi.route) {
                 popUpTo(Screen.GuruDashboard.route)
             }
             viewModel.clearStatus()
@@ -116,21 +114,18 @@ fun AddContohReaksi(navController: NavHostController, viewModel: AddMateriViewMo
 @Composable
 private fun ScreenContent(
     modifier: Modifier,
-    viewModel: AddMateriViewModel,
+    viewModel: AddContohReaksiViewModel,
     status: ApiStatus,
     context: Context
 ) {
-    val materiData by viewModel.materiData.collectAsState()
-    val materialId by viewModel.materiId.collectAsState()
+    val articleData by viewModel.articleData.collectAsState()
+    val articleId by viewModel.articleId.collectAsState()
 
     var judulKonten by remember { mutableStateOf("") }
-    var isUri by remember { mutableStateOf(true) }
-    var file by remember { mutableStateOf<Any?>(null) }
-    var isFileChanged by remember { mutableStateOf(false) }
-    var mediaType by remember { mutableStateOf("") }
     var descKonten by remember { mutableStateOf("") }
+    var isFileExist by remember { mutableStateOf(false) }
+    var bitmap: Bitmap? by remember { mutableStateOf(null) }
 
-//    var newFile by remember { mutableStateOf<Uri?>(null) }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -147,19 +142,17 @@ private fun ScreenContent(
 
             ApiStatus.FAILED -> {
                 GuruEmptyState(text = "Gagal memuat data.") {
-                    if (materialId != null) {
-                        viewModel.getMateriData()
+                    if (articleId != null) {
+                        viewModel.getArticleData()
                     }
                 }
             }
 
             ApiStatus.SUCCESS -> {
-                if (materiData != null) {
-                    file = ApiService.getMateriMedia(materialId!!)
-                    mediaType = materiData!!.mediaType
-                    isUri = false
-                    judulKonten = materiData!!.title
-                    descKonten = materiData!!.description
+                if (articleData != null) {
+                    judulKonten = articleData!!.title
+                    descKonten = articleData!!.description
+                    isFileExist = true
                 }
                 viewModel.clearStatus()
             }
@@ -171,14 +164,12 @@ private fun ScreenContent(
             placeholder = R.string.judul_konten_placeholder
         )
         MediumText(text = stringResource(R.string.media_konten_contoh_reaksi))
-        PickVideo(
-            file = file,
-            fileType = mediaType,
-            onFileChange = { newFile, newType, isChanged ->
-                file = newFile; mediaType = newType; isFileChanged = isChanged
+        PickImage(
+            isOldFileExist = isFileExist,
+            onNewImage = { bmp, isOldFileChanged ->
+                bitmap = bmp; isFileExist = isOldFileChanged
             },
-            isUri = isUri,
-            onUriDetected = { isUri = it },
+            articleId = articleId
         )
         MediumText(text = stringResource(R.string.desc_konten_contoh_materi))
         CustomTextField(
@@ -197,33 +188,25 @@ private fun ScreenContent(
                 modifier = Modifier
                     .padding(horizontal = 31.dp),
                 onClick = {
-                    if (judulKonten.isEmpty() || descKonten.isEmpty() || file == null) {
+                    if (judulKonten.isEmpty() || descKonten.isEmpty() || bitmap == null && !isFileExist) {
                         Toast.makeText(context, "Isi semua data dulu, yaa", Toast.LENGTH_SHORT)
                             .show()
                     } else {
-                        var newFile: Uri? = null
-                        if (isFileChanged) {
-                            newFile = file as Uri
-                        }
-                        if (materiData == null) {
-                            viewModel.addOrUpdateMateri(
-                                materialId = materialId,
+                        if (articleData == null) {
+                            viewModel.addOrUpdateArticle(
+                                articleId = articleId,
                                 title = judulKonten,
                                 description = descKonten,
-                                uri = newFile,
-                                mediaType = mediaType,
+                                content = bitmap,
                                 isUpdate = false,
-                                contentResolver = context.contentResolver
                             )
                         } else {
-                            viewModel.addOrUpdateMateri(
-                                materialId = materialId,
+                            viewModel.addOrUpdateArticle(
+                                articleId = articleId,
                                 title = judulKonten,
                                 description = descKonten,
-                                uri = newFile,
-                                mediaType = mediaType,
+                                content = bitmap,
                                 isUpdate = true,
-                                contentResolver = context.contentResolver
                             )
                         }
                     }
@@ -235,7 +218,7 @@ private fun ScreenContent(
                 )
             ) {
                 RegularText(
-                    text = if (materialId == null) stringResource(id = R.string.buat_contoh_reaksi) else "Edit Konten",
+                    text = if (articleId == null) stringResource(id = R.string.buat_contoh_reaksi) else "Edit Konten",
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Center
                 )
@@ -245,26 +228,27 @@ private fun ScreenContent(
 }
 
 @Composable
-fun PickVideo(
-    file: Any? = null,
-    fileType: String = "",
-    onFileChange: (Any?, String, Boolean) -> Unit,
-    isUri: Boolean = true,
-    onUriDetected: (Boolean) -> Unit
+fun PickImage(
+    isOldFileExist: Boolean,
+    articleId: Int? = null,
+    onNewImage: (Bitmap?, Boolean) -> Unit
 ) {
     val context = LocalContext.current
-//    val result = remember { mutableStateOf<Any?>(null) }
     var fileName by remember { mutableStateOf("") }
-    var isVideoPlaying by remember { mutableStateOf(false) }
-
-
+    var bitmap: Bitmap? by remember { mutableStateOf(null) }
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) {
         if (it != null) {
-            onUriDetected(true)
-            onFileChange(
-                it,
-                if (isImage(it, context.contentResolver)) "image" else "video", true
-            )
+            if (isImage(it, context.contentResolver)) {
+                val inputStream: InputStream? = context.contentResolver.openInputStream(it)
+                bitmap = inputStream?.let { stream ->
+                    BitmapFactory.decodeStream(
+                        stream
+                    )
+                }
+                onNewImage(bitmap, false)
+            } else {
+                Toast.makeText(context, "Media yang diunggah harus bertipe gambar, yaa", Toast.LENGTH_SHORT).show()
+            }
         }
         it?.let {
             fileName = getFileName(context, it)
@@ -292,149 +276,56 @@ fun PickVideo(
                 tint = DarkBlue
             )
         }
-
-        file?.let { file ->
-            if (isUri) {
-                val uri = file as Uri
-                val isImage = isImage(uri, context.contentResolver)
+        if (!isOldFileExist && bitmap != null) {
+            bitmap?.let {
                 Column(
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
                         .background(Color.LightGray)
-                        .clickable {
-                            if (!isImage) isVideoPlaying = true else null
-                        }
                         .padding(8.dp)
                         .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    if (isImage) {
-                        val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
-                        val bitmap =
-                            inputStream?.let { stream ->
-                                BitmapFactory.decodeStream(
-                                    stream
-                                )
-                            }
-                        bitmap?.let { bmp ->
-                            Image(
-                                bitmap = bmp.asImageBitmap(),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(300.dp)
-                                    .clip(RoundedCornerShape(10.dp))
-                            )
-                        }
-                    } else {
-
-                        if (!isVideoPlaying) {
-                            val retriever = MediaMetadataRetriever()
-                            retriever.setDataSource(context, uri)
-
-                            val bitmap = retriever.frameAtTime
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(Color.Black.copy(alpha = 0.8f))
-                                    .clickable { isVideoPlaying = true },
-                                contentAlignment = Alignment.Center
-                            ) {
-                                bitmap?.let {
-                                    Image(
-                                        bitmap = it.asImageBitmap(),
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .clip(RoundedCornerShape(10.dp))
-                                            .background(Color.Black)
-                                            .alpha(0.65f)
-                                            .aspectRatio(1f),
-                                    )
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.play_button),
-                                        contentDescription = "Play Button",
-                                        tint = Color.White
-                                    )
-                                }
-                            }
-                        } else {
-                            VideoPlayer(media = uri, isUri = true, appContext = context) {
-                                isVideoPlaying = it
-                            }
-                        }
-                    }
+                    Image(
+                        bitmap = it.asImageBitmap(),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(300.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                    )
                 }
-                RegularText(
-                    text = fileName,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center
-                )
-            } else {
-                val stringUri = file as String
-                val isImage = fileType == "image"
-                Box(
+            }
+            RegularText(
+                text = fileName,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
+        } else if (isOldFileExist) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.Transparent),
+                contentAlignment = Alignment.Center
+            ) {
+                AsyncImage(
+                    model = ImageRequest.Builder(context)
+                        .data(ApiService.getArticleMedia(articleId!!))
+                        .diskCachePolicy(CachePolicy.DISABLED)
+                        .memoryCachePolicy(CachePolicy.DISABLED)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(id = R.drawable.loading_img),
+                    error = painterResource(id = R.drawable.broken_image),
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .background(if (!isImage) Color.Black.copy(alpha = 0.8f) else Color.Transparent)
-                        .clickable {
-                            if (!isImage) {
-                                isVideoPlaying = true
-                                Toast
-                                    .makeText(context, "Loading Player...", Toast.LENGTH_SHORT)
-                                    .show()
-                            }
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (isImage) {
-                        AsyncImage(
-                            model = ImageRequest.Builder(context)
-                                .data(stringUri)
-                                .diskCachePolicy(CachePolicy.DISABLED)
-                                .memoryCachePolicy(CachePolicy.DISABLED)
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            placeholder = painterResource(id = R.drawable.loading_img),
-                            error = painterResource(id = R.drawable.broken_image),
-                            modifier = Modifier
-                                .size(225.dp)
-                                .aspectRatio(1f)
-                                .clip(RoundedCornerShape(10.dp))
-                        )
-                    } else {
-                        if (!isVideoPlaying) {
-                            Log.d("AddMateriScreen", "$stringUri/thumbnail")
-                            AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data("$stringUri/thumbnail")
-                                    .diskCachePolicy(CachePolicy.DISABLED)
-                                    .memoryCachePolicy(CachePolicy.DISABLED)
-                                    .crossfade(true)
-                                    .build(),
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop,
-                                placeholder = painterResource(id = R.drawable.loading_img),
-                                error = painterResource(id = R.drawable.broken_image),
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(10.dp))
-                                    .aspectRatio(1f)
-                                    .padding(4.dp)
-                            )
-                            Icon(
-                                painter = painterResource(id = R.drawable.play_button),
-                                contentDescription = "Play Button",
-                                tint = Color.White
-                            )
-                        } else {
-                            VideoPlayer(media = stringUri, isUri = false, appContext = context) {
-                                isVideoPlaying = it
-                            }
-                        }
-                    }
-                }
+                        .size(225.dp)
+                        .aspectRatio(1f)
+                        .clip(RoundedCornerShape(10.dp))
+                )
+
             }
         }
     }

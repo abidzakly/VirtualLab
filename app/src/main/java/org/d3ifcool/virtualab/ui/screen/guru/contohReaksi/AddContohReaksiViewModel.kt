@@ -1,40 +1,35 @@
 package org.d3ifcool.virtualab.ui.screen.guru.contohReaksi
 
 import android.content.ContentResolver
-import android.net.Uri
-import android.util.Log
+import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.d3ifcool.virtualab.data.model.MateriItem
+import org.d3ifcool.virtualab.data.model.ArtikelItem
 import org.d3ifcool.virtualab.data.model.MessageResponse
 import org.d3ifcool.virtualab.data.network.ApiStatus
-import org.d3ifcool.virtualab.repository.MaterialRepository
+import org.d3ifcool.virtualab.repository.ArticleRepository
 import org.d3ifcool.virtualab.utils.Resource
-import org.d3ifcool.virtualab.utils.getFileExtension
-import java.io.File
-import java.io.FileOutputStream
+import org.d3ifcool.virtualab.utils.toMultipartBody
 
 class AddContohReaksiViewModel (
-    private val materialId: Int? = null,
-    private val materialRepository: MaterialRepository
+    private val existedArticleId: Int? = null,
+    private val articleRepository: ArticleRepository
 ) : ViewModel() {
-    var materiData = MutableStateFlow<MateriItem?>(null)
+    var articleData = MutableStateFlow<ArtikelItem?>(null)
         private set
 
-    var materiId = MutableStateFlow<Int?>(null)
+    var articleId = MutableStateFlow<Int?>(null)
         private set
 
     var apiStatus = MutableStateFlow(ApiStatus.IDLE)
         private set
 
-    var isUploading = MutableStateFlow(ApiStatus.IDLE)
+    var uploadStatus = MutableStateFlow(ApiStatus.IDLE)
         private set
 
     var successMessage = MutableStateFlow<String?>(null)
@@ -44,18 +39,18 @@ class AddContohReaksiViewModel (
         private set
 
     init {
-        if (materialId != null) {
-            materiId.value = materialId
-            getMateriData()
+        if (existedArticleId != null) {
+            articleId.value = existedArticleId
+            getArticleData()
         }
     }
 
-    fun getMateriData() {
+    fun getArticleData() {
         viewModelScope.launch(Dispatchers.IO) {
             apiStatus.value = ApiStatus.LOADING
-            when (val response = materialRepository.getDetailMateri(materialId!!)) {
+            when (val response = articleRepository.getDetailArticle(existedArticleId!!)) {
                 is Resource.Success -> {
-                    materiData.value = response.data!!.materiItem
+                    articleData.value = response.data!!.artikelItem
                     apiStatus.value = ApiStatus.SUCCESS
                 }
 
@@ -67,57 +62,38 @@ class AddContohReaksiViewModel (
         }
     }
 
-    fun addOrUpdateMateri(
-        materialId: Int? = null,
+    fun addOrUpdateArticle(
+        articleId: Int? = null,
         title: String? = null,
         description: String? = null,
-        uri: Uri? = null,
-        mediaType: String? = null,
-        isUpdate: Boolean,
-        contentResolver: ContentResolver
+        content: Bitmap? = null,
+        isUpdate: Boolean
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            val inputStream = uri?.let { contentResolver.openInputStream(it) }
-            val fileExtension = uri?.let { getFileExtension(it, contentResolver) }
-            val file = File.createTempFile("upload", ".$fileExtension", null)
-            val outputStream = FileOutputStream(file)
-            inputStream?.copyTo(outputStream)
+            val titlePart = title?.toRequestBody("text/plain".toMediaTypeOrNull())
+            val descPart = description?.toRequestBody("text/plain".toMediaTypeOrNull())
 
-            val titlePart = title!!.toRequestBody("text/plain".toMediaTypeOrNull())
-            val descPart = description!!.toRequestBody("text/plain".toMediaTypeOrNull())
-            val mediaTypePart = mediaType!!.toRequestBody("text/plain".toMediaTypeOrNull())
-            val requestBody = file.asRequestBody("*/*".toMediaTypeOrNull())
-            val body = MultipartBody.Part.createFormData("file", file.name, requestBody)
-
-            isUploading.value = ApiStatus.LOADING
+            uploadStatus.value = ApiStatus.LOADING
 
             var response: Resource<MessageResponse>? = null
 
             if (!isUpdate) {
-                if (inputStream != null) {
+                if (content != null) {
                     response =
-                        materialRepository.addMateri(titlePart, mediaTypePart, descPart, body)
+                        articleRepository.addArticle(titlePart!!, descPart!!, content.toMultipartBody())
                 }
             } else {
-                Log.d("AddMateriVM", "URI: $uri")
-
-                var bodyUpdate: MultipartBody.Part? = null
-                if (inputStream != null) {
-                    bodyUpdate = body
-                }
-                if (bodyUpdate != null) {
-                    response = materialRepository.updateMateri(
-                        materialId!!,
+                response = if (content != null) {
+                    articleRepository.updateArticle(
+                        articleId!!,
                         titlePart,
-                        mediaTypePart,
                         descPart,
-                        bodyUpdate
+                        content.toMultipartBody()
                     )
                 } else {
-                    response = materialRepository.updateMateri(
-                        materialId!!,
+                    articleRepository.updateArticle(
+                        articleId!!,
                         titlePart,
-                        null,
                         descPart,
                         null
                     )
@@ -126,19 +102,19 @@ class AddContohReaksiViewModel (
             when (response!!) {
                 is Resource.Success -> {
                     successMessage.value = response.data!!.message
-                    isUploading.value = ApiStatus.SUCCESS
+                    uploadStatus.value = ApiStatus.SUCCESS
                 }
 
                 is Resource.Error -> {
                     errorMessage.value = response.message
-                    isUploading.value = ApiStatus.FAILED
+                    uploadStatus.value = ApiStatus.FAILED
                 }
             }
         }
     }
 
     fun clearStatus() {
-        isUploading.value = ApiStatus.IDLE
+        uploadStatus.value = ApiStatus.IDLE
         apiStatus.value = ApiStatus.IDLE
         errorMessage.value = null
         successMessage.value = null

@@ -52,7 +52,7 @@ import org.d3ifcool.virtualab.utils.GenericMessage
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun ListContohReaksiScreen(navController: NavHostController, viewModel: GuruMateriViewModel) {
+fun ListContohReaksiScreen(navController: NavHostController, viewModel: GuruContohReaksiViewModel) {
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val sheetStateLihat = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberStandardBottomSheetState(
@@ -125,9 +125,9 @@ fun ListContohReaksiScreen(navController: NavHostController, viewModel: GuruMate
 private fun ScreenContent(
     modifier: Modifier,
     navController: NavHostController,
-    viewModel: GuruMateriViewModel
+    viewModel: GuruContohReaksiViewModel
 ) {
-    val data by viewModel.materials.collectAsState()
+    val data by viewModel.articles.collectAsState()
     val status by viewModel.apiStatus.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
 
@@ -154,7 +154,7 @@ private fun ScreenContent(
                             desc = it.description,
                             status = it.approvalStatus
                         ) {
-                            navController.navigate(Screen.DetailContohReaksi.withId(it.materialId))
+                            navController.navigate(Screen.GuruDetailContohReaksi.withId(it.articleId))
                         }
                     }
                 }
@@ -163,7 +163,7 @@ private fun ScreenContent(
 
         ApiStatus.FAILED -> {
             Column(
-                modifier = Modifier
+                modifier = modifier
                     .background(Color.White)
                     .padding(12.dp),
                 verticalArrangement = Arrangement.Center

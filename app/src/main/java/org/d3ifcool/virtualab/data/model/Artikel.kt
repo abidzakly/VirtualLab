@@ -3,9 +3,9 @@ package org.d3ifcool.virtualab.data.model
 import com.squareup.moshi.Json
 
 data class Artikel(
-    @Json(name = "artikel_review")
+    @Json(name = "article_review")
     val artikelReview: ArtikelReview? = null,
-    @Json(name = "artikel_item")
+    @Json(name = "article_item")
     val artikelItem: ArtikelItem? = null,
 )
 

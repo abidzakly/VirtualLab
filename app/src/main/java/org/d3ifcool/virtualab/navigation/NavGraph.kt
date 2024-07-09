@@ -14,11 +14,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import org.d3ifcool.virtualab.data.network.ApiService
+import org.d3ifcool.virtualab.data.network.apis.AuthorizedArticleApi
 import org.d3ifcool.virtualab.data.network.apis.AuthorizedIntroductionApi
 import org.d3ifcool.virtualab.data.network.apis.AuthorizedLatihanApi
 import org.d3ifcool.virtualab.data.network.apis.AuthorizedMateriApi
 import org.d3ifcool.virtualab.data.network.apis.AuthorizedStudentApi
 import org.d3ifcool.virtualab.data.network.apis.AuthorizedUserApi
+import org.d3ifcool.virtualab.repository.ArticleRepository
 import org.d3ifcool.virtualab.repository.AuthRepository
 import org.d3ifcool.virtualab.repository.ExerciseRepository
 import org.d3ifcool.virtualab.repository.IntroRepository
@@ -63,7 +65,10 @@ import org.d3ifcool.virtualab.ui.screen.admin.approval.content.FileInfoViewModel
 import org.d3ifcool.virtualab.ui.screen.admin.introduction.IntroContentViewModel
 import org.d3ifcool.virtualab.ui.screen.admin.introduction.UpdateIntroViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.contohReaksi.AddContohReaksi
+import org.d3ifcool.virtualab.ui.screen.guru.contohReaksi.AddContohReaksiViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.contohReaksi.DetailContohReaksi
+import org.d3ifcool.virtualab.ui.screen.guru.contohReaksi.DetailContohReaksiViewModel
+import org.d3ifcool.virtualab.ui.screen.guru.contohReaksi.GuruContohReaksiViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.contohReaksi.ListContohReaksiScreen
 import org.d3ifcool.virtualab.ui.screen.guru.dashboard.GuruDashboardViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddLatihanViewModel
@@ -98,12 +103,14 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
     var materiApi: AuthorizedMateriApi?
     var introApi: AuthorizedIntroductionApi?
     var studentApi: AuthorizedStudentApi?
+    var articleApi: AuthorizedArticleApi?
     val authRepository = AuthRepository(userDataStore, unauthedApi)
     var userRepository: UserRepository? = null
     var exerciseRepository: ExerciseRepository? = null
     var materialRepository: MaterialRepository? = null
     var introRepository: IntroRepository? = null
     var studentRepository: StudentRepository? = null
+    var articleRepository: ArticleRepository? = null
 
     if (accessToken != "") {
         ApiService.createAuthorizedService(accessToken)
@@ -112,11 +119,13 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
         materiApi = ApiService.materiService!!
         introApi = ApiService.introductionService!!
         studentApi = ApiService.studentService!!
+        articleApi = ApiService.articleService!!
         userRepository = UserRepository(userDataStore, userApi)
         exerciseRepository = ExerciseRepository(latihanApi)
         materialRepository = MaterialRepository(materiApi)
         introRepository = IntroRepository(introApi)
         studentRepository = StudentRepository(studentApi)
+        articleRepository = ArticleRepository(articleApi)
     }
     val isLoggedIn by userDataStore.loginStatusFlow.collectAsState(false)
 
@@ -326,26 +335,39 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
             val viewModel: DetailLatihanViewModel = viewModel(factory = factory)
             DetailLatihanScreen(navController, viewModel)
         }
-        composable(route = Screen.ListContohReaksiScreen.route) {
-            val factory = ViewModelFactory(materialRepository = materialRepository)
-            val viewModel: GuruMateriViewModel = viewModel(factory = factory)
+        composable(route = Screen.GuruContohReaksi.route) {
+            val factory = ViewModelFactory(articleRepository = articleRepository)
+            val viewModel: GuruContohReaksiViewModel = viewModel(factory = factory)
             ListContohReaksiScreen(navController, viewModel)
         }
-        composable(route = Screen.DetailContohReaksi.route,
+        composable(route = Screen.GuruDetailContohReaksi.route,
             arguments = listOf(
                 navArgument(KEY_ID_TYPE) {
                     type = NavType.IntType
                 }
             )
         ) {
-            val materiId = it.arguments!!.getInt(KEY_ID_TYPE)
-            val factory = ViewModelFactory(id = materiId, materialRepository = materialRepository)
-            val viewModel: DetailMateriViewModel = viewModel(factory = factory)
+            val articleId = it.arguments!!.getInt(KEY_ID_TYPE)
+            val factory = ViewModelFactory(id = articleId, articleRepository = articleRepository)
+            val viewModel: DetailContohReaksiViewModel = viewModel(factory = factory)
+            Log.d("NavGraph", "$articleId")
             DetailContohReaksi(navController, viewModel)
         }
         composable(route = Screen.AddContohReaksi.route) {
-            val factory = ViewModelFactory(materialRepository = materialRepository)
-            val viewModel: AddMateriViewModel = viewModel(factory = factory)
+            val factory = ViewModelFactory(articleRepository = articleRepository)
+            val viewModel: AddContohReaksiViewModel = viewModel(factory = factory)
+            AddContohReaksi(navController, viewModel = viewModel)
+        }
+        composable(route = Screen.UpdateContohReaksi.route,
+            arguments = listOf(
+                navArgument(KEY_ID_TYPE) {
+                    type = NavType.IntType
+                }
+            )
+        ) {
+            val articleId = it.arguments!!.getInt(KEY_ID_TYPE)
+            val factory = ViewModelFactory(id = articleId, articleRepository = articleRepository)
+            val viewModel: AddContohReaksiViewModel = viewModel(factory = factory)
             AddContohReaksi(navController, viewModel = viewModel)
         }
 

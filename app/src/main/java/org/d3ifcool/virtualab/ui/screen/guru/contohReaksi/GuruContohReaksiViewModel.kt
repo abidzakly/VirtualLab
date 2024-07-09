@@ -5,14 +5,15 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import org.d3ifcool.virtualab.data.model.ArtikelItem
 import org.d3ifcool.virtualab.data.model.MateriItem
 import org.d3ifcool.virtualab.data.network.ApiStatus
-import org.d3ifcool.virtualab.repository.MaterialRepository
+import org.d3ifcool.virtualab.repository.ArticleRepository
 import org.d3ifcool.virtualab.utils.Resource
 
-class ListContohReaksiViewModel(private val materialRepository: MaterialRepository) : ViewModel() {
+class GuruContohReaksiViewModel(private val articleRepository: ArticleRepository) : ViewModel() {
 
-    var materials = MutableStateFlow(emptyList<MateriItem>())
+    var articles = MutableStateFlow(emptyList<ArtikelItem>())
     var apiStatus = MutableStateFlow(ApiStatus.LOADING)
         private set
     var isRefreshing = MutableStateFlow(false)
@@ -27,9 +28,9 @@ class ListContohReaksiViewModel(private val materialRepository: MaterialReposito
     fun getMyMateri() {
         viewModelScope.launch(Dispatchers.IO) {
             apiStatus.value = ApiStatus.LOADING
-            when (val response = materialRepository.getMyMateri()){
+            when (val response = articleRepository.getMyArticle()){
                 is Resource.Success -> {
-                    materials.value = response.data!!
+                    articles.value = response.data!!
                     apiStatus.value = ApiStatus.SUCCESS
                 }
                 is Resource.Error -> {

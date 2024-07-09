@@ -91,7 +91,7 @@ fun AddMateriScreen(navController: NavHostController, viewModel: AddMateriViewMo
         }
 
         ApiStatus.SUCCESS -> {
-            Toast.makeText(context, successMessage, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, successMessage, Toast.LENGTH_SHORT).show()
             navController.navigate(Screen.GuruDashboard.route) {
                 popUpTo(Screen.GuruDashboard.route)
             }
@@ -252,7 +252,6 @@ fun PickVideo(
     onUriDetected: (Boolean) -> Unit
 ) {
     val context = LocalContext.current
-//    val result = remember { mutableStateOf<Any?>(null) }
     var fileName by remember { mutableStateOf("") }
     var isVideoPlaying by remember { mutableStateOf(false) }
 

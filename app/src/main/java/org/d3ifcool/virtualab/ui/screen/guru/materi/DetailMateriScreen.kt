@@ -149,6 +149,19 @@ private fun ScreenContent(
             LoadingState()
         }
 
+        ApiStatus.FAILED -> {
+            Column(
+                modifier = modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                LargeText(text = "Data tidak ditemukan :(")
+                Button(onClick = { viewModel.getMateriDetail() }) {
+                    RegularText(text = "Coba Lagi")
+                }
+            }
+        }
+
         ApiStatus.SUCCESS -> {
             val materiItem = data!!.materiItem!!
             val stringUri = ApiService.getMateriMedia(materiItem.materialId)
@@ -250,19 +263,6 @@ private fun ScreenContent(
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Justify
                 )
-            }
-        }
-
-        ApiStatus.FAILED -> {
-            Column(
-                modifier = modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                LargeText(text = "Data tidak ditemukan :(")
-                Button(onClick = { viewModel.getMateriDetail() }) {
-                    RegularText(text = "Coba Lagi")
-                }
             }
         }
     }

@@ -1,7 +1,6 @@
 package org.d3ifcool.virtualab.ui.component
 
 import android.app.Activity
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -156,7 +155,7 @@ fun BottomNav(
                             popUpTo(Screen.Login.route)
                         }
                     }
-                    if (currentRoute == Screen.GuruLatihan.route || currentRoute == Screen.GuruMateri.route || currentRoute == Screen.ListContohReaksiScreen.route) {
+                    if (currentRoute == Screen.GuruLatihan.route || currentRoute == Screen.GuruMateri.route || currentRoute == Screen.GuruContohReaksi.route) {
                         BottomNavButton(
                             icon = R.drawable.baseline_history_24,
                             title = R.string.bottom_app_riwayat,

@@ -138,9 +138,11 @@ fun GuruDashboardScreen(navController: NavHostController, viewModel: GuruDashboa
         },
         containerColor = White
     ) { padding ->
-        Box(modifier = Modifier
-            .zIndex(-2f)
-            .pullRefresh(refreshState)) {
+        Box(
+            modifier = Modifier
+                .zIndex(-2f)
+                .pullRefresh(refreshState)
+        ) {
             ScreenContent(
                 modifier = Modifier
                     .padding(padding),
@@ -192,7 +194,7 @@ fun GuruDashboardScreen(navController: NavHostController, viewModel: GuruDashboa
             action2 = R.string.latihan,
             onClickAct2 = { navController.navigate(Screen.AddLatihan.route) },
             action3 = R.string.contoh_reaksi_icon_bottomsheet,
-            onClickAct3 = { navController.navigate(Screen.AddContohReaksi.route)}
+            onClickAct3 = { navController.navigate(Screen.AddContohReaksi.route) }
         )
         RiwayatSheet(state = sheetStateLihat, navController = navController)
     }
@@ -228,7 +230,8 @@ private fun ScreenContent(
             ApiStatus.SUCCESS -> {
                 LazyColumn(
                     modifier = Modifier
-                        .padding(horizontal = 32.dp).fillMaxSize(),
+                        .padding(horizontal = 32.dp)
+                        .fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = if (combinedPosts.isNotEmpty()) Arrangement.Top else Arrangement.Center
                 ) {
@@ -249,11 +252,13 @@ private fun ScreenContent(
                             Spacer(modifier = Modifier.height(8.dp))
                             ContentList(
                                 title = it.title,
-                                desc = if (it.postType == "Materi") it.description else "Tingkat Kesulitan: ${it.description}",
+                                desc = if (it.postType == "Materi" || it.postType == "Artikel") it.description else "Tingkat Kesulitan: ${it.description}",
                                 status = it.approvalStatus
                             ) {
                                 val route = if (it.postType == "Materi") {
                                     Screen.GuruDetailMateri.withId(it.postId)
+                                } else if (it.postType == "Artikel") {
+                                    Screen.GuruDetailContohReaksi.withId(it.postId)
                                 } else {
                                     if (it.approvalStatus == "DRAFT") {
                                         Screen.AddSoal.withId(it.postId)
@@ -267,7 +272,10 @@ private fun ScreenContent(
                         }
                     } else {
                         item {
-                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
                                 GuruEmptyState(text = "Anda belum menambahkan data.") {
                                     viewModel.getPosts()
                                 }
