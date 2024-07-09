@@ -10,7 +10,7 @@ import org.d3ifcool.virtualab.utils.GenericMessage
 import org.d3ifcool.virtualab.utils.Resource
 import retrofit2.HttpException
 
-class MaterialRepository(
+class ArticleRepository(
     private val materialApi: AuthorizedMateriApi
 ) {
     suspend fun addMateri(

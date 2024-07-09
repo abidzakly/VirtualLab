@@ -5,6 +5,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import org.d3ifcool.virtualab.data.network.apis.AuthorizedArticleApi
 import org.d3ifcool.virtualab.data.network.apis.AuthorizedIntroductionApi
 import org.d3ifcool.virtualab.data.network.apis.AuthorizedUserApi
 import org.d3ifcool.virtualab.data.network.apis.AuthorizedLatihanApi
@@ -45,6 +46,9 @@ object ApiService {
     var studentService: AuthorizedStudentApi? = null
         private set
 
+    var articleService: AuthorizedArticleApi? = null
+        private set
+
     fun createAuthorizedService(authorization: String) {
         val okHttpClient = OkHttpClient.Builder().apply {
             addInterceptor(Interceptor { chain ->
@@ -81,11 +85,15 @@ object ApiService {
         materiService = retrofitWithMedia.create(AuthorizedMateriApi::class.java)
         introductionService = retrofitWithMedia.create(AuthorizedIntroductionApi::class.java)
         studentService = retrofitWithMedia.create(AuthorizedStudentApi::class.java)
+        articleService = retrofitWithMedia.create(AuthorizedArticleApi::class.java)
         Log.d("ApiService create", "retrofit with auth created!")
     }
 
     fun getMateriMedia(materialId: Int): String {
         return "$BASE_URL/v1/materials/$materialId/content"
+    }
+    fun getArticleMedia(articleId: Int): String {
+        return "$BASE_URL/v1/articles/$articleId/content"
     }
     fun getIntroductionMedia(): String {
         return "$BASE_URL/v1/introduction/content"
