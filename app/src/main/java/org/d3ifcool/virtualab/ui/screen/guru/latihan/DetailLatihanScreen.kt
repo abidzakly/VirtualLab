@@ -4,6 +4,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -101,7 +102,8 @@ fun DetailLatihanScreen(navController: NavHostController, viewModel: DetailLatih
     }, bottomBar = {
         BottomNav(navController = navController)
     },
-        containerColor = Color.White ) { padding ->
+        containerColor = Color.White
+    ) { padding ->
         ScreenContent(
             modifier = Modifier.padding(padding),
             viewModel,
@@ -181,8 +183,10 @@ private fun ScreenContent(
         }
 
         ApiStatus.FAILED -> {
-            GuruEmptyState(text = "Gagal memuat data.") {
-                viewModel.getLatihanDetail()
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                GuruEmptyState(text = "Gagal memuat data.") {
+                    viewModel.getLatihanDetail()
+                }
             }
         }
     }

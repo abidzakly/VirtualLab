@@ -100,6 +100,7 @@ import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.BottomSheet
+import org.d3ifcool.virtualab.ui.component.ImageDialog
 import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
 import org.d3ifcool.virtualab.ui.component.PopUpDialog
@@ -116,6 +117,7 @@ import org.d3ifcool.virtualab.ui.theme.Poppins
 import org.d3ifcool.virtualab.ui.theme.RedButton
 import org.d3ifcool.virtualab.utils.GenericMessage
 import org.d3ifcool.virtualab.utils.UserDataStore
+import org.d3ifcool.virtualab.utils.getCroppedImage
 import org.d3ifcool.virtualab.utils.isInternetAvailable
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -227,7 +229,6 @@ private fun ScreenContent(
     var bitmap: Bitmap? by remember { mutableStateOf(null) }
     val launcher = rememberLauncherForActivityResult(CropImageContract()) {
         bitmap = getCroppedImage(context.contentResolver, it)
-        if (bitmap != null) showImgDialog = true
     }
 
     val apiStatus by profileViewModel.apiStatus.collectAsState()
@@ -261,28 +262,39 @@ private fun ScreenContent(
         verticalArrangement = Arrangement.Center
     ) {
         Spacer(modifier = Modifier.height(18.dp))
-        Box(modifier = Modifier
-            .fillMaxWidth(), contentAlignment = Alignment.Center
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(), contentAlignment = Alignment.Center
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 if (bitmap != null) {
                     bitmap?.let { bmp ->
                         Image(
-                            modifier = Modifier.clip(CircleShape).size(108.dp),
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .size(108.dp)
+                                .clickable {
+                                    showImgDialog = true
+                                },
                             bitmap = bmp.asImageBitmap(),
                             contentScale = ContentScale.Crop,
                             contentDescription = "Profile Picture"
                         )
                         EditPfp(readOnly = readOnly, launcher = launcher)
+                        if (showImgDialog) {
+                            ImageDialog(bitmap = bmp, context = context) {
+                                showImgDialog = false
+                            }
+                        }
                     }
                 } else if (profilePicture.isNotEmpty()) {
+                    val imageUrl = ApiService.getMyPfp(user.userId)
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
-                            .data(ApiService.getMyPfp(user.userId))
+                            .data(imageUrl)
                             .diskCachePolicy(CachePolicy.DISABLED)
                             .memoryCachePolicy(CachePolicy.DISABLED)
                             .crossfade(true)
@@ -294,7 +306,15 @@ private fun ScreenContent(
                         modifier = Modifier
                             .clip(CircleShape)
                             .size(108.dp)
+                            .clickable {
+                                showImgDialog = true
+                            }
                     )
+                    if (showImgDialog) {
+                        ImageDialog(imageUrl = imageUrl, context = context) {
+                            showImgDialog = false
+                        }
+                    }
                     EditPfp(readOnly = readOnly, launcher = launcher)
                 } else {
                     Image(
@@ -608,19 +628,26 @@ private fun ScreenContent(
 }
 
 @Composable
-fun EditPfp(modifier: Modifier = Modifier, readOnly: Boolean, launcher: ManagedActivityResultLauncher<CropImageContractOptions, CropImageView.CropResult>) {
+fun EditPfp(
+    modifier: Modifier = Modifier,
+    readOnly: Boolean,
+    launcher: ManagedActivityResultLauncher<CropImageContractOptions, CropImageView.CropResult>
+) {
     Spacer(modifier = Modifier.height(8.dp))
     if (!readOnly) {
-        Button(colors = buttonColors(containerColor = GrayTextField), shape = RoundedCornerShape(50.dp), onClick = {
-            val options = CropImageContractOptions(
-                null, CropImageOptions(
-                    imageSourceIncludeGallery = true,
-                    imageSourceIncludeCamera = true,
-                    fixAspectRatio = true
+        Button(
+            colors = buttonColors(containerColor = GrayTextField),
+            shape = RoundedCornerShape(50.dp),
+            onClick = {
+                val options = CropImageContractOptions(
+                    null, CropImageOptions(
+                        imageSourceIncludeGallery = true,
+                        imageSourceIncludeCamera = true,
+                        fixAspectRatio = true
+                    )
                 )
-            )
-            launcher.launch(options)
-        }) {
+                launcher.launch(options)
+            }) {
             SmallText(text = "Edit Foto", color = Color(0xFF313131))
         }
     }
@@ -729,24 +756,6 @@ private fun SaveUpdatePopup(
                 }
             }
         }
-    }
-}
-
-private fun getCroppedImage(
-    resolver: ContentResolver,
-    result: CropImageView.CropResult
-): Bitmap? {
-    if (!result.isSuccessful) {
-        Log.e("IMAGE", "Error: ${result.error}")
-        return null
-    }
-    val uri = result.uriContent ?: return null
-
-    return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-        MediaStore.Images.Media.getBitmap(resolver, uri)
-    } else {
-        val source = ImageDecoder.createSource(resolver, uri)
-        ImageDecoder.decodeBitmap(source)
     }
 }
 

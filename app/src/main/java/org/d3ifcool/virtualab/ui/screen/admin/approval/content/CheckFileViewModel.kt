@@ -1,6 +1,5 @@
 package org.d3ifcool.virtualab.ui.screen.admin.approval.content
 
-import UserRepository
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -8,6 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.data.model.PendingPosts
 import org.d3ifcool.virtualab.data.network.ApiStatus
+import org.d3ifcool.virtualab.repository.UserRepository
 import org.d3ifcool.virtualab.utils.Resource
 
 class CheckFileViewModel(private val userRepository: UserRepository): ViewModel() {

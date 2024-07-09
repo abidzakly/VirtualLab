@@ -67,14 +67,9 @@ object ApiService {
                     .header("Authorization", "Bearer $authorization")
                     .build()
                 chain.proceed(requestWithAuthorization)
-            }).readTimeout(10, TimeUnit.MINUTES).writeTimeout(10, TimeUnit.MINUTES)
+            }).readTimeout(30, TimeUnit.MINUTES).writeTimeout(30, TimeUnit.MINUTES)
         }.build()
-//
-//        val retrofitWithAuth = Retrofit.Builder()
-//            .client(okHttpClient)
-//            .addConverterFactory(MoshiConverterFactory.create(moshi))
-//            .baseUrl(BASE_URL)
-//            .build()
+
         val retrofitWithMedia = Retrofit.Builder()
             .client(videoClient)
             .addConverterFactory(MoshiConverterFactory.create(moshi))

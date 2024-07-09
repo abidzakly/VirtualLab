@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.ui.screen.guru.contohReaksi
+package org.d3ifcool.virtualab.ui.screen.guru.contohreaksi
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -6,22 +6,22 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import org.d3ifcool.virtualab.data.model.Materi
+import org.d3ifcool.virtualab.data.model.Article
 import org.d3ifcool.virtualab.data.network.ApiStatus
-import org.d3ifcool.virtualab.repository.MaterialRepository
+import org.d3ifcool.virtualab.repository.ArticleRepository
 import org.d3ifcool.virtualab.utils.Resource
 
 class DetailContohReaksiViewModel(
-    private val materialId: Int,
-    private val materialRepository: MaterialRepository
+    private val articleId: Int,
+    private val articleRepository: ArticleRepository
 ) : ViewModel() {
-    var materiData = MutableStateFlow<Materi?>(null)
+    var articleData = MutableStateFlow<Article?>(null)
         private set
 
     var apiStatus = MutableStateFlow(ApiStatus.LOADING)
         private set
 
-    var isDeleting = MutableStateFlow(ApiStatus.IDLE)
+    var deleteStatus = MutableStateFlow(ApiStatus.IDLE)
         private set
 
     var successMessage = MutableStateFlow<String?>(null)
@@ -31,18 +31,18 @@ class DetailContohReaksiViewModel(
         private set
 
     init {
-        Log.d("DetailMateriVM", "material ID: $materialId")
-        getMateriDetail()
+        Log.d("DetailArtikelVM", "articleId: $articleId")
+        getArticleDetail()
     }
 
-    fun getMateriDetail() {
+    fun getArticleDetail() {
         viewModelScope.launch(Dispatchers.IO) {
             apiStatus.value = ApiStatus.LOADING
-            when (val response = materialRepository.getDetailMateri(materialId)) {
+            when (val response = articleRepository.getDetailArticle(articleId)) {
                 is Resource.Success -> {
-                    materiData.value = response.data!!
+                    articleData.value = response.data!!
                     apiStatus.value = ApiStatus.SUCCESS
-                    Log.d("DetailMateriVM", "Response: ${materiData.value}")
+                    Log.d("DetailMateriVM", "Response: ${articleData.value}")
                 }
 
                 is Resource.Error -> {
@@ -54,24 +54,24 @@ class DetailContohReaksiViewModel(
         }
     }
 
-    fun deleteMateri() {
+    fun deleteArticle() {
         viewModelScope.launch(Dispatchers.IO) {
-            isDeleting.value = ApiStatus.LOADING
-            when (val response = materialRepository.deleteMateri(materialId)) {
+            deleteStatus.value = ApiStatus.LOADING
+            when (val response = articleRepository.deleteArticle(articleId)) {
                 is Resource.Success -> {
                     successMessage.value = response.data!!.message
-                    isDeleting.value = ApiStatus.SUCCESS
+                    deleteStatus.value = ApiStatus.SUCCESS
                 }
                 is Resource.Error -> {
                     errorMessage.value = response.message
-                    isDeleting.value = ApiStatus.FAILED
+                    deleteStatus.value = ApiStatus.FAILED
                 }
             }
         }
     }
 
     fun clearStatus() {
-        isDeleting.value = ApiStatus.IDLE
+        deleteStatus.value = ApiStatus.IDLE
         errorMessage.value = null
     }
 }

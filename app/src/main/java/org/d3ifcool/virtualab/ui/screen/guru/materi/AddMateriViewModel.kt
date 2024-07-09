@@ -1,7 +1,6 @@
 package org.d3ifcool.virtualab.ui.screen.guru.materi
 
 import android.content.ContentResolver
-import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -19,7 +18,6 @@ import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.repository.MaterialRepository
 import org.d3ifcool.virtualab.utils.Resource
 import org.d3ifcool.virtualab.utils.getFileExtension
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 

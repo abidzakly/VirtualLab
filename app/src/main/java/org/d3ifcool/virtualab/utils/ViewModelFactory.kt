@@ -1,13 +1,14 @@
 package org.d3ifcool.virtualab.utils
 
-import UserRepository
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import org.d3ifcool.virtualab.repository.ArticleRepository
 import org.d3ifcool.virtualab.repository.AuthRepository
 import org.d3ifcool.virtualab.repository.ExerciseRepository
 import org.d3ifcool.virtualab.repository.IntroRepository
 import org.d3ifcool.virtualab.repository.MaterialRepository
 import org.d3ifcool.virtualab.repository.StudentRepository
+import org.d3ifcool.virtualab.repository.UserRepository
 import org.d3ifcool.virtualab.ui.screen.AuthViewModel
 import org.d3ifcool.virtualab.ui.screen.ProfileViewModel
 import org.d3ifcool.virtualab.ui.screen.admin.approval.account.CheckUsersViewModel
@@ -16,6 +17,9 @@ import org.d3ifcool.virtualab.ui.screen.admin.approval.content.CheckFileViewMode
 import org.d3ifcool.virtualab.ui.screen.admin.approval.content.FileInfoViewModel
 import org.d3ifcool.virtualab.ui.screen.admin.introduction.IntroContentViewModel
 import org.d3ifcool.virtualab.ui.screen.admin.introduction.UpdateIntroViewModel
+import org.d3ifcool.virtualab.ui.screen.guru.contohreaksi.AddContohReaksiViewModel
+import org.d3ifcool.virtualab.ui.screen.guru.contohreaksi.DetailContohReaksiViewModel
+import org.d3ifcool.virtualab.ui.screen.guru.contohreaksi.GuruContohReaksiViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.dashboard.GuruDashboardViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddLatihanViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddSoalViewModel
@@ -31,6 +35,7 @@ import org.d3ifcool.virtualab.ui.screen.murid.latihan.MuridListLatihanViewModel
 import org.d3ifcool.virtualab.ui.screen.murid.materi.MuridDetailMateriViewModel
 import org.d3ifcool.virtualab.ui.screen.murid.materi.MuridMateriViewModel
 import org.d3ifcool.virtualab.ui.screen.murid.nilai.NilaiViewModel
+import org.d3ifcool.virtualab.ui.screen.murid.reaksi.ContohReaksiScreenViewModel
 
 class ViewModelFactory(
     private val id: Int? = null,
@@ -40,7 +45,8 @@ class ViewModelFactory(
     private val materialRepository: MaterialRepository? = null,
     private val exerciseRepository: ExerciseRepository? = null,
     private val introRepository: IntroRepository? = null,
-    private val studentRepository: StudentRepository? = null
+    private val studentRepository: StudentRepository? = null,
+    private val articleRepository: ArticleRepository? = null
 ) : ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -60,6 +66,8 @@ class ViewModelFactory(
             return ProfileViewModel(userRepository!!) as T
         } else if (modelClass.isAssignableFrom(GuruDashboardViewModel::class.java)) {
             return GuruDashboardViewModel(id!!, userRepository!!) as T
+        } else if (modelClass.isAssignableFrom(AddMateriViewModel::class.java)) {
+            return AddMateriViewModel(id, materialRepository!!) as T
         } else if (modelClass.isAssignableFrom(DetailMateriViewModel::class.java)) {
             return DetailMateriViewModel(id!!, materialRepository!!) as T
         } else if (modelClass.isAssignableFrom(GuruMateriViewModel::class.java)) {
@@ -70,6 +78,8 @@ class ViewModelFactory(
             return CheckFileViewModel(userRepository!!) as T
         } else if (modelClass.isAssignableFrom(IntroContentViewModel::class.java)) {
             return IntroContentViewModel(introRepository!!) as T
+        } else if (modelClass.isAssignableFrom(IntroductionViewModel::class.java)) {
+            return IntroductionViewModel(introRepository!!) as T
         } else if (modelClass.isAssignableFrom(UpdateIntroViewModel::class.java)) {
             return UpdateIntroViewModel(introRepository!!) as T
         } else if (modelClass.isAssignableFrom(MuridListLatihanViewModel::class.java)) {
@@ -88,10 +98,14 @@ class ViewModelFactory(
             return AddLatihanViewModel(id, exerciseRepository!!) as T
         } else if (modelClass.isAssignableFrom(AddSoalViewModel::class.java)) {
             return AddSoalViewModel(id!!, exerciseRepository!!) as T
-        } else if (modelClass.isAssignableFrom(IntroductionViewModel::class.java)) {
-            return IntroductionViewModel(introRepository!!) as T
-        } else if (modelClass.isAssignableFrom(AddMateriViewModel::class.java)) {
-            return AddMateriViewModel(id, materialRepository!!) as T
+        } else if (modelClass.isAssignableFrom(AddContohReaksiViewModel::class.java)) {
+            return AddContohReaksiViewModel(id, articleRepository!!) as T
+        } else if (modelClass.isAssignableFrom(DetailContohReaksiViewModel::class.java)) {
+            return DetailContohReaksiViewModel(id!!, articleRepository!!) as T
+        } else if (modelClass.isAssignableFrom(GuruContohReaksiViewModel::class.java)) {
+            return GuruContohReaksiViewModel(articleRepository!!) as T
+        } else if (modelClass.isAssignableFrom(ContohReaksiScreenViewModel::class.java)) {
+            return ContohReaksiScreenViewModel(studentRepository!!) as T
         } else {
             throw IllegalArgumentException("Unknown ViewModel class")
         }

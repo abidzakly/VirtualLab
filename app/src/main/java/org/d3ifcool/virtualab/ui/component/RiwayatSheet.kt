@@ -27,7 +27,7 @@ fun RiwayatSheet(state: BottomSheetScaffoldState, navController: NavHostControll
         },
         action3 = R.string.contoh_reaksi_icon_bottomsheet,
         onClickAct3 = {
-            navController.navigate(Screen.ListContohReaksiScreen.route) {
+            navController.navigate(Screen.GuruContohReaksi.route) {
                 popUpTo(Screen.GuruDashboard.route)
             }
         }

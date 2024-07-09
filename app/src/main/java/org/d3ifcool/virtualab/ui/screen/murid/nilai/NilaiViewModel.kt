@@ -52,4 +52,8 @@ class NilaiViewModel(private val studentRepository: StudentRepository) : ViewMod
         isRefreshing.value = false
     }
 
+    fun clearMessage() {
+        errorMessage.value = null
+    }
+
 }

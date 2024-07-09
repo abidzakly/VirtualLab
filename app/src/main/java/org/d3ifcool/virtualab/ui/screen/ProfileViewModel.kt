@@ -1,6 +1,5 @@
 package org.d3ifcool.virtualab.ui.screen
 
-import UserRepository
 import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
@@ -20,8 +19,10 @@ import org.d3ifcool.virtualab.data.model.Murid
 import org.d3ifcool.virtualab.data.model.UserUpdate
 import org.d3ifcool.virtualab.data.network.ApiService
 import org.d3ifcool.virtualab.data.network.ApiStatus
+import org.d3ifcool.virtualab.repository.UserRepository
 import org.d3ifcool.virtualab.utils.Resource
 import org.d3ifcool.virtualab.utils.UserDataStore
+import org.d3ifcool.virtualab.utils.toMultipartBody
 import retrofit2.HttpException
 import java.io.ByteArrayOutputStream
 
@@ -72,16 +73,6 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
                 }
             }
         }
-    }
-
-    private fun Bitmap.toMultipartBody(): MultipartBody.Part {
-        val stream = ByteArrayOutputStream()
-        compress(Bitmap.CompressFormat.JPEG, 30, stream)
-        val byteArray = stream.toByteArray()
-        val requestBody = byteArray.toRequestBody(
-            "image/jpg".toMediaTypeOrNull(), 0, byteArray.size
-        )
-        return MultipartBody.Part.createFormData("file", "image.jpg", requestBody)
     }
 
     fun clearStatus() {

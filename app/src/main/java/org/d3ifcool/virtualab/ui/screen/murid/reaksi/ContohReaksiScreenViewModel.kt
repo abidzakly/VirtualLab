@@ -1,35 +1,39 @@
-package org.d3ifcool.virtualab.ui.screen.guru.contohReaksi
+package org.d3ifcool.virtualab.ui.screen.murid.reaksi
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import org.d3ifcool.virtualab.data.model.MateriItem
+import org.d3ifcool.virtualab.data.model.ApprovedArticle
 import org.d3ifcool.virtualab.data.network.ApiStatus
-import org.d3ifcool.virtualab.repository.MaterialRepository
+import org.d3ifcool.virtualab.repository.StudentRepository
 import org.d3ifcool.virtualab.utils.Resource
 
-class ListContohReaksiViewModel(private val materialRepository: MaterialRepository) : ViewModel() {
+class ContohReaksiScreenViewModel(private val studentRepository: StudentRepository): ViewModel() {
 
-    var materials = MutableStateFlow(emptyList<MateriItem>())
-    var apiStatus = MutableStateFlow(ApiStatus.LOADING)
+    var articleData = MutableStateFlow(emptyList<ApprovedArticle>())
         private set
+
     var isRefreshing = MutableStateFlow(false)
         private set
+
+    var apiStatus = MutableStateFlow(ApiStatus.LOADING)
+        private set
+
     var errorMessage = MutableStateFlow<String?>(null)
         private set
 
     init {
-        getMyMateri()
+        getApprovedArticles()
     }
 
-    fun getMyMateri() {
+    fun getApprovedArticles() {
         viewModelScope.launch(Dispatchers.IO) {
             apiStatus.value = ApiStatus.LOADING
-            when (val response = materialRepository.getMyMateri()){
+            when (val response = studentRepository.getApprovedArticles()) {
                 is Resource.Success -> {
-                    materials.value = response.data!!
+                    articleData.value = response.data!!
                     apiStatus.value = ApiStatus.SUCCESS
                 }
                 is Resource.Error -> {
@@ -39,9 +43,14 @@ class ListContohReaksiViewModel(private val materialRepository: MaterialReposito
             }
         }
     }
+
     fun refreshData() {
         isRefreshing.value = true
-        getMyMateri()
+        getApprovedArticles()
         isRefreshing.value = false
+    }
+
+    fun clearMessage() {
+        errorMessage.value = null
     }
 }

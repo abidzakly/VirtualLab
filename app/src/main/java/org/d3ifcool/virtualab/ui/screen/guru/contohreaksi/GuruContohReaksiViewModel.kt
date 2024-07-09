@@ -1,45 +1,37 @@
-package org.d3ifcool.virtualab.ui.screen.guru.dashboard
+package org.d3ifcool.virtualab.ui.screen.guru.contohreaksi
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import org.d3ifcool.virtualab.data.model.CombinedPost
+import org.d3ifcool.virtualab.data.model.ArticleItem
 import org.d3ifcool.virtualab.data.network.ApiStatus
-import org.d3ifcool.virtualab.repository.UserRepository
+import org.d3ifcool.virtualab.repository.ArticleRepository
 import org.d3ifcool.virtualab.utils.Resource
 
-class GuruDashboardViewModel(
-    private val teacherId: Int,
-    private val userRepository: UserRepository
-) : ViewModel() {
+class GuruContohReaksiViewModel(private val articleRepository: ArticleRepository) : ViewModel() {
 
-    var combinedPosts = MutableStateFlow(emptyList<CombinedPost>())
-        private set
-
+    var articles = MutableStateFlow(emptyList<ArticleItem>())
     var apiStatus = MutableStateFlow(ApiStatus.LOADING)
         private set
-
     var isRefreshing = MutableStateFlow(false)
         private set
-
     var errorMessage = MutableStateFlow<String?>(null)
         private set
 
     init {
-        getPosts()
+        getMyMateri()
     }
 
-    fun getPosts() {
+    fun getMyMateri() {
         viewModelScope.launch(Dispatchers.IO) {
             apiStatus.value = ApiStatus.LOADING
-            when (val response = userRepository.getRecentPosts(teacherId)) {
+            when (val response = articleRepository.getMyArticle()){
                 is Resource.Success -> {
-                    combinedPosts.value = response.data!!
+                    articles.value = response.data!!
                     apiStatus.value = ApiStatus.SUCCESS
                 }
-
                 is Resource.Error -> {
                     errorMessage.value = response.message
                     apiStatus.value = ApiStatus.FAILED
@@ -47,15 +39,9 @@ class GuruDashboardViewModel(
             }
         }
     }
-
     fun refreshData() {
         isRefreshing.value = true
-        getPosts()
+        getMyMateri()
         isRefreshing.value = false
     }
-
-    fun clearMessage() {
-        errorMessage.value = null
-    }
-
 }
