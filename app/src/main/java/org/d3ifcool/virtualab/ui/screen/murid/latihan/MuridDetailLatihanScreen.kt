@@ -374,7 +374,7 @@ private fun QuestionItemAbid(
                         clickedOptions = if (isSelected) {
                             clickedOptions - option
                         } else {
-                            (clickedOptions + option).take(4)
+                            (clickedOptions + option).take(answerKeyCount)
                         }
                         onOptionSelected(option, !isSelected)
                     }
