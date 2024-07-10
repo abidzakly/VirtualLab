@@ -75,7 +75,7 @@ fun ImageDialog(
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .aspectRatio(1f)
+                            .clip(RoundedCornerShape(10.dp))
                     )
                 } else if (imageUrl != null) {
                     AsyncImage(

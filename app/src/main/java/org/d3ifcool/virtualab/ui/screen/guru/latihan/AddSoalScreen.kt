@@ -77,6 +77,7 @@ import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.GrayIco
 import org.d3ifcool.virtualab.ui.theme.GrayTextField
 import org.d3ifcool.virtualab.ui.theme.LightBlue
+import org.d3ifcool.virtualab.ui.theme.Poppins
 
 @Composable
 fun AddSoalScreen(navController: NavHostController, viewModel: AddSoalViewModel) {
@@ -422,7 +423,7 @@ private fun CustomTextField2(
             keyboardType = if (isPhone) KeyboardType.Number else if (isNumber == true) KeyboardType.Text else KeyboardType.Text,
             capitalization = KeyboardCapitalization.Sentences
         ),
-        textStyle = TextStyle(fontSize = textFontSize)
+        textStyle = TextStyle(fontSize = textFontSize, fontFamily = Poppins)
     )
     Spacer(modifier = Modifier.height(8.dp))
 }

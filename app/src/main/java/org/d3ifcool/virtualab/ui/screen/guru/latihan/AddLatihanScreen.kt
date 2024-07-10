@@ -74,6 +74,7 @@ import org.d3ifcool.virtualab.ui.theme.GrayIco
 import org.d3ifcool.virtualab.ui.theme.GrayText
 import org.d3ifcool.virtualab.ui.theme.GrayTextField
 import org.d3ifcool.virtualab.ui.theme.LightBlue
+import org.d3ifcool.virtualab.ui.theme.Poppins
 
 @Composable
 fun AddLatihanScreen(navController: NavHostController, viewModel: AddLatihanViewModel) {
@@ -362,7 +363,10 @@ fun DropdownForm(selectedText: String, options: List<String>, onChange: (String)
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                 },
-                colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors()
+                colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+                textStyle = TextStyle(
+                    fontFamily = Poppins
+                )
             )
             ExposedDropdownMenu(
                 expanded = expanded,
@@ -422,7 +426,7 @@ fun CustomTextField(
             capitalization = KeyboardCapitalization.Sentences,
             imeAction = ImeAction.Done
         ),
-        textStyle = TextStyle(fontSize = textFontSize)
+        textStyle = TextStyle(fontSize = textFontSize, fontFamily = Poppins)
     )
     Spacer(modifier = Modifier.height(8.dp))
 }

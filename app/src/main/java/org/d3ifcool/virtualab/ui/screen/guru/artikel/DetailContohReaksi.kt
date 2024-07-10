@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.ui.screen.guru.contohreaksi
+package org.d3ifcool.virtualab.ui.screen.guru.artikel
 
 import android.content.Context
 import android.widget.Toast

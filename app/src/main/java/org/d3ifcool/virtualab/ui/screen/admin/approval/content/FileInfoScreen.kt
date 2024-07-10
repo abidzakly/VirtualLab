@@ -1,5 +1,6 @@
 package org.d3ifcool.virtualab.ui.screen.admin.approval.content
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -44,6 +45,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import org.d3ifcool.virtualab.R
+import org.d3ifcool.virtualab.data.model.ArticleReview
 import org.d3ifcool.virtualab.data.model.Latihan
 import org.d3ifcool.virtualab.data.model.LatihanReview
 import org.d3ifcool.virtualab.data.model.Materi
@@ -79,7 +81,7 @@ fun FileInfoScreen(
             Toast.makeText(context, successMessage, Toast.LENGTH_SHORT).show()
             navController.navigate(Screen.CheckFile.route) {
                 popUpTo(Screen.AdminDashboard.route)
-            } 
+            }
         }
     }
 
@@ -98,24 +100,29 @@ fun FileInfoScreen(
             BottomNav(navController = navController)
         }, containerColor = Color.White
     ) {
-        ScreenContent(modifier = Modifier.padding(it), postType, viewModel)
+        ScreenContent(modifier = Modifier.padding(it), postType, viewModel, context)
     }
 }
 
 @Composable
-private fun ScreenContent(modifier: Modifier, postType: String, viewModel: FileInfoViewModel) {
+private fun ScreenContent(
+    modifier: Modifier,
+    postType: String,
+    viewModel: FileInfoViewModel,
+    context: Context
+) {
     var showDialog by remember { mutableStateOf(false) }
     val status by viewModel.apiStatus.collectAsState()
     val data by viewModel.data.collectAsState()
     var materiData: Materi? = null
     var latihanData: Latihan? = null
-    var dataId: Int?
+    var dataId by remember { mutableStateOf(0) }
 
 
     when (status) {
         ApiStatus.IDLE -> null
         ApiStatus.LOADING -> {
-                LoadingState()
+            LoadingState()
         }
 
         ApiStatus.SUCCESS -> {
@@ -135,7 +142,9 @@ private fun ScreenContent(modifier: Modifier, postType: String, viewModel: FileI
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 if (postType == "Materi") {
-                    MaterialContent(data = materiData!!.materiReview!!)
+                    MaterialContent(data = materiData!!.materiReview!!, context = context)
+                } else if (postType == "Artikel") {
+
                 } else {
                     ExerciseContent(data = latihanData!!.latihanReview!!)
                 }
@@ -190,7 +199,60 @@ private fun ScreenContent(modifier: Modifier, postType: String, viewModel: FileI
 }
 
 @Composable
-private fun MaterialContent(data: MateriReview) {
+private fun ArticleContent(data: ArticleReview, context: Context) {
+    InfoAuthor(nip = data.authorNip, username = data.authorUserName)
+    RegularText(
+        text = stringResource(R.string.judul_konten_contoh_reaksi),
+        fontWeight = FontWeight.SemiBold
+    )
+    RegularText(
+        text = data.title,
+        fontWeight = FontWeight.Normal
+    )
+    RegularText(
+        text = stringResource(R.string.media_konten_contoh_reaksi),
+        fontWeight = FontWeight.SemiBold
+    )
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            AsyncImage(
+                model = ImageRequest.Builder(context)
+                    .data(ApiService.getMateriMedia(data.articleId))
+                    .crossfade(true)
+                    .build(),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                placeholder = painterResource(id = R.drawable.loading_img),
+                error = painterResource(id = R.drawable.broken_image),
+                modifier = Modifier
+                    .size(225.dp)
+                    .aspectRatio(1f)
+                    .clip(RoundedCornerShape(10.dp))
+            )
+        }
+        Spacer(modifier = Modifier.padding(vertical = 6.dp))
+        RegularText(
+            text = data.filename,
+            fontWeight = FontWeight.Normal,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+    RegularText(
+        text = stringResource(R.string.deskripsi_text),
+        fontWeight = FontWeight.SemiBold
+    )
+    RegularText(
+        text = data.description,
+        fontWeight = FontWeight.Normal,
+        textAlign = TextAlign.Justify
+    )
+}
+
+@Composable
+private fun MaterialContent(data: MateriReview, context: Context) {
     InfoAuthor(nip = data.authorNip, username = data.authorUserName)
     RegularText(
         text = stringResource(R.string.judul_materi_guru),
@@ -211,7 +273,7 @@ private fun MaterialContent(data: MateriReview) {
         if (data.mediaType == "image") {
             Column(modifier = Modifier.fillMaxWidth()) {
                 AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
+                    model = ImageRequest.Builder(context)
                         .data(ApiService.getMateriMedia(data.materialId))
                         .crossfade(true)
                         .build(),
@@ -225,6 +287,8 @@ private fun MaterialContent(data: MateriReview) {
                         .clip(RoundedCornerShape(10.dp))
                 )
             }
+        } else {
+
         }
         Spacer(modifier = Modifier.padding(vertical = 6.dp))
         RegularText(

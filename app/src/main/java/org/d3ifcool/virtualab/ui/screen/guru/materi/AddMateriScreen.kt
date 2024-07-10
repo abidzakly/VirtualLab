@@ -409,7 +409,15 @@ fun PickVideo(
                                 .size(225.dp)
                                 .aspectRatio(1f)
                                 .clip(RoundedCornerShape(10.dp))
+                                .clickable {
+                                    showImgDialog = true
+                                }
                         )
+                        if (showImgDialog) {
+                            ImageDialog(imageUrl = stringUri, context = context) {
+                                showImgDialog = false
+                            }
+                        }
                     } else {
                         if (!isVideoPlaying) {
                             Log.d("AddMateriScreen", "$stringUri/thumbnail")

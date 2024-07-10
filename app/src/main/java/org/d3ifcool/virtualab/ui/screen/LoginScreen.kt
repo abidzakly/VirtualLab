@@ -191,6 +191,9 @@ private fun LoginScreenContent(
                 focusedContainerColor = Color.Transparent,
                 focusedLabelColor = Color.Black,
                 unfocusedLabelColor = GrayText
+            ),
+            textStyle = TextStyle(
+                fontFamily = Poppins
             )
         )
         Spacer(modifier = Modifier.padding(8.dp))
@@ -220,6 +223,9 @@ private fun LoginScreenContent(
                 focusedContainerColor = Color.Transparent,
                 focusedLabelColor = Color.Black,
                 unfocusedLabelColor = GrayText
+            ),
+            textStyle = TextStyle(
+                fontFamily = Poppins
             )
         )
         Spacer(modifier = Modifier.padding(24.dp))

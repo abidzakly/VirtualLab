@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.d3ifcool.virtualab.ui.theme.GrayTextField
+import org.d3ifcool.virtualab.ui.theme.Poppins
 
 @Composable
 fun CustomTextField(
@@ -49,7 +50,7 @@ fun CustomTextField(
             keyboardType = if (isPhone!!) KeyboardType.Phone else if (isNumber == true) KeyboardType.Number else KeyboardType.Text,
             capitalization = if (isTitle) KeyboardCapitalization.Words else KeyboardCapitalization.Sentences,
         ),
-        textStyle = TextStyle(fontSize = textFontSize)
+        textStyle = TextStyle(fontSize = textFontSize, fontFamily = Poppins)
     )
     Spacer(modifier = Modifier.height(8.dp))
 }
