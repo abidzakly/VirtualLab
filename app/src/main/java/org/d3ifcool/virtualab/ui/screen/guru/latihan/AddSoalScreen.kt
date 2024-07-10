@@ -400,7 +400,7 @@ private fun ScreenContent(
                                 )
                             ) {
                                 RegularText(
-                                    text = if (soalData.isEmpty()) stringResource(R.string.button_unggah) else "Edit Soal",
+                                    text = stringResource(R.string.button_unggah),
                                     fontWeight = FontWeight.SemiBold
                                 )
                             }
