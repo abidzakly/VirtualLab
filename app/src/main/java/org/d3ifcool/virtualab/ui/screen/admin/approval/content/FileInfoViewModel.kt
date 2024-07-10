@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.data.network.ApiStatus
+import org.d3ifcool.virtualab.repository.ArticleRepository
 import org.d3ifcool.virtualab.repository.ExerciseRepository
 import org.d3ifcool.virtualab.repository.MaterialRepository
 import org.d3ifcool.virtualab.utils.Resource
@@ -14,7 +15,8 @@ class FileInfoViewModel(
     private val postId: Int,
     private val postType: String,
     private val materialRepository: MaterialRepository,
-    private val exerciseRepository: ExerciseRepository
+    private val exerciseRepository: ExerciseRepository,
+    private val articleRepository: ArticleRepository
 ) : ViewModel() {
 
 
@@ -37,9 +39,12 @@ class FileInfoViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             apiStatus.value = ApiStatus.LOADING
             val response =
-                if (postType == "Materi") materialRepository.getDetailMateri(postId) else exerciseRepository.getDetailLatihan(
-                    postId
-                )
+                if (postType == "Materi")
+                    materialRepository.getDetailMateri(postId)
+                else if (postType == "Artikel")
+                    articleRepository.getDetailArticle(postId)
+                else
+                    exerciseRepository.getDetailLatihan(postId)
             when (response) {
                 is Resource.Success -> {
                     data.value = response.data!!
@@ -59,6 +64,8 @@ class FileInfoViewModel(
             val response =
                 if (postType == "Materi")
                     materialRepository.approveOrReject(id, "APPROVED")
+                else if (postType == "Artikel")
+                    articleRepository.approveOrReject(id, "APPROVED")
                 else
                     exerciseRepository.approveOrReject(id, "APPROVED")
             when (response) {
@@ -77,6 +84,8 @@ class FileInfoViewModel(
             val response =
                 if (postType == "Materi")
                     materialRepository.approveOrReject(id, "REJECTED")
+                else if (postType == "Artikel")
+                    articleRepository.approveOrReject(id, "REJECTED")
                 else
                     exerciseRepository.approveOrReject(id, "REJECTED")
             when (response) {

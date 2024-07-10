@@ -24,6 +24,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults.cardColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -165,46 +167,48 @@ private fun ScreenContent(
 
 @Composable
 private fun FileList(username: String, postType: String, onClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .shadow(elevation = 6.dp, shape = RoundedCornerShape(12.dp))
-            .background(LightBlue)
-            .padding(24.dp)
-            .clickable { onClick() },
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
+    Card(modifier = Modifier
+//                .clickable { onClick() }
+        .fillMaxWidth()
+        .padding(8.dp)
+        .shadow(elevation = 6.dp, shape = RoundedCornerShape(12.dp))
+        , onClick = { onClick() }, colors = cardColors(LightBlue)) {
+        Row(modifier = Modifier.fillMaxWidth()
+            .padding(24.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.baseline_account_circle),
-                contentDescription = "Foto Profil User",
-                modifier = Modifier.padding(end = 4.dp)
-            )
-            Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                RegularText(
-                    text = username,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.baseline_account_circle),
+                    contentDescription = "Foto Profil User",
+                    modifier = Modifier.padding(end = 4.dp)
                 )
-                RegularText(
-                    text = postType,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    RegularText(
+                        text = username,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    RegularText(
+                        text = postType,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
+            Icon(
+                painter = painterResource(id = R.drawable.arrow_circle),
+                contentDescription = "Detail Button",
+                tint = Color.Black
+            )
         }
-        Icon(
-            painter = painterResource(id = R.drawable.arrow_circle),
-            contentDescription = "Detail Button",
-            tint = Color.Black
-        )
     }
     Spacer(modifier = Modifier.height(8.dp))
+
 }
 
 @Preview
