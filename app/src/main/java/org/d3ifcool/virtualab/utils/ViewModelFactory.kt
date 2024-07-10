@@ -73,7 +73,7 @@ class ViewModelFactory(
         } else if (modelClass.isAssignableFrom(GuruMateriViewModel::class.java)) {
             return GuruMateriViewModel(materialRepository!!) as T
         } else if (modelClass.isAssignableFrom(FileInfoViewModel::class.java)) {
-            return FileInfoViewModel(id!!, str!!, materialRepository!!, exerciseRepository!!) as T
+            return FileInfoViewModel(id!!, str!!, materialRepository!!, exerciseRepository!!, articleRepository!!) as T
         } else if (modelClass.isAssignableFrom(CheckFileViewModel::class.java)) {
             return CheckFileViewModel(userRepository!!) as T
         } else if (modelClass.isAssignableFrom(IntroContentViewModel::class.java)) {

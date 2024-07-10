@@ -414,7 +414,8 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
                 id = postId,
                 str = postType,
                 materialRepository = materialRepository,
-                exerciseRepository = exerciseRepository
+                exerciseRepository = exerciseRepository,
+                articleRepository = articleRepository
             )
             val viewModel: FileInfoViewModel = viewModel(factory = factory)
             FileInfoScreen(navController, postType!!, viewModel)

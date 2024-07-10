@@ -2,23 +2,30 @@ package org.d3ifcool.virtualab.ui.screen.admin.approval.content
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonDefaults.outlinedButtonColors
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -29,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,6 +53,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import org.d3ifcool.virtualab.R
+import org.d3ifcool.virtualab.data.model.Article
 import org.d3ifcool.virtualab.data.model.ArticleReview
 import org.d3ifcool.virtualab.data.model.Latihan
 import org.d3ifcool.virtualab.data.model.LatihanReview
@@ -54,13 +63,16 @@ import org.d3ifcool.virtualab.data.network.ApiService
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
+import org.d3ifcool.virtualab.ui.component.ImageDialog
 import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.SemiLargeText
 import org.d3ifcool.virtualab.ui.component.SmallText
 import org.d3ifcool.virtualab.ui.component.TopNav
+import org.d3ifcool.virtualab.ui.component.VideoPlayer
 import org.d3ifcool.virtualab.ui.theme.DarkBlue
+import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.ui.theme.GreenButton
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.RedButton
@@ -112,13 +124,20 @@ private fun ScreenContent(
     context: Context
 ) {
     var showDialog by remember { mutableStateOf(false) }
+    var showImgDialog by remember { mutableStateOf(false) }
     val status by viewModel.apiStatus.collectAsState()
     val data by viewModel.data.collectAsState()
-    var materiData: Materi? = null
-    var latihanData: Latihan? = null
+    var materiData by remember {
+        mutableStateOf<Materi?>(null)
+    }
+    var articleData by remember {
+        mutableStateOf<Article?>(null)
+    }
+    var latihanData by remember {
+        mutableStateOf<Latihan?>(null)
+    }
     var dataId by remember { mutableStateOf(0) }
-
-
+//    Icon
     when (status) {
         ApiStatus.IDLE -> null
         ApiStatus.LOADING -> {
@@ -128,10 +147,13 @@ private fun ScreenContent(
         ApiStatus.SUCCESS -> {
             if (postType == "Materi") {
                 materiData = data as Materi
-                dataId = materiData.materiReview!!.materialId
+                dataId = materiData!!.materiReview!!.materialId
+            } else if (postType == "Artikel") {
+                articleData = data as Article
+                dataId = articleData!!.articleReview!!.articleId
             } else {
                 latihanData = data as Latihan
-                dataId = latihanData.latihanReview!!.exerciseId
+                dataId = latihanData!!.latihanReview!!.exerciseId
             }
             Column(
                 modifier = modifier
@@ -142,9 +164,30 @@ private fun ScreenContent(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 if (postType == "Materi") {
-                    MaterialContent(data = materiData!!.materiReview!!, context = context)
+                    val materiReview = materiData!!.materiReview!!
+                    val mediaUrl = ApiService.getMateriMedia(materiReview.materialId)
+                    MaterialContent(data = materiReview, context = context) {
+                        if (materiReview.mediaType == "image") {
+                            showImgDialog = true
+                        }
+                    }
+                    if (showImgDialog) {
+                        ImageDialog(imageUrl = mediaUrl, context = context) {
+                            showImgDialog = false
+                        }
+                    }
                 } else if (postType == "Artikel") {
+                    val articleReview = articleData!!.articleReview!!
+                    val imageUrl = ApiService.getArticleMedia(articleReview.articleId)
+                    ArticleContent(data = articleReview, context = context) {
+                        showImgDialog = true
+                    }
 
+                    if (showImgDialog) {
+                        ImageDialog(imageUrl = imageUrl, context = context) {
+                            showImgDialog = false
+                        }
+                    }
                 } else {
                     ExerciseContent(data = latihanData!!.latihanReview!!)
                 }
@@ -199,7 +242,7 @@ private fun ScreenContent(
 }
 
 @Composable
-private fun ArticleContent(data: ArticleReview, context: Context) {
+private fun ArticleContent(data: ArticleReview, context: Context, onClick: () -> Unit) {
     InfoAuthor(nip = data.authorNip, username = data.authorUserName)
     RegularText(
         text = stringResource(R.string.judul_konten_contoh_reaksi),
@@ -217,10 +260,14 @@ private fun ArticleContent(data: ArticleReview, context: Context) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Column(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onClick()
+            }) {
             AsyncImage(
                 model = ImageRequest.Builder(context)
-                    .data(ApiService.getMateriMedia(data.articleId))
+                    .data(ApiService.getArticleMedia(data.articleId))
                     .crossfade(true)
                     .build(),
                 contentDescription = null,
@@ -252,7 +299,9 @@ private fun ArticleContent(data: ArticleReview, context: Context) {
 }
 
 @Composable
-private fun MaterialContent(data: MateriReview, context: Context) {
+private fun MaterialContent(data: MateriReview, context: Context, onClick: () -> Unit) {
+    val mediaUrl by remember { mutableStateOf(ApiService.getMateriMedia(data.materialId)) }
+    var isVideoPlaying by remember { mutableStateOf(false) }
     InfoAuthor(nip = data.authorNip, username = data.authorUserName)
     RegularText(
         text = stringResource(R.string.judul_materi_guru),
@@ -271,10 +320,14 @@ private fun MaterialContent(data: MateriReview, context: Context) {
         verticalArrangement = Arrangement.Center
     ) {
         if (data.mediaType == "image") {
-            Column(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    onClick()
+                }) {
                 AsyncImage(
                     model = ImageRequest.Builder(context)
-                        .data(ApiService.getMateriMedia(data.materialId))
+                        .data(mediaUrl)
                         .crossfade(true)
                         .build(),
                     contentDescription = null,
@@ -288,7 +341,42 @@ private fun MaterialContent(data: MateriReview, context: Context) {
                 )
             }
         } else {
-
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(if (isVideoPlaying) Color.Black.copy(alpha = 0.8f) else Color.Transparent)
+                    .clickable { isVideoPlaying = true },
+                contentAlignment = Alignment.CenterStart
+            ) {
+                if (!isVideoPlaying) {
+                    Box(contentAlignment = Alignment.Center) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(context)
+                                .data("${mediaUrl}/thumbnail")
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            placeholder = painterResource(id = R.drawable.loading_img),
+                            error = painterResource(id = R.drawable.broken_image),
+                            modifier = Modifier
+                                .size(225.dp)
+                                .aspectRatio(1f)
+                                .clip(RoundedCornerShape(10.dp))
+                        )
+                        Icon(
+                            painter = painterResource(id = R.drawable.play_button),
+                            contentDescription = "Play Button",
+                            tint = Color.White,
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
+                } else {
+                    VideoPlayer(media = mediaUrl, isUri = false, appContext = context) {
+                        isVideoPlaying = it
+                    }
+                }
+            }
         }
         Spacer(modifier = Modifier.padding(vertical = 6.dp))
         RegularText(
@@ -409,8 +497,24 @@ private fun RejectFilePopup(onDismiss: () -> Unit, onClick: () -> Unit) {
     )
 }
 
+@Composable
+fun asdas(modifier: Modifier = Modifier) {
+    Column {
+        OutlinedButton(onClick = { /*TODO*/ }, border = BorderStroke(2.dp, DarkBlueDarker)) {
+//
+//            Icon(
+//                painter = painterResource(id = R.drawable.app_ico),
+//                contentDescription = null,
+//                tint = Color.Unspecified,
+//                modifier = Modifier.align(AbsoluteAlignment.Left)
+//            )
+        }
+    }
+}
+
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 private fun Prev() {
+    asdas()
 //    FileInfoScreen(rememberNavController())
 }
