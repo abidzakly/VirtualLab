@@ -1,6 +1,5 @@
 package org.d3ifcool.virtualab.ui.screen.guru.latihan
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -46,10 +45,6 @@ class AddSoalViewModel(
     var listSoal = MutableStateFlow(emptyList<QuestionCreateOrUpdate>())
         private set
 
-
-//    var listSoal = MutableStateFlow(emptyList<QuestionCreate>())
-//        private set
-
     init {
         getCurrentLatihan()
     }
@@ -76,7 +71,6 @@ class AddSoalViewModel(
                     val newAnswerPositions = MutableList(questionCount) { MutableList(3) { -1 } }
 
                     if (response.data.soal!!.isNotEmpty()) {
-                            Log.d("AddSoalVM", "list soal @ fetch: ${response.data.soal}")
                         response.data.soal.forEachIndexed { index, soal ->
                             listOfQuestion[index] =
                                 QuestionCreateOrUpdate(
@@ -90,14 +84,6 @@ class AddSoalViewModel(
                                     if (s == answer) {
                                         newIsChecked[index][optionIndex] = true
                                         newAnswerPositions[index][answerIndex] = optionIndex
-                                        Log.d(
-                                            "AddSoalVM",
-                                            "soal ${index + 1} answer ${answerIndex + 1} isCheck ${optionIndex + 1}: ${newIsChecked[index][optionIndex]}"
-                                        )
-                                        Log.d(
-                                            "AddSoalVM",
-                                            "soal ${index + 1} answer ${answerIndex + 1} position: ${newAnswerPositions[index][answerIndex]}"
-                                        )
                                     }
                                 }
                             }
@@ -123,8 +109,6 @@ class AddSoalViewModel(
 
                     }
                     listSoal.value = MutableList(questionCount) { QuestionCreateOrUpdate() }
-                        Log.d("AddSoalVM", "list soal: ${listSoal.value}")
-                    Log.d("AddSoalVM", "list of question: ${state.value.soal}")
                 }
 
                 is Resource.Error -> {
@@ -137,7 +121,6 @@ class AddSoalViewModel(
 
     fun addSoal() {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d("AddSoalVM", "list soal @ add: ${listSoal.value}")
             uploadStatus.value = ApiStatus.LOADING
             when (val response = exerciseRepository.addSoal(exerciseId, listSoal.value)) {
                 is Resource.Success -> {
@@ -154,7 +137,6 @@ class AddSoalViewModel(
     }
 
     fun updateSoal() {
-        Log.d("AddSoalVM", "list soal @ update: ${listSoal.value}")
         viewModelScope.launch(Dispatchers.IO) {
             uploadStatus.value = ApiStatus.LOADING
             when (val response = exerciseRepository.updateSoal(exerciseId, listSoal.value)) {
@@ -192,7 +174,6 @@ class AddSoalViewModel(
             val updatedSoal = currentState.soal.toMutableList().apply {
                 this[index] = this[index].copy(questionText = text)
             }
-            Log.d("AddSoalVM", "question: $updatedSoal")
             currentState.copy(
                 soal = updatedSoal
             )
@@ -204,7 +185,6 @@ class AddSoalViewModel(
             val newSelectedAnswers = currentState.selectedAnswers.toMutableList().apply {
                 set(index, answerCount)
             }
-            Log.d("AddSoalVM", "selectedAnsw: $newSelectedAnswers")
             currentState.copy(selectedAnswers = newSelectedAnswers)
         }
     }
@@ -227,7 +207,6 @@ class AddSoalViewModel(
                     keys.add(answer)
                 }
                 this[index] = this[index].copy(answerKeys = keys)
-                Log.d("AddSoalVM", "soal $index answers keys: $keys")
             }
             currentState.copy(soal = updatedSoal)
         }
@@ -241,7 +220,6 @@ class AddSoalViewModel(
                     options[optionIndex] = text
                     this[index] = this[index].copy(optionText = options)
                 }
-                Log.d("AddSoalVM", "options: $options")
             }
             currentState.copy(soal = updatedSoal)
         }
@@ -256,7 +234,6 @@ class AddSoalViewModel(
             newIsChecked.apply {
                 set(index, isCheckeds)
             }
-            Log.d("AddSoalVM", "isChecked: $newIsChecked")
             currentState.copy(isChecked = newIsChecked)
         }
     }
@@ -265,10 +242,6 @@ class AddSoalViewModel(
         val currentList = listSoal.value.toMutableList()
         currentList[index] = soal
         listSoal.value = currentList
-        Log.d(
-            "AddSoalVM",
-            "soal ${index + 1} di edit.\n soal: ${listSoal.value[index]}"
-        )
     }
 
     fun clearStatus() {

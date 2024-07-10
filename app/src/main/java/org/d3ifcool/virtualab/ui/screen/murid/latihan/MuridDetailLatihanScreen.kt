@@ -1,6 +1,5 @@
 package org.d3ifcool.virtualab.ui.screen.murid.latihan
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -52,7 +51,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.data.model.SoalMurid
@@ -115,15 +113,10 @@ private fun ScreenContent(
     val resultId by viewModel.resultId.collectAsState()
 
     LaunchedEffect(Unit) {
-        Log.d("Murid Detail Latihan Screen", "answer: ${answer.values}")
     }
 
-    val viewModel2: DetailLatihanVM = viewModel()
     var showDialog by remember { mutableStateOf(false) }
     var showConfirmDialog by remember { mutableStateOf(false) }
-    val answers by viewModel2.answers.collectAsState()
-    Log.d("Itemlist @Murid Detail Latihan", "answers: ${answers.values}")
-    Log.d("Result ID @Murid Detail Latihan", "resultId: $resultId")
 
     val context = LocalContext.current
 
@@ -317,7 +310,6 @@ private fun ItemListAbid(noSoal: Int, soal: SoalMurid, viewModel: MuridDetailLat
                     selectedAnswers = answers,
                     answerKeyCount = soal.answerKeyCount,
                     onOptionSelected = { option, isSelected ->
-                        Log.d("MuridDetailLatihanScreen", "Answers Before: ${answers.toList()}")
                         if (isSelected) {
                             if (answers.size < soal.answerKeyCount) {
                                 answers.add(option)
@@ -325,7 +317,6 @@ private fun ItemListAbid(noSoal: Int, soal: SoalMurid, viewModel: MuridDetailLat
                         } else {
                             answers.remove(option)
                         }
-                        Log.d("MuridDetailLatihanScreen", "Answers After:  ${answers.toList()}")
                     }
                 )
             }
@@ -353,7 +344,6 @@ private fun QuestionItemAbid(
         )
         options.forEach { option ->
             val isSelected = selectedAnswers?.contains(option) == true
-            Log.d("Murid Detail Latihan Screen", "isSelected: $isSelected")
             val borderColor = if (isSelected) {
 //                DarkBlueDarker
                 val index = clickedOptions.indexOf(option)
@@ -361,7 +351,6 @@ private fun QuestionItemAbid(
             } else {
                 Color.Transparent
             }
-            Log.d("MuridDetailLatihanScreen", "Clicked Opt Size:  ${clickedOptions.size}")
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier

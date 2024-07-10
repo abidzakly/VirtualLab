@@ -32,7 +32,6 @@ class GuruLatihanViewModel(private val exerciseRepository: ExerciseRepository) :
 
     fun getMyLatihan() {
         _apiStatus.value = ApiStatus.LOADING
-//        Log.d("HomeLatihanVM", "userId: $userId")
         viewModelScope.launch(Dispatchers.IO) {
             when (val response = exerciseRepository.getMyLatihan()) {
                 is Resource.Success -> {

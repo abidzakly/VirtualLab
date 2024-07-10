@@ -1,7 +1,6 @@
 package org.d3ifcool.virtualab.ui.screen.murid.reaksi
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box

@@ -1,6 +1,5 @@
 package org.d3ifcool.virtualab.ui.screen.murid.latihan
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -32,18 +31,14 @@ class CekJawabanViewModel(
     fun getNilaiDetail() {
         viewModelScope.launch(Dispatchers.IO) {
             apiStatus.value = ApiStatus.LOADING
-                    Log.d("CekJawabanVM", "Response: $resultId")
             when (val response = studentRepository.getResultDetail(resultId)) {
                 is Resource.Success -> {
-                    Log.d("CekJawabanVM", "Response: ${response.data}")
                     data.value = response.data
                     apiStatus.value = ApiStatus.SUCCESS
                 }
 
                 is Resource.Error -> {
                     errorMessage.value = response.message
-                    Log.d("CekJawabanVM", "Error: ${response.message}")
-                    Log.d("CekJawabanVM", "Error: ${errorMessage.value}")
                     apiStatus.value = ApiStatus.FAILED
                 }
             }

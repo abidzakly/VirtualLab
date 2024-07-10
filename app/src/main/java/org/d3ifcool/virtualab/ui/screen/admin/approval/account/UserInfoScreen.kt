@@ -1,7 +1,6 @@
 package org.d3ifcool.virtualab.ui.screen.admin.approval.account
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -65,7 +64,6 @@ fun UsersInfoScreen(navController: NavHostController, viewModel: UserInfoViewMod
     val approveResponse by viewModel.approveResponse.collectAsState()
     val rejectResponse by viewModel.rejectResponse.collectAsState()
 
-    Log.d("APPROVE_RESPONSE", "APPROVE RESP?: ${approveResponse?.status}")
     LaunchedEffect(approveResponse) {
         if (approveResponse?.status == true) {
             Toast.makeText(context, approveResponse!!.message, Toast.LENGTH_SHORT).show()
@@ -141,7 +139,6 @@ private fun ScreenContent(
     var showDialog by remember { mutableStateOf(false) }
 
     val isEmailSent by viewModel.emailSent.collectAsState()
-    Log.d("EMAIL_SENT", "email sent?: $isEmailSent")
 
     LaunchedEffect(isEmailSent) {
         if (isEmailSent) {

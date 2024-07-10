@@ -7,8 +7,6 @@ import org.d3ifcool.virtualab.data.model.CombinedUser
 import org.d3ifcool.virtualab.data.model.CombinedUsers
 import org.d3ifcool.virtualab.data.model.MessageResponse
 import org.d3ifcool.virtualab.data.model.PendingPosts
-import org.d3ifcool.virtualab.data.model.UserUpdate
-import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart

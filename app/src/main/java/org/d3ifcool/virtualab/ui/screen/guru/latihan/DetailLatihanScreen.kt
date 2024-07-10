@@ -1,6 +1,5 @@
 package org.d3ifcool.virtualab.ui.screen.guru.latihan
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -49,7 +48,6 @@ import org.d3ifcool.virtualab.ui.component.GuruEmptyState
 import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.MediumText
 import org.d3ifcool.virtualab.ui.component.PopUpDialog
-import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 
@@ -81,7 +79,6 @@ fun DetailLatihanScreen(navController: NavHostController, viewModel: DetailLatih
             Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
         }
     }
-    Log.d("DetailLatihanScreen", "exerciseId: $exerciseId")
     Scaffold(topBar = {
         TopNav(title = R.string.guru_detail_latihan_title, navController = navController) {
             Row(verticalAlignment = Alignment.CenterVertically) {

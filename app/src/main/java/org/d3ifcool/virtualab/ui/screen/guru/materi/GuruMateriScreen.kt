@@ -87,7 +87,11 @@ fun GuruMateriScreen(navController: NavHostController, viewModel: GuruMateriView
 
 
     Scaffold(topBar = {
-        TopNav(title = R.string.lihat_materi_title, navController = navController)
+        TopNav(title = R.string.lihat_materi_title, isCustomBack = true, customBack = {
+            navController.navigate(Screen.GuruDashboard.route) {
+                popUpTo(Screen.GuruDashboard.route)
+            }
+        }, navController = navController)
     },  floatingActionButton = {
         if (!isPressed) {
             FloatingActionButton(

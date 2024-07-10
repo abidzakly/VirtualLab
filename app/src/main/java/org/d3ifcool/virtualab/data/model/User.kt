@@ -32,11 +32,6 @@ data class UserLogin(
     val password: String
 )
 
-data class UserUpdate(
-    val email: String,
-    val password: String
-)
-
 data class UserRegistration(
     val student: StudentCreate? = StudentCreate(nisn = ""),
     val teacher: TeacherCreate? = TeacherCreate(nip = ""),

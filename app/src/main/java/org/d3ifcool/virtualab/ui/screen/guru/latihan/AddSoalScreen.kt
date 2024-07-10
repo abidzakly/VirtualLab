@@ -1,10 +1,11 @@
 package org.d3ifcool.virtualab.ui.screen.guru.latihan
 
-import android.util.Log
 import android.widget.Toast
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,8 +20,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.relocation.BringIntoViewRequester
-import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -36,16 +35,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
-import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
@@ -63,22 +61,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
-import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.data.model.QuestionCreateOrUpdate
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
-import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.GuruEmptyState
 import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.PopUpDialog
-import org.d3ifcool.virtualab.ui.component.MediumText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.GrayIco
 import org.d3ifcool.virtualab.ui.theme.GrayTextField
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.Poppins
+import org.d3ifcool.virtualab.utils.rememberImeState
 
 @Composable
 fun AddSoalScreen(navController: NavHostController, viewModel: AddSoalViewModel) {
@@ -89,6 +85,9 @@ fun AddSoalScreen(navController: NavHostController, viewModel: AddSoalViewModel)
     val errorMessage by viewModel.errorMessage.collectAsState()
     var isUploading by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var isEditSoal by remember {
+        mutableStateOf(false)
+    }
 
     val context = LocalContext.current
 
@@ -124,19 +123,25 @@ fun AddSoalScreen(navController: NavHostController, viewModel: AddSoalViewModel)
 
     Scaffold(
         topBar = {
-            TopNav(title = R.string.add_soal_title, navController = navController) {
+            TopNav(title = if (isEditSoal) R.string.edit_soal_title else R.string.add_soal_title, isCustomBack = true, customBack = {
+                navController.navigate(Screen.GuruLatihan.route) {
+                    popUpTo(Screen.GuruDashboard.route)
+                }
+            }, navController = navController) {
                 IconButton(onClick = { showDeleteDialog = true }) {
                     Icon(imageVector = Icons.Default.Delete, contentDescription = "Icon Delete")
                 }
             }
         },
         containerColor = Color.White
-    ) {
+    ) { innerPadding ->
         ScreenContent(
-            modifier = Modifier.padding(it),
+            modifier = Modifier.padding(innerPadding),
             viewModel,
             focusManager
-        )
+        ) {
+            isEditSoal = it
+        }
         if (isUploading) {
             Dialog(onDismissRequest = { }) {
                 LoadingState()
@@ -160,16 +165,15 @@ fun AddSoalScreen(navController: NavHostController, viewModel: AddSoalViewModel)
 private fun ScreenContent(
     modifier: Modifier,
     viewModel: AddSoalViewModel,
-    focusManager: FocusManager
+    focusManager: FocusManager,
+    onEditSoalExisted: (Boolean) -> Unit
 ) {
     val context = LocalContext.current
     val fetchStatus by viewModel.fetchStatus.collectAsState()
     val state by viewModel.state.collectAsState()
-    Log.d("AddSoalScreen", "list of question: ${state.soal}")
     val latihanData by viewModel.latihanData.collectAsState()
     val listSoal by viewModel.listSoal.collectAsState()
 
-    Log.d("AddSoalScreen", "Latihan Data: $latihanData")
     when (fetchStatus) {
         ApiStatus.IDLE -> null
         ApiStatus.LOADING -> {
@@ -185,7 +189,15 @@ private fun ScreenContent(
         ApiStatus.SUCCESS -> {
             val latihan = latihanData!!.latihanDetail!!
             val soalData = latihanData!!.soal!!
-            Log.d("AddSoalScreen", "soalData: $soalData")
+            if (soalData.isNotEmpty()) onEditSoalExisted(true)
+            val imeState by rememberImeState()
+            val scrollState = rememberScrollState()
+
+            LaunchedEffect(imeState) {
+                if (imeState) {
+                    scrollState.animateScrollTo(scrollState.maxValue, animationSpec = tween(300))
+                }
+            }
             Box(
                 Modifier
                     .fillMaxSize()
@@ -202,6 +214,7 @@ private fun ScreenContent(
                         .padding(horizontal = 24.dp)
                         .padding(top = 64.dp)
                         .fillMaxWidth()
+                        .scrollable(scrollState, orientation = Orientation.Vertical)
                         .imePadding()
                         .navigationBarsPadding()
                         .padding(bottom = 16.dp)
@@ -284,10 +297,6 @@ private fun ScreenContent(
                                             ).show()
                                         }
                                     }
-                                    Log.d(
-                                        "AddSoalScreen",
-                                        "answerPos soal${index + 1}: ${state.answerPositions[index]}"
-                                    )
                                 },
                                 jawaban = it.optionText[i],
                                 onJawabanChange = {

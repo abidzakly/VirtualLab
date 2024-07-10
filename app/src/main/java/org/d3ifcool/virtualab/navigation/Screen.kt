@@ -3,7 +3,6 @@ package org.d3ifcool.virtualab.navigation
 const val KEY_USER_TYPE = "userRoleType"
 const val KEY_USER_ID = "idType"
 const val KEY_EXERCISE_ID = "exerciseIdType"
-const val KEY_USER_EMAIL = "emailType"
 
 const val KEY_ID_TYPE = "id"
 const val KEY_STR_TYPE = "str"

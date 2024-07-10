@@ -1,13 +1,15 @@
 package org.d3ifcool.virtualab.ui.screen.admin.introduction
 
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -65,6 +67,7 @@ import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.theme.Poppins
 import org.d3ifcool.virtualab.utils.GenericMessage
 import org.d3ifcool.virtualab.utils.getFileName
+import org.d3ifcool.virtualab.utils.rememberImeState
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -81,7 +84,6 @@ fun UpdateIntroContentScreen(navController: NavHostController, viewModel: Update
     var descMateri by remember { mutableStateOf("") }
 
     var newFile by remember { mutableStateOf<Uri?>(null) }
-    Log.d("UpdateIntroScreen", "Judul Materi: $judulMateri")
 
     LaunchedEffect(data) {
         if (data != null) {
@@ -234,7 +236,14 @@ private fun ScreenContent(
             viewModel.clearStatus()
         }
     }
+    val imeState by rememberImeState()
+    val scrollState = rememberScrollState()
 
+    LaunchedEffect(imeState) {
+        if (imeState) {
+            scrollState.animateScrollTo(scrollState.maxValue, animationSpec = tween(300))
+        }
+    }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -247,7 +256,7 @@ private fun ScreenContent(
             }
             .background(Color.White)
             .padding(horizontal = 24.dp)
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Spacer(modifier = Modifier.height(24.dp))
@@ -399,5 +408,7 @@ fun PickVideo(
 @Preview
 @Composable
 private fun Prev() {
-//    UpdateIntroContentScreen(navController = rememberNavController())
+//Column {
+//    Icon(painter = painterResource(id = R.dr), contentDescription = )
+//}
 }

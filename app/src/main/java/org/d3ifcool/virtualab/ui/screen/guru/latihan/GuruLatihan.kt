@@ -86,7 +86,11 @@ fun GuruLatihanScreen(navController: NavHostController, viewModel: GuruLatihanVi
     }
 
     Scaffold(topBar = {
-        TopNav(title = R.string.lihat_latihan_title, navController = navController)
+        TopNav(title = R.string.lihat_latihan_title, isCustomBack = true, customBack = {
+            navController.navigate(Screen.GuruDashboard.route) {
+                popUpTo(Screen.GuruDashboard.route)
+            }
+        }, navController = navController)
     },
         floatingActionButton = {
             if (!isPressed) {

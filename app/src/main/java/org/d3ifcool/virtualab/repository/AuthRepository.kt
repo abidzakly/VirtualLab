@@ -1,6 +1,5 @@
 package org.d3ifcool.virtualab.repository
 
-import android.util.Log
 import org.d3ifcool.virtualab.data.model.CombinedUser
 import org.d3ifcool.virtualab.data.model.Guru
 import org.d3ifcool.virtualab.data.model.MessageResponse
@@ -27,7 +26,6 @@ class AuthRepository(
     suspend fun login(username: String, password: String): Resource<CombinedUser> {
         return try {
             val result = unAuthedApi.login(UserLogin(username, password))
-            Log.d("AuthRepository", "Access Token : ${result.accessToken}")
             ApiService.createAuthorizedService(result.accessToken!!)
             saveToDataStore(result.accessToken, result)
             Resource.Success(result)

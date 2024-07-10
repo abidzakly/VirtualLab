@@ -2,7 +2,6 @@ package org.d3ifcool.virtualab.ui.screen
 
 import android.content.Context
 import android.content.res.Configuration
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.focusable
@@ -31,7 +30,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -87,7 +85,6 @@ import org.d3ifcool.virtualab.ui.theme.DarkBlue
 import org.d3ifcool.virtualab.ui.theme.GrayText
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.Poppins
-import org.d3ifcool.virtualab.utils.UserDataStore
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -111,7 +108,6 @@ fun RegisterScreen(navController: NavHostController, id: Int, viewModel: AuthVie
         }
 
         ApiStatus.FAILED -> {
-            Log.d("RegisterScreen", "Register Error: $errorMsg")
             Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show()
             viewModel.clearStatus()
         }
@@ -265,10 +261,6 @@ private fun ScreenContent(
         Button(
             modifier = Modifier.padding(horizontal = 31.dp),
             onClick = {
-                Log.d("Fullname Response", "FRes: ${fullnameCheck(fullname)}")
-                Log.d("Username Response", "URes: ${usernameCheck(username)}")
-                Log.d("Email Response", "ERes: ${emailCheck(email)}")
-                Log.d("UniqueId Response", "UIRes: ${uniqueIdCheck(id, uniqueId)}")
                 when {
                     fullnameCheck(fullname) != 0 -> return@Button
                     usernameCheck(username) != 0 -> return@Button
@@ -282,7 +274,6 @@ private fun ScreenContent(
 
                     school.isEmpty() || school.isBlank() -> return@Button
                     else -> {
-                        Log.d("OTHER Response", "Response: Clicked!")
                         viewModel.register(
                             uniqueId,
                             UserCreate(
@@ -614,6 +605,4 @@ private fun RegistSuccessPopup(onDismiss: () -> Unit, navController: NavHostCont
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun RegisterScreenPreview() {
-//    RegisterScreen(rememberNavController(), 0)
-//RegistSuccessPopup(onDismiss = { /*TODO*/ }, navController = rememberNavController())
 }

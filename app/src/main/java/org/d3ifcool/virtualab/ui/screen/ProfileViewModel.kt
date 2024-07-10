@@ -1,9 +1,6 @@
 package org.d3ifcool.virtualab.ui.screen
 
 import android.graphics.Bitmap
-import android.net.Uri
-import android.util.Log
-import androidx.datastore.dataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -11,20 +8,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.d3ifcool.virtualab.data.model.CombinedUser
-import org.d3ifcool.virtualab.data.model.Guru
-import org.d3ifcool.virtualab.data.model.Murid
-import org.d3ifcool.virtualab.data.model.UserUpdate
-import org.d3ifcool.virtualab.data.network.ApiService
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.repository.UserRepository
 import org.d3ifcool.virtualab.utils.Resource
-import org.d3ifcool.virtualab.utils.UserDataStore
 import org.d3ifcool.virtualab.utils.toMultipartBody
-import retrofit2.HttpException
-import java.io.ByteArrayOutputStream
 
 class ProfileViewModel(private val userRepository: UserRepository) : ViewModel() {
 

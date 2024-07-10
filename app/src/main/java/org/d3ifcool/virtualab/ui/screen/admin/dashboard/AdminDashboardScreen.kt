@@ -1,7 +1,6 @@
 package org.d3ifcool.virtualab.ui.screen.admin.dashboard
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,14 +19,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -37,14 +33,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3ifcool.virtualab.R
-import org.d3ifcool.virtualab.data.model.User
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.SmallText
 import org.d3ifcool.virtualab.ui.component.TopNavDashboard
 import org.d3ifcool.virtualab.ui.theme.WhiteLightBlue
-import org.d3ifcool.virtualab.utils.UserDataStore
 
 @Composable
 fun AdminDashboardScreen(navController: NavHostController) {
@@ -60,14 +54,6 @@ fun AdminDashboardScreen(navController: NavHostController) {
 
 @Composable
 private fun ScreenContent(modifier: Modifier, navController: NavHostController) {
-//    val viewModel: DashboardMuridViewModel = viewModel()
-//    val data = viewModel.dashboardCategories
-    val dataStore = UserDataStore(LocalContext.current)
-    val user by dataStore.userFlow.collectAsState(User())
-    Log.d(
-        "Admin Dashboard",
-        "Admin data = email: ${user.email}, userType: ${user.userType}, id: ${user.userId}"
-    )
 
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
         TopNavDashboard(name = "Admin", navController = navController)

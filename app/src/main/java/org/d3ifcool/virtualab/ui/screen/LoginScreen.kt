@@ -2,10 +2,12 @@ package org.d3ifcool.virtualab.ui.screen
 
 import android.content.Context
 import android.content.res.Configuration
-import android.util.Log
 import android.widget.Toast
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,6 +39,7 @@ import androidx.compose.material3.TextFieldDefaults.colors
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -74,6 +77,7 @@ import org.d3ifcool.virtualab.ui.theme.GrayText
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.Poppins
 import org.d3ifcool.virtualab.utils.GenericMessage
+import org.d3ifcool.virtualab.utils.rememberImeState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -106,7 +110,6 @@ fun LoginScreen(navController: NavHostController, viewModel: AuthViewModel) {
         }
 
         ApiStatus.FAILED -> {
-            Log.d("LoginScreen", "Login Error: $errorMsg")
             Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show()
             viewModel.clearStatus()
         }
@@ -163,7 +166,14 @@ private fun LoginScreenContent(
     var loginAttempt by remember { mutableIntStateOf(0) }
 
     var passwordVisibility by remember { mutableStateOf(false) }
+    val imeState by rememberImeState()
+    val scrollState = rememberScrollState()
 
+    LaunchedEffect(imeState) {
+        if (imeState) {
+            scrollState.animateScrollTo(scrollState.maxValue, animationSpec = tween(300))
+        }
+    }
 
     Column(
         modifier = modifier
@@ -176,7 +186,7 @@ private fun LoginScreenContent(
                 )
             }
             .padding(horizontal = 48.dp)
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(scrollState),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

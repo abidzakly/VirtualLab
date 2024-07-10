@@ -7,10 +7,13 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -80,6 +83,7 @@ import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.utils.GenericMessage
 import org.d3ifcool.virtualab.utils.getFileName
 import org.d3ifcool.virtualab.utils.isImage
+import org.d3ifcool.virtualab.utils.rememberImeState
 import java.io.InputStream
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -178,6 +182,14 @@ private fun ScreenContent(
 ) {
     val articleData by viewModel.articleData.collectAsState()
     val articleId by viewModel.articleId.collectAsState()
+    val imeState by rememberImeState()
+    val scrollState = rememberScrollState()
+
+    LaunchedEffect(imeState) {
+        if (imeState) {
+            scrollState.animateScrollTo(scrollState.maxValue, animationSpec = tween(300))
+        }
+    }
 
     var judulKonten by remember { mutableStateOf("") }
     var descKonten by remember { mutableStateOf("") }
@@ -196,7 +208,7 @@ private fun ScreenContent(
             }
             .background(Color.White)
             .padding(horizontal = 24.dp)
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         when (status) {
