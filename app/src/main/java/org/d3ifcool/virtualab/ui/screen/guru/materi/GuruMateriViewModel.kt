@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import org.d3ifcool.virtualab.data.model.Materi
 import org.d3ifcool.virtualab.data.model.MateriItem
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.repository.MaterialRepository

@@ -42,7 +42,7 @@ interface AuthorizedLatihanApi {
         @Body exerciseUpdate: ExerciseUpdate
     ): MessageResponse
 
-    //    deleteLatihan
+    //    Delete Latihan
     @DELETE("/v1/exercises/{exercise_id}")
     suspend fun deleteLatihan(
         @Path("exercise_id") id: Int

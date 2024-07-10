@@ -2,13 +2,15 @@ package org.d3ifcool.virtualab.ui.screen
 
 import android.content.res.Configuration
 import android.graphics.Bitmap
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -112,6 +114,7 @@ import org.d3ifcool.virtualab.utils.GenericMessage
 import org.d3ifcool.virtualab.utils.UserDataStore
 import org.d3ifcool.virtualab.utils.getCroppedImage
 import org.d3ifcool.virtualab.utils.isInternetAvailable
+import org.d3ifcool.virtualab.utils.rememberImeState
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -225,7 +228,6 @@ private fun ScreenContent(
     }
 
     val apiStatus by profileViewModel.apiStatus.collectAsState()
-    Log.d("ProfileScreen", "Api Status: $apiStatus")
     val errorMsg by profileViewModel.errorMsg.collectAsState()
 
     when (apiStatus) {
@@ -239,14 +241,20 @@ private fun ScreenContent(
         }
 
         ApiStatus.FAILED -> {
-            Log.d("ProfileScreen", "Edit Profile Error: $errorMsg")
             Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show()
             profileViewModel.clearErrorMsg()
         }
 
         ApiStatus.IDLE -> null
     }
+    val imeState by rememberImeState()
+    val scrollState = rememberScrollState()
 
+    LaunchedEffect(imeState) {
+        if (imeState) {
+            scrollState.animateScrollTo(scrollState.maxValue, animationSpec = tween(300))
+        }
+    }
     Column(
         modifier
             .fillMaxSize()
@@ -257,7 +265,7 @@ private fun ScreenContent(
                     }
                 )
             }
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -751,7 +759,6 @@ private fun SaveUpdatePopup(
                         onClick = {
                             onChange(true)
                             onClick()
-//                            navController.navigate(Screen.Profile.route)
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = LightBlue,

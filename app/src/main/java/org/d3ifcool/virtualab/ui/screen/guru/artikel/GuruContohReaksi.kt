@@ -84,7 +84,11 @@ fun ListContohReaksiScreen(navController: NavHostController, viewModel: GuruCont
         }
     }
     Scaffold(topBar = {
-        TopNav(title = R.string.riwayat_konten, navController = navController)
+        TopNav(title = R.string.riwayat_konten, isCustomBack = true, customBack = {
+            navController.navigate(Screen.GuruDashboard.route) {
+                popUpTo(Screen.GuruDashboard.route)
+            }
+        }, navController = navController)
     }, bottomBar = {
         BottomNav(
             currentRoute = Screen.GuruMateri.route,

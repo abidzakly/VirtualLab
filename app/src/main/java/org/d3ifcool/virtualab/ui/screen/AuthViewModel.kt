@@ -1,6 +1,5 @@
 package org.d3ifcool.virtualab.ui.screen
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -29,11 +28,6 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
             _apiStatus.value = ApiStatus.LOADING
             when (val response = authRepository.login(username, password)) {
                 is Resource.Success -> {
-                    Log.d(
-                        "AuthVM",
-                        "User: ${response.data!!.user!!}\nGuru: ${response.data.teacher}\nMurid: ${response.data.student}"
-                    )
-                    Log.d("AuthVM", "Token: ${response.data.accessToken}")
                     _currentUser.value = response.data
                     _apiStatus.value = ApiStatus.SUCCESS
                 }

@@ -1,9 +1,7 @@
 package org.d3ifcool.virtualab.ui.screen.admin.approval.account
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,7 +22,6 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -46,8 +43,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import org.d3ifcool.virtualab.R
-import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.data.network.ApiStatus
+import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.AdminEmptyState
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.LargeText
@@ -115,9 +112,6 @@ private fun ScreenContent(
     val errorMsg by viewModel.errorMsg.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
-    Log.d("GET ALL USER Error", "Get User Error: $errorMsg")
-    Log.d("GET ALL USER", "Get USER: $userList")
-
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -148,12 +142,7 @@ private fun ScreenContent(
                         ) {
                             navController.navigate(Screen.UsersInfo.withId(it.userId))
                         }
-                        Log.d(
-                            "CheckUserScreen",
-                            "nama:${it.username}, akun user ke: $nomorUrut"
-                        )
                         nomorUrut++
-                        Log.d("CheckUserScreen", "ukuran list:${userList.size}")
                         if (nomorUrut > userList.size) {
                             nomorUrut = 1
                         }
@@ -162,7 +151,7 @@ private fun ScreenContent(
             }
 
             ApiStatus.FAILED -> {
-                AdminEmptyState(text = "Belum ada akun yang perlu diperiksa") {
+                AdminEmptyState(text = if (errorMsg != null) errorMsg!! else "Belum ada akun yang perlu diperiksa") {
                     viewModel.getAllPendingUser()
                 }
             }

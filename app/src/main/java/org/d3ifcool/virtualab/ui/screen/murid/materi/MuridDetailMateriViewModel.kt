@@ -1,6 +1,5 @@
 package org.d3ifcool.virtualab.ui.screen.murid.materi
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -9,7 +8,6 @@ import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.data.model.Materi
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.repository.MaterialRepository
-import org.d3ifcool.virtualab.repository.StudentRepository
 import org.d3ifcool.virtualab.utils.Resource
 
 class MuridDetailMateriViewModel(private val materialId: Int, private val materialRepository: MaterialRepository): ViewModel() {

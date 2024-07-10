@@ -9,7 +9,6 @@ import org.d3ifcool.virtualab.data.model.Guru
 import org.d3ifcool.virtualab.data.model.MessageResponse
 import org.d3ifcool.virtualab.data.model.Murid
 import org.d3ifcool.virtualab.data.model.PendingPosts
-import org.d3ifcool.virtualab.data.model.UserUpdate
 import org.d3ifcool.virtualab.data.network.apis.AuthorizedUserApi
 import org.d3ifcool.virtualab.utils.GenericMessage
 import org.d3ifcool.virtualab.utils.Resource

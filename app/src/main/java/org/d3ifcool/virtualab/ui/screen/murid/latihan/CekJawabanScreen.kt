@@ -1,6 +1,5 @@
 package org.d3ifcool.virtualab.ui.screen.murid.latihan
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,10 +24,8 @@ import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -46,9 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import org.d3ifcool.virtualab.R
-import org.d3ifcool.virtualab.data.model.JawabanMuridDummy
 import org.d3ifcool.virtualab.data.model.NilaiDetailItem
-import org.d3ifcool.virtualab.data.model.SoalDummy
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
@@ -126,7 +121,7 @@ private fun ScreenContent(
                     Spacer(modifier = Modifier.height(12.dp))
                 }
                 itemsIndexed(data!!.answersResults) { index, it ->
-                    ItemListAbidd(index, it, viewModel)
+                    ItemList(index, it, viewModel)
                 }
                 item {
                     Spacer(modifier = Modifier.height(16.dp))
@@ -202,7 +197,7 @@ private fun ScreenContent(
 }
 
 @Composable
-private fun ItemListAbidd(
+private fun ItemList(
     indexSoal: Int,
     soal: NilaiDetailItem,
     viewModel: CekJawabanViewModel
@@ -330,91 +325,6 @@ private fun ItemListAbidd(
         }
     }
     Spacer(modifier = Modifier.height(20.dp))
-}
-
-@Composable
-private fun ItemList(
-    question: SoalDummy,
-    jawabanMurid: JawabanMuridDummy?,
-    viewModel: DetailLatihanVM
-) {
-    val jawabanBenar = question.answerKey.split(";").map { it.toInt() }
-    val isCorrect = jawabanMurid?.selectedOptionId in jawabanBenar
-    val nilaiSoal = if (isCorrect) 10 else 0
-
-    var expanded by remember { mutableStateOf(false) }
-    Column {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            RegularText(text = "Soal ${question.questionId}")
-            Spacer(modifier = Modifier.width(4.dp))
-            if (isCorrect) {
-                Icon(
-                    imageVector = Icons.Default.CheckCircle,
-                    contentDescription = "Jawaban benar",
-                    tint = GreenButton
-                )
-            } else {
-                Icon(
-                    imageVector = Icons.Default.Cancel,
-                    contentDescription = "Jawaban salah",
-                    tint = RedButton
-                )
-            }
-        }
-        Spacer(modifier = Modifier.height(14.dp))
-        MediumLargeText(text = question.questionText)
-        Spacer(modifier = Modifier.height(14.dp))
-        Box(
-            modifier = Modifier
-                .shadow(elevation = 5.dp, shape = RoundedCornerShape(10.dp))
-                .fillMaxWidth()
-                .background(LightBlue2)
-                .clip(shape = RoundedCornerShape(10.dp))
-                .padding(horizontal = 8.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp)
-            ) {
-                RegularText(text = "Jawaban kamu: ", fontWeight = FontWeight.SemiBold)
-                RegularText(text = "${jawabanMurid?.selectedOptionId}")
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { expanded = !expanded },
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    RegularText(text = stringResource(id = R.string.lihat_kunci_jawaban))
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Icon(
-                        imageVector = if (expanded) Icons.Outlined.KeyboardArrowUp else Icons.Outlined.KeyboardArrowDown,
-                        contentDescription = "Expand/Collapse",
-                        tint = Color.Black
-                    )
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                if (expanded) {
-                    Box(
-                        modifier = Modifier
-                            .padding(top = 8.dp)
-                            .background(color = LightBlue, shape = RoundedCornerShape(10.dp))
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                    ) {
-                        RegularText(
-                            text = "Jawaban Benar: ${question.answerKey}"
-                        )
-                    }
-                }
-            }
-        }
-    }
-    Spacer(modifier = Modifier.height(14.dp))
 }
 
 @Preview

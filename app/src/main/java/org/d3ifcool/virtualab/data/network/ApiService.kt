@@ -1,6 +1,5 @@
 package org.d3ifcool.virtualab.data.network
 
-import android.util.Log
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.Interceptor
@@ -67,7 +66,7 @@ object ApiService {
                     .header("Authorization", "Bearer $authorization")
                     .build()
                 chain.proceed(requestWithAuthorization)
-            }).readTimeout(1, TimeUnit.MINUTES).writeTimeout(1, TimeUnit.MINUTES)
+            }).readTimeout(10, TimeUnit.MINUTES).writeTimeout(10, TimeUnit.MINUTES)
         }.build()
 
         val retrofitWithMedia = Retrofit.Builder()
@@ -81,7 +80,6 @@ object ApiService {
         introductionService = retrofitWithMedia.create(AuthorizedIntroductionApi::class.java)
         studentService = retrofitWithMedia.create(AuthorizedStudentApi::class.java)
         articleService = retrofitWithMedia.create(AuthorizedArticleApi::class.java)
-        Log.d("ApiService create", "retrofit with auth created!")
     }
 
     fun getMateriMedia(materialId: Int): String {

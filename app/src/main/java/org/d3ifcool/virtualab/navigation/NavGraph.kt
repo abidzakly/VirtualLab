@@ -1,6 +1,5 @@
 package org.d3ifcool.virtualab.navigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -28,41 +27,25 @@ import org.d3ifcool.virtualab.repository.StudentRepository
 import org.d3ifcool.virtualab.repository.UserRepository
 import org.d3ifcool.virtualab.ui.screen.AboutScreen
 import org.d3ifcool.virtualab.ui.screen.AuthViewModel
-import org.d3ifcool.virtualab.ui.screen.admin.dashboard.AdminDashboardScreen
-import org.d3ifcool.virtualab.ui.screen.admin.approval.content.CheckFileScreen
-import org.d3ifcool.virtualab.ui.screen.admin.approval.account.CheckUserScreen
-import org.d3ifcool.virtualab.ui.screen.admin.approval.content.FileInfoScreen
-import org.d3ifcool.virtualab.ui.screen.admin.introduction.IntroContent
-import org.d3ifcool.virtualab.ui.screen.admin.introduction.UpdateIntroContentScreen
-import org.d3ifcool.virtualab.ui.screen.admin.approval.account.UsersInfoScreen
-import org.d3ifcool.virtualab.ui.screen.murid.dashboard.MuridDashboardScreen
-import org.d3ifcool.virtualab.ui.screen.murid.introduction.IntroductionScreen
 import org.d3ifcool.virtualab.ui.screen.LandingScreen
-import org.d3ifcool.virtualab.ui.screen.murid.latihan.MuridListLatihanScreen
-import org.d3ifcool.virtualab.ui.screen.RegisterScreen
 import org.d3ifcool.virtualab.ui.screen.LoginScreen
-import org.d3ifcool.virtualab.ui.screen.guru.dashboard.GuruDashboardScreen
-import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddLatihanScreen
-import org.d3ifcool.virtualab.ui.screen.guru.latihan.DetailLatihanScreen
-import org.d3ifcool.virtualab.ui.screen.guru.latihan.GuruLatihanScreen
-import org.d3ifcool.virtualab.ui.screen.guru.materi.AddMateriScreen
-import org.d3ifcool.virtualab.ui.screen.guru.materi.DetailMateriScreen
-import org.d3ifcool.virtualab.ui.screen.guru.materi.GuruMateriScreen
-import org.d3ifcool.virtualab.ui.screen.murid.latihan.CekJawabanScreen
-import org.d3ifcool.virtualab.ui.screen.murid.latihan.MuridDetailLatihanScreen
-import org.d3ifcool.virtualab.ui.screen.murid.materi.MuridDetailMateriScreen
-import org.d3ifcool.virtualab.ui.screen.murid.materi.MuridMateriScreen
-import org.d3ifcool.virtualab.ui.screen.murid.nilai.NilaiScreen
 import org.d3ifcool.virtualab.ui.screen.ProfileScreen
 import org.d3ifcool.virtualab.ui.screen.ProfileViewModel
-import org.d3ifcool.virtualab.ui.screen.murid.reaksi.ReaksiScreen
+import org.d3ifcool.virtualab.ui.screen.RegisterScreen
 import org.d3ifcool.virtualab.ui.screen.RoleScreen
 import org.d3ifcool.virtualab.ui.screen.TermsConditionScreen
+import org.d3ifcool.virtualab.ui.screen.admin.approval.account.CheckUserScreen
 import org.d3ifcool.virtualab.ui.screen.admin.approval.account.CheckUsersViewModel
 import org.d3ifcool.virtualab.ui.screen.admin.approval.account.UserInfoViewModel
+import org.d3ifcool.virtualab.ui.screen.admin.approval.account.UsersInfoScreen
+import org.d3ifcool.virtualab.ui.screen.admin.approval.content.CheckFileScreen
 import org.d3ifcool.virtualab.ui.screen.admin.approval.content.CheckFileViewModel
+import org.d3ifcool.virtualab.ui.screen.admin.approval.content.FileInfoScreen
 import org.d3ifcool.virtualab.ui.screen.admin.approval.content.FileInfoViewModel
+import org.d3ifcool.virtualab.ui.screen.admin.dashboard.AdminDashboardScreen
+import org.d3ifcool.virtualab.ui.screen.admin.introduction.IntroContent
 import org.d3ifcool.virtualab.ui.screen.admin.introduction.IntroContentViewModel
+import org.d3ifcool.virtualab.ui.screen.admin.introduction.UpdateIntroContentScreen
 import org.d3ifcool.virtualab.ui.screen.admin.introduction.UpdateIntroViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.artikel.AddContohReaksi
 import org.d3ifcool.virtualab.ui.screen.guru.artikel.AddContohReaksiViewModel
@@ -70,23 +53,39 @@ import org.d3ifcool.virtualab.ui.screen.guru.artikel.DetailContohReaksi
 import org.d3ifcool.virtualab.ui.screen.guru.artikel.DetailContohReaksiViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.artikel.GuruContohReaksiViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.artikel.ListContohReaksiScreen
+import org.d3ifcool.virtualab.ui.screen.guru.dashboard.GuruDashboardScreen
 import org.d3ifcool.virtualab.ui.screen.guru.dashboard.GuruDashboardViewModel
+import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddLatihanScreen
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddLatihanViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddSoalScreen
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddSoalViewModel
+import org.d3ifcool.virtualab.ui.screen.guru.latihan.DetailLatihanScreen
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.DetailLatihanViewModel
+import org.d3ifcool.virtualab.ui.screen.guru.latihan.GuruLatihanScreen
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.GuruLatihanViewModel
+import org.d3ifcool.virtualab.ui.screen.guru.materi.AddMateriScreen
 import org.d3ifcool.virtualab.ui.screen.guru.materi.AddMateriViewModel
+import org.d3ifcool.virtualab.ui.screen.guru.materi.DetailMateriScreen
 import org.d3ifcool.virtualab.ui.screen.guru.materi.DetailMateriViewModel
+import org.d3ifcool.virtualab.ui.screen.guru.materi.GuruMateriScreen
 import org.d3ifcool.virtualab.ui.screen.guru.materi.GuruMateriViewModel
+import org.d3ifcool.virtualab.ui.screen.murid.dashboard.MuridDashboardScreen
+import org.d3ifcool.virtualab.ui.screen.murid.introduction.IntroductionScreen
 import org.d3ifcool.virtualab.ui.screen.murid.introduction.IntroductionViewModel
+import org.d3ifcool.virtualab.ui.screen.murid.latihan.CekJawabanScreen
 import org.d3ifcool.virtualab.ui.screen.murid.latihan.CekJawabanViewModel
+import org.d3ifcool.virtualab.ui.screen.murid.latihan.MuridDetailLatihanScreen
 import org.d3ifcool.virtualab.ui.screen.murid.latihan.MuridDetailLatihanViewModel
+import org.d3ifcool.virtualab.ui.screen.murid.latihan.MuridListLatihanScreen
 import org.d3ifcool.virtualab.ui.screen.murid.latihan.MuridListLatihanViewModel
+import org.d3ifcool.virtualab.ui.screen.murid.materi.MuridDetailMateriScreen
 import org.d3ifcool.virtualab.ui.screen.murid.materi.MuridDetailMateriViewModel
+import org.d3ifcool.virtualab.ui.screen.murid.materi.MuridMateriScreen
 import org.d3ifcool.virtualab.ui.screen.murid.materi.MuridMateriViewModel
+import org.d3ifcool.virtualab.ui.screen.murid.nilai.NilaiScreen
 import org.d3ifcool.virtualab.ui.screen.murid.nilai.NilaiViewModel
 import org.d3ifcool.virtualab.ui.screen.murid.reaksi.ContohReaksiScreenViewModel
+import org.d3ifcool.virtualab.ui.screen.murid.reaksi.ReaksiScreen
 import org.d3ifcool.virtualab.utils.UserDataStore
 import org.d3ifcool.virtualab.utils.ViewModelFactory
 
@@ -131,9 +130,6 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
     val isLoggedIn by userDataStore.loginStatusFlow.collectAsState(false)
 
 
-    Log.d("NavGraph", "userType: $userType")
-    Log.d("NavGraph", "is LoggedIn: $isLoggedIn")
-    Log.d("NavGraph", "accessToken: $accessToken")
     NavHost(
         navController = navController, startDestination =
         if (isLoggedIn && latihanApi != null) {
@@ -353,7 +349,6 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
             val articleId = it.arguments!!.getInt(KEY_ID_TYPE)
             val factory = ViewModelFactory(id = articleId, articleRepository = articleRepository)
             val viewModel: DetailContohReaksiViewModel = viewModel(factory = factory)
-            Log.d("NavGraph", "$articleId")
             DetailContohReaksi(navController, viewModel)
         }
         composable(route = Screen.AddContohReaksi.route) {

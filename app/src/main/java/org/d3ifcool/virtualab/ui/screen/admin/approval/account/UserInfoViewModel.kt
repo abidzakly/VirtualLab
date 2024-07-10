@@ -2,7 +2,6 @@ package org.d3ifcool.virtualab.ui.screen.admin.approval.account
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -51,7 +50,6 @@ class UserInfoViewModel(private val userId: Int, private val userRepository: Use
                         _apiStatus.value = ApiStatus.FAILED
                     }
                 }
-                Log.d("FETCHED_USER", "Fetched User: ${_fetchedUser.value}")
         }
     }
 

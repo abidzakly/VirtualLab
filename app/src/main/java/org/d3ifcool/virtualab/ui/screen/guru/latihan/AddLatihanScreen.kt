@@ -1,7 +1,6 @@
 package org.d3ifcool.virtualab.ui.screen.guru.latihan
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -34,7 +33,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -65,8 +63,6 @@ import androidx.navigation.NavHostController
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
-import org.d3ifcool.virtualab.ui.component.BottomNav
-import org.d3ifcool.virtualab.ui.component.ExtraSmallText
 import org.d3ifcool.virtualab.ui.component.GuruEmptyState
 import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.LoadingStateDialog
@@ -174,7 +170,6 @@ private fun ScreenContent(
     var jumlahSoal by remember { mutableStateOf("") }
     var onClicked by remember { mutableStateOf(false) }
     var selectedOptionText by remember { mutableStateOf("") }
-    Log.d("AddLatihanScreen", "loading status: $loadingDataStatus")
     var isChecked by remember { mutableStateOf(false) }
 
     when (loadingDataStatus) {

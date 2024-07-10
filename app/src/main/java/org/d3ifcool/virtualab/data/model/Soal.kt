@@ -37,14 +37,3 @@ data class QuestionCreateOrUpdate(
     @Json(name = "question_id")
     val questionId: Int? = null
 )
-
-//data class QuestionUpdate(
-//    @Json(name = "question_id")
-//    val questionId: Int,
-//    @Json(name = "question_text")
-//    val questionText: String = "",
-//    @Json(name = "option_text")
-//    val optionText: List<String>,
-//    @Json(name = "answer_keys")
-//    val answerKeys: List<String>
-//)

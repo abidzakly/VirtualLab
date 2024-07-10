@@ -1,6 +1,5 @@
 package org.d3ifcool.virtualab.ui.screen.guru.artikel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +30,6 @@ class DetailContohReaksiViewModel(
         private set
 
     init {
-        Log.d("DetailArtikelVM", "articleId: $articleId")
         getArticleDetail()
     }
 
@@ -42,12 +40,10 @@ class DetailContohReaksiViewModel(
                 is Resource.Success -> {
                     articleData.value = response.data!!
                     apiStatus.value = ApiStatus.SUCCESS
-                    Log.d("DetailMateriVM", "Response: ${articleData.value}")
                 }
 
                 is Resource.Error -> {
                     errorMessage.value = response.message
-                    Log.d("DetailMateriVM", "Response: ${errorMessage.value}")
                     apiStatus.value = ApiStatus.FAILED
                 }
             }

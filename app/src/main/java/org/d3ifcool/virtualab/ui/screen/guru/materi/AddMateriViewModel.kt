@@ -2,7 +2,6 @@ package org.d3ifcool.virtualab.ui.screen.guru.materi
 
 import android.content.ContentResolver
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -101,7 +100,6 @@ class AddMateriViewModel(
                         materialRepository.addMateri(titlePart, mediaTypePart, descPart, body)
                 }
             } else {
-                Log.d("AddMateriVM", "URI: $uri")
 
                 var bodyUpdate: MultipartBody.Part? = null
                 if (inputStream != null) {

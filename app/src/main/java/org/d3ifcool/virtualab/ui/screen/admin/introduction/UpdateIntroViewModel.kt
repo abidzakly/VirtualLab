@@ -2,7 +2,6 @@ package org.d3ifcool.virtualab.ui.screen.admin.introduction
 
 import android.content.ContentResolver
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -80,7 +79,6 @@ class UpdateIntroViewModel(private val introRepository: IntroRepository) : ViewM
                     response = introRepository.addData(titlePart, descPart, body)
                 }
             } else {
-                Log.d("UpdateIntroVM", "Judul Materi: $title")
 
                 var bodyUpdate: MultipartBody.Part? = null
                 if (inputStream != null) {
