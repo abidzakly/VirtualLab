@@ -209,7 +209,7 @@ fun BottomNav(
                                 dataStore.setLoginStatus(false)
                                 dataStore.saveToken("")
                             }
-                            navController.navigate(Screen.Login.route) {
+                            navController.navigate(Screen.Landing.route) {
                                 popUpTo(Screen.Landing.route) { inclusive = true }
                             }
                         } else {

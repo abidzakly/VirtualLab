@@ -7,6 +7,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -40,8 +41,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -66,8 +70,10 @@ import org.d3ifcool.virtualab.utils.getFileName
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdateIntroContentScreen(navController: NavHostController, viewModel: UpdateIntroViewModel) {
-    val data by viewModel.data.collectAsState()
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
+
+    val data by viewModel.data.collectAsState()
     var fileNameData by remember { mutableStateOf("") }
     var existedFile by remember { mutableStateOf<String?>(null) }
     var fileExist by remember { mutableStateOf(false) }
@@ -153,6 +159,7 @@ fun UpdateIntroContentScreen(navController: NavHostController, viewModel: Update
         containerColor = Color.White
     ) { padding ->
         ScreenContent(
+            focusManager = focusManager,
             modifier = Modifier.padding(padding),
             viewModel = viewModel,
             navController = navController,
@@ -184,6 +191,7 @@ fun UpdateIntroContentScreen(navController: NavHostController, viewModel: Update
 
 @Composable
 private fun ScreenContent(
+    focusManager: FocusManager,
     modifier: Modifier,
     viewModel: UpdateIntroViewModel,
     navController: NavHostController,
@@ -230,6 +238,13 @@ private fun ScreenContent(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = {
+                        focusManager.clearFocus()
+                    }
+                )
+            }
             .background(Color.White)
             .padding(horizontal = 24.dp)
             .verticalScroll(rememberScrollState()),

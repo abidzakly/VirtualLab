@@ -67,7 +67,7 @@ object ApiService {
                     .header("Authorization", "Bearer $authorization")
                     .build()
                 chain.proceed(requestWithAuthorization)
-            }).readTimeout(30, TimeUnit.MINUTES).writeTimeout(30, TimeUnit.MINUTES)
+            }).readTimeout(1, TimeUnit.MINUTES).writeTimeout(1, TimeUnit.MINUTES)
         }.build()
 
         val retrofitWithMedia = Retrofit.Builder()
