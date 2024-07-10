@@ -1,10 +1,12 @@
 package org.d3ifcool.virtualab.ui.screen
 
+import android.content.Context
 import android.content.res.Configuration
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.focusable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,9 +51,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -88,7 +93,7 @@ import org.d3ifcool.virtualab.utils.UserDataStore
 @Composable
 fun RegisterScreen(navController: NavHostController, id: Int, viewModel: AuthViewModel) {
     val context = LocalContext.current
-    val dataStore = UserDataStore(context)
+    val focusManager = LocalFocusManager.current
     val apiStatus by viewModel.apiStatus.collectAsState()
     val errorMsg by viewModel.errorMsg.collectAsState()
 
@@ -121,8 +126,6 @@ fun RegisterScreen(navController: NavHostController, id: Int, viewModel: AuthVie
         )
     }
 
-    Log.d("REGISTER_ERROR", "Regist Error: $errorMsg")
-    Log.d("REGISTER_USER_TYPE", "User Type: $id")
     LaunchedEffect(errorMsg) {
         if (errorMsg != "") {
             Toast.makeText(
@@ -155,15 +158,14 @@ fun RegisterScreen(navController: NavHostController, id: Int, viewModel: AuthVie
         }, containerColor = Color.White
     ) {
 
-        ScreenContent(modifier = Modifier.padding(it), viewModel, navController = navController, id)
+        ScreenContent(modifier = Modifier.padding(it), viewModel, navController = navController, id, context, focusManager)
     }
 }
 
 @Composable
 private fun ScreenContent(
-    modifier: Modifier, viewModel: AuthViewModel, navController: NavHostController, id: Int
+    modifier: Modifier, viewModel: AuthViewModel, navController: NavHostController, id: Int, context: Context, focusManager: FocusManager
 ) {
-    val context = LocalContext.current
     var fullname by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -175,6 +177,11 @@ private fun ScreenContent(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = { focusManager.clearFocus() }
+                )
+            }
             .padding(horizontal = 48.dp, vertical = 24.dp)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
@@ -386,83 +393,89 @@ private fun RegisterForm(
     schoolResponse: Int = 0,
     id: Int
 ) {
-    RegistTextField(
-        value = fullname,
-        onValueChange = { onFullnameChange(it) },
-        label = R.string.fullname_label,
-        isError = fullnameResponse != 0,
-        errorText = when (fullnameResponse) {
-            1 -> "Nama lengkap tidak boleh kosong!"
-            2 -> "Nama lengkap melebihi batas 60 karakter!"
-            else -> ""
-        }
-    )
-    RegistTextField(
-        value = username,
-        onValueChange = { onUsernameChange(it) },
-        label = R.string.username_label,
-        supportingLabel = " (Username)",
-        isUsername = true,
-        isError = usernameResponse != 0,
-        errorText = when (usernameResponse) {
-            1 -> "Nama pengguna tidak boleh kosong!"
-            2 -> "Nama pengguna harus memiliki minimal 8 hingga maksimal 20 karakter!"
-            3 -> "Nama pengguna hanya boleh mengandung huruf dan angka!"
-            else -> ""
-        }
-    )
-    RegistTextField(
-        value = email,
-        onValueChange = { onEmailChange(it) },
-        label = R.string.email_label,
-        supportingLabel = " (Email)",
-        isEmail = true,
-        isError = emailResponse != 0,
-        errorText = when (emailResponse) {
-            1 -> "Email tidak boleh kosong!"
-            2 -> "Format email tidak valid!"
-            else -> ""
-        }
-    )
-    if (id == 0) {
-        RegistTextField(
-            value = uniqueId,
-            onValueChange = { onUniqueIdChange(it) },
-            label = R.string.nisn_label,
-            isNumber = true,
-            isError = uniqueIdResponse != 0,
-            errorText = when (uniqueIdResponse) {
-                1 -> "NISN tidak boleh kosong!"
-                3 -> "Pastikan NISN berjumlah 10 digit!"
-                else -> ""
+    Box(modifier = Modifier
+        .fillMaxWidth()) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            RegistTextField(
+                value = fullname,
+                onValueChange = { onFullnameChange(it) },
+                label = R.string.fullname_label,
+                isError = fullnameResponse != 0,
+                errorText = when (fullnameResponse) {
+                    1 -> "Nama lengkap tidak boleh kosong!"
+                    2 -> "Nama lengkap melebihi batas 60 karakter!"
+                    else -> ""
+                }
+            )
+            RegistTextField(
+                value = username,
+                onValueChange = { onUsernameChange(it) },
+                label = R.string.username_label,
+                supportingLabel = " (Username)",
+                isUsername = true,
+                isError = usernameResponse != 0,
+                errorText = when (usernameResponse) {
+                    1 -> "Nama pengguna tidak boleh kosong!"
+                    2 -> "Nama pengguna harus memiliki minimal 8 hingga maksimal 20 karakter!"
+                    3 -> "Nama pengguna hanya boleh mengandung huruf dan angka!"
+                    else -> ""
+                }
+            )
+            RegistTextField(
+                value = email,
+                onValueChange = { onEmailChange(it) },
+                label = R.string.email_label,
+                supportingLabel = " (Email)",
+                isEmail = true,
+                isError = emailResponse != 0,
+                errorText = when (emailResponse) {
+                    1 -> "Email tidak boleh kosong!"
+                    2 -> "Format email tidak valid!"
+                    else -> ""
+                }
+            )
+            if (id == 0) {
+                RegistTextField(
+                    value = uniqueId,
+                    onValueChange = { onUniqueIdChange(it) },
+                    label = R.string.nisn_label,
+                    isNumber = true,
+                    isError = uniqueIdResponse != 0,
+                    errorText = when (uniqueIdResponse) {
+                        1 -> "NISN tidak boleh kosong!"
+                        3 -> "Pastikan NISN berjumlah 10 digit!"
+                        else -> ""
+                    }
+                )
+            } else {
+                RegistTextField(
+                    value = uniqueId,
+                    onValueChange = { onUniqueIdChange(it) },
+                    label = R.string.nip_label,
+                    isNumber = true,
+                    isError = uniqueIdResponse != 0,
+                    errorText = when (uniqueIdResponse) {
+                        1 -> "NIP tidak boleh kosong!"
+                        2 -> "Pastikan NIP berjumlah 9 atau 18 digit!"
+                        else -> ""
+                    }
+                )
             }
-        )
-    } else {
-        RegistTextField(
-            value = uniqueId,
-            onValueChange = { onUniqueIdChange(it) },
-            label = R.string.nip_label,
-            isNumber = true,
-            isError = uniqueIdResponse != 0,
-            errorText = when (uniqueIdResponse) {
-                1 -> "NIP tidak boleh kosong!"
-                2 -> "Pastikan NIP berjumlah 9 atau 18 digit!"
-                else -> ""
-            }
-        )
+            RegistTextField(
+                value = school,
+                onValueChange = { onSchoolChange(it) },
+                label = R.string.school_label,
+                isError = schoolResponse != 0,
+                errorText = if (schoolResponse != 0) "Nama sekolah tidak boleh kosong!" else "",
+                imeAction = ImeAction.Done
+            )
+        }
     }
-    RegistTextField(
-        value = school,
-        onValueChange = { onSchoolChange(it) },
-        label = R.string.school_label,
-        isError = schoolResponse != 0,
-        errorText = if (schoolResponse != 0) "Nama sekolah tidak boleh kosong!" else "",
-        imeAction = ImeAction.Done
-    )
 }
 
 @Composable
 private fun RegistTextField(
+    modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
     label: Int,
@@ -477,9 +490,8 @@ private fun RegistTextField(
 ) {
     var passwordVisibility by remember { mutableStateOf(!isPassword) }
     var isFocused by remember { mutableStateOf(true) }
-
     TextField(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .focusable()
             .onFocusChanged { isFocused = !isFocused },

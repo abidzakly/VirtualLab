@@ -44,6 +44,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -81,6 +82,7 @@ import org.d3ifcool.virtualab.ui.theme.Poppins
 
 @Composable
 fun AddSoalScreen(navController: NavHostController, viewModel: AddSoalViewModel) {
+    val focusManager = LocalFocusManager.current
 
     val successMessage by viewModel.successMessage.collectAsState()
     val uploadStatus by viewModel.uploadStatus.collectAsState()
@@ -133,6 +135,7 @@ fun AddSoalScreen(navController: NavHostController, viewModel: AddSoalViewModel)
         ScreenContent(
             modifier = Modifier.padding(it),
             viewModel,
+            focusManager
         )
         if (isUploading) {
             Dialog(onDismissRequest = { }) {
@@ -157,6 +160,7 @@ fun AddSoalScreen(navController: NavHostController, viewModel: AddSoalViewModel)
 private fun ScreenContent(
     modifier: Modifier,
     viewModel: AddSoalViewModel,
+    focusManager: FocusManager
 ) {
     val context = LocalContext.current
     val fetchStatus by viewModel.fetchStatus.collectAsState()
@@ -185,6 +189,13 @@ private fun ScreenContent(
             Box(
                 Modifier
                     .fillMaxSize()
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onTap = {
+                                focusManager.clearFocus()
+                            }
+                        )
+                    }
             ) {
                 LazyColumn(
                     modifier = Modifier

@@ -8,6 +8,7 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -54,10 +55,13 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -117,6 +121,7 @@ fun ProfileScreen(
     authViewModel: AuthViewModel,
     dataStore: UserDataStore
 ) {
+    val focusManager = LocalFocusManager.current
     val currentUser by dataStore.userFlow.collectAsState(User())
     val uniqueId = when (currentUser.userType) {
         0 -> dataStore.nisnFlow.collectAsState("")
@@ -175,6 +180,7 @@ fun ProfileScreen(
                     uniqueId,
                     profileViewModel,
                     authViewModel,
+                    focusManager
                 )
             } else {
                 LoadingState()
@@ -192,6 +198,7 @@ private fun ScreenContent(
     nipOrNisn: String,
     profileViewModel: ProfileViewModel,
     authViewModel: AuthViewModel,
+    focusManager: FocusManager
 ) {
     val context = LocalContext.current
 
@@ -243,6 +250,13 @@ private fun ScreenContent(
     Column(
         modifier
             .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = {
+                        focusManager.clearFocus()
+                    }
+                )
+            }
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -524,8 +538,8 @@ private fun ScreenContent(
                             CoroutineScope(Dispatchers.IO).launch {
                                 authViewModel.logout()
                             }
-                            navController.navigate(Screen.Login.route) {
-                                popUpTo(Screen.Login.route)
+                            navController.navigate(Screen.Landing.route) {
+                                popUpTo(Screen.Landing.route)
                             }
                         }
                     }

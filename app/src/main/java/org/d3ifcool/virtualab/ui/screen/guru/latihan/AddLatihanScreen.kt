@@ -3,6 +3,7 @@ package org.d3ifcool.virtualab.ui.screen.guru.latihan
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,10 +40,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -78,6 +82,8 @@ import org.d3ifcool.virtualab.ui.theme.Poppins
 
 @Composable
 fun AddLatihanScreen(navController: NavHostController, viewModel: AddLatihanViewModel) {
+    val focusManager = LocalFocusManager.current
+
     val exerciseId by viewModel.newExerciseId.collectAsState()
     val uploadStatus by viewModel.uploadStatus.collectAsState()
     val updateStatus by viewModel.updateStatus.collectAsState()
@@ -145,7 +151,8 @@ fun AddLatihanScreen(navController: NavHostController, viewModel: AddLatihanView
             modifier = Modifier.padding(it),
             viewModel,
             exerciseId,
-            context
+            context,
+            focusManager
         )
     }
 }
@@ -155,7 +162,8 @@ private fun ScreenContent(
     modifier: Modifier,
     viewModel: AddLatihanViewModel,
     exerciseId: Int? = null,
-    context: Context
+    context: Context,
+    focusManager: FocusManager
 ) {
     val latihanDetailData by viewModel.latihanDetailData.collectAsState()
     val isResultsExist by viewModel.isResultsExist.collectAsState()
@@ -194,6 +202,13 @@ private fun ScreenContent(
         Column(
             modifier = modifier
                 .fillMaxSize()
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onTap = {
+                            focusManager.clearFocus()
+                        }
+                    )
+                }
                 .padding(horizontal = 32.dp)
                 .verticalScroll(rememberScrollState())
         ) {

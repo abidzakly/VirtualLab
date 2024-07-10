@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,7 +37,6 @@ import androidx.compose.material3.TextFieldDefaults.colors
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -45,8 +45,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -76,11 +79,11 @@ import org.d3ifcool.virtualab.utils.GenericMessage
 @Composable
 fun LoginScreen(navController: NavHostController, viewModel: AuthViewModel) {
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
 
     val currentUser by viewModel.currentUser.collectAsState()
     val apiStatus by viewModel.apiStatus.collectAsState()
     val errorMsg by viewModel.errorMsg.collectAsState()
-
     when (apiStatus) {
         ApiStatus.LOADING -> {
             Toast.makeText(context, GenericMessage.loadingMessage, Toast.LENGTH_SHORT).show()
@@ -141,7 +144,7 @@ fun LoginScreen(navController: NavHostController, viewModel: AuthViewModel) {
         },
         containerColor = Color.White
     ) {
-        LoginScreenContent(modifier = Modifier.padding(it), navController, viewModel, context)
+        LoginScreenContent(modifier = Modifier.padding(it), navController, viewModel, context, focusManager)
     }
 }
 
@@ -150,7 +153,8 @@ private fun LoginScreenContent(
     modifier: Modifier,
     navController: NavHostController,
     viewModel: AuthViewModel,
-    context: Context
+    context: Context,
+    focusManager: FocusManager
 ) {
 
 
@@ -164,6 +168,13 @@ private fun LoginScreenContent(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = {
+                        focusManager.clearFocus()
+                    }
+                )
+            }
             .padding(horizontal = 48.dp)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,

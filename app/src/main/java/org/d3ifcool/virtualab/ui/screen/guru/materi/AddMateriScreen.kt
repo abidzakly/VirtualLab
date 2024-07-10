@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,10 +37,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -74,6 +78,8 @@ import java.io.InputStream
 @Composable
 fun AddMateriScreen(navController: NavHostController, viewModel: AddMateriViewModel) {
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
+
     val status by viewModel.apiStatus.collectAsState()
     val uploadStatus by viewModel.uploadStatus.collectAsState()
     val successMessage by viewModel.successMessage.collectAsState()
@@ -109,7 +115,7 @@ fun AddMateriScreen(navController: NavHostController, viewModel: AddMateriViewMo
         },
         containerColor = Color.White
     ) {
-        ScreenContent(modifier = Modifier.padding(it), viewModel, status, context)
+        ScreenContent(modifier = Modifier.padding(it), viewModel, status, context, focusManager)
     }
 }
 
@@ -118,7 +124,8 @@ private fun ScreenContent(
     modifier: Modifier,
     viewModel: AddMateriViewModel,
     status: ApiStatus,
-    context: Context
+    context: Context,
+    focusManager: FocusManager
 ) {
     val materiData by viewModel.materiData.collectAsState()
     val materialId by viewModel.materiId.collectAsState()
@@ -134,6 +141,13 @@ private fun ScreenContent(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = {
+                        focusManager.clearFocus()
+                    }
+                )
+            }
             .background(Color.White)
             .padding(horizontal = 24.dp)
             .verticalScroll(rememberScrollState()),
