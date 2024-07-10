@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.ui.screen.guru.contohreaksi
+package org.d3ifcool.virtualab.ui.screen.guru.artikel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

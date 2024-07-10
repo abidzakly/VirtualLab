@@ -1,17 +1,12 @@
 package org.d3ifcool.virtualab.ui.screen
 
-import android.content.ContentResolver
 import android.content.res.Configuration
 import android.graphics.Bitmap
-import android.graphics.ImageDecoder
-import android.os.Build
-import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,7 +14,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,25 +24,24 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.rememberBottomSheetScaffoldState
-import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -60,7 +53,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
@@ -94,23 +86,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.data.model.User
-import org.d3ifcool.virtualab.data.model.UserUpdate
 import org.d3ifcool.virtualab.data.network.ApiService
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
+import org.d3ifcool.virtualab.ui.component.BottomModalSheet
 import org.d3ifcool.virtualab.ui.component.BottomNav
-import org.d3ifcool.virtualab.ui.component.BottomSheet
 import org.d3ifcool.virtualab.ui.component.ImageDialog
 import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.MediumLargeText
 import org.d3ifcool.virtualab.ui.component.PopUpDialog
 import org.d3ifcool.virtualab.ui.component.RegularText
-import org.d3ifcool.virtualab.ui.component.RiwayatSheet
 import org.d3ifcool.virtualab.ui.component.SemiLargeText
 import org.d3ifcool.virtualab.ui.component.SmallText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.DarkBlue
-import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.ui.theme.GrayTextField
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.Poppins
@@ -120,7 +109,7 @@ import org.d3ifcool.virtualab.utils.UserDataStore
 import org.d3ifcool.virtualab.utils.getCroppedImage
 import org.d3ifcool.virtualab.utils.isInternetAvailable
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun ProfileScreen(
     navController: NavHostController,
@@ -134,65 +123,62 @@ fun ProfileScreen(
         else -> dataStore.nipFlow.collectAsState("")
     }.value
 
-    val sheetStateLihat = rememberBottomSheetScaffoldState(
-        bottomSheetState = rememberStandardBottomSheetState(
-            initialValue = SheetValue.Hidden,
-            skipHiddenState = false
-        )
-    )
-    val scope = rememberCoroutineScope()
+    val sheetStateLihat = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     var isPressed by remember { mutableStateOf(false) }
-    var backgroundColor by remember { mutableStateOf(if (!isPressed) Color.Transparent else Color.Black) }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(sheetStateLihat.currentValue) {
+        snapshotFlow { sheetStateLihat.currentValue }
+            .collect { bottomSheetValue ->
+                if (bottomSheetValue == ModalBottomSheetValue.Hidden) {
+                    isPressed = false
+                }
+            }
+    }
+
+    LaunchedEffect(isPressed) {
+        if (isPressed) {
+            scope.launch {
+                sheetStateLihat.show()
+            }
+        } else {
+            scope.launch {
+                sheetStateLihat.hide()
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
             TopNav(R.string.profile_title, navController = navController)
         }, bottomBar = {
-            BottomNav(Screen.Profile.route, navController) {
-                backgroundColor = Color.Black
-                if (isPressed) {
-                    scope.launch {
-                        sheetStateLihat.bottomSheetState.hide()
-                    }
-                } else {
-                    scope.launch {
-                        sheetStateLihat.bottomSheetState.expand()
-                    }
-                }
+            BottomNav(Screen.Profile.route, navController, isClicked = isPressed) {
+                isPressed = !isPressed
             }
         },
         containerColor = Color.White
     ) {
-        if (uniqueId.isNotEmpty()) {
-            ScreenContent(
-                modifier = Modifier.padding(it),
-                navController,
-                currentUser,
-                uniqueId,
-                profileViewModel,
-                authViewModel,
-            )
-            LaunchedEffect(sheetStateLihat.bottomSheetState) {
-                snapshotFlow { sheetStateLihat.bottomSheetState.currentValue }
-                    .collect { bottomSheetValue ->
-                        if (bottomSheetValue == SheetValue.Expanded) {
-                            backgroundColor = Color.Black
-                            isPressed = true
-                        } else {
-                            backgroundColor = Color.Transparent
-                            isPressed = false
-                        }
-                    }
+        BottomModalSheet(
+            sheetState = sheetStateLihat,
+            title = R.string.lihat_slide_up_title,
+            action1 = R.string.materi_title,
+            onClickAct1 = { navController.navigate(Screen.GuruMateri.route) },
+            action2 = R.string.latihan,
+            onClickAct2 = { navController.navigate(Screen.GuruLatihan.route) },
+            action3 = R.string.contoh_reaksi_icon_bottomsheet,
+            onClickAct3 = { navController.navigate(Screen.GuruContohReaksi.route) }) {
+            if (uniqueId.isNotEmpty()) {
+                ScreenContent(
+                    modifier = Modifier.padding(it),
+                    navController,
+                    currentUser,
+                    uniqueId,
+                    profileViewModel,
+                    authViewModel,
+                )
+            } else {
+                LoadingState()
             }
-            Box(
-                modifier = Modifier
-                    .alpha(0.22f)
-                    .fillMaxSize()
-                    .background(backgroundColor)
-            )
-            RiwayatSheet(state = sheetStateLihat, navController = navController)
-        } else {
-            LoadingState()
         }
     }
 }
@@ -344,7 +330,7 @@ private fun ScreenContent(
                 fontWeight = FontWeight.SemiBold
             )
             TextField(
-                textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
+                textStyle = TextStyle(fontSize = 16.sp, color = Color.Black, fontFamily = Poppins),
                 value = email,
                 readOnly = readOnly,
                 onValueChange = { email = it },
@@ -396,7 +382,11 @@ private fun ScreenContent(
                     fontWeight = FontWeight.SemiBold
                 )
                 TextField(
-                    textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
+                    textStyle = TextStyle(
+                        fontSize = 16.sp,
+                        color = Color.Black,
+                        fontFamily = Poppins
+                    ),
                     value = oldPassword,
                     onValueChange = { oldPassword = it },
                     singleLine = true,
@@ -448,7 +438,11 @@ private fun ScreenContent(
                     fontWeight = FontWeight.SemiBold
                 )
                 TextField(
-                    textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
+                    textStyle = TextStyle(
+                        fontSize = 16.sp,
+                        color = Color.Black,
+                        fontFamily = Poppins
+                    ),
                     value = newPassword,
                     onValueChange = { newPassword = it },
                     singleLine = true,
@@ -648,7 +642,7 @@ fun EditPfp(
                 )
                 launcher.launch(options)
             }) {
-            SmallText(text = "Edit Foto", color = Color(0xFF313131))
+            SmallText(text = "Edit Foto", color = Color.Black)
         }
     }
 }
@@ -666,7 +660,11 @@ fun UserTextFields(
             fontWeight = FontWeight.SemiBold
         )
         TextField(
-            textStyle = TextStyle(fontSize = 16.sp, color = Color(0xFF6D6E6F)),
+            textStyle = TextStyle(
+                fontSize = 16.sp,
+                color = Color(0xFF6D6E6F),
+                fontFamily = Poppins
+            ),
             shape = RoundedCornerShape(5.dp),
             readOnly = readOnly,
             value = value,

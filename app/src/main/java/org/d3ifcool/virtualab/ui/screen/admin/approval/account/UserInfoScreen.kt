@@ -55,6 +55,7 @@ import org.d3ifcool.virtualab.ui.component.LargeText
 import org.d3ifcool.virtualab.ui.component.PopUpDialog
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.theme.GreenButton
+import org.d3ifcool.virtualab.ui.theme.Poppins
 import org.d3ifcool.virtualab.ui.theme.RedButton
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -234,7 +235,7 @@ fun UserInfoColumn(
             fontWeight = FontWeight.SemiBold
         )
         TextField(
-            textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
+            textStyle = TextStyle(fontSize = 16.sp, color = Color.Black, fontFamily = Poppins),
             shape = RoundedCornerShape(5.dp),
             readOnly = readOnly,
             value = value,

@@ -17,9 +17,9 @@ import org.d3ifcool.virtualab.ui.screen.admin.approval.content.CheckFileViewMode
 import org.d3ifcool.virtualab.ui.screen.admin.approval.content.FileInfoViewModel
 import org.d3ifcool.virtualab.ui.screen.admin.introduction.IntroContentViewModel
 import org.d3ifcool.virtualab.ui.screen.admin.introduction.UpdateIntroViewModel
-import org.d3ifcool.virtualab.ui.screen.guru.contohreaksi.AddContohReaksiViewModel
-import org.d3ifcool.virtualab.ui.screen.guru.contohreaksi.DetailContohReaksiViewModel
-import org.d3ifcool.virtualab.ui.screen.guru.contohreaksi.GuruContohReaksiViewModel
+import org.d3ifcool.virtualab.ui.screen.guru.artikel.AddContohReaksiViewModel
+import org.d3ifcool.virtualab.ui.screen.guru.artikel.DetailContohReaksiViewModel
+import org.d3ifcool.virtualab.ui.screen.guru.artikel.GuruContohReaksiViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.dashboard.GuruDashboardViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddLatihanViewModel
 import org.d3ifcool.virtualab.ui.screen.guru.latihan.AddSoalViewModel

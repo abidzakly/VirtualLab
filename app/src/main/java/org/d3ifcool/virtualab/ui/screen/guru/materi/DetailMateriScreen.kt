@@ -73,6 +73,7 @@ fun DetailMateriScreen(navController: NavHostController, viewModel: DetailMateri
     val isDeleting by viewModel.isDeleting.collectAsState()
     val successMessage by viewModel.successMessage.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
+
     var showDialog by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
     when (isDeleting) {

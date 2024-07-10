@@ -1,4 +1,4 @@
-package org.d3ifcool.virtualab.ui.screen.guru.contohreaksi
+package org.d3ifcool.virtualab.ui.screen.guru.artikel
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -21,16 +21,25 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,6 +57,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
+import kotlinx.coroutines.launch
 import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.data.network.ApiService
 import org.d3ifcool.virtualab.data.network.ApiStatus
@@ -61,12 +71,14 @@ import org.d3ifcool.virtualab.ui.component.MediumText
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.theme.DarkBlue
+import org.d3ifcool.virtualab.ui.theme.DarkBlueDarker
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.utils.GenericMessage
 import org.d3ifcool.virtualab.utils.getFileName
 import org.d3ifcool.virtualab.utils.isImage
 import java.io.InputStream
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AddContohReaksi(navController: NavHostController, viewModel: AddContohReaksiViewModel) {
     val context = LocalContext.current
@@ -74,6 +86,32 @@ fun AddContohReaksi(navController: NavHostController, viewModel: AddContohReaksi
     val isUploading by viewModel.uploadStatus.collectAsState()
     val successMessage by viewModel.successMessage.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
+
+    val sheetStateLihat = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    var isPressed by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(sheetStateLihat.currentValue) {
+        snapshotFlow { sheetStateLihat.currentValue }
+            .collect { bottomSheetValue ->
+                if (bottomSheetValue == ModalBottomSheetValue.Hidden) {
+                    isPressed = false
+                }
+            }
+        }
+
+
+    LaunchedEffect(isPressed) {
+        if (isPressed) {
+            scope.launch {
+                sheetStateLihat.show()
+            }
+        } else {
+            scope.launch {
+                sheetStateLihat.hide()
+            }
+        }
+    }
 
     when (isUploading) {
         ApiStatus.IDLE -> null
@@ -102,6 +140,21 @@ fun AddContohReaksi(navController: NavHostController, viewModel: AddContohReaksi
                 title = if (status != ApiStatus.IDLE) R.string.edit_contoh_reaksi else R.string.buat_contoh_reaksi,
                 navController = navController
             )
+        },
+        floatingActionButton = {
+            if (isPressed) {
+                FloatingActionButton(
+                    containerColor = DarkBlueDarker,
+                    onClick = {
+                        navController.navigate(Screen.AddMateri.route)
+                    }) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = stringResource(R.string.menu_buat_button),
+                        tint = Color.White
+                    )
+                }
+            }
         },
         containerColor = Color.White
     ) {
@@ -296,8 +349,8 @@ fun PickImage(
                         bitmap = it.asImageBitmap(),
                         contentDescription = null,
                         modifier = Modifier
-                            .size(300.dp)
                             .clip(RoundedCornerShape(10.dp))
+                            .size(300.dp)
                     )
                 }
                 if (showImgDialog) {
@@ -314,15 +367,19 @@ fun PickImage(
                 textAlign = TextAlign.Center
             )
         } else if (isOldFileExist) {
+            val imageUrl = ApiService.getArticleMedia(articleId!!)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.Transparent),
+                    .background(Color.Transparent)
+                    .clickable {
+                        showImgDialog = true
+                    },
                 contentAlignment = Alignment.Center
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(context)
-                        .data(ApiService.getArticleMedia(articleId!!))
+                        .data(imageUrl)
                         .diskCachePolicy(CachePolicy.DISABLED)
                         .memoryCachePolicy(CachePolicy.DISABLED)
                         .crossfade(true)
@@ -336,7 +393,11 @@ fun PickImage(
                         .aspectRatio(1f)
                         .clip(RoundedCornerShape(10.dp))
                 )
-
+            }
+            if (showImgDialog) {
+                ImageDialog(imageUrl = imageUrl, context = context) {
+                    showImgDialog = false
+                }
             }
         }
     }

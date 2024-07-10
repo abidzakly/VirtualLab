@@ -483,7 +483,7 @@ private fun RegistTextField(
             .fillMaxWidth()
             .focusable()
             .onFocusChanged { isFocused = !isFocused },
-        textStyle = TextStyle(fontSize = 14.sp),
+        textStyle = TextStyle(fontSize = 14.sp, fontFamily = Poppins),
         value = value,
         onValueChange = { onValueChange(it) },
         label = {
