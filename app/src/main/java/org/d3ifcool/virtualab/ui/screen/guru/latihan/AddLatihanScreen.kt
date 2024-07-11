@@ -75,6 +75,7 @@ import org.d3ifcool.virtualab.ui.theme.GrayText
 import org.d3ifcool.virtualab.ui.theme.GrayTextField
 import org.d3ifcool.virtualab.ui.theme.LightBlue
 import org.d3ifcool.virtualab.ui.theme.Poppins
+import org.d3ifcool.virtualab.utils.GenericMessage
 
 @Composable
 fun AddLatihanScreen(navController: NavHostController, viewModel: AddLatihanViewModel) {
@@ -91,6 +92,7 @@ fun AddLatihanScreen(navController: NavHostController, viewModel: AddLatihanView
     when (uploadStatus) {
         ApiStatus.IDLE -> null
         ApiStatus.LOADING -> {
+            Toast.makeText(context, GenericMessage.loadingMessage, Toast.LENGTH_SHORT).show()
             LoadingStateDialog()
         }
 
@@ -110,6 +112,7 @@ fun AddLatihanScreen(navController: NavHostController, viewModel: AddLatihanView
     when (updateStatus) {
         ApiStatus.IDLE -> null
         ApiStatus.LOADING -> {
+            Toast.makeText(context, GenericMessage.loadingMessage, Toast.LENGTH_SHORT).show()
             LoadingStateDialog()
         }
 

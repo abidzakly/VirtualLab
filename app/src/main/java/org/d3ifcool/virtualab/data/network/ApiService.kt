@@ -15,7 +15,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 
-private const val BASE_URL = "https://347d-139-228-112-175.ngrok-free.app"
+private const val BASE_URL = "https://be.uyghg.online"
 
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
@@ -49,16 +49,6 @@ object ApiService {
         private set
 
     fun createAuthorizedService(authorization: String) {
-        val okHttpClient = OkHttpClient.Builder().apply {
-            addInterceptor(Interceptor { chain ->
-                val original = chain.request()
-                val requestWithAuthorization = original.newBuilder()
-                    .header("Authorization", "Bearer $authorization")
-                    .build()
-                chain.proceed(requestWithAuthorization)
-            })
-        }.build()
-
         val videoClient = OkHttpClient.Builder().apply {
             addInterceptor(Interceptor { chain ->
                 val original = chain.request()

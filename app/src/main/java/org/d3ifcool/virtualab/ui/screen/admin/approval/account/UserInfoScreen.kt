@@ -1,6 +1,5 @@
 package org.d3ifcool.virtualab.ui.screen.admin.approval.account
 
-import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,7 +26,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -48,34 +46,40 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import org.d3ifcool.virtualab.R
+import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
+import org.d3ifcool.virtualab.ui.component.AdminEmptyState
 import org.d3ifcool.virtualab.ui.component.BottomNav
 import org.d3ifcool.virtualab.ui.component.LargeText
+import org.d3ifcool.virtualab.ui.component.LoadingState
+import org.d3ifcool.virtualab.ui.component.LoadingStateDialog
 import org.d3ifcool.virtualab.ui.component.PopUpDialog
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.theme.GreenButton
 import org.d3ifcool.virtualab.ui.theme.Poppins
 import org.d3ifcool.virtualab.ui.theme.RedButton
+import org.d3ifcool.virtualab.utils.GenericMessage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UsersInfoScreen(navController: NavHostController, viewModel: UserInfoViewModel) {
     val context = LocalContext.current
-    val approveResponse by viewModel.approveResponse.collectAsState()
-    val rejectResponse by viewModel.rejectResponse.collectAsState()
+    val response by viewModel.response.collectAsState()
+    val postStatus by viewModel.postStatus.collectAsState()
+    val errorMessage by viewModel.errorMsg.collectAsState()
 
-    LaunchedEffect(approveResponse) {
-        if (approveResponse?.status == true) {
-            Toast.makeText(context, approveResponse!!.message, Toast.LENGTH_SHORT).show()
-            navController.navigate(Screen.CheckUser.route) {
-                popUpTo(Screen.AdminDashboard.route)
-            }
+    when (postStatus) {
+        ApiStatus.IDLE -> null
+        ApiStatus.LOADING -> {
+            Toast.makeText(context, GenericMessage.loadingMessage, Toast.LENGTH_SHORT).show()
+            LoadingStateDialog()
         }
-    }
-
-    LaunchedEffect(rejectResponse) {
-        if (rejectResponse?.status == true) {
-            Toast.makeText(context, rejectResponse!!.message, Toast.LENGTH_SHORT).show()
+        ApiStatus.FAILED -> {
+            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+            viewModel.clearErrorMsg()
+        }
+        ApiStatus.SUCCESS -> {
+            Toast.makeText(context, response!!.message, Toast.LENGTH_SHORT).show()
             navController.navigate(Screen.CheckUser.route) {
                 popUpTo(Screen.AdminDashboard.route)
             }
@@ -105,7 +109,7 @@ fun UsersInfoScreen(navController: NavHostController, viewModel: UserInfoViewMod
         BottomNav(navController = navController)
     }, containerColor = Color.White
     ) {
-        ScreenContent(modifier = Modifier.padding(it), viewModel, context)
+        ScreenContent(modifier = Modifier.padding(it), viewModel)
     }
 }
 
@@ -113,7 +117,6 @@ fun UsersInfoScreen(navController: NavHostController, viewModel: UserInfoViewMod
 private fun ScreenContent(
     modifier: Modifier,
     viewModel: UserInfoViewModel,
-    context: Context,
 ) {
 
     var password by remember { mutableStateOf("") }
@@ -137,14 +140,7 @@ private fun ScreenContent(
     }
 
     var showDialog by remember { mutableStateOf(false) }
-
-    val isEmailSent by viewModel.emailSent.collectAsState()
-
-    LaunchedEffect(isEmailSent) {
-        if (isEmailSent) {
-            viewModel.approveUser(userId, password)
-        }
-    }
+    val status by viewModel.apiStatus.collectAsState()
 
     Column(
         modifier = modifier
@@ -155,54 +151,71 @@ private fun ScreenContent(
         verticalArrangement = Arrangement.spacedBy(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        UserInfoColumn(
-            value = fullname,
-            text = R.string.fullname_label,
-        )
-        UserInfoColumn(
-            value = username,
-            text = R.string.username_label,
-        )
-        UserInfoColumn(
-            value = email,
-            text = R.string.email_label,
-        )
-        UserInfoColumn(
-            value = uniqueId,
-            text = R.string.nip_label,
-        )
-        UserInfoColumn(
-            value = school,
-            text = R.string.school_label,
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Button(
-            onClick = {
-                password = viewModel.generatePassword()
-                viewModel.sendEmail(
-                    context,
-                    email,
-                    password
+        when (status) {
+            ApiStatus.IDLE -> null
+            ApiStatus.LOADING -> {
+                LoadingState()
+            }
+
+            ApiStatus.FAILED -> {
+                AdminEmptyState(text = "Gagal memuat data.") {
+                    viewModel.getUsersInfo()
+                }
+            }
+
+            ApiStatus.SUCCESS -> {
+                UserInfoColumn(
+                    value = fullname,
+                    text = R.string.fullname_label,
                 )
-            },
-            shape = RoundedCornerShape(5.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = GreenButton,
-                contentColor = Color.Black
-            )
-        ) {
-            RegularText(text = stringResource(id = R.string.button_terima))
+                UserInfoColumn(
+                    value = username,
+                    text = R.string.username_label,
+                )
+                UserInfoColumn(
+                    value = email,
+                    text = R.string.email_label,
+                )
+
+                UserInfoColumn(
+                    value = uniqueId,
+                    text = R.string.nip_label,
+                )
+                UserInfoColumn(
+                    value = school,
+                    text = R.string.school_label,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Button(
+                    onClick = {
+                        password = viewModel.generatePassword()
+                        viewModel.approveUser(userId, password)
+                    },
+                    shape = RoundedCornerShape(5.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = GreenButton,
+                        contentColor = Color.Black
+                    )
+                ) {
+                    RegularText(text = stringResource(id = R.string.button_terima))
+                }
+                Button(
+                    onClick = { showDialog = true },
+                    shape = RoundedCornerShape(5.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = RedButton,
+                        contentColor = Color.White
+                    )
+                ) {
+                    RegularText(
+                        text = stringResource(id = R.string.button_tolak),
+                        color = Color.White
+                    )
+                }
+            }
         }
-        Button(
-            onClick = { showDialog = true },
-            shape = RoundedCornerShape(5.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = RedButton,
-                contentColor = Color.White
-            )
-        ) {
-            RegularText(text = stringResource(id = R.string.button_tolak), color = Color.White)
-        }
+
         if (showDialog) {
             PopUpDialog(
                 onDismiss = { showDialog = false },

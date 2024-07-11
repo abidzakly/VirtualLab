@@ -62,6 +62,7 @@ import org.d3ifcool.virtualab.ui.component.PopUpDialog
 import org.d3ifcool.virtualab.ui.component.RegularText
 import org.d3ifcool.virtualab.ui.component.TopNav
 import org.d3ifcool.virtualab.ui.component.VideoPlayer
+import org.d3ifcool.virtualab.utils.GenericMessage
 
 @Composable
 fun DetailMateriScreen(navController: NavHostController, viewModel: DetailMateriViewModel) {
@@ -75,6 +76,7 @@ fun DetailMateriScreen(navController: NavHostController, viewModel: DetailMateri
     when (isDeleting) {
         ApiStatus.IDLE -> null
         ApiStatus.LOADING -> {
+            Toast.makeText(context, GenericMessage.loadingMessage, Toast.LENGTH_SHORT).show()
             LoadingStateDialog()
         }
 
