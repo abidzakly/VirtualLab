@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -31,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -38,6 +41,7 @@ import org.d3ifcool.virtualab.R
 import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.navigation.Screen
 import org.d3ifcool.virtualab.ui.component.BottomNav
+import org.d3ifcool.virtualab.ui.component.ExtraSmallText
 import org.d3ifcool.virtualab.ui.component.GradientPage
 import org.d3ifcool.virtualab.ui.component.LoadingState
 import org.d3ifcool.virtualab.ui.component.MuridEmptyState
@@ -67,9 +71,11 @@ fun MuridListLatihanScreen(navController: NavHostController, viewModel: MuridLis
         },
         containerColor = Color.White
     ) {
-        Box(modifier = Modifier
-            .pullRefresh(refreshState)
-            .padding(bottom = it.calculateBottomPadding())) {
+        Box(
+            modifier = Modifier
+                .pullRefresh(refreshState)
+                .padding(bottom = it.calculateBottomPadding())
+        ) {
             ScreenContent(
                 modifier = Modifier,
                 navController,
@@ -121,7 +127,12 @@ private fun ScreenContent(
                         LazyColumn {
                             items(data) {
                                 CardList(it.title, it.difficulty) {
-                                    navController.navigate(Screen.MuridDetailLatihan.withId(it.exerciseId, it.title))
+                                    navController.navigate(
+                                        Screen.MuridDetailLatihan.withId(
+                                            it.exerciseId,
+                                            it.title
+                                        )
+                                    )
                                 }
                             }
                         }
@@ -133,7 +144,12 @@ private fun ScreenContent(
                 }
 
                 ApiStatus.FAILED -> {
-                    MuridEmptyState(text = errorTextCheck(errorMesssage, stringResource(id = R.string.empty_latihan))) {
+                    MuridEmptyState(
+                        text = errorTextCheck(
+                            errorMesssage,
+                            stringResource(id = R.string.empty_latihan)
+                        )
+                    ) {
                         viewModel.getApprovedLatihan()
                         viewModel.clearMessage()
                     }
@@ -158,7 +174,9 @@ private fun CardList(title: String, difficulty: String, onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            RegularText(text = title)
+            Column(modifier = Modifier.fillMaxWidth(.5f)) {
+                RegularText(text = title, overflow = TextOverflow.Ellipsis, maxLines = 2)
+            }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 SmallText(text = "Tingkat Kesulitan")
                 SmallText(text = difficulty, fontWeight = FontWeight.Bold)

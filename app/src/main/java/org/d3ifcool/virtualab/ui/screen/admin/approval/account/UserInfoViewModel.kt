@@ -1,7 +1,5 @@
 package org.d3ifcool.virtualab.ui.screen.admin.approval.account
 
-import android.content.Context
-import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -14,7 +12,8 @@ import org.d3ifcool.virtualab.data.network.ApiStatus
 import org.d3ifcool.virtualab.repository.UserRepository
 import org.d3ifcool.virtualab.utils.Resource
 
-class UserInfoViewModel(private val userId: Int, private val userRepository: UserRepository) : ViewModel() {
+class UserInfoViewModel(private val userId: Int, private val userRepository: UserRepository) :
+    ViewModel() {
 
     private val _fetchedUser = MutableStateFlow<CombinedUser?>(null)
     val fetchedUser: StateFlow<CombinedUser?> = _fetchedUser
@@ -25,42 +24,45 @@ class UserInfoViewModel(private val userId: Int, private val userRepository: Use
     private val _apiStatus = MutableStateFlow(ApiStatus.LOADING)
     val apiStatus: StateFlow<ApiStatus> = _apiStatus
 
-    private val _approveResponse = MutableStateFlow<MessageResponse?>(null)
-    val approveResponse: StateFlow<MessageResponse?> = _approveResponse
+    private val _response = MutableStateFlow<MessageResponse?>(null)
+    val response: StateFlow<MessageResponse?> = _response
 
-    private val _emailSent = MutableStateFlow(false)
-    val emailSent: StateFlow<Boolean> = _emailSent
-
-    private val _rejectResponse = MutableStateFlow<MessageResponse?>(null)
-    val rejectResponse: StateFlow<MessageResponse?> = _rejectResponse
+    private val _postStatus = MutableStateFlow(ApiStatus.IDLE)
+    val postStatus: StateFlow<ApiStatus> = _postStatus
 
     init {
         getUsersInfo()
     }
 
-    private fun getUsersInfo() {
+    fun getUsersInfo() {
         viewModelScope.launch(Dispatchers.IO) {
-                when (val response = userRepository.getUserById(userId, true)) {
-                    is Resource.Success -> {
-                        _fetchedUser.value = response.data
-                        _apiStatus.value = ApiStatus.SUCCESS
-                    }
-                    is Resource.Error -> {
-                        _errorMsg.value = response.message
-                        _apiStatus.value = ApiStatus.FAILED
-                    }
+            _apiStatus.value = ApiStatus.LOADING
+            when (val response = userRepository.getUserById(userId, true)) {
+                is Resource.Success -> {
+                    _fetchedUser.value = response.data
+                    _apiStatus.value = ApiStatus.SUCCESS
                 }
+
+                is Resource.Error -> {
+                    _errorMsg.value = response.message
+                    _apiStatus.value = ApiStatus.FAILED
+                }
+            }
         }
     }
 
     fun approveUser(userId: Int, password: String) {
         viewModelScope.launch(Dispatchers.IO) {
+            _postStatus.value = ApiStatus.LOADING
             when (val response = userRepository.approveUser(userId, password)) {
                 is Resource.Success -> {
-                    _approveResponse.value = response.data
+                    _response.value = response.data
+                    _postStatus.value = ApiStatus.SUCCESS
                 }
+
                 is Resource.Error -> {
                     _errorMsg.value = response.message
+                    _postStatus.value = ApiStatus.FAILED
                 }
             }
         }
@@ -68,27 +70,19 @@ class UserInfoViewModel(private val userId: Int, private val userRepository: Use
 
     fun rejectUser(userId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
+            _postStatus.value = ApiStatus.LOADING
             when (val response = userRepository.rejectUser(userId)) {
                 is Resource.Success -> {
-                    _rejectResponse.value = response.data
+                    _response.value = response.data
+                    _postStatus.value = ApiStatus.SUCCESS
                 }
+
                 is Resource.Error -> {
                     _errorMsg.value = response.message
+                    _postStatus.value = ApiStatus.FAILED
                 }
             }
         }
-    }
-
-    fun sendEmail(context: Context, email: String, password: String) {
-        val intent = Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain"
-            putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
-            putExtra(Intent.EXTRA_SUBJECT, "Password Akun Anda")
-            putExtra(Intent.EXTRA_TEXT, "Password untuk akun Virtual Lab Anda adalah:\n\n $password")
-        }
-
-        context.startActivity(Intent.createChooser(intent, "Send Email"))
-        _emailSent.value = true
     }
 
     fun clearErrorMsg() {
