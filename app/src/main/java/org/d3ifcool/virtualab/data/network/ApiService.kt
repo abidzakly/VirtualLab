@@ -15,7 +15,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 
-private const val BASE_URL = "https://be.uyghg.online"
+private const val BASE_URL = "https://virtuallab.id"
 
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
